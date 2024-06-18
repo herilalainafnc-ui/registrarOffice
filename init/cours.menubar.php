@@ -49,7 +49,7 @@ if(isset($_GET['page']) and $_GET['page'] == "notes") {
 } ?>">
 										
 										<i class="bi-newspaper"></i>
-												notes
+												Intergration de notes
 									</div>
 								</a>
 								
