@@ -1,0 +1,198 @@
+
+<form method="post" action="../app/updateCours.php?id=<?=$id?>" class="form-no-refrech">
+<div class="w-full grid gap-2 grid-cols-2">
+
+	<div class='m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+		<div class="w-full flex mb-4">
+			<div class="w-8/12">
+				<b>Infos générale</b>	
+			</div>
+			<div class="w-4/12 text-right">
+				<div class="w-full flex gap-1 relative">
+					<input type="submit" class="submitPers rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier">
+					<a href="#" class="annulPers rounded-md px-2 bg-slate-500 text-center hidden absolute right-0">Annuler</a>
+				</div>
+				<a href="#" id="editPers" class="text-right"><i class="bi-pencil-square"></i></a>	
+			</div>
+		</div>
+
+		<div class="w-full flex">
+			<div class="w-6/12">
+				<label class="text-sm text-slate-400">Sigle</label>
+				<p class="showPers">-- <?=$sigle?></p><input id="firstPers"  class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="sigle" value="<?=$sigle?>"><br>
+
+				<label class="text-sm text-slate-400">Mention</label>
+				<p class="showPers">-- <?=$dep_desc?></p>
+				<select name="dep_desc" class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden">
+					<option class="bg-slate-800" ></option>
+<?php 
+$findSignMention = $dtb->query('SELECT * FROM filiere ORDER BY filiere_sigle ASC');
+while ($showMent = $findSignMention->fetch()) {
+	?>
+					<option class="bg-slate-800" <?php if($profil['dep_desc'] == $showMent['filiere_sigle']){echo 'selected';}?>><?=$showMent['filiere_sigle']?></option>
+ <?php 
+	}  					
+ ?> 					
+				</select><br>
+				<label class="text-sm text-slate-400">Enseignant</label>
+				<p class="showPers">-- 
+<?php 
+$findTeach = $dtb->query('SELECT * FROM teacher WHERE uid = "'.$profil['id_teacher'].'"');
+$showTeach = $findTeach->fetch();
+echo strtoupper($showTeach['name'])." ".$showTeach['lastName'];
+ ?>			
+			</p><select name="id_teacher" class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden">
+<?php 
+$findTeach = $dtb->query('SELECT * FROM teacher ORDER BY name ASC');
+while ($showTeach = $findTeach->fetch()) {
+	?>
+					<option class="bg-slate-800" value="<?=$showTeach['uid']?>" <?php if($profil['id_teacher'] == $showTeach['uid']){echo 'selected';}?>><?=strtoupper($showTeach['name'])." ".$showTeach['lastName']?></option>
+ <?php 
+	}  					
+ ?> 					
+				</select><br>
+			</div>
+			<div class="w-6/12">
+				<label class="text-sm text-slate-400">Titre</label>
+				<p class="showPers">-- <?=$title?></p><input class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="title" value="<?=$title?>"><br>
+
+				<label class="text-sm text-slate-400">Titre en anglais</label>
+				<p class="showPers">-- <?=$title_english?></p><input class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="$title_english" value="<?=$title_english?>">
+				
+			</div>
+		</div>
+
+	</div>
+
+<!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<div class='m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+		<div class="w-full flex mb-4">
+			<div class="w-8/12">
+				<b>Détail...</b>	
+			</div>
+			<div class="w-4/12 text-right">
+				<div class="w-full flex gap-1 relative">
+					<input type="submit" class="submitContact rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier">
+					<a href="#" class="annulContact rounded-md px-2 bg-slate-500 text-center hidden absolute right-0">Annuler</a>
+				</div>
+				<a href="#" id="editContact" class="text-right"><i class="bi-pencil-square"></i></a>
+			</div>
+		</div>
+
+		<div class="w-full flex">
+			<div class="w-6/12">
+				<label class="text-sm text-slate-400">Niveau</label>
+				<p class="showContact">-- Licence <?=$profil['yearlevel']?></p>
+				<select class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="yearlevel">
+					<option class="bg-slate-800" value="1" <?php if($profil['yearlevel'] == 1){echo 'selected';}?>>Licence 1</option>
+					<option class="bg-slate-800" value="2" <?php if($profil['yearlevel'] == 2){echo 'selected';}?>>Licence 2</option>
+					<option class="bg-slate-800" value="3" <?php if($profil['yearlevel'] == 3){echo 'selected';}?>>Licence 3</option>
+				</select><br>
+
+				<label class="text-sm text-slate-400">Crédit</label>
+				<p class="showContact">-- <?=$profil['nb_crd']?></p><input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="number" name="nb_crd" value="<?=$profil['nb_crd']?>">
+			</div>
+			<div class="w-6/12">
+				<label class="text-sm text-slate-400">Semestre</label>
+				<p class="showContact">-- <?=$profil['semester']?></p><input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="semester" value="<?=$profil['semester']?>"><br>
+				<label class="text-sm text-slate-400">Catégorie</label>
+				<p class="showContact">-- <?php 
+if ($profil['category'] == 0){
+	echo "Général";
+}elseif ($profil['category'] == 1) {
+	echo "Majeur";
+}elseif ($profil['category'] == -1 OR $crs['cours_category'] == 2) {
+	echo "Selective";
+}elseif ($profil['category'] == 3) {
+	echo "Additionnel";
+}elseif ($profil['category'] == 5) {
+	echo "``";
+}else{
+	echo "-";
+}
+ ?></p>
+				<select name="category" class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden">
+					<option class="bg-slate-800" ></option>
+					<option class="bg-slate-800" value="0" <?php if($profil['category'] == 0){echo 'selected';}?>>Général</option>
+					<option class="bg-slate-800" value="1" <?php if($profil['category'] == 1){echo 'selected';}?>>Mageur</option>
+					<option class="bg-slate-800" value="2" <?php if($profil['category'] == 2){echo 'selected';}?>>Selective</option>
+					<option class="bg-slate-800" value="3" <?php if($profil['category'] == 3){echo 'selected';}?>>Additionnel</option>
+					
+				</select><br>
+				
+			</div>
+		</div>
+
+	</div>
+
+<!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+</div>
+</form>
+
+<!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<script type="text/javascript">
+	$(document).ready(function(){
+
+		$('.form-no-refrech').on('submit',function (e) {
+			e.preventDefault();
+
+			var url = '../app/updateCours.php?id=<?=$id?>';
+			var data = $(this).serialize();
+
+			$.post(url,data,function(response){
+				
+				$('.submitPers').css({'display':'none'});
+				$('.submitContact').css({'display':'none'});
+				
+				$('.annulPers').css({'display':'none'});
+				$('.annulContact').css({'display':'none'});
+				
+				$('#editPers').css({'display':'block'});
+				$('#editContact').css({'display':'block'});
+				
+			});
+		});
+		
+		$('#editPers').click(function(){
+			$(this).css({'display':'none'});
+			$('.annulPers').css({'display':'block'});
+			$('.editPers').css({'display':'block'});
+			$('#firstPers').focus();
+			$('.showPers').css({'display':'none'});
+		});
+		$('.annulPers').click(function(){
+			$(this).css({'display':'none'});
+			$('#editPers').css({'display':'block'});
+			$('.editPers').css({'display':'none'});
+			$('.showPers').css({'display':'block'});
+			$('.submitPers').css({'display':'none'});
+		});
+
+		$('.editPers').click(function(){
+			$('.submitPers').css({'display':'block'});
+		});
+
+
+		$('#editContact').click(function(){
+			$(this).css({'display':'none'});
+			$('.annulContact').css({'display':'block'});
+			$('.editContact').css({'display':'block'});
+			$('#firstContact').focus();
+			$('.showContact').css({'display':'none'});
+		});
+		$('.annulContact').click(function(){
+			$(this).css({'display':'none'});
+			$('#editContact').css({'display':'block'});
+			$('.editContact').css({'display':'none'});
+			$('.showContact').css({'display':'block'});
+			$('.submitContact').css({'display':'none'});
+		});
+
+		$('.editContact').click(function(){
+			$('.submitContact').css({'display':'block'});
+		});
+	
+	});
+</script>

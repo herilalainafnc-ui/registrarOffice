@@ -1,0 +1,106 @@
+<?php 
+require '../data/backdb.php';
+
+	$id = $_GET['id'];
+	$student_nom = $_POST['student_nom'];
+	$student_prenom = $_POST['student_prenom'];
+	$etude_option = $_POST['etude_option'];
+	$student_tel = $_POST['student_tel'];
+	$sex = $_POST['sex'];
+	$student_email = $_POST['student_email'];
+	$annee_etude = $_POST['annee_etude'];
+	$dateNaissance = $_POST['dateNaissance'];
+	$nationalite = $_POST['nationalite'];
+	$student_adresse = $_POST['student_adresse'];
+	$student_region = $_POST['student_region'];
+	$lieuNaissance = $_POST['lieuNaissance'];
+	$num_cin = $_POST['num_cin'];
+	$cin_date_delivre = $_POST['cin_date_delivre'];
+	$father_name = $_POST['father_name'];
+	$father_prof = $_POST['father_prof'];
+	$parent_tel = $_POST['parent_tel'];
+	$mother_name = $_POST['mother_name'];
+	$mother_prof = $_POST['mother_prof'];
+	$parent_adresse = $_POST['parent_adresse'];
+	$sponsor_nom = $_POST['sponsor_nom'];
+	$sponsor_prenom = $_POST['sponsor_prenom'];
+	$sponsor_adresse = $_POST['sponsor_adresse'];
+	$sponsor_tel = $_POST['sponsor_tel'];
+	$annee_scolaire = $_POST['annee_scolaire'];
+	$new_student = $_POST['new_student'];
+	$status = $_POST['status'];
+	$cin_region = $_POST['cin_region'];
+	$religion = $_POST['religion'];
+	$num_visa = $_POST['num_visa'];
+	$last_change_datetime = date('Y-m-d');
+	
+
+	$update = $dtb->prepare("UPDATE etudiant_second_semester_23 SET 
+		student_nom=:student_nom,
+		student_prenom=:student_prenom,
+		etude_option=:etude_option,
+		student_tel=:student_tel, 
+		sex=:sex, 
+		student_email=:student_email, 
+		dateNaissance=:dateNaissance, 
+		nationalite=:nationalite, 
+		student_adresse=:student_adresse,
+		student_region=:student_region,
+		lieuNaissance=:lieuNaissance,
+		num_cin=:num_cin,
+		cin_date_delivre=:cin_date_delivre,
+		father_name=:father_name,
+		father_prof=:father_prof,
+		parent_tel=:parent_tel,
+		mother_name=:mother_name,
+		mother_prof=:mother_prof,
+		parent_adresse=:parent_adresse,
+		sponsor_nom=:sponsor_nom,
+		sponsor_prenom=:sponsor_prenom,
+		sponsor_adresse=:sponsor_adresse,
+		sponsor_tel=:sponsor_tel,
+		annee_scolaire=:annee_scolaire,
+		last_change_datetime=:last_change_datetime,
+		status=:status,
+		new_student=:new_student,
+		cin_region=:cin_region,
+		religion=:religion,
+		num_visa=:num_visa,
+		annee_etude=:annee_etude
+		WHERE id=:id");
+	$update->bindParam(':student_nom',$student_nom,PDO::PARAM_STR);
+	$update->bindParam(':student_prenom',$student_prenom,PDO::PARAM_STR);
+	$update->bindParam(':etude_option',$etude_option,PDO::PARAM_STR);
+	$update->bindParam(':student_tel',$student_tel,PDO::PARAM_STR);
+	$update->bindParam(':sex',$sex,PDO::PARAM_STR);
+	$update->bindParam(':student_email',$student_email,PDO::PARAM_STR);
+	$update->bindParam(':dateNaissance',$dateNaissance,PDO::PARAM_STR);
+	$update->bindParam(':nationalite',$nationalite,PDO::PARAM_STR);
+	$update->bindParam(':student_adresse',$student_adresse,PDO::PARAM_STR);
+	$update->bindParam(':student_region',$student_region,PDO::PARAM_STR);
+	$update->bindParam(':lieuNaissance',$lieuNaissance,PDO::PARAM_STR);
+	$update->bindParam(':num_cin',$num_cin,PDO::PARAM_STR);
+	$update->bindParam(':cin_date_delivre',$cin_date_delivre,PDO::PARAM_STR);
+	$update->bindParam(':father_name',$father_name,PDO::PARAM_STR);
+	$update->bindParam(':father_prof',$father_prof,PDO::PARAM_STR);
+	$update->bindParam(':parent_tel',$parent_tel,PDO::PARAM_STR);
+	$update->bindParam(':mother_name',$mother_name,PDO::PARAM_STR);
+	$update->bindParam(':mother_prof',$mother_prof,PDO::PARAM_STR);
+	$update->bindParam(':parent_adresse',$parent_adresse,PDO::PARAM_STR);
+	$update->bindParam(':sponsor_nom',$sponsor_nom,PDO::PARAM_STR);
+	$update->bindParam(':sponsor_prenom',$sponsor_prenom,PDO::PARAM_STR);
+	$update->bindParam(':sponsor_adresse',$sponsor_adresse,PDO::PARAM_STR);
+	$update->bindParam(':sponsor_tel',$sponsor_tel,PDO::PARAM_STR);
+	$update->bindParam(':annee_scolaire',$annee_scolaire,PDO::PARAM_STR);
+	$update->bindParam(':last_change_datetime',$last_change_datetime,PDO::PARAM_STR);
+	$update->bindParam(':status',$status,PDO::PARAM_STR);
+	$update->bindParam(':new_student',$new_student,PDO::PARAM_STR);
+	$update->bindParam(':cin_region',$cin_region,PDO::PARAM_STR);
+	$update->bindParam(':religion',$religion,PDO::PARAM_STR);
+	$update->bindParam(':num_visa',$num_visa,PDO::PARAM_STR);
+	$update->bindParam(':annee_etude',$annee_etude,PDO::PARAM_INT);
+	$update->bindParam(':id',$id,PDO::PARAM_INT);
+
+$update->execute();
+
+header('location:../src/student.php?id='.$id.'&page=information');

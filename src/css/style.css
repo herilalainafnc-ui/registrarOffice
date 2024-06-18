@@ -1,0 +1,61 @@
+@font-face{font-family: 'caviar';src: url('fonts/CaviarDreams.ttf');}
+@font-face{font-family: 'caviarbold';src: url('fonts/CaviarDreams_Bold.ttf');}
+@font-face{font-family: 'corbel';src: url('fonts/corbel.ttf');}
+@font-face{font-family: 'louis';src: url('fonts/Louis George Cafe.ttf');}
+@font-face{font-family: 'melinda';src: url('fonts/melinda.ttf');}
+
+body::-webkit-scrollbar {
+  width: 5px;
+}
+*::-webkit-scrollbar {
+  width: 5px;
+}
+
+body::-webkit-scrollbar-track {
+  background: none;
+}
+
+*::-webkit-scrollbar-track {
+  background: none;
+}
+
+body::-webkit-scrollbar-thumb {
+  	background-color: none;
+}
+*::-webkit-scrollbar-thumb {
+	background-color: #cbd5e1;
+}
+
+.simpleTbl{
+	border-collapse: collapse;
+	font-size: 12px;
+	width: 100%;
+}
+.simpleTbl th, .simpleTbl td{
+	padding: 0px 3px 0px 3px;
+	border: 1px solid #334155;
+}
+
+.classicTbl{
+	border-collapse: collapse;
+	font-size: 12px;
+	width: 100%;
+}
+.classicTbl th, .classicTbl td{
+	padding: 3px;
+	border: 1px solid black;
+	text-align: center;
+}
+.center{
+	text-align: center;
+}
+.insimple{
+	border: none;
+	background-color: none;
+	height: 20px;
+	width: 100%;
+}
+.toolInactive{
+	color: #567396;
+	pointer-events: none;
+}
