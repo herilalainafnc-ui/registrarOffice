@@ -54,8 +54,8 @@ $yes = 1;
 
 									 ?></b>
 								</div>
-								<!-- STUDENT TOOLBAR --><?php require ('../init/student.toolbar.php');?>
-								<!-- NOTIFICATION MANAGER --><?php require('./student/notificationStd.php');?>
+								<!-- STUDENT TOOLBAR --><?php require ('../init/cours.toolbar.php');?>
+								<!-- NOTIFICATION MANAGER --><?php require('./cours/notificationCours.php');?>
 							</div>
 							<?php 
 								

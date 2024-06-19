@@ -59,7 +59,7 @@ $yes = 1;
 									 ?></b>
 								</div>
 								<!-- PROF TOOLBAR --><?php require ('../init/prof.toolbar.php');?>
-								<!-- NOTIFICATION MANAGER --><?php require('./student/notificationStd.php');?>
+								<!-- NOTIFICATION MANAGER --><?php require('./prof/notificationProf.php');?>
 							</div>
 							<?php 
 								

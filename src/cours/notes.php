@@ -183,7 +183,7 @@ if (($nbr-1)<=1) {
 </div>
 	</div>
 
-				</div><br>
+				</div>
 </div>
 <?php 
 	}
