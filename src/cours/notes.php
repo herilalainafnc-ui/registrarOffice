@@ -40,9 +40,7 @@ while ($cours_table = $cors->fetch()) {
 $idcours = $cours_table['id'];
  ?>
 
-<form method="post" action="../app/completnotes.php" class="form-no-refrech">
-	<input type="text" name="id" value="<?=$cours_table['id']?>" style="display: none;">
-	<input type="text" name="repid" value="<?=$id?>" style="display: none;">
+<form method="post" action="../app/completnotes.php?id=<?=$id?>&idcours=<?=$idcours?>" class="form-no-refrech">
 					<tr>
 						<td class="bg-gradient-to-r from-orange-800 to-orange-400"><?=$cours_table['student_id']?></td>
 						<td class="c<?=$nbr.$i;?>"><?php
