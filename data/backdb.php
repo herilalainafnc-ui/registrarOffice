@@ -5,6 +5,6 @@ try {
 /*echo "Connexion correct ♥";*/
 }catch(PDOException $e) {
 	echo "Connexion DB incorrect ☻ : " . $e->getMessage();
+	exit();
 }
-exit();
 ?>
