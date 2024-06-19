@@ -4,6 +4,7 @@ try {
 	$dtb -> setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 /*echo "Connexion correct ♥";*/
 }catch(PDOException $e) {
-	die(header('location:dbauto/creatdatabase.php'). $e->getMessage());
+	echo "Connexion DB incorrect ☻ : " . $e->getMessage();
 }
+exit();
 ?>
