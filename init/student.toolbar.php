@@ -142,7 +142,7 @@
 		<a href="?id=<?=$id?>&page=newCours" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1">
 				<center>
 				<i class="bi-folder-plus text-2xl"></i><br>
-						Nouveau cours
+						Ajout cours
 				</center>
 			
 		</a>

@@ -1,8 +1,6 @@
-<div class="w-2/12 border-r flex px-1">
+<div class="w-3/12 border-r flex px-1">
 		
-		<a href="#" class="text-xs w-6/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information' or $_GET['page'] == 'diplome') or empty($_GET['page'])) {
-																								echo "toolInactive";
-																							}?>" data-bs-toggle="dropdown" aria-expanded="false">
+		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?>" data-bs-toggle="dropdown" aria-expanded="false">
 				<center>
 				<i class="bi-sort-alpha-up-alt text-2xl"></i><br>
 						Trier par
@@ -19,18 +17,14 @@
 
 				</ul>
 
-		<!-- <a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information' or $_GET['page'] == 'diplome') or empty($_GET['page'])) {
-																								echo "toolInactive";
-																							}?>">
+		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?>">
 				<center>
 				<i class="bi-funnel text-2xl"></i><br>
 						Filter
 				</center>
 			
-		</a> -->
-		<a href="#" class="text-xs w-6/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {
-																								echo "toolInactive";
-																							}?>" data-bs-toggle="dropdown" aria-expanded="false">
+		</a>
+		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?>" data-bs-toggle="dropdown" aria-expanded="false">
 				<center>
 				<i class="bi-flag text-2xl"></i><br>
 						Langues
@@ -46,34 +40,31 @@
 				</ul>
 	</div>
 	<div class="w-3/12 flex px-1">
-		<a href="?id=<?=$id?>&page=newCours" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1">
+		<a href="?id=<?=$id?>&page=newStd" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?>">
 				<center>
-				<i class="bi-folder-plus text-2xl"></i><br>
-						Nouveau cours
+				<i class="bi-person-add text-2xl"></i><br>
+						Ajout étudiant
 				</center>
 			
 		</a>
 		
 		
-		<a href="?id=<?=$id;?>&page=courssupprim" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1">
+		<a href="?id=<?=$id;?>&page=stdsupprim" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?>">
 				<center>
 				<i class="bi-trash2 text-2xl"></i><br>
-						Cours supprimé
+						Etudiant supprimé
 				</center>
 			
 		</a>
-		<a href="#" id="<?php if (!empty($_GET['page']) AND $_GET['page'] == 'bulletin'){echo 'exportBulletin';}
-							elseif(!empty($_GET['page']) AND $_GET['page'] == 'transcript'){echo 'exportTranscript';}
-							elseif(!empty($_GET['page']) AND $_GET['page'] == 'transcriptSS'){echo 'exportTranscriptSS';}
+		<a href="#" id="<?php if (!empty($_GET['page']) AND $_GET['page'] == 'notes'){echo 'exportNotesInThisCours';}
+							elseif(!empty($_GET['page']) AND $_GET['page'] == 'etudiants'){echo 'exportListStdInThisCours';}
 						?>" 
 
-			class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information' or $_GET['page'] == 'newCours' or $_GET['page'] == 'diplome') or empty($_GET['page'])) {
-																								echo "toolInactive";
-																							}?>">
+			class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?>">
 		
 				<center>
 				<i class="bi-filetype-pdf text-2xl"></i><br>
-						Exporter
+				<?php if (isset($_GET['page']) and ($_GET['page'] == 'notes')) {echo "Remise de notes";}else{echo "Exporter";}?>
 				</center>
 			
 		</a>

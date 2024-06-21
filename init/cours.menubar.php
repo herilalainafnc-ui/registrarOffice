@@ -33,7 +33,7 @@ if ($profil['category'] == 0){
 						</div><hr>
 						<div class="w-full text-md">
 								<a href="?id=<?=$id;?>&page=information">
-									<div class="w-full hover:bg-cyan-700 hover:text-slate-100 p-2 my-1 rounded-md <?php 
+									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
 if(isset($_GET['page']) and $_GET['page'] == "information") {
 	echo "bg-cyan-700 text-white";
 } ?>">
@@ -43,7 +43,7 @@ if(isset($_GET['page']) and $_GET['page'] == "information") {
 								</a>
 		
 								<a href="?id=<?=$id;?>&page=notes">
-									<div class="w-full hover:bg-cyan-700 hover:text-slate-100 p-2 my-1 rounded-md <?php 
+									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
 if(isset($_GET['page']) and $_GET['page'] == "notes") {
 	echo "bg-cyan-700 text-white";
 } ?>">
@@ -54,7 +54,7 @@ if(isset($_GET['page']) and $_GET['page'] == "notes") {
 								</a>
 								
 								<a href="?id=<?=$id;?>&page=etudiants">
-									<div class="w-full hover:bg-cyan-700 hover:text-slate-100 p-2 my-1 rounded-md <?php 
+									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
 if(isset($_GET['page']) and $_GET['page'] == "etudiants") {
 	echo "bg-cyan-700 text-white";
 } ?>">
@@ -65,14 +65,14 @@ if(isset($_GET['page']) and $_GET['page'] == "etudiants") {
 								</a>
 								<hr>
 								<a href="#">
-									<div class="w-full hover:bg-cyan-700 hover:text-slate-100 p-2 my-1 rounded-md">
+									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md">
 										<i class="bi-archive-fill"></i>
 												Archive
 									</div>
 								</a>
 
 								<a href="#">
-									<div class="w-full hover:bg-cyan-700 hover:text-slate-100 p-2 my-1 rounded-md">
+									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md">
 										
 										<i class="bi-trash3"></i>
 												Supprimer

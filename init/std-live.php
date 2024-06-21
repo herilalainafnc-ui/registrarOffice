@@ -1,9 +1,9 @@
 <?php 
 	require('../data/backdb.php');	
 	
-	if (isset($_POST['input'])) {
+	if (isset($_POST['trie'])) {
 		
-		$input = $_POST['input'];
+		$trie = $_POST['trie'];
 
 
  ?>
@@ -21,7 +21,7 @@
 	</thead>
 	<tbody>
 <?php 
-	$recupsdt = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE student_id LIKE "%'.$input.'%" OR student_nom LIKE "%'.$input.'%" OR student_prenom LIKE "%'.$input.'%" OR sex LIKE "%'.$input.'%" OR student_email LIKE "%'.$input.'%" OR student_tel LIKE "%'.$input.'%" OR religion LIKE "%'.$input.'%" ORDER BY student_id DESC limit 100');
+	$recupsdt = $dtb->query('SELECT * FROM etudiant_second_semester_23 ORDER BY '.$trie.' limit 800');
 
 	$sdt_nb = 1;
 	while ($sdt_list = $recupsdt->fetch()) {
