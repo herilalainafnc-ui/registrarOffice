@@ -3,7 +3,10 @@
 
 	<ul class="text-slate-100 text-bold my-3 mx-2">
 		
-		<a href="./accueil.php"><li class="hover:bg-cyan-700 py-2 rounded-md my-1">
+		<a href="./accueil.php"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
+if($page == "accueil.php" OR $page == "student.php") {
+	echo "bg-cyan-700";
+} ?>">
 			
 				<span class="icon">
 					<ion-icon class="bi-people-fill"></ion-icon>
@@ -12,7 +15,10 @@
 			
 		</li></a>
 
-		<a href="./inscription.php"><li class="hover:bg-cyan-700 py-2 rounded-md my-1">
+		<a href="./inscription.php"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
+if($page == "inscription.php") {
+	echo "bg-cyan-700";
+} ?>">
 			
 				<span class="icon">
 					<ion-icon class="bi-person-add"></ion-icon>
@@ -21,7 +27,10 @@
 			
 		</li></a>
 		<hr>
-		<a href="./accueil.cours.php"><li class="hover:bg-cyan-700 py-2 rounded-md my-1">
+		<a href="./accueil.cours.php"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
+if($page == "accueil.cours.php" OR $page == "cours.php") {
+	echo "bg-cyan-700";
+} ?>">
 			
 				<span class="icon">
 					<ion-icon class="bi-list-columns-reverse"></ion-icon>
@@ -30,7 +39,10 @@
 			
 		</li></a>
 
-		<a href="#"><li class="hover:bg-cyan-700 py-2 rounded-md my-1">
+		<a href="#"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
+if($page == "addCours.php") {
+	echo "bg-cyan-700";
+} ?>">
 			
 				<span class="icon">
 					<ion-icon class="bi-file-plus"></ion-icon>
@@ -39,7 +51,10 @@
 			
 		</li></a>
 		<hr>
-		<a href="./accueil.prof.php"><li class="hover:bg-cyan-700 py-2 rounded-md my-1">
+		<a href="./accueil.prof.php"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
+if($page == "accueil.prof.php" OR $page == "prof.php") {
+	echo "bg-cyan-700";
+} ?>">
 			
 				<span class="icon">
 					<ion-icon class="bi-person-lines-fill"></ion-icon>
@@ -48,7 +63,10 @@
 			
 		</li></a>
 
-		<a href="#"><li class="hover:bg-cyan-700 py-2 rounded-md my-1">
+		<a href="#"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
+if($page == "addProf.php") {
+	echo "bg-cyan-700";
+} ?>">
 			
 				<span class="icon">
 					<ion-icon class="bi-person-add"></ion-icon>
@@ -57,7 +75,10 @@
 			
 		</li></a>
 		<hr>
-		<a href="#"><li class="hover:bg-cyan-700 py-2 rounded-md my-1">
+		<a href="#"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
+if($page == "settings.php") {
+	echo "bg-cyan-700";
+} ?>">
 			
 				<span class="icon">
 					<ion-icon class="bi-gear-fill"></ion-icon>
@@ -66,7 +87,7 @@
 			
 		</li></a>
 		<hr>
-		<a href="#"><li class="hover:bg-cyan-700 py-2 rounded-md my-1">
+		<a class="dropdown-item" href="../app/logout.php"><li class="hover:bg-cyan-500 py-2 rounded-md my-1">
 			
 				<span class="icon">
 					<ion-icon class="bi-people-fill"></ion-icon>

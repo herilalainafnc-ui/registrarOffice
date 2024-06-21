@@ -48,7 +48,7 @@ $yes = 1;
 									}elseif($cours_page == "notes") {
 										echo "NOTES";
 									}elseif($cours_page == "etudiants") {
-										echo "Etudiants qui font ce cours";
+										echo "ETUDIANTS";
 									}
 								}
 
@@ -66,7 +66,7 @@ $yes = 1;
 										require('./cours/information.php');
 									}elseif($cours_page == "notes") {
 										require('./cours/notes.php');
-									}elseif($sdt_page == "etudiants") {
+									}elseif($cours_page == "etudiants") {
 										require('./cours/etudiants.php');
 									}
 								}

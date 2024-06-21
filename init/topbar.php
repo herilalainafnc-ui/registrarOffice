@@ -36,11 +36,31 @@
 	</div>
 	<div class="w-7/12 mt-1">
 		
-		<div class="searchStudent w-full hidden text-right">
+		<div class="search w-full hidden text-right">
+			<?php 
+			if($page == "accueil.php" OR $page == "student.php") {
+			 ?>
 			<form method="post" action="accueil.php">
-					<input id="std-search" type="text" name="search" autocomplete="off" placeholder="Rechercher un étudiant" class="h-8 px-2 text-sm border bg-slate-700 w-4/12">
+					<input id="std-search" type="text" name="search" placeholder="Rechercher un étudiant" class="h-8 px-2 text-sm border bg-slate-700 w-4/12">
 				<button type="submit" style="display: none" onclick="surligne();"></button>
 			</form>
+			<?php 
+			}elseif($page == "accueil.cours.php" OR $page == "cours.php") {
+			?>
+			<form method="post" action="accueil.cours.php">
+					<input id="cours-search" type="text" name="search" placeholder="Rechercher un cours" class="h-8 px-2 text-sm border bg-slate-700 w-4/12">
+				<button type="submit" style="display: none" onclick="surligne();"></button>
+			</form>
+			<?php 
+			}elseif($page == "accueil.prof.php" OR $page == "prof.php") {
+			?>
+			<form method="post" action="accueil.cours.php">
+					<input id="prof-search" type="text" name="search" placeholder="Rechercher professeur" class="h-8 px-2 text-sm border bg-slate-700 w-4/12">
+				<button type="submit" style="display: none" onclick="surligne();"></button>
+			</form>
+			<?php 
+			}
+			?>
 		</div>
 
 	</div>
@@ -98,6 +118,7 @@ if(($rg_user['privilege'] == 'administrator') OR ($rg_user['privilege_2'] == 'ad
 		$('#std-search').keyup(function() {
 			var input = $(this).val();
 			if(input != ''){
+				$('#stdTriage-result').css({'display':'none'});
 				$('#stdSearch-result').css({'display':'block'});
 				$('#all-std').css({'display':'none'});
 
@@ -112,13 +133,55 @@ if(($rg_user['privilege'] == 'administrator') OR ($rg_user['privilege_2'] == 'ad
 				});
 
 			}else{
+				$('#stdTriage-result').css({'display':'none'});
 				$('#stdSearch-result').css({'display':'none'});
 				$('#all-std').css({'display':'block'});
 			}
-			
-
 		});
+/*/////////////////////////////////////////////////////////////////*/
+		$('#cours-search').keyup(function() {
+			var input = $(this).val();
+			if(input != ''){
+				$('#coursSearch-result').css({'display':'block'});
+				$('#all-cours').css({'display':'none'});
 
+				$.ajax({
+					url:"../init/cours-livesearch.php",
+					method:"POST",
+					data:{input:input},
+
+					success:function(data){
+						$("#coursSearch-result").html(data);
+					}
+				});
+
+			}else{
+				$('#coursSearch-result').css({'display':'none'});
+				$('#all-cours').css({'display':'block'});
+			}
+		});
+/*/////////////////////////////////////////////////////////////////*/
+		$('#prof-search').keyup(function() {
+			var input = $(this).val();
+			if(input != ''){
+				$('#profSearch-result').css({'display':'block'});
+				$('#all-prof').css({'display':'none'});
+
+				$.ajax({
+					url:"../init/prof-livesearch.php",
+					method:"POST",
+					data:{input:input},
+
+					success:function(data){
+						$("#profSearch-result").html(data);
+					}
+				});
+
+			}else{
+				$('#profSearch-result').css({'display':'none'});
+				$('#all-prof').css({'display':'block'});
+			}
+		});
 	});
 
 </script>

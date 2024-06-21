@@ -123,7 +123,7 @@ if ($crs['grade'] == -2 OR $crs['grade'] > 10) {
 }
 
 							 ?>"><?php 
-if ($crs['grade'] == -2 OR $crs['grade'] > 10) {
+if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 	echo "S";
 }elseif($crs['grade'] < 10 and $crs['grade'] > 0){
 	echo "E";

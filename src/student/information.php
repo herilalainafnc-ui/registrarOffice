@@ -202,8 +202,8 @@ $y = $y - 1;
 				<label class="text-sm text-slate-400">Ancien étudiant</label>
 				<p class="showEtd">-- <?php if($profil['new_student'] == 1){echo 'Non';}else{echo 'Oui';}?></p>
 				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="new_student">
-					<option class="bg-slate-800" <?php if($profil['new_student'] == 1){echo 'selected';}?>>Non</option>
-					<option class="bg-slate-800" <?php if($profil['new_student'] == 0){echo 'selected';}?>>Oui</option>
+					<option class="bg-slate-800" <?php if($profil['new_student'] == 1){echo 'selected';}?> value="0">Non</option>
+					<option class="bg-slate-800" <?php if($profil['new_student'] == 0){echo 'selected';}?> value="1">Oui</option>
 				</select>
 				<br>
 				

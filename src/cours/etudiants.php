@@ -23,8 +23,6 @@ $preced = $soustract - 1;
 						<td>Nom et Prénoms</td>
 						<td class="w-20">Niveau</td>
 						<td class="w-20">Semestre</td>
-						<td class="w-20">Notes/20</td>
-						<td class="w-4">Etat</td>
 						<td class="w-4"><span class="bi-trash3-fill"></span></td>
 					</tr>
 				</thead>
@@ -56,39 +54,8 @@ if($apotr){
 	echo "<em style='color:red'>Etudiant non inscrit dans la base!!</em>";
 }
 					?></td>
-					<td class="c<?=$nbr.$i;?>">L<?=$apotr['annee_etude']?></td>
+						<td class="c<?=$nbr.$i;?>">L<?=$apotr['annee_etude']?></td>
 					<td class="c<?=$nbr.$i;?>"><?=$cours_table['semester']?></td>
-						<td class="bg-slate-300 text-slate-800 px-0">
-							<input class="insimple text-sm bg-transparent px-2 g<?=$nbr.$i;?>" type="text" name="note" value="<?=$cours_table['grade'];?>" min="0" max="20">
-						</td>
-						<td class='stp<?=$nbr.$i;?> <?php 
-if ($cours_table['grade'] == -2 OR $cours_table['grade'] > 10) {
-	echo "bg-green-500";
-
-}elseif ($cours_table['grade'] < 10 and $cours_table['grade'] > 0) {
-	echo "bg-red-500";
-}elseif ($cours_table['grade'] == 0){
-	echo "bg-none";
-} ?> text-center' title="<?php 
-if ($cours_table['grade'] == -2 OR $cours_table['grade'] > 10) {
-	echo "Succès";
-}elseif ($cours_table['grade'] < 10 and $cours_table['grade'] > 0){
-	echo "Echec";
-}elseif ($cours_table['grade'] == 0){
-	echo "";
-}
-
-							 ?>">
-						<?php 
-	if ($cours_table['grade'] == 0 OR $cours_table['grade'] == "") {
-		echo "";
-	}elseif ($cours_table['grade'] < 10) {
-		echo "E";
-	}elseif ($cours_table['grade'] == -2 OR $cours_table['grade'] >= 10){
-		echo "S";
-	}
-							 ?>
-						</td>
 						<td>
 							<div class="nav-item dropstart" style="list-style: none">
 								<a href="#" class="btn nav-link" type="button" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="bi-three-dots-vertical"></span></a>

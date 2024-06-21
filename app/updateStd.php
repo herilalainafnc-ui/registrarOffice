@@ -103,4 +103,4 @@ require '../data/backdb.php';
 
 $update->execute();
 
-header('location:../src/student.php?id='.$id.'&page=information');
+//header('location:../src/student.php?id='.$id.'&page=information');

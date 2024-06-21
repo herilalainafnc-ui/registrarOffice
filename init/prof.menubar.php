@@ -7,8 +7,8 @@
 							</div>
 
 							<div class="absolute border bg-slate-500 text-white bottom-[-15px] left-[60px] hidden" id="imgOpt" style="z-index: 9;">
-								<a href="#" id="listOpt1"><p class="px-2 py-1 hover:bg-cyan-700">Agrandir</p></a>
-								<a href="#" id="listOpt2"><p class="px-2 py-1 hover:bg-cyan-700">Modifier</p></a>
+								<a href="#" id="listOpt1"><p class="px-2 py-1 hover:bg-cyan-500">Agrandir</p></a>
+								<a href="#" id="listOpt2"><p class="px-2 py-1 hover:bg-cyan-500">Modifier</p></a>
 							</div>
 
 							<div class="w-9/12 text-left pl-3">
@@ -33,7 +33,7 @@
 						</div><hr>
 						<div class="w-full text-md">
 								<a href="?id=<?=$id;?>&page=information">
-									<div class="w-full hover:bg-cyan-700 hover:text-slate-100 p-2 my-1 rounded-md <?php 
+									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
 if(isset($_GET['page']) and $_GET['page'] == "information") {
 	echo "bg-cyan-700 text-white";
 } ?>">
@@ -43,7 +43,7 @@ if(isset($_GET['page']) and $_GET['page'] == "information") {
 								</a>
 								
 								<a href="?id=<?=$id;?>&page=cours">
-									<div class="w-full hover:bg-cyan-700 hover:text-slate-100 p-2 my-1 rounded-md <?php 
+									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
 if(isset($_GET['page']) and $_GET['page'] == "newCours") {
 	echo "bg-cyan-700 text-white";
 } ?>">
@@ -54,14 +54,14 @@ if(isset($_GET['page']) and $_GET['page'] == "newCours") {
 								</a>
 								<hr>
 								<a href="#">
-									<div class="w-full hover:bg-cyan-700 hover:text-slate-100 p-2 my-1 rounded-md">
+									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md">
 										<i class="bi-archive-fill"></i>
 												Archive
 									</div>
 								</a>
 
 								<a href="#">
-									<div class="w-full hover:bg-cyan-700 hover:text-slate-100 p-2 my-1 rounded-md">
+									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md">
 										
 										<i class="bi-trash3"></i>
 												Supprimer

@@ -17,7 +17,13 @@
 			<!-- BARRE D'OUTILS --><?php require('../init/toolbar.php');?>
 			
 				<div class="w-full px-0.5 flex" style="height: calc(100vh - 152px);">
+					
 					<div class="bg-slate-800 my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto hidden" id="stdSearch-result"></div>
+					
+					<div class="bg-slate-800 my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto hidden" id="stdTriage-result">
+						
+					</div>
+					
 					<div class="bg-slate-800 my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto" id="all-std">
 						
 						<table class="simpleTbl">
@@ -45,13 +51,14 @@
 	while ($sdt_list = $recupsdt->fetch()) {
  ?>								
 								<tr id="std_<?=$sdt_nb?>" class="hover:bg-slate-300 hover:text-slate-800">	
-									<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['student_id']?></div></a></td>
+									<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"
+									><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['student_id']?></div></a></td>
 									<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=strtoupper($sdt_list['student_nom'])?></div></a></td>
 									<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['student_prenom']?></div></a></td>
 									<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['etude_envisage']?></div></a></td>
 									<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['etude_option']?></div></a></td>
 									<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['annee_scolaire']?></div></a></td>
-									<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['annee_etude']?></div></a></td>
+									<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full">L<?=$sdt_list['annee_etude']?></div></a></td>
 								</tr>
 
 <?php
