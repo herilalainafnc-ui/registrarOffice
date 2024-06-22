@@ -62,7 +62,7 @@ if($apotr){
 							<input class="insimple text-sm bg-transparent px-2 g<?=$nbr.$i;?>" type="text" name="note" value="<?=$cours_table['grade'];?>" min="0" max="20">
 						</td>
 						<td class='stp<?=$nbr.$i;?> <?php 
-if ($cours_table['grade'] == -2 OR $cours_table['grade'] > 10) {
+if ($cours_table['grade'] == -2 OR $cours_table['grade'] >= 10) {
 	echo "bg-green-500";
 
 }elseif ($cours_table['grade'] < 10 and $cours_table['grade'] > 0) {
@@ -70,7 +70,7 @@ if ($cours_table['grade'] == -2 OR $cours_table['grade'] > 10) {
 }elseif ($cours_table['grade'] == 0){
 	echo "bg-none";
 } ?> text-center' title="<?php 
-if ($cours_table['grade'] == -2 OR $cours_table['grade'] > 10) {
+if ($cours_table['grade'] == -2 OR $cours_table['grade'] >= 10) {
 	echo "Succès";
 }elseif ($cours_table['grade'] < 10 and $cours_table['grade'] > 0){
 	echo "Echec";

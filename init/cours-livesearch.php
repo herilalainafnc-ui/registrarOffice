@@ -1,10 +1,5 @@
 <?php 
 	require('../data/backdb.php');	
-	
-	if (isset($_POST['input'])) {
-		
-		$input = $_POST['input'];
-
 
  ?>
 						<table class="simpleTbl">
@@ -22,7 +17,18 @@
 							</thead>
 							<tbody>
 <?php
-	$recupcours = $dtb->query('SELECT * FROM t_2023_cours WHERE Sigle LIKE "%'.$input.'%" OR title LIKE "%'.$input.'%" OR dep_desc LIKE "%'.$input.'%" OR nb_crd LIKE "%'.$input.'%" OR title_english LIKE "%'.$input.'%" ORDER BY title limit 200');
+	if (isset($_POST['input'])) {
+		
+		$input = $_POST['input'];
+
+		$recupcours = $dtb->query('SELECT * FROM t_2023_cours WHERE Sigle LIKE "%'.$input.'%" OR title LIKE "%'.$input.'%" OR dep_desc LIKE "%'.$input.'%" OR nb_crd LIKE "%'.$input.'%" OR title_english LIKE "%'.$input.'%" ORDER BY title limit 200');
+ 
+	}elseif (isset($_POST['filter']) AND isset($_POST['channel'])) {
+			$filter = $_POST['filter'];
+			$channel = $_POST['channel'];
+		
+		$recupcours = $dtb->query('SELECT * FROM t_2023_cours WHERE '.$filter.' LIKE "%'.$channel.'%" ORDER BY title limit 800');
+	}
 
 	$cours_nb = 1;
 	while ($cours_list = $recupcours->fetch()) {
@@ -32,7 +38,21 @@
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['title']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['dep_desc']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['nb_crd']?></div></a></td>
-									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['category']?></div></a></td>
+									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
+if ($cours_list['category'] == 0){
+	echo "Général";
+}elseif ($cours_list['category'] == 1) {
+	echo "Majeur";
+}elseif ($cours_list['category'] == -1 OR $cours_list['category'] == 2) {
+	echo "Selective";
+}elseif ($cours_list['category'] == 3) {
+	echo "Additionnel";
+}elseif ($cours_list['category'] == 5) {
+	echo "``";
+}else{
+	echo "-";
+}
+								?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['yearlevel']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['semester']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
@@ -48,8 +68,5 @@ echo strtoupper($showTeach['name'])." ".$showTeach['lastName'];
  ?>								
 
 							</tbody>
-						</table>
-<?php 
-	}
- ?>				
+						</table>		
 

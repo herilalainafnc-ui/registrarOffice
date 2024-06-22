@@ -17,7 +17,11 @@
 			<!-- BARRE D'OUTILS --><?php require('../init/toolbar.php');?>
 			
 				<div class="w-full px-0.5 flex" style="height: calc(100vh - 152px);">
+					
 					<div class="bg-slate-800 my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto hidden" id="coursSearch-result"></div>
+
+					<div class="bg-slate-800 my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto hidden" id="coursTriage-result"></div>
+					
 					<div class="bg-slate-800 my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto" id="all-cours">
 						
 						<table class="simpleTbl">
@@ -50,7 +54,21 @@
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['title']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['dep_desc']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['nb_crd']?></div></a></td>
-									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['category']?></div></a></td>
+									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
+if ($cours_list['category'] == 0){
+	echo "Général";
+}elseif ($cours_list['category'] == 1) {
+	echo "Majeur";
+}elseif ($cours_list['category'] == -1 OR $cours_list['category'] == 2) {
+	echo "Selective";
+}elseif ($cours_list['category'] == 3) {
+	echo "Additionnel";
+}elseif ($cours_list['category'] == 5) {
+	echo "``";
+}else{
+	echo "-";
+}
+								?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['yearlevel']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['semester']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
