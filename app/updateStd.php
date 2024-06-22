@@ -15,7 +15,15 @@ require '../data/backdb.php';
 	$student_region = $_POST['student_region'];
 	$lieuNaissance = $_POST['lieuNaissance'];
 	$num_cin = $_POST['num_cin'];
-	$cin_date_delivre = $_POST['cin_date_delivre'];
+	
+	$cdelivre = $_POST['cin_date_delivre'];
+	
+	if ($cdelivre =="") {
+		$cin_date_delivre == "0000-00-00";
+	}else{
+		$cin_date_delivre == $cdelivre;
+	}
+
 	$father_name = $_POST['father_name'];
 	$father_prof = $_POST['father_prof'];
 	$parent_tel = $_POST['parent_tel'];
@@ -103,4 +111,4 @@ require '../data/backdb.php';
 
 $update->execute();
 
-//header('location:../src/student.php?id='.$id.'&page=information');
+header('location:../src/student.php?id='.$id.'&page=information');

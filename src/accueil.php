@@ -20,9 +20,7 @@
 					
 					<div class="bg-slate-800 my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto hidden" id="stdSearch-result"></div>
 					
-					<div class="bg-slate-800 my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto hidden" id="stdTriage-result">
-						
-					</div>
+					<div class="bg-slate-800 my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto hidden" id="stdTriage-result"></div>
 					
 					<div class="bg-slate-800 my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto" id="all-std">
 						
@@ -72,9 +70,7 @@
 					</div>
 				</div>
 				
-				<div class="w-10/12 h-6 bg-slate-500 mt-1 absolute bottom-0">
-						
-				</div>
+				<?php require('../init/footer.php'); ?>
 			</div>
 
 

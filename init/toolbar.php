@@ -85,7 +85,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 	<div class="w-2/12 border-r flex px-1">
 		
 		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
-if($page == "student.php" OR $page == "cours.php" OR $page == "prof.php") {
+if($page == "student.php" OR $page == "cours.php" OR $page == "prof.php" OR $page == "inscription.php") {
 	echo "toolInactive";
 } ?>" data-bs-toggle="dropdown" aria-expanded="false">
 				<center>
@@ -94,27 +94,58 @@ if($page == "student.php" OR $page == "cours.php" OR $page == "prof.php") {
 				</center>
 			
 		</a>
-		<ul class="dropdown-menu border bg-slate-300 text-black p-0 rounded-0 text-xs">
-
-					<li><a href="#?trie=student_id" class="triage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">ID</p>
+		<ul class="dropdown-menu border bg-slate-300 text-black p-0 rounded-0 text-xs" style="max-height:400px; min-width: 200px;">
+<?php if ($page == "accueil.php") { ?>
+					<li><a href="#?trie=student_id" class="stdTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">ID</p>
 					</a></li>
-					<li><a href="#?trie=student_nom" class="triage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Nom</p>
+					<li><a href="#?trie=student_nom" class="stdTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Nom</p>
 					</a></li>
-					<li><a href="#?trie=student_prenom" class="triage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Préom</p>
+					<li><a href="#?trie=student_prenom" class="stdTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Préom</p>
 					</a></li>
-					<li><a href="#?trie=etude_envisage" class="triage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Mention</p>
+					<li><a href="#?trie=etude_envisage" class="stdTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Mention</p>
 					</a></li>
-					<li><a href="#?trie=etude_option" class="triage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Parcours</p>
+					<li><a href="#?trie=etude_option" class="stdTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Parcours</p>
 					</a></li>
-					<li><a href="#?trie=annee_scolaire" class="triage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Année</p>
+					<li><a href="#?trie=annee_scolaire" class="stdTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Année</p>
 					</a></li>
-					<li><a href="#?trie=annee_etude" class="triage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Niveau</p>
+					<li><a href="#?trie=annee_etude" class="stdTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Niveau</p>
 					</a></li>
+<?php }elseif($page == "accueil.cours.php") { ?>
+					<li><a href="#?trie=Sigle" class="coursTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Sigle</p>
+					</a></li>
+					<li><a href="#?trie=title" class="coursTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Cours</p>
+					</a></li>
+					<li><a href="#?trie=dep_desc" class="coursTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Mention</p>
+					</a></li>
+					<li><a href="#?trie=nb_crd" class="coursTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Crédit</p>
+					</a></li>
+					<li><a href="#?trie=category" class="coursTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Catégorie</p>
+					</a></li>
+					<li><a href="#?trie=yearlevel" class="coursTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Niveau</p>
+					</a></li>
+					<li><a href="#?trie=semester" class="coursTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Semestre</p>
+					</a></li>
+					<li><a href="#?trie=id_teacher" class="coursTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Enseignant</p>
+					</a></li>
+<?php }elseif($page == "accueil.prof.php") { ?>
+					<li><a href="#?trie=teacher_id" class="profTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">ID</p>
+					</a></li>
+					<li><a href="#?trie=name" class="profTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Nom</p>
+					</a></li>
+					<li><a href="#?trie=lastName" class="profTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Préom</p>
+					</a></li>
+					<li><a href="#?trie=address" class="profTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Adresse</p>
+					</a></li>
+					<li><a href="#?trie=phone" class="profTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Téléphone</p>
+					</a></li>
+					<li><a href="#?trie=email" class="profTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Email</p>
+					</a></li>
+<?php } ?>
 		</ul>
 
 
 		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
-if($page == "student.php" OR $page == "cours.php" OR $page == "prof.php") {
+if($page == "student.php" OR $page == "cours.php" OR $page == "prof.php" OR $page == "inscription.php") {
 	echo "toolInactive";
 } ?>" data-bs-toggle="dropdown" aria-expanded="false">
 				<center>
@@ -124,37 +155,86 @@ if($page == "student.php" OR $page == "cours.php" OR $page == "prof.php") {
 			
 		</a>
 
-		<ul class="dropdown-menu border bg-slate-300 text-black p-0 rounded-0 text-xs overflow-auto" style="max-height:400px">
-					<b class="toolInactive">Mention</b>
+		<ul class="dropdown-menu border bg-slate-300 text-black p-0 rounded-0 text-xs overflow-auto" style="max-height:400px; min-width: 200px;">
+
+<?php if ($page == "accueil.php") { ?>
+					<b class="text-grey bg-cyan-400 px-2">Mention</b>
 <?php 
 $findSignMention = $dtb->query('SELECT * FROM filiere ORDER BY filiere_description');
 while ($showSignMention = $findSignMention->fetch()) {
  ?>						
-					<li><a href="#?filterFiliere=<?=$showSignMention['filiere_description']?>"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><?=$showSignMention['filiere_description']?></p>
+					<li><a href="#?filter=etude_envisage&channel=<?=$showSignMention['filiere_description']?>" class="stdFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><?=$showSignMention['filiere_description']?></p>
 					</a></li>
  <?php 
 }
  ?>
-					<b class="toolInactive">Année</b>
+					<b class="text-grey bg-cyan-400 px-2">Année</b>
 <?php
 $y = date('Y');
-for ($i=0; $i <= 8; $i++) { 
+for ($i=0; $i <= 4; $i++) { 
 	
 $as = $y." - ".($y+1);
 ?>
-					<li><a href="#?filterYear=<?=$as?>"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><?=$as?></p>
+					<li><a href="#?filter=annee_scolaire&channel=<?=$as?>" class="stdFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><?=$as?></p>
 					</a></li>
 <?php
 $y = $y - 1;
 }
  ?>					
- 					<b class="toolInactive">Année</b>
-					<li><a href="#?filterLevel=1"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Licence 1</p>
+ 					<b class="text-grey bg-cyan-400 px-2">Niveau</b>
+					<li><a href="#?filter=annee_etude&channel=1" class="stdFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Licence 1</p>
 					</a></li>
-					<li><a href="#?filterLevel=2"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Licence 2</p>
+					<li><a href="#?filter=annee_etude&channel=2" class="stdFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Licence 2</p>
 					</a></li>
-					<li><a href="#?filterLevel=3"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Licence 3</p>
+					<li><a href="#?filter=annee_etude&channel=3" class="stdFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Licence 3</p>
 					</a></li>
+
+<?php }elseif($page == "accueil.cours.php") { ?>
+
+					<b class="text-grey bg-cyan-400 px-2">Mention</b>
+<?php 
+$findSignMention = $dtb->query('SELECT * FROM filiere ORDER BY filiere_description');
+while ($showSignMention = $findSignMention->fetch()) {
+ ?>						
+					<li><a href="#?filter=dep_desc&channel=<?=$showSignMention['filiere_sigle']?>" class="coursFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><?=$showSignMention['filiere_description']?></p>
+					</a></li>
+ <?php 
+}
+ ?>
+ 					<b class="text-grey bg-cyan-400 px-2">Catégorie</b>
+					<li><a href="#?filter=category&channel=0" class="coursFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Général</p>
+					</a></li>
+					<li><a href="#?filter=category&channel=1" class="coursFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Mageur</p>
+					</a></li>
+					<li><a href="#?filter=category&channel=2" class="coursFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Selective</p>
+					</a></li>
+					<li><a href="#?filter=category&channel=3" class="coursFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Additionnel</p>
+					</a></li>
+
+
+ 					<b class="text-grey bg-cyan-400 px-2">Niveau</b>
+					<li><a href="#?filter=yearlevel&channel=1" class="coursFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Licence 1</p>
+					</a></li>
+					<li><a href="#?filter=yearlevel&channel=2" class="coursFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Licence 2</p>
+					</a></li>
+					<li><a href="#?filter=yearlevel&channel=3" class="coursFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Licence 3</p>
+					</a></li>
+
+<?php }elseif($page == "accueil.prof.php") { ?>		
+					
+					<b class="text-grey bg-cyan-400 px-2">Adresse</b>
+ 					
+					<li><a href="#?filter=address&channel=Campus UAZ" class="profFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Campus UAZ</p>
+					</a></li>
+					<li><a href="#?filter=address&channel=" class="profFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Autre</p>
+					</a></li>
+					<b class="text-grey bg-cyan-400 px-2">Réligion</b>
+ 					
+					<li><a href="#?filter=religion&channel=adventiste" class="profFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Adventiste</p>
+					</a></li>
+					<li><a href="#?filter=religion&channel=non adventiste" class="profFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Non Adventiste</p>
+					</a></li>	
+<?php } ?>
 		</ul>
 
 		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 searchTool">
@@ -221,9 +301,9 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 			$('#prof-search').focus();
 
 		});
-		
-		$('.triage').click(function(){
-			
+/*:::::::::::::::::::::::::::::: TRIAGE STD ::::::::::::::::::::::::::::::::*/		
+		$('.stdTriage').click(function(){
+
 			var hrefValue = $(this).attr('href');
 		    var trie = hrefValue.split('trie=')[1];
 		    
@@ -241,12 +321,120 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 				}
 			});
 		});
+/*:::::::::::::::::::::::::::::: TRIAGE COURS ::::::::::::::::::::::::::::::::*/		
+		$('.coursTriage').click(function(){
 
-		
+			var hrefValue = $(this).attr('href');
+		    var trie = hrefValue.split('trie=')[1];
 		    
+		    $('#coursTriage-result').css({'display':'block'});
+		    $('#coursSearch-result').css({'display':'none'});
+			$('#all-cours').css({'display':'none'});
+
+		    $.ajax({
+				url:"../init/cours-live.php",
+				method:"POST",
+				data:{trie:trie},
+
+				success:function(data){
+					$("#coursTriage-result").html(data);
+				}
+			});
+		});
+
+/*:::::::::::::::::::::::::::::: TRIAGE PROF ::::::::::::::::::::::::::::::::*/		
+		$('.profTriage').click(function(){
+
+			var hrefValue = $(this).attr('href');
+		    var trie = hrefValue.split('trie=')[1];
+		    
+		    $('#profTriage-result').css({'display':'block'});
+		    $('#profSearch-result').css({'display':'none'});
+			$('#all-prof').css({'display':'none'});
+
+		    $.ajax({
+				url:"../init/prof-live.php",
+				method:"POST",
+				data:{trie:trie},
+
+				success:function(data){
+					$("#profTriage-result").html(data);
+				}
+			});
+		});
 
 
+/*:::::::::::::::::::::::::::: FILTRAGE STD ::::::::::::::::::::::::::::::::::*/		
+		$('.stdFilter').click(function(){
+			
+			var hrefFilter = $(this).attr('href');
+		    
+		    var filter = hrefFilter.split('filter=')[1].split('&')[0];
 
+		    var channel = hrefFilter.split('channel=')[1];
+
+		    $('#stdTriage-result').css({'display':'none'});
+		    $('#stdSearch-result').css({'display':'block'});
+			$('#all-std').css({'display':'none'});
+
+		    $.ajax({
+				url:"../init/std-livesearch.php",
+				method:"POST",
+				data:{filter:filter , channel:channel},
+
+				success:function(data){
+					$("#stdSearch-result").html(data);
+				}
+			});
+		});
+		    
+/*:::::::::::::::::::::::::::: FILTRAGE COURS ::::::::::::::::::::::::::::::::::*/		
+		$('.coursFilter').click(function(){
+			
+			var hrefFilter = $(this).attr('href');
+		    
+		    var filter = hrefFilter.split('filter=')[1].split('&')[0];
+
+		    var channel = hrefFilter.split('channel=')[1];
+
+		    $('#coursTriage-result').css({'display':'none'});
+		    $('#coursSearch-result').css({'display':'block'});
+			$('#all-cours').css({'display':'none'});
+
+		    $.ajax({
+				url:"../init/cours-livesearch.php",
+				method:"POST",
+				data:{filter:filter , channel:channel},
+
+				success:function(data){
+					$("#coursSearch-result").html(data);
+				}
+			});
+		});
+
+/*:::::::::::::::::::::::::::: FILTRAGE PROF ::::::::::::::::::::::::::::::::::*/		
+		$('.profFilter').click(function(){
+			
+			var hrefFilter = $(this).attr('href');
+		    
+		    var filter = hrefFilter.split('filter=')[1].split('&')[0];
+
+		    var channel = hrefFilter.split('channel=')[1];
+
+		    $('#profTriage-result').css({'display':'none'});
+		    $('#profSearch-result').css({'display':'block'});
+			$('#all-prof').css({'display':'none'});
+
+		    $.ajax({
+				url:"../init/prof-livesearch.php",
+				method:"POST",
+				data:{filter:filter , channel:channel},
+
+				success:function(data){
+					$("#profSearch-result").html(data);
+				}
+			});
+		});
 
 	});
 </script>

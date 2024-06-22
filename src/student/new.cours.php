@@ -170,7 +170,7 @@ $tcredit+= $credit + $crs['nb_crd'];
 								$yn = 1;
 				        			for ($i=0; $i < 6; $i++) { 
 				        			?>
-				        				<option><?=($z-1)." - ".$z?></option>
+				        				<option><?=$z." - ".($z+1)?></option>
 				        			<?php
 				        			$z = $z-$yn;
 				        		}

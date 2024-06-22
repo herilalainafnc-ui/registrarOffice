@@ -15,35 +15,28 @@
 		</tr>
 	</thead>
 	<tbody>
-<?php
 
-	if (isset($_POST['input'])) {
+ <?php 
+if (isset($_POST['trie'])) {
 		
-		$input = $_POST['input'];
-
-		$recupprof = $dtb->query('SELECT * FROM teacher WHERE teacher_id LIKE "%'.$input.'%" OR name LIKE "%'.$input.'%" OR lastName LIKE "%'.$input.'%" OR email LIKE "%'.$input.'%" OR phone LIKE "%'.$input.'%" ORDER BY teacher_id DESC limit 200');	
-
-	}elseif (isset($_POST['filter']) AND isset($_POST['channel'])) {
-			$filter = $_POST['filter'];
-			$channel = $_POST['channel'];
-		
-		$recupprof = $dtb->query('SELECT * FROM teacher WHERE '.$filter.' LIKE "%'.$channel.'%" ORDER BY teacher_id DESC limit 800');
-	}
-
+	$trie = $_POST['trie'];
+	
+	$recupprof = $dtb->query('SELECT * FROM teacher ORDER BY '.$trie.' limit 800');
+}
 	$prof_nb = 1;
 	while ($prof_list = $recupprof->fetch()) {
- ?>								
-	<tr id="prof_<?=$prof_nb?>" class="hover:bg-slate-300 hover:text-slate-800">	
+ ?>
+ 	<tr id="prof_<?=$prof_nb?>" class="hover:bg-slate-300 hover:text-slate-800">	
 		<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><a href="./prof.php?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=$prof_list['teacher_id']?></div></a></td>
 		<td><a href="./prof.php?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=strtoupper($prof_list['name'])?></div></a></td>
 		<td><a href="./prof.php?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=$prof_list['lastName']?></div></a></td>
 		<td><a href="./prof.php?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=$prof_list['address']?></div></a></td>
 		<td><a href="./prof.php?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=$prof_list['phone']?></div></a></td>
-		<td><a href="./prof.php?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=$prof_list['email']?></div></a></td>
-		
+		<td><a href="./prof.php?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=$prof_list['email']?></div></a></td>		
 	</tr>
 
-<?php
+
+ <?php
 	$prof_nb++;
 	}
  ?>								
