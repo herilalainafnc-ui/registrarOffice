@@ -7,5 +7,4 @@ try {
 	echo "Connexion DB incorrect ☻ : " . $e->getMessage();
 	exit();
 }
-
 ?>
