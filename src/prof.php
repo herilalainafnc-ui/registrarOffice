@@ -68,6 +68,8 @@ $yes = 1;
 
 									if($prof_page == "information") {
 										require('./prof/information.php');
+									}elseif($prof_page == "cours") {
+										require('./prof/cours.php');
 									}
 								}
 							?>

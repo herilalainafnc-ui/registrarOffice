@@ -67,49 +67,54 @@
 	<div class="w-1/12">
 		
 	</div>
-	<div class="w-2/12 px-2">
-		
-		<a href="#" class="flex relative text-right" type="button" role="button" data-bs-toggle="dropdown" aria-expanded="false"><b class="pt-2 absolute right-14"><?=$rg_last_name;?></b>
-		<div class="rounded-full bg-slate-100 w-9 h-9 mx-2 absolute top-0.5 right-0 p-0.5">
-			<img src="../app/photosuser/<?=$rg_photos?>" class="rounded-full w-full h-full">
-		</div></a>
+	
+	<a href="#" class="w-2/12 relative text-right" data-bs-toggle="dropdown" aria-expanded="false">
+		<div class="px-2 w-full">
+			<b class="pt-2 absolute right-14"><?=$rg_last_name;?></b>
+			<div class="rounded-full bg-slate-100 w-9 h-9 mx-2 absolute top-0.5 right-0 p-0.5">
+				<img src="../app/photosuser/<?=$rg_photos?>" class="rounded-full w-full h-full">
+			</div>		
+		</div>
+	</a>
 
-				<ul class="dropdown-menu border bg-slate-300 text-black right-[15px] p-0 rounded-0 text-xs" style="left: 0px; top: 20px">
-		            <li><a class="dropdown-item">
-		            	<span class="bi-person-badge-fill"></span>&nbsp;&nbsp; <?=$rg_user['privilege'];?></a></li>
-		            <li><a href="" class="dropdown-item" role="link" disabled>
-		            <span class="bi-gear"></span>&nbsp;&nbsp; Paramètres de compte</a></li>
+	<ul class="dropdown-menu border bg-slate-300 text-black p-0 rounded-0 text-xs" style="max-height:400px; min-width: 200px; position: absolute; right: 20px;">
+		            
+        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white toolInactive"><?=$rg_user['privilege'];?></li>
+        
+        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="">
+        <span class="bi-gear"></span>&nbsp;&nbsp; Mon compte</a></li>
 <?php 		            
 if(($rg_user['privilege'] == 'administrator') OR ($rg_user['privilege_2'] == 'administrator') OR ($rg_user['privilege_3'] == 'administrator') OR ($rg_user['privilege_4'] == 'administrator')) {
 ?>
-								<li><a href="../wordpress/wp-login.php" class="dropdown-item" role="link" target="_blank">
-		            <span class="bi-wordpress"></span>&nbsp;&nbsp; Wordpress</a></li>
-		            <li><a href="../../phpmyadmin/index.php?route=/database/structure&db=registrar_db" class="dropdown-item" role="link" target="_blank">
-		            <span class="bi-database-exclamation"></span>&nbsp;&nbsp; Base de donnée MySQL</a></li>
-		            <li><a href="https://getbootstrap.com/docs/5.3/getting-started/introduction/" class="dropdown-item" role="link" target="_blank">
-		            <span class="bi-bootstrap-fill"></span>&nbsp;&nbsp; Bootstrap Site</a></li>
+		<li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../wordpress/wp-login.php" target="_blank">
+        <span class="bi-wordpress"></span>&nbsp;&nbsp; Wordpress</a></li>
+        
+        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../../phpmyadmin/index.php?route=/database/structure&db=registrar_db" target="_blank">
+        <span class="bi-database-exclamation"></span>&nbsp;&nbsp; Base de donnée MySQL</a></li>
+        
+        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="https://getbootstrap.com/docs/5.3/getting-started/introduction/" target="_blank">
+        <span class="bi-bootstrap-fill"></span>&nbsp;&nbsp; Bootstrap Site</a></li>
 
-		            <li><a href="https://tailwindcss.com/docs/installation"  class="dropdown-item" role="link" target="_blank"><i class="bi-filetype-css"></i>&nbsp;&nbsp; Tailwind CSS</a></li>
+        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="https://tailwindcss.com/docs/installation"  target="_blank"><i class="bi-filetype-css"></i>&nbsp;&nbsp; Tailwind CSS</a></li>
 
-		            <li><a href="../../rhm/" class="dropdown-item" role="link" target="_blank">
-		            <span class="bi-app-indicator"></span>&nbsp;&nbsp; Resource Humaine</a></li>
+        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../../rhm/" target="_blank">
+        <span class="bi-app-indicator"></span>&nbsp;&nbsp; Resource Humaine</a></li>
 
 
-		            <li><a href="../../uaz-site/" class="dropdown-item" role="link" target="_blank">
-		            <span class="bi-award-fill"></span>&nbsp;&nbsp; UAZ SITE</a></li>
+        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../../uaz-site/" target="_blank">
+        <span class="bi-award-fill"></span>&nbsp;&nbsp; UAZ SITE</a></li>
 
-		            <li><a href="../../" class="dropdown-item" role="link" target="_blank">
-		            <span class="bi-alexa"></span>&nbsp;&nbsp; Registrar</a></li>
-		            
+        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../../" target="_blank">
+        <span class="bi-alexa"></span>&nbsp;&nbsp; Registrar</a></li>
+        
 <?php
 }else{
-	echo "";
+echo "";
 }
- ?>
-		            <li><hr class="dropdown-divider"></li>
-		            <li><a class="dropdown-item" href="../app/logout.php"><span class="bi-door-open-fill"></span> Deconnexion</a></li>
-          		</ul>
-	</div>
+?>
+        <li><hr class="dropdown-divider"></li>
+        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../app/logout.php"><span class="bi-door-open-fill"></span> Déconnecter</a></li>
+	</ul>
 				
 </div>
 
@@ -142,6 +147,7 @@ if(($rg_user['privilege'] == 'administrator') OR ($rg_user['privilege_2'] == 'ad
 		$('#cours-search').keyup(function() {
 			var input = $(this).val();
 			if(input != ''){
+				$('#coursTriage-result').css({'display':'none'});
 				$('#coursSearch-result').css({'display':'block'});
 				$('#all-cours').css({'display':'none'});
 
@@ -156,6 +162,7 @@ if(($rg_user['privilege'] == 'administrator') OR ($rg_user['privilege_2'] == 'ad
 				});
 
 			}else{
+				$('#coursTriage-result').css({'display':'none'});
 				$('#coursSearch-result').css({'display':'none'});
 				$('#all-cours').css({'display':'block'});
 			}
@@ -164,6 +171,7 @@ if(($rg_user['privilege'] == 'administrator') OR ($rg_user['privilege_2'] == 'ad
 		$('#prof-search').keyup(function() {
 			var input = $(this).val();
 			if(input != ''){
+				$('#profTriage-result').css({'display':'none'});
 				$('#profSearch-result').css({'display':'block'});
 				$('#all-prof').css({'display':'none'});
 
@@ -178,6 +186,7 @@ if(($rg_user['privilege'] == 'administrator') OR ($rg_user['privilege_2'] == 'ad
 				});
 
 			}else{
+				$('#profTriage-result').css({'display':'none'});
 				$('#profSearch-result').css({'display':'none'});
 				$('#all-prof').css({'display':'block'});
 			}
