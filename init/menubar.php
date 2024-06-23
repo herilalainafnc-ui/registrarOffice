@@ -23,7 +23,7 @@ if($page == "inscription.php") {
 				<span class="icon">
 					<ion-icon class="bi-person-add"></ion-icon>
 				</span>
-				<span class="title">Ajout d'étudiant</span>
+				<span class="title">Ajouter étudiant</span>
 			
 		</li></a>
 		<hr>
@@ -39,7 +39,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php") {
 			
 		</li></a>
 
-		<a href="#"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
+		<a href="#" class="toolInactive"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
 if($page == "addCours.php") {
 	echo "bg-cyan-700";
 } ?>">
@@ -47,7 +47,7 @@ if($page == "addCours.php") {
 				<span class="icon">
 					<ion-icon class="bi-file-plus"></ion-icon>
 				</span>
-				<span class="title">Nouveau cours</span>
+				<span class="title">Ajouter cours</span>
 			
 		</li></a>
 		<hr>
@@ -63,7 +63,7 @@ if($page == "accueil.prof.php" OR $page == "prof.php") {
 			
 		</li></a>
 
-		<a href="#"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
+		<a href="#" class="toolInactive"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
 if($page == "addProf.php") {
 	echo "bg-cyan-700";
 } ?>">
@@ -71,11 +71,11 @@ if($page == "addProf.php") {
 				<span class="icon">
 					<ion-icon class="bi-person-add"></ion-icon>
 				</span>
-				<span class="title">Nouveau enseignant</span>
+				<span class="title">Ajouter enseignant</span>
 			
 		</li></a>
 		<hr>
-		<a href="#"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
+		<a href="#"><li class="toolInactive hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
 if($page == "settings.php") {
 	echo "bg-cyan-700";
 } ?>">
@@ -90,9 +90,9 @@ if($page == "settings.php") {
 		<a class="dropdown-item" href="../app/logout.php"><li class="hover:bg-cyan-500 py-2 rounded-md my-1">
 			
 				<span class="icon">
-					<ion-icon class="bi-people-fill"></ion-icon>
+					<ion-icon class="bi-door-open-fill"></ion-icon>
 				</span>
-				<span class="title">Déconnexion</span>
+				<span class="title">Déconnecter</span>
 			
 		</li></a>
 

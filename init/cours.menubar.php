@@ -1,16 +1,25 @@
 <div class="my-1 px-2 mx-0.5 lg:w-4/12 xl:w-3/12 bg-slate-300 overflow-auto" style="height:calc(100vh - 160px);">
 						
 						<div class="flex my-2 relative">
-							<div class="w-9/12 text-left pl-3">
+							<div class="w-full text-left">
                                 <p><b class="text-2xl"><?=$sigle?></b></p>
-                                <em><b class="text-[17px]"><?=$title?></b></em>	
+                                <em><b class="text-[17px]"><?=$title?></b></em>
 							</div>
 						</div>
 						<hr>
+						<div>
+							 <p><b class="text-lg"><?=$dep_desc?></b><br>Prof : <?php 
+$findTeach = $dtb->query('SELECT * FROM teacher WHERE uid = "'.$profil['id_teacher'].'"');
+$showTeach = $findTeach->fetch();
+echo strtoupper($showTeach['name'])." ".$showTeach['lastName'];
+ ?></p>
+						</div>
+						<hr>
 						<div class="w-full py-2 text-sm">
-                            <div class="w-9/12 text-left pl-3">
-                                <p>Niveau L<?=$profil['yearlevel']?></p>
-                                <p>Semestre <?=$profil['semester']?></p>   
+                            <div class="w-9/12 text-left">
+                                
+                                <p>Niveau L<?=$profil['yearlevel']?> | Semestre <?=$profil['semester']?></p>
+                                
                                 <p>Crédit : <b><?=$profil['nb_crd']?></b></p>
 								<p>Catégorie : <b><?php 
 if ($profil['category'] == 0){
@@ -27,8 +36,6 @@ if ($profil['category'] == 0){
 	echo "-";
 }
 						 ?></b></p>
-								<b></b>
-								<a></a><br>
                             </div>
 						</div><hr>
 						<div class="w-full text-md">
@@ -64,14 +71,14 @@ if(isset($_GET['page']) and $_GET['page'] == "etudiants") {
 									</div>
 								</a>
 								<hr>
-								<a href="#">
+								<a href="#" class="toolInactive">
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md">
 										<i class="bi-archive-fill"></i>
 												Archive
 									</div>
 								</a>
 
-								<a href="#">
+								<a href="#" class="toolInactive">
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md">
 										
 										<i class="bi-trash3"></i>

@@ -2,14 +2,37 @@
 						
 						<div class="flex my-2 relative">
 
-							<div class="w-28 bg-slate-800" id="imgStd">
-								<img src="../app/photosetudiants/<?=$profil['image_student'] ?>" class="border-1 border-black w-full">	
-							</div>
+							<a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+							<div class="w-[75px] bg-slate-800">
+								<?php
+								if (!empty($profil['image_student'])) {
+								
+									$imangeLen = strlen($profil['image_student']);
+									
+									if ($profil['image_student'] !="" OR $imangeLen >=10) { ?>
 
-							<div class="absolute border bg-slate-500 text-white bottom-[-15px] left-[60px] hidden" id="imgOpt" style="z-index: 9;">
+									<img src="../app/photosetudiants/<?=$profil['image_student'] ?>" class="border-1 border-black w-full">
+
+								<?php 
+									}else{
+								?>
+									
+									<img src="../app/photosetudiants/10054.jpg" class="border-1 border-black w-full">
+
+								<?php
+									}
+								}else{ ?>
+									
+									<img src="../app/photosetudiants/10054.jpg" class="border-1 border-black w-full">
+
+								<?php }	?>
+								
+							</div></a>
+
+							<ul class="dropdown-menu border bg-slate-400 text-black p-0 rounded-0 text-xs" style="max-height:400px;">
 								<a href="#" id="listOpt1"><p class="px-2 py-1 hover:bg-cyan-500">Agrandir</p></a>
 								<a href="#" id="listOpt2"><p class="px-2 py-1 hover:bg-cyan-500">Modifier</p></a>
-							</div>
+							</ul>
 
 							<div class="w-9/12 text-left pl-3">
 								
@@ -94,14 +117,14 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 									</div>
 								</a>
 								<hr>
-								<a href="#">
+								<a href="#" class="toolInactive">
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md">
 										<i class="bi-archive-fill"></i>
 												Archive
 									</div>
 								</a>
 
-								<a href="#">
+								<a href="#" class="toolInactive">
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md">
 										
 										<i class="bi-trash3"></i>
@@ -167,9 +190,6 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 
 <script type="text/javascript">
 	$(document).ready(function(){
-		$('#imgStd').click(function(){
-			$('#imgOpt').css({'display':'block'});
-		});
 		$('#listOpt1').click(function(){
 			$('#imgOpt').css({'display':'none'});
 			$('#notifAffichIMG').css({'display':'block'});
