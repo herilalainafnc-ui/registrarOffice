@@ -16,7 +16,7 @@
 				</center>
 			
 		</a>
-		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
+		<a href="#" id="exportListFOP" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
 } ?>">
@@ -31,7 +31,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 <!-- BRANCHE D'OUTILS 2 -->	
 	<div class="w-2/12 border-r flex px-1">
 		
-		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
+		<a href="#" id="exportListCSV" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
 } ?>">
@@ -289,7 +289,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 	</div>
 </div>
 
-<!-- NOTIFICATION MANAGER --><?php require('./student/notificationGeneral.php');?>
+<!-- NOTIFICATION MANAGER --><?php require('./main/notificationGeneral.php');?>
 
 <script type="text/javascript">
 
