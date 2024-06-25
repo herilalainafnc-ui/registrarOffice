@@ -1,33 +1,38 @@
-<div style="width: 100%;display: grid;grid-template-columns: repeat(2, 1fr);grid-gap: 10px; font-family: 'arial';">
+<div class="w-full grid gap-2 grid-cols-2">
 <?php 
-	$student = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE annee_scolaire = "2023 - 2024" AND annee_etude = 1 ORDER BY student_id');
+	$yearTicket = $_POST['yearTicket'];
+	$printName = "Ticket-email";
+	$student = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE annee_scolaire = "'.$yearTicket.'" AND annee_etude = 1 ORDER BY student_id');
 
 	while ($afficher = $student->fetch()){
 ?>
 	
-	<div style="border: 1px solid black; width: 95%;">
-		<div style="padding-left: 5px;padding-right: 5px; background: #eeedef; height: 60px;">
-			<b style="font-size: 18px;"> <?=$afficher['student_id']?></b><br>
-			<b style="font-size: 13px;"> <?=strtoupper($afficher['student_nom'])." ".$afficher['student_prenom']?></b>
-		</div><hr style="margin: 0px;">
-
-		<div style="padding-left: 5px;padding-right: 5px; font-size: 13px;">
-			<b><?=$afficher['etude_envisage']." - ".$afficher['etude_option']?></b>
-		</div><hr style="margin: 0px;">
-
-		<div style="text-align: center">
-				Adresse Mail Zurcher
+	<div class="w-full border-1 border-black">
+		
+		<div class="px-2 h-[80px]">
+			<b> <?=$afficher['student_id']?></b><br>
+			<b class="text-sm"> <?=strtoupper($afficher['student_nom'])." ".$afficher['student_prenom']?></b><br>
+			<p class="text-xs"><?=$afficher['etude_envisage']." - ".$afficher['etude_option']?></p>
 		</div>
 
-		<div style="padding-left: 5px;padding-right: 5px; text-align: center; font-size:13px; height: 40px;">	
+		<hr class="m-0">
+		
+		<div class="text-center text-sm">
+			Votre accès à l'adresse Email Zurcher			
+		</div>
+
+		<hr class="m-0">
+		
+		<div class="px-2 bg-slate-100 text-center text-sm h-[42px]">	
 			<label></label><b> <?=$afficher['student_email']?></b><br>
 			<label>Password : </label><b> <?=$afficher['password']?></b>
-		</div><hr style="margin: 0px;">
-
-		<div style="padding-left: 5px;padding-right: 5px;">
-			<em>S'il vous plaît, Veuillez garder ce ticket !!!</em>
 		</div>
 
+		<hr class="m-0">
+
+		<div class="px-2 text-sm text-bold">
+			<em>Veuillez garder ce ticket car le contenu est sensible!</em>
+		</div>
 
 	</div>
 
