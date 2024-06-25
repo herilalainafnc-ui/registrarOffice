@@ -3,11 +3,11 @@
 <!-- FOR LIST -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifListStd" style="backdrop-filter: blur(3px);">
 		
-		<div class="w-3/12 bg-slate-100 border-2 border-slate-700 mx-auto my-[12%] opacity-100 drop-shadow-2xl">
+		<div class="w-3/12 bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 			<div class="p-2 text-black">
 				<b>Exporter la liste d'étudiant.</b>
 			</div>
-			<form method="post" action="./extenssionPrint/std.list.php" target="_blank">
+			<form method="post" action="./data.topdf.php?ptype=listeStd" target="_blank">
 			<div class="p-2">
 	      			<b class="toolInactive">Listes.</b>
 				      	<div class="flex mb-3">
@@ -154,7 +154,7 @@
 <!-- FOR FOP LIST -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifListFOP" style="backdrop-filter: blur(3px);">
 
-		<div class="w-3/12 bg-slate-100 border-2 border-slate-700 mx-auto my-[12%] opacity-100 drop-shadow-2xl">
+		<div class="w-3/12 bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 			<form method="post" action="./extenssionPrint/fop.list.php" target="_blank">
 			<div class="p-2 text-black">
 				<b>Exporter la requête FOP.</b>
@@ -190,7 +190,43 @@
 	</div>
 
 
+<!-- FOR TICKET MAIL -->
+	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifTicketMail" style="backdrop-filter: blur(3px);">
 
+		<div class="w-3/12 bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+			<form method="post" action="./data.topdf.php?ptype=ticketMail" target="_blank">
+			<div class="p-2 text-black">
+				<b>Exporter le Ticket Mail.</b>
+			</div>
+			<div class="p-2">
+				<div class="w-all">
+					<label class="w-4/12">Année</label>
+					<select name="yearTicket" id="yearTicket" class="w-60">
+						<option></option>
+						<?php
+						$y = date('Y');
+						for ($i=0; $i <= 8; $i++) { 
+							
+							$as = $y." - ".($y+1);
+							?>
+											<option><?=$as?></option>
+						<?php
+						$y = $y - 1;
+						}
+						 ?>
+					</select>
+				</div>
+			</div>
+			<div class="p-3">
+				<center>
+				<a href="#" id="cancelnotifTicketMail" class="bg-slate-400 p-2 rounded-md">Annuler</a>
+				<input id="btnTicketMail" type="submit" class="bg-slate-400 p-2 rounded-md mx-1 toolInactive" value="Afficher">
+				</center>
+			</div>
+			</form>
+		</div>
+
+	</div>
 
 <!-- ************************ -->
 
@@ -236,6 +272,24 @@
 		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
 		
 		
+		$('#exportTicketMail').click(function(){
+			$('#notifTicketMail').css({'display':'block'});
+		});
+		$('#yearTicket').on('change',function(){
+			
+			if($(this).val()!='') {
+			
+				$('#btnTicketMail').attr('class','bg-cyan-800 p-2 rounded-md text-white mx-1');
+			
+			}else{
+			
+				$('#btnTicketMail').attr('class','bg-slate-400 p-2 rounded-md mx-1 toolInactive');
+			}
+
+		});
+		$('#cancelnotifTicketMail').click(function(){
+			$('#notifTicketMail').css({'display':'none'});
+		});
 
 		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
 	});

@@ -1,5 +1,4 @@
 <?php
-require '../../data/backdb.php';
 
 if(isset($_POST['types']) AND ($_POST['types']!= 'TOUT')){
 
@@ -22,16 +21,15 @@ while($affm = $mention->fetch()){?>
 if(empty($_POST['cours'])){
  ?>
  
-<table class="tbl simpleTbl mb-1">
-	<thead>
+<table class="tbl simpleTbl mb-0">
+	<thead class="bg-slate-200">
  			<tr>
- 				<td style="width: 7%;">ID</td>
- 				<td style="width: 37%;">Nom et prénom</td>
- 				<td style="width: 10%;">Année</td>
- 				<td style="width: 15%;">Contact</td>
- 				<!-- <td style="width: 31%;">Mail</td> -->
- 				<td style="width: 31%;">Parcours</td>
-
+ 				<td class="w-[30px] border-1" style="border-bottom: 0px;">No</td>
+ 				<td class="w-[80px] border-1" style="border-bottom: 0px;">ID</td>
+ 				<td class="w-[300px] border-1" style="border-bottom: 0px;">Nom et prénom</td>
+ 				<td class="w-[160px] border-1" style="border-bottom: 0px;">Mention</td>
+ 				<td class="w-[50px] border-1" style="border-bottom: 0px;">Niveau</td>
+ 				<td class="w- border-1" style="border-bottom: 0px;">Contact</td>
  			</tr>
  	</thead>
 </table>
@@ -53,13 +51,15 @@ if(empty($_POST['cours'])){
 	while($affiche = $etudiant->fetch()){
  	?>
  	<div>
- 		<table class="table">
- 			<tr class="tr">
- 				<td style="width: 7%; border : 1px solid black;<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?> padding: 5px"><b><?=$student_id = $affiche['student_id']?></b></td>
- 				<td style="width: 37%; border : 1px solid black;<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?> padding: 5px"><?=$affiche['student_nom']." ".$affiche['student_prenom']?></td>
- 				<td style="width: 10%; border : 1px solid black;<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?> padding: 5px"><?=$affiche['annee_etude']?></td>
- 				<td style="width: 15%; border : 1px solid black;<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?> padding: 5px"><?=$affiche['student_tel']?></td>
- 				<td style="width: 31%; border : 1px solid black;<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?> padding: 5px"><?=$affiche['etude_option']?></td>
+ 		<table class="tbl simpleTbl mb-0">
+ 			<tr class="<?php if(!empty($_POST['cours'])){ echo"bg-slate-200"; } ?>">
+ 				<td class="w-[30px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$n?></td>
+ 				<td class="w-[80px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><b><?=$student_id = $affiche['student_id']?></b></td>
+ 				<td class="w-[300px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$affiche['student_nom']." ".$affiche['student_prenom']?></td>
+ 				<td class="w-[160px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$affiche['etude_option']?></td>
+ 				<td class="w-[50px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>">L<?=$affiche['annee_etude']?></td>
+ 				<td class="w-" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$affiche['student_tel']?></td>
+ 				
  			</tr>
  		</table>
  	</div>
@@ -69,26 +69,24 @@ if(empty($_POST['cours'])){
 		if(!empty($_POST['cours'])){
 	?>
 		<div style="margin-top: 5px;margin-bottom: 10px;">
-	 		<table class="table">
-		 		<thead>
+	 		<table class="tbl simpleTbl mb-1">
+		 		<thead class="bg-slate-200">
 		 			<tr>
-		 				<td id="c1">Sigle</td>
-		 				<td id="c2">Titre du cours</td>
-		 				<td id="c3">Crédit</td>
+		 				<td class='w-[100px]'>Sigle</td>
+		 				<td class='w-[400px]'>Titre du cours</td>
+		 				<td class='w-20'>Crédit</td>
 		 				<?php 
 		 				if(!empty($_POST['notes'])){
-		 					echo "<td id='c3'>Notes/20</td>";
+		 					echo "<td class='w-16'>Notes/20</td>";
 		 				}else{echo '';}
 
 		 				if(!empty($_POST['signature'])){
-		 					echo "<td id='c3'>Signature</td>";
+		 					echo "<td class=''>Signature</td>";
 		 				}
 		 				if (!empty($_POST['remarque'])) {
-		 					echo "<td id='c3' style='width:30%;'>Remarque</td>";
+		 					echo "<td class='w-[120px]'>Remarque</td>";
 		 				}
 		 				 ?>
-		 				
-		 				
 		 				
 		 			</tr>
 		 		</thead>
@@ -115,11 +113,11 @@ if(empty($_POST['cours'])){
 		 				$tnotes = 0;
 		 				while($affcours = $cours->fetch()){
 					?>
-					<tr class="tr">
+					<tr>
 
-						<td id="c1"><?=$affcours['Sigle']?></td>
-						<td id="c2"><?=$affcours['title_cours']?></td>
-						<td id="c3"><?=$affcours['credit']?></td>
+						<td><?=$affcours['Sigle']?></td>
+						<td><?=$affcours['title_cours']?></td>
+						<td><?=$affcours['credit']?></td>
 						<?php 
 			 				if(!empty($_POST['notes'])){
 			 					echo "<td id='c3'>".$affcours['grade']."</td>";
@@ -134,17 +132,17 @@ if(empty($_POST['cours'])){
 		 				
 					</tr>
 					<?php
-							$tcredit+= $credit + $affcours['credit'];
-							$tnotes+= $notes + $affcours['grade'];
+							$tcredit+= $credit + intval($affcours['credit']);
+							$tnotes+= $notes + intval($affcours['grade']);
 						$nn++;
 		 				}
 		 			 ?>
 		 		</tbody>
 		 		<tfoot>
 		 			<tr>
-		 				<td id="f1"></td>
-		 				<td id="f2"></td>
-		 				<td id="f3"><b><?php
+		 				<td></td>
+		 				<td></td>
+		 				<td><b><?php
 
 		 				if (!empty($tcredit)){echo $tcredit;}else{echo'0';}?></b></td>
 		 				<?php 
@@ -160,12 +158,18 @@ if(empty($_POST['cours'])){
 		}
 		$n++;
 	}?>
-	<div style="height: 20px; background: #c4c4c4; padding: 5px;">
-		<table>
-			<tr>
-				<td style="width: 50%"><b>Total des étudiants dans la mention <?=$title?></b></td>
-				<td style="width: 50%"><b><?=$nombresS = ($n-1);?></b></td>
-			</tr>
+	<div>
+		<table class="tbl simpleTbl mb-1">
+			<thead class="bg-slate-200">
+				<tr>
+					<th class="border-1 w-[30px]"><b><?=$nombresS = ($n-1);?></b></th>
+					<th class="border-1 w-[80px]"></th>
+					<th class="border-1 w-[300px]"></th>
+					<th class="border-1 w-[160px]"></th>
+					<th class="border-1 w-[50px]"></th>
+					<th class="border-1 w-"></th>
+				</tr>
+			</thead>
 		</table>
  	</div>
 <?php
@@ -177,11 +181,17 @@ if(empty($_POST['cours'])){
 	$nbrs++;
 }
 ?>
-<div style="height: 20px; background: #dbdbdb; padding: 10px; border: 1px solid black; margin-top: 10px;">
-		<table>
-			<tr>
-				<td style="width: 50%"><b>Nombre total de tous les étudiants</b></td>
-				<td style="width: 50%"><b><?=$nombre?></b></td>
-			</tr>
+<div class="mt-4">
+		<table class="tbl simpleTbl mb-1">
+			<thead class="bg-slate-200">
+				<tr>
+					<th class="border-1 w-[30px]"><b><?=$nombre?></b></th>
+					<th class="border-1 w-[80px]"></th>
+					<th class="border-1 w-[300px]"><b>TOUT LES ETUDIANTS</b></th>
+					<th class="border-1 w-[160px]"></th>
+					<th class="border-1 w-[50px]"></th>
+					<th class="border-1 w-"></th>
+				</tr>
+			</thead>
 		</table>
 </div>

@@ -31,7 +31,7 @@
 			
 			<div id="printThisContent" class="b-black relative" style="min-height: 1020px; width: 100%;">
 				
-				<?php if($ptype != "Badge" AND $ptype != "Abonnement Caf") { require('../init/top.forPrint.php'); }
+				<?php if($ptype != "Badge" AND $ptype != "Abonnement Caf" AND $ptype !="ticketMail") { require('../init/top.forPrint.php'); }
 				
 				if($ptype == "Statistique") {
 					require ('./extenssionPrint/statistic-sexe.php');
@@ -55,9 +55,12 @@
 					require ('./extenssionPrint/transcriptSS.php');
 				}elseif($ptype == "Worked_point"){
 					require ('./extenssionPrint/worked_point.php');
+				}elseif($ptype == "listeStd"){
+					require ('./extenssionPrint/std.list.php');
 				}
 
-			if($ptype != "Badge" AND $ptype != "Abonnement Caf" AND $ptype != "Worked_point") {
+
+			if($ptype != "Badge" AND $ptype != "Abonnement Caf" AND $ptype != "Worked_point" AND $ptype != "listeStd" AND $ptype !="ticketMail") {
 			
 				?>
 				
