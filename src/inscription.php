@@ -377,4 +377,5 @@ while ($showO = $findOption->fetch()) {
 	.inscInput{
 		background: none;
 	}
+	
 </style>

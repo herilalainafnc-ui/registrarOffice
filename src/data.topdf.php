@@ -57,6 +57,8 @@
 					require ('./extenssionPrint/worked_point.php');
 				}elseif($ptype == "listeStd"){
 					require ('./extenssionPrint/std.list.php');
+				}elseif($ptype == "ticketMail"){
+					require ('./extenssionPrint/ticket.mail.php');
 				}
 
 
@@ -122,7 +124,7 @@ function printThisContent(){
 			var opt = {
 			  margin:       0.40,
 			  filename:     '<?=$printName?>_<?=$date?>.pdf',
-			  image:        { type: 'jpeg', quality: 10 },
+			  image:        { type: 'jpeg', quality: 2 },
 			  html2canvas:  { scale: 10 },
 			  jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
 			};

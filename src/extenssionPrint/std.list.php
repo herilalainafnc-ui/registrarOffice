@@ -1,4 +1,5 @@
 <?php
+	$printName = "STD-LIST";
 
 if(isset($_POST['types']) AND ($_POST['types']!= 'TOUT')){
 

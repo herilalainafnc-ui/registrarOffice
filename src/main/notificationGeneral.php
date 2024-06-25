@@ -3,7 +3,7 @@
 <!-- FOR LIST -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifListStd" style="backdrop-filter: blur(3px);">
 		
-		<div class="w-3/12 bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 			<div class="p-2 text-black">
 				<b>Exporter la liste d'étudiant.</b>
 			</div>
@@ -154,7 +154,7 @@
 <!-- FOR FOP LIST -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifListFOP" style="backdrop-filter: blur(3px);">
 
-		<div class="w-3/12 bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 			<form method="post" action="./extenssionPrint/fop.list.php" target="_blank">
 			<div class="p-2 text-black">
 				<b>Exporter la requête FOP.</b>
@@ -193,7 +193,7 @@
 <!-- FOR TICKET MAIL -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifTicketMail" style="backdrop-filter: blur(3px);">
 
-		<div class="w-3/12 bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 			<form method="post" action="./data.topdf.php?ptype=ticketMail" target="_blank">
 			<div class="p-2 text-black">
 				<b>Exporter le Ticket Mail.</b>
@@ -209,7 +209,7 @@
 							
 							$as = $y." - ".($y+1);
 							?>
-											<option><?=$as?></option>
+						<option><?=$as?></option>
 						<?php
 						$y = $y - 1;
 						}
