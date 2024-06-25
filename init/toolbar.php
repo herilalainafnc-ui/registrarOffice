@@ -41,7 +41,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 				</center>
 			
 		</a>
-		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
+		<a href="#" id="exportTicketMail" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
 } ?>">
