@@ -1,6 +1,6 @@
-<!-- ///////////////////////////////////////////////////////// GENERAL TOOLBAR //////////////////////////////////////////////////////////////////////// -->
+<!-- ////////////////////// GENERAL TOOLBAR //////////////////////////////////////////// -->
 
-<!-- FOR LIST -->
+<!-- FOR LIST STUDENT -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifListStd" style="backdrop-filter: blur(3px);">
 		
 		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
@@ -151,31 +151,142 @@
 
 	</div>
 
+<!-- FOR LIST COURS -->
+	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifListCours" style="backdrop-filter: blur(3px);">
+		
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+			<div class="p-2 text-black">
+				<b>Exporter la liste de cours.</b>
+			</div>
+			<form method="post" action="./data.topdf.php?ptype=listeCours" target="_blank">
+			<div class="p-2">
+	      			<b class="toolInactive">Listes.</b>
+				      	<div class="flex mb-3">
+				      		<div class="w-3/12 text-right pr-2">
+				      			<label for="types">Mention</label>
+				      		</div>
+				      		<div class="w-9/12">
+				      			<select id="types" name="types" class="input w-full">
+				      				<option value="TOUT">Tout</option>
+			<?php 
+						$voir = $dtb->query("SELECT * FROM filiere");
+						while ($affiche = $voir->fetch()) {?>
+											
+								<option value="<?=$affiche['filiere_sigle'];?>"><?=$affiche['filiere_description'];?></option>
+
+			<?php	
+				}
+			 ?>	
+				      			</select>	
+				      		</div>
+				      	</div>
+
+				      	<hr>
+				      	
+				      	<b class="toolInactive">Année/Semestre.</b>
+				      	
+				      	<div class="flex mb-3">
+
+				      		<div class="w-3/12 text-right pr-2">
+				      			<label for="annee">Année : </label>
+				      		</div>
+				      		<div class="w-9/12">
+				      			<select id="annee" name="yearlevel" class="input w-full">
+				      				<option value="tout">Toutes les années</option>
+				      				<option value="1">Première année</option>
+				      				<option value="2">Deuxième année</option>
+				      				<option value="3">Troisième année</option>
+				      				<option value="4">Quatrième année</option>
+				      				<option value="5">Cinquième année</option>
+				      				<option value="10">Etudiant spécial</option>
+				      			</select>	
+				      		</div>
+				      	</div>
+				      	
+				      	<div class="flex mb-3">
+				      		<div class="w-3/12 text-right pr-2"></div>
+				      		<div class="w-9/12">
+				      			<input id="master" type="checkbox" name="master">
+				      			<label for="master">Avec MASTER</label>	
+				      		</div>
+				      	</div>
+
+				      	<div class="flex mb-3">
+				      		<div class="w-3/12 text-right pr-2">
+				      			<label for="semestre">Semestre : </label>
+				      		</div>
+				      		<div class="w-9/12">
+				      			<select id="semestre" name="semester" class="input w-full">
+				      				<option value="tout">Tous les semestres</option>
+				      				<option value="1">Premier semestre</option>
+				      				<option value="2">Deuxième semestre</option>
+				      			</select>	
+				      		</div>
+				      	</div>
+			</div>
+			<div class="p-3">
+				<center>
+				<a href="#" id="cancelnotifListCours" class="bg-slate-400 p-2 rounded-md">Annuler</a>
+				<input id="btnCoursList" type="submit" class="bg-cyan-800 p-2 rounded-md text-white mx-1" value="Afficher">
+				</center>
+			</div>
+			</form>
+		</div>
+
+	</div>
+
 <!-- FOR FOP LIST -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifListFOP" style="backdrop-filter: blur(3px);">
 
 		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
-			<form method="post" action="./extenssionPrint/fop.list.php" target="_blank">
+			<form method="post" action="./data.topdf_paysage.php?ptype=foplist" target="_blank">
 			<div class="p-2 text-black">
 				<b>Exporter la requête FOP.</b>
 			</div>
 			<div class="p-2">
 				<div class="w-all">
-					<label class="w-4/12">Année</label>
-					<select name="yearFOP" id="yearFOP" class="w-60">
-						<option></option>
-						<?php
-						$y = date('Y');
-						for ($i=0; $i <= 8; $i++) { 
-							
-							$as = $y." - ".($y+1);
-							?>
-											<option><?=$as?></option>
-						<?php
-						$y = $y - 1;
-						}
-						 ?>
-					</select>
+					<div class="flex mb-3">
+						<div class="w-3/12 text-right pr-2">
+					      	<label for="types">Mention</label>
+					    </div>
+					    <div class="w-9/12">
+			    			<select id="types" name="types" class="input w-full">
+			      				<option value="TOUT">Tout</option>
+		<?php 
+					$voir = $dtb->query("SELECT * FROM filiere");
+					while ($affiche = $voir->fetch()) {?>
+										
+								<option value="<?=$affiche['filiere_sigle'];?>"><?=$affiche['filiere_description'];?></option>
+
+		<?php	
+			}
+		 ?>	
+			      			</select>	
+					    </div>
+				    </div>
+
+				    <div class="flex mb-3">
+				    	<div class="w-3/12 text-right pr-2">
+					      	<label for="yearFOP">Année</label>
+					    </div>
+					    <div class="w-9/12">
+					    	<select name="yearFOP" id="yearFOP" class="input w-full">
+								<option></option>
+								<?php
+								$y = date('Y');
+								for ($i=0; $i <= 8; $i++) { 
+									
+									$as = $y." - ".($y+1);
+								?>
+								<option><?=$as?></option>
+								<?php
+								$y = $y - 1;
+								}
+								 ?>
+							</select>
+					    </div>
+				    </div>
+					
 				</div>
 			</div>
 			<div class="p-3">
@@ -196,25 +307,48 @@
 		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 			<form method="post" action="./data.topdf.php?ptype=ticketMail" target="_blank">
 			<div class="p-2 text-black">
-				<b>Exporter le Ticket Mail.</b>
+				<b>Exporter le Ticket par Email.</b>
 			</div>
 			<div class="p-2">
-				<div class="w-all">
-					<label class="w-4/12">Année</label>
-					<select name="yearTicket" id="yearTicket" class="w-60">
-						<option></option>
-						<?php
-						$y = date('Y');
-						for ($i=0; $i <= 8; $i++) { 
-							
-							$as = $y." - ".($y+1);
-							?>
-						<option><?=$as?></option>
-						<?php
-						$y = $y - 1;
-						}
-						 ?>
-					</select>
+				<div class="flex mb-3">
+						<div class="w-3/12 text-right pr-2">
+					      	<label for="types">Mention</label>
+					    </div>
+					    <div class="w-9/12">
+			    			<select id="types" name="types" class="input w-full">
+			      				<option value="TOUT">Tout</option>
+		<?php 
+					$voir = $dtb->query("SELECT * FROM filiere");
+					while ($affiche = $voir->fetch()) {?>
+										
+								<option><?=$affiche['filiere_description'];?></option>
+
+		<?php	
+			}
+		 ?>	
+			      			</select>	
+					    </div>
+				</div>
+				<div class="flex mb-3">
+				    	<div class="w-3/12 text-right pr-2">
+					      	<label for="yearTicket">Année</label>
+					    </div>
+					    <div class="w-9/12">
+					    	<select name="yearTicket" id="yearTicket" class="input w-full">
+								<option></option>
+								<?php
+								$y = date('Y');
+								for ($i=0; $i <= 8; $i++) { 
+									
+									$as = $y." - ".($y+1);
+								?>
+								<option><?=$as?></option>
+								<?php
+								$y = $y - 1;
+								}
+								 ?>
+							</select>
+					    </div>
 				</div>
 			</div>
 			<div class="p-3">
@@ -246,6 +380,16 @@
 
 		$('#cancelnotifListStd').click(function(){
 			$('#notifListStd').css({'display':'none'});
+		});
+
+		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
+		
+		$('#exportListCours').click(function(){
+			$('#notifListCours').css({'display':'block'});
+		});
+
+		$('#cancelnotifListCours').click(function(){
+			$('#notifListCours').css({'display':'none'});
 		});
 
 		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	

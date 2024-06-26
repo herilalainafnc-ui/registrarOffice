@@ -1,7 +1,7 @@
 <?php 
 $yearNow = date('Y');
 $yearScoolNow = ($yearNow-1)." - ".$yearNow;
-$printName = "Statistique";
+$printName = "STATISTIQUE";
 
  ?>
 <div class="mb-4">

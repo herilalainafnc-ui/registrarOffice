@@ -1,5 +1,9 @@
+<center>
+	<b class="text-2xl">Liste d'étudiant</b>
+</center>
+
 <?php
-	$printName = "STD-LIST";
+	$printName = "LISTE_ETUDIANT";
 
 if(isset($_POST['types']) AND ($_POST['types']!= 'TOUT')){
 
@@ -14,7 +18,7 @@ if(isset($_POST['types']) AND ($_POST['types']!= 'TOUT')){
 
 $nbrs = 1;
 
-while($affm = $mention->fetch()){?>
+while($affm = $mention->fetch()){ ?>
 
 	<b style="font-size: 17px;">Mention <?=$title = $affm['filiere_description']?></b>
 
@@ -22,6 +26,7 @@ while($affm = $mention->fetch()){?>
 if(empty($_POST['cours'])){
  ?>
  
+
 <table class="tbl simpleTbl mb-0">
 	<thead class="bg-slate-200">
  			<tr>
@@ -71,7 +76,7 @@ if(empty($_POST['cours'])){
 	?>
 		<div style="margin-top: 5px;margin-bottom: 10px;">
 	 		<table class="tbl simpleTbl mb-1">
-		 		<thead class="bg-slate-200">
+		 		<thead class="bg-slate-800 text-white">
 		 			<tr>
 		 				<td class='w-[100px]'>Sigle</td>
 		 				<td class='w-[400px]'>Titre du cours</td>
@@ -91,7 +96,7 @@ if(empty($_POST['cours'])){
 		 				
 		 			</tr>
 		 		</thead>
-		 		<tbody>
+		 		<tbody class="bg-slate-100">
 		 			<?php
 		 			$annee_scolaire = $_POST['anneescolaire'];
 		 	if($_POST['annee_etude']!='tout' AND $_POST['semestre']!='tout'){	

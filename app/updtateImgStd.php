@@ -32,5 +32,5 @@
 
 		$updateNote->execute();
 	}
-	header('location:../src/student.php?id='.$id);
+	header('location:../src/student.php?id='.$id.'&page=information');
  ?>

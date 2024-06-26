@@ -5,7 +5,7 @@ $student_id = $_GET['student_id'];
 $yes = 1;
 $initA = 1;
 $initS = 1;
-$printName = "Bulletin-".$student_id;
+$printName = $student_id."-BULLETIN";
  
 if($level == "all"){
 	$level = $_GET['std_niveau'];

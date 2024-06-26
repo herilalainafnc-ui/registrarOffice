@@ -14,7 +14,7 @@ $status = $_GET['status'];
 $date_entry = $_GET['date_entry'];
 $year_entry = substr($date_entry, 0, 4);
 
-$printName = "Badge-".$student_id;
+$printName = $student_id."-BADGE-ABONNEMENT_CAF";
 
  ?>
 

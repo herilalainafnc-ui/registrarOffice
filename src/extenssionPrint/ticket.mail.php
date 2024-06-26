@@ -1,8 +1,15 @@
 <div class="w-full grid gap-2 grid-cols-2">
 <?php 
 	$yearTicket = $_POST['yearTicket'];
-	$printName = "Ticket-email";
-	$student = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE annee_scolaire = "'.$yearTicket.'" AND annee_etude = 1 ORDER BY student_id');
+	$types = $_POST['types'];
+
+	$printName = "TICKET_EMAIL_ETUDIANT";
+	if ($types == "TOUT") {
+		$student = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE annee_scolaire = "'.$yearTicket.'" AND annee_etude = 1 ORDER BY student_id');
+	}else{
+		$student = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE annee_scolaire = "'.$yearTicket.'" AND annee_etude = 1 AND etude_envisage="'.$types.'" ORDER BY student_id');
+	}
+	
 
 	while ($afficher = $student->fetch()){
 ?>

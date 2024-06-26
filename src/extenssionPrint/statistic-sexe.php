@@ -3,7 +3,7 @@ $yearNow = date('Y');
 $yearScoolNow = ($yearNow-1)." - ".$yearNow;
 /*$yearScoolNow = "2023 - 2024";*/
 
-$printName = "Statistique";
+$printName = "STATISTIQUE";
 
  ?>
 <div class="">

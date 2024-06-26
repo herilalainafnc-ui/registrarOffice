@@ -1,4 +1,7 @@
-<?php require ('../../data/backdb.php');
+<?php require ('../data/backdb.php');
+	
+	$printName = "LISTE_ETUDIANT_FOP";
+	$types = $_POST['types'];
 
 	if (isset($_POST['yearFOP']) AND $_POST['yearFOP'] != "") {
 		
@@ -16,40 +19,43 @@
 	}
 ?>
 
-<div>
+<div class="mb-2">
 	<center>
-		<h2>LISTE DES ETUDIANTS</h2>
-		<h3>Requête de données pour la FOP <br> Année académique <?=$annee_scolaire?></h3>
-		
+		<b>Requête de données FOP - Année académique <?=$annee_scolaire?></b>
 	</center>
 </div>
 
 <div>
 <?php 
-	$mention = $dtb->query('SELECT * FROM filiere');
+	if ($types == "TOUT") {
+		$mention = $dtb->query('SELECT * FROM filiere');
+	}else{
+		$mention = $dtb->query('SELECT * FROM filiere WHERE filiere_sigle = "'.$types.'"');
+	}
+	
 
 	while($mnt = $mention->fetch()){
 		$ment = $mnt['filiere_description'];
  ?>
- <h4 style="background: #3ba7e9; text-align: center;"><?=$ment?></h4>
-	<table class="tbl" style="font-size: 12px">
-		<thead>
-			<tr style="background: #6bb993;">
-				<th style="width : 1%">N°</th>
-				<th style="width : 5%">N° d'enregistrement</th>
-				<th style="width : 15%">Nom et prénoms</th>
-				<th style="width : 5%">Date de naissance</th>
-				<th style="width : 15%">Lieu de naissance</th>
-				<th style="width : 5%">N° Carte d'Identité Nationale</th>
-				<th style="width : 5%">Date de délivrance CIN</th>
-				<th style="width : 3%">Niveau</th>
-				<th style="width : 10%">Département</th>
-				<th style="width : 3%">Domaine</th>
-				<th style="width : 10%">Mention de la filière</th>
-				<th style="width : 10%">Parcours</th>
-				<th style="width : 5%">Secteur</th>
-				<th style="width : 5%">Spécialité</th>
-				<th style="width : 5%">Option</th>
+ <h4 class="text-center bg-cyan-700 text-white"><b><?=$ment?></b></h4>
+	<table class="simpleTbl mb-2">
+		<thead class="bg-slate-200">
+			<tr>
+				<th class="w-[30px]">N°</th>
+				<th class="w-[20px]">N° d'enregistrement</th>
+				<th class="w-[300px]">Nom et prénoms</th>
+				<th class="w-[100px]">Date de naissance</th>
+				<th class="w-[200px]">Lieu de naissance</th>
+				<th class="w-[100px]">N° Carte d'Identité Nationale</th>
+				<th class="w-[100px]">Date de délivrance CIN</th>
+				<th class="w-[20px]">Niveau</th>
+				<th class="w-[]">Département</th>
+				<th class="w-[20px]">Domaine</th>
+				<th class="w-[20px]">Mention de la filière</th>
+				<th class="w-[100px]">Parcours</th>
+				<th class="w-[]">Secteur</th>
+				<th class="w-[]">Spécialité</th>
+				<th class="w-[]">Option</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -65,7 +71,7 @@ $nb = 0;
 				<td><?=$af['student_nom'].' '.$af['student_prenom']?></td>
 				<td><?=$af['dateNaissance']?></td>
 				<td><?=$af['lieuNaissance']?></td>
-				<td>_<?=$af['num_cin']?></td>
+				<td><?=$af['num_cin']?></td>
 				<td><?=$af['cin_date_delivre']?></td>
 				<td><?php 
 				$annee_etude = $af['annee_etude'];
@@ -108,15 +114,3 @@ echo $dmn['domaine_signe'];
 }
  ?>	
 </div>
-
-
-<style type="text/css">
-	.tbl{
-		border-collapse: collapse;
-	}
-	.tbl th,td{
-		border: 1px solid grey;
-	}
-	.tbl th{
-	}
-</style>

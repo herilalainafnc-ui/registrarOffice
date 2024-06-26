@@ -2,7 +2,7 @@
 $student_id = $_GET['student_id'];
 $level = $_GET['level'];
 
-$printName = "Worked_point-".$student_id;
+$printName = $student_id."-WORKED_HOURS";
 
 $searchStd = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE student_id = "'.$student_id.'"');
 

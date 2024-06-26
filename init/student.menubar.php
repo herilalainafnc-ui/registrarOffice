@@ -30,7 +30,15 @@
 							</div></a>
 
 							<ul class="dropdown-menu border bg-slate-400 text-black p-0 rounded-0 text-xs" style="max-height:400px;">
+								<?php 
+									if(!empty($profil['image_student'])) {
+										if ($profil['image_student'] !="" OR $imangeLen >=10) {
+								?>
 								<a href="#" id="listOpt1"><p class="px-2 py-1 hover:bg-cyan-500">Agrandir</p></a>
+								<?php
+										} 
+									}
+								?>
 								<a href="#" id="listOpt2"><p class="px-2 py-1 hover:bg-cyan-500">Modifier</p></a>
 							</ul>
 
@@ -139,8 +147,8 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 							<!-- MODIF IMAGE -->
 
 						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifModifIMG" style="backdrop-filter: blur(30px);">
-<form method="post" action="../app/updtadeImgStd.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>" enctype="multipart/form-data" class="form-no-refrech">
-							<div class="w-3/12 bg-slate-100 border-2 border-slate-700 mx-auto my-[12%] opacity-100 drop-shadow-2xl">
+<form method="post" action="../app/updtateImgStd.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>" enctype="multipart/form-data">
+							<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 								<div class="p-2">
 									<p>Modifier l'image</p>
 								</div>
@@ -148,7 +156,7 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 									
 									<div class="rounded-md bg-slate-300 h-20 text-center relative active hover:bg-slate-600 hover:text-white">
 										<label for="image_student" class="text-lg mt-4"><i class="bi-image"></i></label>
-										<p>Choisir une image sur votre PC</p>
+										<p id="imgNote">Choisir une image sur votre PC</p>
 										<input type="file" name="image_student" id="image_student" class="w-full h-20 absolute z-40 top-0 left-0" style="opacity: 0;">
 									</div>
 									
@@ -166,7 +174,7 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 
 						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifAffichIMG" style="backdrop-filter: blur(30px);">
 
-							<div class="w-3/12 bg-slate-100 border-2 border-slate-700 mx-auto my-[12%] opacity-100 drop-shadow-2xl">
+							<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 								
 								<div class="p-2">
 									<div class="w-full h-[400px]" style="background-image: url('../app/photosetudiants/<?=$profil['image_student']?>');background-position: center; background-size: cover;background-repeat: no-repeat;">
@@ -207,6 +215,7 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 		$('#image_student').on('change',function(){
 			image_student = $(this).val();
 			if(image_student!="") {
+				$('#imgNote').text('Image bien ajouté.');
 				$('#btnModify').attr('class','px-2 rounded-md py-1 text-white mx-1 bg-cyan-700');
 			}
 		});

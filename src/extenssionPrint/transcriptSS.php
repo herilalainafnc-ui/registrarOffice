@@ -6,7 +6,7 @@
 	$yes = 1;
 	$initA = 1;
 	$initS = 1;
-	$printName = "Bulletin par session-".$student_id;
+	$printName = $student_id."-TRANSCRIPT_SESSION";
 
 	$searchStd = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE student_id = "'.$student_id.'"');
 

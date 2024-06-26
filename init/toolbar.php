@@ -2,7 +2,14 @@
 <!-- BRANCHE D'OUTILS 1 -->	
 	<div class="w-2/12 border-r flex px-1">
 		
-		<a href="#" id="exportListStd" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1">
+		<a href="#" id="<?php 
+if($page == "accueil.php" OR $page == "student.php") {
+ 	echo "exportListStd";
+}elseif($page == "accueil.cours.php" OR $page == "cours.php") {
+	echo "exportListCours";
+}elseif($page == "accueil.prof.php" OR $page == "prof.php") {
+	echo "exportListProf";
+} ?>" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1">
 				<center>
 				<i class="bi-filetype-pdf text-2xl"></i><br>
 						Exporter la liste
