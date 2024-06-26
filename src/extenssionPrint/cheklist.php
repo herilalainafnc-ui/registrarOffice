@@ -9,7 +9,7 @@ $etude_option = $_GET['etude_option'];
 $student_tel = $_GET['student_tel'];
 $image_student = $_GET['image_student'];
 
-$printName = "Checklist-".$student_id;
+$printName = $student_id."-CHECKLIST";
 
 
 

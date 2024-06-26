@@ -5,7 +5,7 @@
 <!-- FOR BULLETIN -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifBulletin" style="backdrop-filter: blur(3px);">
 
-		<div class="w-3/12 bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 			<div class="p-2 text-black">
 				<b>Afficher le Bulletin de</b>
 			</div>
@@ -49,7 +49,7 @@
 <!-- FOR TRANSCRIPT -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifTranscript" style="backdrop-filter: blur(3px);">
 
-		<div class="w-3/12 bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 			<div class="p-2 text-black">
 				<b>Afficher le Transcript Semestriel de</b>
 			</div>
@@ -92,7 +92,7 @@
 <!-- FOR TRANSCRIPT SESSION -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifTranscriptSS" style="backdrop-filter: blur(3px);">
 
-		<div class="w-3/12 bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 			<div class="p-2 text-black">
 				<b>Afficher le Transcript par Session de</b>
 			</div>
@@ -137,7 +137,7 @@
 <!-- FOR DIPLOME -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifDiplome" style="backdrop-filter: blur(3px);">
 
-		<div class="w-3/12 bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 			<div class="p-2 text-black">
 				<b>Exporter ce Diplôme</b>
 			</div>

@@ -5,7 +5,7 @@ $student_id = $_GET['student_id'];
 $yes = 1;
 $initA = 1;
 $initS = 1;
-$printName = "Transcript par semestre-".$student_id;
+$printName = $student_id."-TRANSCRIPT_SEMMESTRE";
  
 if($level == "all"){
 	$level = $_GET['std_niveau'];
@@ -29,7 +29,6 @@ $stdA = $searchStd->fetch();
 
 <center>
 	<b class="text-2xl">Transcript Semestriel</b>
-
 </center>
 
 <div class="border border-black flex text-xs px-1 py-1">

@@ -8,7 +8,7 @@ $etude_option = $_GET['etude_option'];
 
 $student_tel = $_GET['student_tel'];
 $image_student = $_GET['image_student'];
-$printName = "Certificat de Scolarité-".$student_id;
+$printName = $student_id."-CERTIFICAT_SCOLARITE";
  
 $searchStd = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE student_id = "'.$student_id.'"');
 

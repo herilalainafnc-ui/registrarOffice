@@ -13,96 +13,47 @@
 	<div class="bg-slate-400 flex h-10 p-1">
 
 		<div class="sm:w-5/12 sm:text-left lg:w-3/12 lg:text-right p-1">
-		<a href="./accueil.php" class="px-2 py-1 rounded-md border border-black"><span class="bi-arrow-return-left"></span> Retour</a>
+		<a href="./accueil.php" class="px-2 py-1 rounded-md border border-black"><span class="bi-house-door-fill"></span> Accueil</a>
 		</div>
 		
 		<div class="sm:w-2/12 lg:w-6/12 text-center">
 			<p class="b-title center"><b><?=$ptype?></b></p>
 		</div>
-		<div class="sm:w-5/12 sm:text-right lg:text-left lg:w-3/12">
-			<button type="button" onclick="printThisContent()" class="px-2 py-1 rounded-md text-white bg-slate-900"><span class="bi-download"></span> Version PDF</button>
-			<!-- <button type="button" onclick="printThisContentExcel()" class="px-2 py-1 rounded-md text-white bg-green-700"><span class="bi-download"></span> Version EXCEL</button> -->
+		<div class="sm:w-5/12 sm:text-right lg:text-left lg:w-3/12 py-1">
+			<a href="#" class="px-2 py-1 rounded-md text-white bg-green-700" id="btnToExcel"><span class="bi-file-earmark-spreadsheet"></span> Excel</a>
+			
+			<a href="#" onclick="printThisContent()" class="px-2 py-1 rounded-md text-white bg-red-800"><span class="bi-filetype-pdf"></span> Pdf</a>
+			<a class="ml-2 text-sm"><b><i class="bi-arrow-repeat"></i></b> paysage</a>
 		</div>
 	</div>
-	<div style="overflow: auto; width: 100%; height: calc(100% - 43px);">
+<div style="overflow: auto; width: 100%; height: calc(100% - 43px);">
 
-		<div style="border: 1px solid #475460; box-shadow: 0px 0px 20px #475469; padding: 35px;background: white; width: 800px;margin: auto; margin-top: 20px; margin-bottom: 20px;">
+	<div style="border: 1px solid #475460; box-shadow: 0px 0px 20px #475469; padding: 35px;background: white; min-width: 1020px;margin: auto; margin-top: 20px; margin-bottom: 20px;">
 			
-			
-			<div id="printThisContent" class="b-black relative" style="min-height: 1020px; width: 100%;">
+<!-- ::::::::::::::::::::::::::::: CONTENTS PRINT ::::::::::::::::::::::::::::::::: -->
+
+		<div id="printThisContent" class="b-black relative" style="min-height: 800px; width: 100%;">
 				
-				<?php if($ptype != "Badge" AND $ptype != "Abonnement Caf") { require('../init/top.forPrint.php'); }
+			<?php if($ptype != "Badge" AND $ptype != "Abonnement Caf") { require('../init/top.forPrint.php'); }
 				
-				if($ptype == "Statistique") {
-					require ('./extenssionPrint/statistic-religion.php');
-					require ('./extenssionPrint/statistic-sexe.php');
-				}elseif($ptype == "Badge"){
-					require ('./extenssionPrint/badge.php');
-				}elseif($ptype == "Bulletin"){
-					require ('./extenssionPrint/bulletin.php');
-				}elseif($ptype == "Transcript"){
-					require ('./extenssionPrint/transcript.php');
-				}elseif($ptype == "Diplôme"){
-					require ('./extenssionPrint/diplome.php');
-				}elseif($ptype == "Checklist"){
-					require ('./extenssionPrint/cheklist.php');
-				}elseif($ptype == "Certificat de scolarité"){
-					require ('./extenssionPrint/certScolarity.php');
-				}elseif($ptype == "Abonnement Caf"){
-					require ('./extenssionPrint/abonnement.caf.php');
-				}elseif($ptype == "TranscriptSS"){
-					require ('./extenssionPrint/transcriptSS.php');
-				}elseif($ptype == "Worked_point"){
-					require ('./extenssionPrint/worked_point.php');
+				if($ptype == "foplist") {
+					require ('./extenssionPrint/fop.list.php');
 				}
 
-			if($ptype != "Badge" AND $ptype != "Abonnement Caf" AND $ptype != "Worked_point") {
+			if($ptype != "Badge" AND $ptype != "Abonnement Caf" AND $ptype != "Worked_point" AND $ptype != "foplist") {
 			
-				?>
-				
-				<div class="bottom-0 w-full text-xs mt-10">
-					<div class="text-sm">
-						<p>Sambaina, <?php
-									 echo date('d')." ";
-									 $volana = date('m');
-									 if($volana == '01'){echo('Janvier ');}
-									 else if($volana == '02'){echo('Fevrier ');}
-									 else if($volana == '03'){echo('Mars ');}
-									 else if($volana == '04'){echo('Avril ');}
-									 else if($volana == '05'){echo('Mai ');}
-									 else if($volana == '06'){echo('Juin ');}
-									 else if($volana == '07'){echo('Juillet ');}
-									 else if($volana == '08'){echo('Aout ');}
-									 else if($volana == '09'){echo('Septembre ');}
-									 else if($volana == '10'){echo('Octobre ');}
-									 else if($volana == '11'){echo('Novembre ');}
-									 else if($volana == '12'){echo('Decembre ');}
-									 echo date('Y')
-									 ?></p>
+				require('../init/foot.forPrint.php');
 
-						<br><br><br>
-
-						<em>La registraire - Mme. Daniella MALALANIRINA</em>
-
-					</div>
-					<div class="border-t border-black flex">
-						<div class="w-4/12">Université Adventiste Zurcher</div>
-						<div class="w-4/12 text-center">--<?=$ptype?>--</div>
-						<div class="w-4/12"></div>
-					</div>
-				</div>
-			
-			<?php
-				}
-			?>
-
-			</div>
+			}
+		?>
 
 		</div>
+
+<!-- ::::::::::::::::::::::::::::: --- ::::::::::::::::::::::::::::::::: -->
+
 	</div>
+</div>
 </body>
-
-
 
 
 <!-- ------------------------------------------------------------------------------------------------- -->
@@ -132,6 +83,71 @@ function printThisContent(){
 			html2pdf(printConge, opt);
 }
 </script>
+
+<!-- /////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<script type="text/javascript">
+	$(document).ready(function() {
+	//::::::::::::::::::::::::::::::::::::::::::::::::
+		$('#btnToExcel').click(function() {
+			
+			alert('Download EXCEL processing !');
+
+			var htmlContent = $('#printThisContent').html();
+                
+                $.ajax({
+                    type: 'POST',
+                    url: '',
+                    data: { html: htmlContent },
+                    success: function(response) {
+                        
+                        var blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                        
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = '<?=$printName?> <?=$date?>.xlsx';
+                        link.click();
+                    }
+                });
+			
+		});
+	//::::::::::::::::::::::::::::::::::::::::::::::::
+	});
+</script>
+
+<?php
+    require '../data/vendor/autoload.php';
+
+    use PhpOffice\PhpSpreadsheet\Spreadsheet;
+    use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' AND isset($_POST['html'])) {
+        
+        $html = $_POST['html'];
+        exportToExcel($html);
+    }
+
+    function exportToExcel($html) {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
+        $spreadsheet = $reader->loadFromString($html);
+
+        $writer = new Xlsx($spreadsheet);
+        $fileName = $printName.'_'.$date.'.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+        exit;
+    }
+?>
+
+<!-- /////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
 <style type="text/css">
 	table tr,table td{
 		border-collapse: collapse;

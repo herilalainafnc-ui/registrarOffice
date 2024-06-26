@@ -158,7 +158,7 @@ function printThisDiplome(){
 			
 			var opt = {
 			  margin:       0,
-			  filename:     'Diplome_<?=$student_id?>_<?=$date?>.pdf',
+			  filename:     '<?=$student_id?>-DIPLOME_<?=$date?>.pdf',
 			  image:        { type: 'jpeg', quality: 2 },
 			  html2canvas:  { scale: 10 },
 			  jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
