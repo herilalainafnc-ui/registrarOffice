@@ -69,5 +69,5 @@ $insertteacher = $dtb->prepare("INSERT INTO t_2023_cours(
 			'active' => $active,
 			'date_entry' => $date_entry 
 ));
-	//header('location:../list_cours.php');
+	header('location:../list_cours.php');
  ?>
