@@ -83,7 +83,7 @@ while($tch = $teach->fetch()){
 			</div>
 
 			<div class="w-full gap-2 flex mb-3">
-				<div class="w-2/12">
+				<div class="w-3/12">
 					<label>Niveau du cours</label><br>
  					<select class="input w-full" type="number" name="yearlevel">
  						<option value="1">Licence 1</option>
@@ -100,7 +100,7 @@ while($tch = $teach->fetch()){
  						<option>2</option>
  					</select>
 				</div>
-				<div class="w-2/12">
+				<div class="w-3/12">
 					<label>Laboratoire</label>
  					<select class="input w-full" type="number" name="lab">
  						<option></option>
@@ -117,11 +117,11 @@ while($tch = $teach->fetch()){
 			<b class="toolInactive">Autre.</b>
 
 			<div class="w-full gap-2 flex mb-3">
-				<div class="w-3/12">
+				<div class="w-4/12">
 					<label>Description</label><br>
  					<textarea class="w-full h-12 input" name="description"></textarea>
 				</div>
-				<div class="w-3/12">
+				<div class="w-4/12">
 					<label>Remarque</label><br>
 				 	<textarea class="w-full h-12 input" name="remark"></textarea>
 				</div>
