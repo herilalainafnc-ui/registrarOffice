@@ -156,6 +156,9 @@ function printThisContent(){
 
     use PhpOffice\PhpSpreadsheet\Spreadsheet;
     use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+    use PhpOffice\PhpSpreadsheet\IOFactoey;
+	use PhpOffice\PhpSpreadsheet\Style\Alignment;
+	use PhpOffice\PhpSpreadsheet\Style\Fill;
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST' AND isset($_POST['html'])) {
         

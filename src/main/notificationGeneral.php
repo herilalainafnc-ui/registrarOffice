@@ -75,22 +75,22 @@
 				      	
 				      	<hr>
 				      	
-				      	<b class="toolInactive">Année/Semestre.</b>
+				      	<b class="toolInactive">Niveau/Semestre.</b>
 				      	
 				      	<div class="flex mb-3">
 
 				      		<div class="w-3/12 text-right pr-2">
-				      			<label for="annee">Année : </label>
+				      			<label for="annee">Niveau : </label>
 				      		</div>
 				      		<div class="w-9/12">
 				      			<select id="annee" name="annee_etude" class="input w-full">
-				      				<option value="tout">Toutes les années</option>
-				      				<option value="1">Première année</option>
-				      				<option value="2">Deuxième année</option>
-				      				<option value="3">Troisième année</option>
-				      				<option value="4">Quatrième année</option>
-				      				<option value="5">Cinquième année</option>
-				      				<option value="10">Etudiant spécial</option>
+				      				<option value="tout">Tout</option>
+				      				<option value="1">Licence 1</option>
+				      				<option value="2">Licence 2</option>
+				      				<option value="3">Licence 3</option>
+				      				<option value="4">Master 1</option>
+				      				<option value="5">Master 2</option>
+				      				<option value="10">Classe spéciale</option>
 				      			</select>	
 				      		</div>
 				      	</div>
@@ -109,9 +109,9 @@
 				      		</div>
 				      		<div class="w-9/12">
 				      			<select id="semestre" name="semestre" class="input w-full">
-				      				<option value="tout">Tous les semestres</option>
-				      				<option value="1">Premier semestre</option>
-				      				<option value="2">Deuxième semestre</option>
+				      				<option value="tout">Tout</option>
+				      				<option value="1">Semestre 1</option>
+				      				<option value="2">Semestre 2</option>
 				      			</select>	
 				      		</div>
 				      	</div>
@@ -183,22 +183,21 @@
 
 				      	<hr>
 				      	
-				      	<b class="toolInactive">Année/Semestre.</b>
+				      	<b class="toolInactive">Niveau/Semestre.</b>
 				      	
 				      	<div class="flex mb-3">
 
 				      		<div class="w-3/12 text-right pr-2">
-				      			<label for="annee">Année : </label>
+				      			<label for="annee">Niveau : </label>
 				      		</div>
 				      		<div class="w-9/12">
 				      			<select id="annee" name="yearlevel" class="input w-full">
-				      				<option value="tout">Toutes les années</option>
-				      				<option value="1">Première année</option>
-				      				<option value="2">Deuxième année</option>
-				      				<option value="3">Troisième année</option>
-				      				<option value="4">Quatrième année</option>
-				      				<option value="5">Cinquième année</option>
-				      				<option value="10">Etudiant spécial</option>
+				      				<option value="tout">Tout</option>
+				      				<option value="1">Licence 1</option>
+				      				<option value="2">Licence 2</option>
+				      				<option value="3">Licence 3</option>
+				      				<option value="4">Master 1</option>
+				      				<option value="5">Master 2</option>
 				      			</select>	
 				      		</div>
 				      	</div>
@@ -217,9 +216,9 @@
 				      		</div>
 				      		<div class="w-9/12">
 				      			<select id="semestre" name="semester" class="input w-full">
-				      				<option value="tout">Tous les semestres</option>
-				      				<option value="1">Premier semestre</option>
-				      				<option value="2">Deuxième semestre</option>
+				      				<option value="tout">Tout</option>
+				      				<option value="1">Semestre 1</option>
+				      				<option value="2">Semestre 2</option>
 				      			</select>	
 				      		</div>
 				      	</div>

@@ -144,11 +144,18 @@ while ($showR = $findRegion->fetch()) {
 				<label class="text-sm text-slate-400">Mention</label>
 				<p class=""><i class="bi-lock-fill"></i> <?=$etude_envisage?></p><br>
 				<label class="text-sm text-slate-400">Niveau</label>
-				<p class="showEtd">-- Licence <?=$profil['annee_etude']?></p>
+				<p class="showEtd">--<?php if ($profil['annee_etude']<=3) {
+						echo " Licence ".$profil['annee_etude'];
+					}else{
+						echo " Master ".$profil['annee_etude']-3;
+					} ?>	
+				</p>
 				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="annee_etude">
 					<option class="bg-slate-800" value="1" <?php if($profil['annee_etude'] == 1){echo 'selected';}?>>Licence 1</option>
 					<option class="bg-slate-800" value="2" <?php if($profil['annee_etude'] == 2){echo 'selected';}?>>Licence 2</option>
 					<option class="bg-slate-800" value="3" <?php if($profil['annee_etude'] == 3){echo 'selected';}?>>Licence 3</option>
+					<option class="bg-slate-800" value="4" <?php if($profil['annee_etude'] == 4){echo 'selected';}?>>Master 1</option>
+					<option class="bg-slate-800" value="5" <?php if($profil['annee_etude'] == 5){echo 'selected';}?>>Master 2</option>
 				</select>
 				<br>
 				<label class="text-sm text-slate-400">Matricule</label>
