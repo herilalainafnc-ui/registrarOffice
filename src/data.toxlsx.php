@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ob_start();
     // Inclure ou générer votre contenu dynamique ici
     // Par exemple, include 'votre_fichier_dynamique.php';
-    include 'votre_fichier_html_dynamique.php';
+    include 'data.topdf.php';
     $htmlContent = ob_get_clean();
 
     // Appeler la fonction pour exporter en Excel

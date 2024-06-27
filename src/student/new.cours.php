@@ -19,13 +19,23 @@
 	}elseif ($etude_envisage == "Droit") {
 		$eE = 'DROI';
 	}
- 
-	for ($a=1; $a <= $level; $a++) { 
-	echo "<div class='p-1 bg-slate-700 hover:bg-slate-600 mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'> <b>NIVEAU L".$a."</b>";
-		
+ 	
+ 	$init = 1;
+
+	for ($a=$init; $a <= $level; $a++) {
+ ?>
+	<div class='p-1 bg-slate-700 hover:bg-slate-600 mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+<b>
+		<?php 
+		if($a<=3) {
+			echo "NIVEAU Licence ".$a;
+		}else{
+			echo "NIVEAU Master ".($a-3);
+		}
+		?>		
+</b>
+<?php		
 		for ($s=1; $s <=2 ; $s++) { 
-			
-		
  ?>
 
  <!-- DEBUT DU FORMULAIRE -->
@@ -179,7 +189,7 @@ $tcredit+= $credit + $crs['nb_crd'];
 						
 						
 
-						<button id="submit<?=$a.$s;?>" type="submit" class="px-5 py-0 m-1 bg-slate-700 text-slate-400" style="pointer-events: none;">Ajouter au transcript</button>
+						<button id="submit<?=$a.$s;?>" type="submit" class="px-2 py-0 m-1 bg-slate-700 text-slate-400 text-center" style="pointer-events: none;">Ajouter au transcript</button>
 					</td>
 				</tr>
 												<script type="text/javascript">
@@ -216,10 +226,10 @@ $tcredit+= $credit + $crs['nb_crd'];
 															var scolarSs<?=$a.$s;?> = $('#scolarSs<?=$a.$s;?>').val();
 															
 															if (scolarA<?=$a.$s;?> != '' && scolarSs<?=$a.$s;?> !='') {
-																$('#submit<?=$a.$s;?>').attr('class','px-5 py-0 m-1 bg-black text-white');
+																$('#submit<?=$a.$s;?>').attr('class','px-2 text-center py-0 m-1 bg-black text-white');
 																$('#submit<?=$a.$s;?>').css({'pointer-events':'auto'});
 															}else{
-																$('#submit<?=$a.$s;?>').attr('class','px-5 py-0 m-1 bg-slate-700 text-slate-400');
+																$('#submit<?=$a.$s;?>').attr('class','px-2 text-center py-0 m-1 bg-slate-700 text-slate-400');
 																$('#submit<?=$a.$s;?>').css({'pointer-events':'none'});
 															}
 
@@ -230,10 +240,10 @@ $tcredit+= $credit + $crs['nb_crd'];
 															var scolarA<?=$a.$s;?> = $('#scolarA<?=$a.$s;?>').val();
 															
 															if (scolarA<?=$a.$s;?> != '' && scolarSs<?=$a.$s;?> !='') {
-																$('#submit<?=$a.$s;?>').attr('class','px-5 py-0 m-1 bg-black text-white');
+																$('#submit<?=$a.$s;?>').attr('class','px-2 text-center py-0 m-1 bg-black text-white');
 																$('#submit<?=$a.$s;?>').css({'pointer-events':'auto'});
 															}else{
-																$('#submit<?=$a.$s;?>').attr('class','px-5 py-0 m-1 bg-slate-700 text-slate-400');
+																$('#submit<?=$a.$s;?>').attr('class','px-2 text-center py-0 m-1 bg-slate-700 text-slate-400');
 																$('#submit<?=$a.$s;?>').css({'pointer-events':'none'});
 															}
 

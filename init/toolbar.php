@@ -3,7 +3,7 @@
 	<div class="w-2/12 border-r flex px-1">
 		
 		<a href="#" id="<?php 
-if($page == "accueil.php" OR $page == "student.php") {
+if($page == "accueil.php" OR $page == "student.php" OR $page=="inscription.php") {
  	echo "exportListStd";
 }elseif($page == "accueil.cours.php" OR $page == "cours.php") {
 	echo "exportListCours";

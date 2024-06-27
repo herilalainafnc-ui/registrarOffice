@@ -2,7 +2,7 @@
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="bigNotifCours" style="backdrop-filter: blur(3px);">
 
 		<div class="w-[1000px] bg-slate-100 border-2 border-slate-700 mx-auto my-[1%] opacity-100 drop-shadow-2xl">
-			<form method="post" action="../app/addCours.php" enctype="multipart/form-data">
+			<form method="post" action="../app/addCours.php" enctype="multipart/form-data" class="form-no-refrech">
 			<div class="p-2 text-black">
 				<b>Ajouter un cours.</b>
 			</div>
@@ -14,11 +14,11 @@
 			<div class="w-full gap-2 flex mb-3">
 				<div class="w-2/12">
 					<label>Sigle</label><br>
-				 	<input class="input w-full" type="text" name="sigle">
+				 	<input class="input w-full requierd-1" type="text" name="sigle">
 				</div>
 				<div class="w-5/12">
 					<label>Titre du cours</label><br>
-				 	<input class="input w-full" type="text" name="title">
+				 	<input class="input w-full requierd-2" type="text" name="title">
 				</div>
 				<div class="w-5/12">
 					<label>Titre en anglais</label>
@@ -103,12 +103,12 @@ while($tch = $teach->fetch()){
 				<div class="w-3/12">
 					<label>Laboratoire</label>
  					<select class="input w-full" type="number" name="lab">
- 						<option></option>
- 						<option>Lab 1</option>
- 						<option>Lab 2</option>
- 						<option>Lab 3</option>
- 						<option>Simulation Room</option>
- 						<option>Labo recherche</option>
+ 						<option value="0"></option>
+ 						<option value="1">Lab 1</option>
+ 						<option value="2">Lab 2</option>
+ 						<option value="3">Lab 3</option>
+ 						<option value="4">Simulation Room</option>
+ 						<option value="5">Labo recherche</option>
  					</select>
 				</div>
 				
@@ -152,6 +152,45 @@ while($tch = $teach->fetch()){
 		
 		$('#cancelnotifAddCours').click(function(){
 			$('#bigNotifCours').css({'display':'none'});
+		});
+		$('.requierd-1').keyup(function() {
+			var r_2 = $('.requierd-2').val();
+
+			if ($(this).val() == "" || r_2 == "") {
+
+				$('#btnAddCours').attr('class','bg-slate-400 p-2 rounded-md mx-1 toolInactive');
+			
+			}else{
+			
+				$('#btnAddCours').attr('class','bg-cyan-800 p-2 rounded-md text-white mx-1');
+
+			}
+
+		});
+		$('.requierd-2').keyup(function() {
+			var r_1 = $('.requierd-1').val();
+
+			if ($(this).val() == "" || r_1 == "") {
+
+				$('#btnAddCours').attr('class','bg-slate-400 p-2 rounded-md mx-1 toolInactive');
+				
+			}else{
+
+				$('#btnAddCours').attr('class','bg-cyan-800 p-2 rounded-md text-white mx-1');
+			}
+
+		});
+
+		$('.form-no-refrech').on('submit',function (e) {
+			e.preventDefault();
+
+			var url = '../app/addCours.php';
+			var data = $(this).serialize();
+			
+			$.post(url,data,function(response){
+				alert('Opération bien effectué.');
+				$('#bigNotifCours').css({'display':'none'});
+			});
 		});
 	});
 </script>
