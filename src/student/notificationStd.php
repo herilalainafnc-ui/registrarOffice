@@ -18,7 +18,13 @@
 						<?php
 						for ($a=1; $a <= $level; $a++) {
 						?>
-						<option value="<?=$a?>">Licence <?=$a?></option>
+						<option value="<?=$a?>"><?php 
+						if($a<=3) {
+							echo "NIVEAU Licence ".$a;
+						}else{
+							echo "NIVEAU Master ".($a-3);
+						}
+						?></option>
 						<?php
 						}
 						?>
@@ -62,7 +68,13 @@
 						<?php
 						for ($a=1; $a <= $level; $a++) {
 						?>
-						<option value="<?=$a?>">Licence <?=$a?></option>
+						<option value="<?=$a?>"><?php 
+						if($a<=3) {
+							echo "NIVEAU Licence ".$a;
+						}else{
+							echo "NIVEAU Master ".($a-3);
+						}
+						?></option>
 						<?php
 						}
 						?>
@@ -105,7 +117,13 @@
 						<?php
 						for ($a=1; $a <= $level; $a++) {
 						?>
-						<option value="<?=$a?>">Licence <?=$a?></option>
+						<option value="<?=$a?>"><?php 
+						if($a<=3) {
+							echo "NIVEAU Licence ".$a;
+						}else{
+							echo "NIVEAU Master ".($a-3);
+						}
+						?></option>
 						<?php
 						}
 						?>

@@ -34,11 +34,11 @@
 						
 						<div class="bg-slate-800 my-1 mx-0.5 w-4/12 p-2 text-slate-100 overflow-auto hidden" id="stdSearch-result"></div>
 
-						<div class="bg-slate-800 my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto grid gap-2 grid-cols-2">
+						<div class="bg-slate-800 my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto grid gap-2 lg:grid-cols-2 xl:grid-cols-3">
 							
 							
 <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-							<div class="m-0 p-2 bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
+							<div class="m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
 										<div class="w-full flex mb-4">
 											<div class="w-8/12">
 												<b>Infos personnelle</b>	
@@ -47,37 +47,37 @@
 										<div class="flex gap-2 mb-3">
 											<div class="w-6/12">
 												<label class="text-sm text-slate-400">Nom</label>
-												<input class="inscInput h-5 text-sm w-full requierd-1" type="text" name="student_nom" id="student_nom" placeholder="--">
+												<input class="inscInput h-6 text-sm w-full requierd-1" type="text" name="student_nom" id="student_nom" placeholder="--">
 											</div>
 											<div class="w-6/12">
 												<label class="text-sm text-slate-400">Prénom</label>
-												<input class="inscInput h-5 text-sm w-full" type="text" name="student_prenom" id="student_prenom" placeholder="--">
+												<input class="inscInput h-6 text-sm w-full" type="text" name="student_prenom" id="student_prenom" placeholder="--">
 											</div>
 										</div>
 										<div class="flex gap-2 mb-3">
 											<div class="w-6/12">
 												<label class="text-sm text-slate-400">Date de naissance</label>
-												<input class="inscInput h-5 text-sm w-full requierd-2" type="date" name="dateNaissance">
+												<input class="inscInput h-6 text-sm w-full requierd-2" type="date" name="dateNaissance">
 											</div>
 											<div class="w-6/12">
 												<label class="text-sm text-slate-400">Lieu de naissance</label>
-												<input class="inscInput h-5 text-sm w-full requierd-3" type="text" name="lieuNaissance" placeholder="--">
+												<input class="inscInput h-6 text-sm w-full requierd-3" type="text" name="lieuNaissance" placeholder="--">
 											</div>
 										</div>
 										<div class="flex gap-2 mb-3">
 											<div class="w-6/12">
 												<label class="text-sm text-slate-400">CIN</label>
-												<input class="inscInput h-5 text-sm w-full" type="text" name="num_cin" placeholder="--">
+												<input class="inscInput h-6 text-sm w-full" type="text" name="num_cin" placeholder="--">
 											</div>
 											<div class="w-6/12">
 												<label class="text-sm text-slate-400">Date de délivrance</label>
-												<input class="inscInput h-5 text-sm w-full" type="date" name="cin_date_delivre">
+												<input class="inscInput h-6 text-sm w-full" type="date" name="cin_date_delivre">
 											</div>
 										</div>
 										<div class="flex gap-2 mb-3">
 											<div class="w-6/12">
 												<label class="text-sm text-slate-400">CIN région</label>
-												<select class="inscInput h-5 text-sm w-full" name="cin_region">
+												<select class="inscInput h-6 text-sm w-full" name="cin_region">
 													<option class="bg-slate-200"></option>
 								<?php 
 								$findRegion = $dtb->query('SELECT * FROM region ORDER BY region');
@@ -97,20 +97,20 @@
 										<div class="flex gap-2 mb-3">
 											<div class="w-6/12">
 												<label class="text-sm text-slate-400">Genre</label>
-												<select class="inscInput h-5 text-sm w-full" name="sex">
+												<select class="inscInput h-6 text-sm w-full" name="sex">
 													<option class="bg-slate-200" value="1">Masculin</option>
 													<option class="bg-slate-200" value="0">Feminin</option>
 												</select>
 											</div>
 											<div class="w-6/12">
 												<label class="text-sm text-slate-400">Nationalité</label>
-												<input class="inscInput h-5 text-sm w-full requierd-4" type="text" name="nationalite" placeholder="--">
+												<input class="inscInput h-6 text-sm w-full requierd-4" type="text" name="nationalite" placeholder="--">
 											</div>
 										</div>
 							</div>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-							<div class="m-0 p-2 bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
+							<div class="m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
 								<div class="w-full flex mb-4">
 									<div class="w-8/12">
 										<b>Infos du contact</b>	
@@ -120,13 +120,13 @@
 								<div class="w-full flex gap-2">
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">Téléphone</label>
-										<input class="inscInput h-5 text-sm w-full mb-3" type="text" name="student_tel" placeholder="--">
+										<input class="inscInput h-6 text-sm w-full mb-3" type="text" name="student_tel" placeholder="--">
 										<label class="text-sm text-slate-400">Adresse mail</label>
-										<input class="inscInput h-5 text-sm w-full mb-3" type="text" name="student_email" id="student_email" placeholder="--">
+										<input class="inscInput h-6 text-sm w-full mb-3" type="text" name="student_email" id="student_email" placeholder="--">
 										<label class="text-sm text-slate-400">Pays d'origine</label>
-										<input class="inscInput h-5 text-sm w-full requierd-5 mb-3" type="text" name="pays_origine" placeholder="--">
+										<input class="inscInput h-6 text-sm w-full requierd-5 mb-3" type="text" name="pays_origine" placeholder="--">
 										<label class="text-sm text-slate-400">Région</label>
-										<select class="inscInput h-5 text-sm w-full requierd-6 mb-3" name="student_region">
+										<select class="inscInput h-6 text-sm w-full requierd-6 mb-3" name="student_region">
 											<option class="bg-slate-200"></option>
 						<?php 
 						$findRegion = $dtb->query('SELECT * FROM region ORDER BY region');
@@ -140,7 +140,7 @@
 										</select>
 											
 										<label class="text-sm text-slate-400">Adresse actuel</label>
-										<input class="inscInput h-5 text-sm w-full requierd-7 mb-3" type="text" name="student_adresse" placeholder="--">
+										<input class="inscInput h-6 text-sm w-full requierd-7 mb-3" type="text" name="student_adresse" placeholder="--">
 									</div>
 									<div class="w-6/12 pl-5">
 										<label class="text-sm text-slate-400" for="student_images">Photos</label><br>
@@ -157,7 +157,7 @@
 							</div>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->			
-							<div class="m-0 p-2 bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
+							<div class="m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
 								<div class="w-full flex mb-4">
 									<div class="w-8/12">
 										<b>Infos d'étude</b>	
@@ -174,7 +174,7 @@
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">Mention</label>
 										
-										<select class="inscInput h-5 text-sm w-full requierd-8 mb-3" name="etude_envisage" id="etude_envisage">
+										<select class="inscInput h-6 text-sm w-full requierd-8 mb-3" name="etude_envisage" id="etude_envisage">
 											<option class="bg-slate-200"></option>
 <?php 
 $findSignMention = $dtb->query('SELECT * FROM filiere ORDER BY filiere_description');
@@ -188,7 +188,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 
 										<label class="text-sm text-slate-400">Niveau</label>
 										
-										<select class="inscInput h-5 text-sm w-full mb-3" name="annee_etude" id="annee_etude">
+										<select class="inscInput h-6 text-sm w-full mb-3" name="annee_etude" id="annee_etude">
 											<option class="bg-slate-200" value="1">Licence 1</option>
 											<option class="bg-slate-200" value="2">Licence 2</option>
 											<option class="bg-slate-200" value="3">Licence 3</option>
@@ -198,7 +198,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 												
 										<label class="text-sm text-slate-400">Status</label>
 										
-										<select class="inscInput h-5 text-sm w-full mb-3" name="status">
+										<select class="inscInput h-6 text-sm w-full mb-3" name="status">
 											<option class="bg-slate-200">Externe</option>
 											<option class="bg-slate-200">Interne</option>
 										</select>
@@ -209,13 +209,13 @@ while ($showSignMention = $findSignMention->fetch()) {
 										<label class="text-sm text-slate-400">Parcours</label>
 										
 										<div id="etude_option">
-											<select id="firstEtd" class="inscInput h-5 text-sm w-full requierd-9 mb-3" name="etude_option" >
+											<select id="firstEtd" class="inscInput h-6 text-sm w-full requierd-9 mb-3" name="etude_option" >
 												<option class="bg-slate-200"></option>
 											</select>
 										</div>
 										<label class="text-sm text-slate-400">Année universitaire</label>
 										
-										<select class="inscInput h-5 text-sm w-full requierd-10 mb-3" name="annee_scolaire">
+										<select class="inscInput h-6 text-sm w-full requierd-10 mb-3" name="annee_scolaire">
 											<option class="bg-slate-200"></option>
 						<?php
 						$y = date('Y');
@@ -232,7 +232,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 										
 										<label class="text-sm text-slate-400">Ancien étudiant</label>
 									
-										<select class="inscInput h-5 text-sm w-full mb-3" name="new_student">
+										<select class="inscInput h-6 text-sm w-full mb-3" name="new_student">
 											<option class="bg-slate-200" value="0">Non</option>
 											<option class="bg-slate-200" value="1">Oui</option>
 										</select>
@@ -243,7 +243,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 							</div>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->							
-							<div class="m-0 p-2 bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
+							<div class="m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
 								<div class="w-full flex mb-4">
 									<div class="w-8/12">
 										<b>Infos parentale</b>	
@@ -253,37 +253,37 @@ while ($showSignMention = $findSignMention->fetch()) {
 								<div class="flex gap-2 mb-3">
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">Nom du père</label>
-										<input class="inscInput h-5 text-sm w-full" type="text" name="father_name" placeholder="--">
+										<input class="inscInput h-6 text-sm w-full" type="text" name="father_name" placeholder="--">
 									</div>
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">Sa profession</label>
-										<input class="inscInput h-5 text-sm w-full" type="text" name="father_prof" placeholder="--">
+										<input class="inscInput h-6 text-sm w-full" type="text" name="father_prof" placeholder="--">
 									</div>
 								</div>
 								<div class="flex gap-2 mb-3">
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">Nom de la mère</label>
-										<input class="inscInput h-5 text-sm w-full" type="text" name="mother_name" placeholder="--">
+										<input class="inscInput h-6 text-sm w-full" type="text" name="mother_name" placeholder="--">
 									</div>
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">Sa profession</label>
-										<input class="inscInput h-5 text-sm w-full" type="text" name="mother_prof" placeholder="--">
+										<input class="inscInput h-6 text-sm w-full" type="text" name="mother_prof" placeholder="--">
 									</div>
 								</div>
 								<div class="flex gap-2 mb-3">
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">Téléphone</label>
-										<input class="inscInput h-5 text-sm w-full" type="text" name="parent_tel" placeholder="--">
+										<input class="inscInput h-6 text-sm w-full" type="text" name="parent_tel" placeholder="--">
 									</div>
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">Adresse</label>
-										<input class="inscInput h-5 text-sm w-full" type="text" name="parent_adresse" placeholder="--">
+										<input class="inscInput h-6 text-sm w-full" type="text" name="parent_adresse" placeholder="--">
 									</div>
 								</div>
 							</div>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->							
-							<div class="m-0 p-2 bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
+							<div class="m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
 								<div class="w-full flex mb-4">
 									<div class="w-8/12">
 										<b>Infos du sponsor</b>	
@@ -293,27 +293,27 @@ while ($showSignMention = $findSignMention->fetch()) {
 								<div class="flex gap-2 mb-3">
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">Nom du sponsor</label>
-										<input class="inscInput h-5 text-sm w-full" type="text" name="sponsor_nom" placeholder="--">
+										<input class="inscInput h-6 text-sm w-full" type="text" name="sponsor_nom" placeholder="--">
 									</div>
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">Prénom</label>
-										<input class="inscInput  h-5 text-sm w-full" type="text" name="sponsor_prenom" placeholder="--">
+										<input class="inscInput  h-6 text-sm w-full" type="text" name="sponsor_prenom" placeholder="--">
 									</div>
 								</div>
 								<div class="flex gap-2 mb-3">
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">Téléphone</label>
-										<input class="inscInput h-5 text-sm w-full" type="text" name="sponsor_tel" placeholder="--">
+										<input class="inscInput h-6 text-sm w-full" type="text" name="sponsor_tel" placeholder="--">
 									</div>
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">Adresse</label>
-										<input class="inscInput h-5 text-sm w-full" type="text" name="sponsor_adresse" placeholder="--">
+										<input class="inscInput h-6 text-sm w-full" type="text" name="sponsor_adresse" placeholder="--">
 									</div>
 								</div>
 							</div>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->							
-							<div class="m-0 p-2 bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
+							<div class="m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
 								<div class="w-full flex mb-4">
 									<div class="w-8/12">
 										<b>Autres...</b>	
@@ -323,24 +323,24 @@ while ($showSignMention = $findSignMention->fetch()) {
 								<div class="flex gap-2 mb-3">
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">État civil</label>
-										<select class="inscInput h-5 text-sm w-full" name="situationf" placeholder="--">
+										<select class="inscInput h-6 text-sm w-full" name="situationf" placeholder="--">
 											<option class="bg-slate-200">Célibataire</option>
 											<option class="bg-slate-200">Marié</option>
 										</select>
 									</div>
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">Nom du/de conjoint(e)</label>
-										<input class="inscInput h-5 text-sm w-full" type="text" name="nom_conjoint" placeholder="--">
+										<input class="inscInput h-6 text-sm w-full" type="text" name="nom_conjoint" placeholder="--">
 									</div>
 								</div>
 								<div class="flex gap-2 mb-3">
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">Nombre d'enfant</label>
-										<input class="inscInput h-5 text-sm w-full" type="text" name="nb_enfant" value="0">
+										<input class="inscInput h-6 text-sm w-full" type="text" name="nb_enfant" value="0">
 									</div>
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">Réligion</label>
-										<select id="firstAutr" class="inscInput h-5 text-sm w-full" name="religion">
+										<select id="firstAutr" class="inscInput h-6 text-sm w-full" name="religion">
 											<option class="bg-slate-200">Adventiste</option>
 											<option class="bg-slate-200">non Adventiste</option>
 										</select>
@@ -349,7 +349,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 								<div class="flex gap-2 mb-3">
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">Numéro visa</label>
-										<input class="inscInput h-5 text-sm w-full" type="text" name="num_visa" placeholder="--">
+										<input class="inscInput h-6 text-sm w-full" type="text" name="num_visa" placeholder="--">
 									</div>
 									<div class="w-6/12">
 										
@@ -443,16 +443,16 @@ while ($showSignMention = $findSignMention->fetch()) {
 				
 				$('#alert').text('Ces zones sont obligatoires !');
 
-				$('.requierd-1').css({'border':'1px solid #FF6E6E','border-radius':'2px','background':'#FF8484'});
-				$('.requierd-2').css({'border':'1px solid #FF6E6E','border-radius':'2px','background':'#FF8484'});
-				$('.requierd-3').css({'border':'1px solid #FF6E6E','border-radius':'2px','background':'#FF8484'});
-				$('.requierd-4').css({'border':'1px solid #FF6E6E','border-radius':'2px','background':'#FF8484'});
-				$('.requierd-5').css({'border':'1px solid #FF6E6E','border-radius':'2px','background':'#FF8484'});
-				$('.requierd-6').css({'border':'1px solid #FF6E6E','border-radius':'2px','background':'#FF8484'});
-				$('.requierd-7').css({'border':'1px solid #FF6E6E','border-radius':'2px','background':'#FF8484'});
-				$('.requierd-8').css({'border':'1px solid #FF6E6E','border-radius':'2px','background':'#FF8484'});
-				$('.requierd-9').css({'border':'1px solid #FF6E6E','border-radius':'2px','background':'#FF8484'});			
-				$('.requierd-10').css({'border':'1px solid #FF6E6E','border-radius':'2px','background':'#FF8484'});
+				$('.requierd-1').css({'border':'1px solid #FF6E6E','background':'#f4aeae'});
+				$('.requierd-2').css({'border':'1px solid #FF6E6E','background':'#f4aeae'});
+				$('.requierd-3').css({'border':'1px solid #FF6E6E','background':'#f4aeae'});
+				$('.requierd-4').css({'border':'1px solid #FF6E6E','background':'#f4aeae'});
+				$('.requierd-5').css({'border':'1px solid #FF6E6E','background':'#f4aeae'});
+				$('.requierd-6').css({'border':'1px solid #FF6E6E','background':'#f4aeae'});
+				$('.requierd-7').css({'border':'1px solid #FF6E6E','background':'#f4aeae'});
+				$('.requierd-8').css({'border':'1px solid #FF6E6E','background':'#f4aeae'});
+				$('.requierd-9').css({'border':'1px solid #FF6E6E','background':'#f4aeae'});			
+				$('.requierd-10').css({'border':'1px solid #FF6E6E','background':'#f4aeae'});
 			
 			}else{
 				

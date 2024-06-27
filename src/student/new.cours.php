@@ -20,7 +20,7 @@
 		$eE = 'DROI';
 	}
  	
- 	$init = 1;
+ 	$init = $level-1;
 
 	for ($a=$init; $a <= $level; $a++) {
  ?>
