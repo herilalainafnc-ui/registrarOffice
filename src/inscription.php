@@ -16,7 +16,7 @@
 			<div class="w-10/12">
 			<!-- BARRE D'OUTILS --><?php require('../init/toolbar.php');?>
 
-<form id="form-inscription">
+<form id="form-inscription" enctype="multipart/form-data">
 			
 				<div class="bg-slate-800 w-all mx-1 px-2 py-1 text-slate-100 flex">
 					<div class="w-2/12">
@@ -47,11 +47,11 @@
 										<div class="flex gap-2 mb-3">
 											<div class="w-6/12">
 												<label class="text-sm text-slate-400">Nom</label>
-												<input class="inscInput h-5 text-sm w-full requierd-1" type="text" name="student_nom" placeholder="--">
+												<input class="inscInput h-5 text-sm w-full requierd-1" type="text" name="student_nom" id="student_nom" placeholder="--">
 											</div>
 											<div class="w-6/12">
 												<label class="text-sm text-slate-400">Prénom</label>
-												<input class="inscInput h-5 text-sm w-full" type="text" name="student_prenom" placeholder="--">
+												<input class="inscInput h-5 text-sm w-full" type="text" name="student_prenom" id="student_prenom" placeholder="--">
 											</div>
 										</div>
 										<div class="flex gap-2 mb-3">
@@ -122,7 +122,7 @@
 										<label class="text-sm text-slate-400">Téléphone</label>
 										<input class="inscInput h-5 text-sm w-full mb-3" type="text" name="student_tel" placeholder="--">
 										<label class="text-sm text-slate-400">Adresse mail</label>
-										<input class="inscInput h-5 text-sm w-full mb-3" type="text" name="student_email" placeholder="--">
+										<input class="inscInput h-5 text-sm w-full mb-3" type="text" name="student_email" id="student_email" placeholder="--">
 										<label class="text-sm text-slate-400">Pays d'origine</label>
 										<input class="inscInput h-5 text-sm w-full requierd-5 mb-3" type="text" name="pays_origine" placeholder="--">
 										<label class="text-sm text-slate-400">Région</label>
@@ -482,5 +482,26 @@ while ($showSignMention = $findSignMention->fetch()) {
 			}
 		});
 
+		$("#student_nom").keyup(function() {
+			var name = $(this).val().toLowerCase();
+
+			if($("#student_prenom").val() == ""){
+				$("#student_email").val(name+'.uaz@zurcher.edu.mg');
+			}else{
+				var lastname = $('#student_prenom').val().substr(0,3).toLowerCase();
+				$("#student_email").val(name+'.'+lastname+'@zurcher.edu.mg');
+			}
+		});
+
+		$('#student_prenom').keyup(function() {
+			var name = $('#student_nom').val().toLowerCase();
+			
+			if($(this).val() == ""){
+				$("#student_email").val(name+'.uaz@zurcher.edu.mg');
+			}else{
+				var lastname = $(this).val().substr(0,3).toLowerCase();
+				$("#student_email").val(name+'.'+lastname+'@zurcher.edu.mg');
+			}
+		});
 	});
 </script>

@@ -299,6 +299,71 @@
 
 	</div>
 
+<!-- FOR MESUPRES -->
+	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifMesupres" style="backdrop-filter: blur(3px);">
+
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+			<form method="post" action="./data.topdf_paysage.php?ptype=mesupres" target="_blank">
+			<div class="p-2 text-black">
+				<b>Exporter la requête MESUPRES.</b>
+			</div>
+			<div class="p-2">
+				<div class="w-all">
+					<div class="flex mb-3">
+						<div class="w-3/12 text-right pr-2">
+					      	<label for="types">Mention</label>
+					    </div>
+					    <div class="w-9/12">
+			    			<select id="types" name="types" class="input w-full">
+			      				<option value="TOUT">Tout</option>
+		<?php 
+					$voir = $dtb->query("SELECT * FROM filiere");
+					while ($affiche = $voir->fetch()) {?>
+										
+								<option value="<?=$affiche['filiere_sigle'];?>"><?=$affiche['filiere_description'];?></option>
+
+		<?php	
+			}
+		 ?>	
+			      			</select>	
+					    </div>
+				    </div>
+
+				    <div class="flex mb-3">
+				    	<div class="w-3/12 text-right pr-2">
+					      	<label for="yearMesupres">Année</label>
+					    </div>
+					    <div class="w-9/12">
+					    	<select name="yearMesupres" id="yearMesupres" class="input w-full">
+								<option></option>
+								<?php
+								$y = date('Y');
+								for ($i=0; $i <= 8; $i++) { 
+									
+									$as = $y." - ".($y+1);
+								?>
+								<option><?=$as?></option>
+								<?php
+								$y = $y - 1;
+								}
+								 ?>
+							</select>
+					    </div>
+				    </div>
+					
+				</div>
+			</div>
+			<div class="p-3">
+				<center>
+				<a href="#" id="cancelnotifMesupres" class="bg-slate-400 p-2 rounded-md">Annuler</a>
+				<input id="btnMesupres" type="submit" class="bg-slate-400 p-2 rounded-md mx-1 toolInactive" value="Afficher">
+				</center>
+			</div>
+			</form>
+		</div>
+
+	</div>
+
 
 <!-- FOR TICKET MAIL -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifTicketMail" style="backdrop-filter: blur(3px);">
@@ -410,6 +475,28 @@
 		});
 		$('#cancelnotifListFOP').click(function(){
 			$('#notifListFOP').css({'display':'none'});
+		});
+
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
+		
+		$('#exportMesupres').click(function(){
+			$('#notifMesupres').css({'display':'block'});
+		});
+		$('#yearMesupres').on('change',function(){
+			
+			if($(this).val()!='') {
+			
+				$('#btnMesupres').attr('class','bg-cyan-800 p-2 rounded-md text-white mx-1');
+			
+			}else{
+			
+				$('#btnMesupres').attr('class','bg-slate-400 p-2 rounded-md mx-1 toolInactive');
+			}
+
+		});
+		$('#cancelnotifMesupres').click(function(){
+			$('#notifMesupres').css({'display':'none'});
 		});
 
 		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
