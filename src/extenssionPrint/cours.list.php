@@ -1,5 +1,5 @@
 <center>
-	<b class="text-2xl">Liste d'étudiant</b>
+	<b class="text-2xl">Liste de cours</b>
 </center>
 
 <?php

@@ -4,7 +4,8 @@
 	require('../data/backdb.php');
 	require('../init/head.php');
 	$ptype = $_GET['ptype'];
-	$date = date('Y-m-d');
+	$h = (date('H')+3);
+	$date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
 
  ?>
 
@@ -119,6 +120,9 @@ function printThisContent(){
     require '../data/vendor/autoload.php';
 
     use PhpOffice\PhpSpreadsheet\Spreadsheet;
+    use PhpOffice\PhpSpreadsheet\IOFactoey;
+    use PhpOffice\PhpSpreadsheet\Style\Alignment;
+    use PhpOffice\PhpSpreadsheet\Style\Fill;
     use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST' AND isset($_POST['html'])) {

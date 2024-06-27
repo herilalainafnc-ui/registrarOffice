@@ -58,7 +58,13 @@ if ($profil['new_student'] == 1) {
 								</div>
 								
 								<b class="text-1xl"><?=$profil['student_id'] ?></b>
-								<p>Niveau L<?=$profil['annee_etude']?></p>
+								<p><?php
+if ($profil['annee_etude']<=3) {
+	echo "Licence ".$profil['annee_etude'];
+}else{
+	echo "Master ".$profil['annee_etude']-3;
+}
+								?></p>
 								<p><a href="https://mail.google.com/mail/u/0/#inbox?compose=<?=$profil['student_email']?>" target="_blank"><?=$profil['student_email']?></a></p>
 							</div>
 							

@@ -195,6 +195,10 @@ $y = $y - 1;
 					</a></li>
 					<li><a href="#?filter=annee_etude&channel=3" class="stdFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Licence 3</p>
 					</a></li>
+					<li><a href="#?filter=annee_etude&channel=4" class="stdFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Master 1</p>
+					</a></li>
+					<li><a href="#?filter=annee_etude&channel=5" class="stdFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Master 2</p>
+					</a></li>
 
 <?php }elseif($page == "accueil.cours.php") { ?>
 
@@ -225,6 +229,10 @@ while ($showSignMention = $findSignMention->fetch()) {
 					<li><a href="#?filter=yearlevel&channel=2" class="coursFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Licence 2</p>
 					</a></li>
 					<li><a href="#?filter=yearlevel&channel=3" class="coursFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Licence 3</p>
+					</a></li>
+					<li><a href="#?filter=yearlevel&channel=4" class="coursFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Master 1</p>
+					</a></li>
+					<li><a href="#?filter=yearlevel&channel=5" class="coursFilter"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Master 2</p>
 					</a></li>
 
 <?php }elseif($page == "accueil.prof.php") { ?>		
