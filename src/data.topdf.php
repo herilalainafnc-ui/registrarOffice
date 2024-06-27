@@ -133,7 +133,7 @@ function printThisContent(){
                 
                 $.ajax({
                     type: 'POST',
-                    url: '',
+                    url: 'data.topdf.php',
                     data: { html: htmlContent },
                     success: function(response) {
                         
@@ -160,11 +160,21 @@ function printThisContent(){
 	use PhpOffice\PhpSpreadsheet\Style\Alignment;
 	use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' AND isset($_POST['html'])) {
-        
-        $html = $_POST['html'];
-        exportToExcel($html);
-    }
+    
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+    // Générer le contenu HTML dynamique
+    ob_start();
+    
+    // Inclure ou générer votre contenu dynamique ici
+    // Par exemple, include 'votre_fichier_dynamique.php';
+    include 'data.topdf.php#printThisContent';
+    
+    $htmlContent = ob_get_clean();
+
+    // Appeler la fonction pour exporter en Excel
+    exportToExcel($htmlContent);
+	}
 
     function exportToExcel($html) {
         $spreadsheet = new Spreadsheet();
@@ -174,8 +184,9 @@ function printThisContent(){
         $spreadsheet = $reader->loadFromString($html);
 
         $writer = new Xlsx($spreadsheet);
-        $fileName = $printName.'_'.$date.'.xlsx';
+        $fileName = $printName.' '.$date.'.xlsx';
 
+        // Envoyer les en-têtes pour télécharger le fichier Excel
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $fileName . '"');
         header('Cache-Control: max-age=0');

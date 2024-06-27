@@ -1,7 +1,7 @@
 <?php
-	require '../dbauto/connectdb.php';
+	require ('../data/backdb.php');
 
-	$date_entry = $_POST['date_entry'];
+	$date_entry = date('Y-m-d');
 	$sigle = $_POST['sigle'];
 	$title = $_POST['title'];
 	$title_english = $_POST['title_english'];
@@ -18,11 +18,7 @@
 	$description = $_POST['description'];
 	$remark = $_POST['remark'];
 
-
-	
-	if(isset($_POST['active'])){
-		echo "<br>". $active = 1;
-	}
+	$active = 1;
 
 $insertteacher = $dtb->prepare("INSERT INTO t_2023_cours(
 			Sigle,
@@ -73,5 +69,5 @@ $insertteacher = $dtb->prepare("INSERT INTO t_2023_cours(
 			'active' => $active,
 			'date_entry' => $date_entry 
 ));
-	header('location:../list_cours.php');
+	//header('location:../list_cours.php');
  ?>
