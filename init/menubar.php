@@ -39,7 +39,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php") {
 			
 		</li></a>
 
-		<a href="#" class="toolInactive"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
+		<a href="#" id="addCours"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
 if($page == "addCours.php") {
 	echo "bg-cyan-700";
 } ?>">

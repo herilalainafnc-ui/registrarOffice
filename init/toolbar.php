@@ -37,6 +37,17 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 
 <!-- BRANCHE D'OUTILS 2 -->	
 	<div class="w-2/12 border-r flex px-1">
+
+		<a href="#" id="exportMesupres" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
+if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
+	echo "toolInactive";
+} ?>">
+				<center>
+				<i class="bi-bar-chart-steps text-2xl"></i><br>
+						Mesupres
+				</center>
+			
+		</a>
 		
 		<a href="#" id="exportListCSV" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
@@ -305,6 +316,9 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 </div>
 
 <!-- NOTIFICATION MANAGER --><?php require('./main/notificationGeneral.php');?>
+
+
+<!-- BIG NOTIF MANAGER --><?php require('./main/bigNotif.php');?>
 
 <script type="text/javascript">
 

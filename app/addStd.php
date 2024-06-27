@@ -20,7 +20,6 @@
 	$pays_origine = $_POST['pays_origine'];
 	$student_region = $_POST['student_region'];
 	$student_adresse = $_POST['student_adresse'];
-	$image_student = $_POST['image_student'];
 	$student_id = $_POST['student_id'];
 
 	$mention = $_POST['etude_envisage'];
@@ -51,6 +50,37 @@
 	$last_change_user_id = $_GET['rg_id'];
 	$date_entry = date("Y-m-d");
 
+	/*:::::::::::::::::::: PASSWORD MAIL GENERATE ::::::::::::::::::::*/
+
+	$a = rand(1000,9999);
+	
+	$mois = date('m');
+	if ($mois < 7){
+		$y = date('Y');
+	}else{
+		$y = date('Y')+1;
+	}
+	
+	$password = $a."Student".$y;
+
+	/*:::::::::::::::::::: CODE-BAR GENERATE ::::::::::::::::::::*/
+
+	$lookup_code = $y.$student_id;
+
+
+	/*:::::::::::::::::::: IMAGE GENERATE ::::::::::::::::::::*/
+
+	$image = $_FILES['image_student']['name'];
+	$image_tmp = $_FILES['image_student']['tmp_name'];
+	$extension = array('.jpg','.JPG','.png','.PNG','.jpeg','.JPEG');
+	$extension_image = strrchr($image,".");
+	$image_dest = 'photosetudiants/';
+
+	$dbimage = $student_id.''.$image;
+
+	in_array($extension_image, $extension);
+	move_uploaded_file($image_tmp, $image_dest.$dbimage);
+
 
 
 	$insertStd = $dtb->prepare('INSERT INTO etudiant_second_semester_23(
@@ -65,6 +95,8 @@
 		nationalite,
 		student_tel,
 		student_email,
+		password,
+		lookup_code,
 		pays_origine,
 		student_region,
 		student_adresse,
@@ -106,6 +138,8 @@
 		:nationalite,
 		:student_tel,
 		:student_email,
+		:password,
+		:lookup_code,
 		:pays_origine,
 		:student_region,
 		:student_adresse,
@@ -147,10 +181,12 @@
 		'nationalite' => $nationalite,
 		'student_tel' => $student_tel,
 		'student_email' => $student_email,
+		'password' => $password,
+		'lookup_code' => $lookup_code,
 		'pays_origine' => $pays_origine,
 		'student_region' => $student_region,
 		'student_adresse' => $student_adresse,
-		'image_student' => $image_student,
+		'image_student' => $dbimage,
 		'student_id' => $student_id,
 		'etude_envisage' => $etude_envisage,
 		'annee_etude' => $annee_etude,
@@ -177,5 +213,5 @@
 		'date_entry' => $date_entry
 	));
 
-//	header('location:../inscription.php');
+	header('location:../inscription.php');
  ?>

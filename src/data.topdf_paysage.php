@@ -39,6 +39,8 @@
 				
 				if($ptype == "foplist") {
 					require ('./extenssionPrint/fop.list.php');
+				}elseif($ptype == "mesupres") {
+					require ('./extenssionPrint/mesupres.php');
 				}
 
 			if($ptype != "Badge" AND $ptype != "Abonnement Caf" AND $ptype != "Worked_point" AND $ptype != "foplist") {
