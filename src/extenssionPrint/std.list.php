@@ -63,7 +63,12 @@ if(empty($_POST['cours'])){
  				<td class="w-[80px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><b><?=$student_id = $affiche['student_id']?></b></td>
  				<td class="w-[300px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$affiche['student_nom']." ".$affiche['student_prenom']?></td>
  				<td class="w-[160px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$affiche['etude_option']?></td>
- 				<td class="w-[50px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>">L<?=$affiche['annee_etude']?></td>
+ 				<td class="w-[50px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?php
+				if($affiche['annee_etude']<=3) {
+					echo "L ".$affiche['annee_etude'];
+				}else{
+					echo "M ".($affiche['annee_etude']-3);
+				} ?></td>
  				<td class="w-" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$affiche['student_tel']?></td>
  				
  			</tr>

@@ -21,10 +21,20 @@
 	$cumulFinale = 0;
 
 	for ($a=1; $a <= $level; $a++) { 
-	echo "<div class='p-1 bg-slate-700 hover:bg-slate-600 mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'> <b>NIVEAU L".$a."</b>";
-		
-		for ($s=1; $s <=2 ; $s++) { 
-			
+?>
+	<div class='p-1 bg-slate-700 hover:bg-slate-600 mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+<b>
+		<?php 
+		if($a<=3) {
+			echo "NIVEAU Licence ".$a;
+		}else{
+			echo "NIVEAU Master ".($a-3);
+		}
+		?>		
+</b>	
+
+<?php
+		for ($s=1; $s <=2 ; $s++) {	
 		
  ?>
 		<table class="simpleTbl mb-1">

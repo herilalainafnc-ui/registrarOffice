@@ -40,7 +40,13 @@
 			<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['etude_envisage']?></div></a></td>
 			<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['etude_option']?></div></a></td>
 			<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['annee_scolaire']?></div></a></td>
-			<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full">L<?=$sdt_list['annee_etude']?></div></a></td>
+			<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?php
+				if($sdt_list['annee_etude']<=3) {
+					echo "Licence ".$sdt_list['annee_etude'];
+				}else{
+					echo "Master ".($sdt_list['annee_etude']-3);
+				} ?></div></a>
+			</td>
 		</tr>
 
 <?php
