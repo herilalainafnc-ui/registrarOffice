@@ -20,54 +20,64 @@
 
 	$active = 1;
 
-$insertteacher = $dtb->prepare("INSERT INTO t_2023_cours(
-			Sigle,
-			title,
-			title_english,
-			Description,
-			nb_crd,
-			Remark,
-			dep_desc,
-			category,
-			id_teacher,
-			semester,
-			lab,
-			ajout,
-			yearlevel,
-			active,
-			date_entry
-) VALUES (
-			:Sigle,
-			:title,
-			:title_english,
-			:Description,
-			:nb_crd,
-			:Remark,
-			:dep_desc,
-			:category,
-			:id_teacher,
-			:semester,
-			:lab,
-			:ajout,
-			:yearlevel,
-			:active,
-			:date_entry
-)");$insertteacher->execute(array(
-			'Sigle' => $sigle,
-			'title' => $title,
-			'title_english' => $title_english,
-			'Description' => $description,
-			'nb_crd' => $nb_credit,
-			'Remark' => $remark,
-			'dep_desc' => $dep_desc,
-			'category' => $category,
-			'id_teacher' => $teacher_id,
-			'semester' => $semester,
-			'lab' => $lab,
-			'ajout' => $ajout,
-			'yearlevel' => $yearlevel,
-			'active' => $active,
-			'date_entry' => $date_entry 
-));
-	//header('location:../list_cours.php');
+if($sigle !="" AND $title!="") {
+	$insertteacher = $dtb->prepare("INSERT INTO t_2023_cours(
+				Sigle,
+				title,
+				title_english,
+				Description,
+				nb_crd,
+				Remark,
+				dep_desc,
+				category,
+				id_teacher,
+				semester,
+				lab,
+				ajout,
+				yearlevel,
+				active,
+				date_entry
+	) VALUES (
+				:Sigle,
+				:title,
+				:title_english,
+				:Description,
+				:nb_crd,
+				:Remark,
+				:dep_desc,
+				:category,
+				:id_teacher,
+				:semester,
+				:lab,
+				:ajout,
+				:yearlevel,
+				:active,
+				:date_entry
+	)");$insertteacher->execute(array(
+				'Sigle' => $sigle,
+				'title' => $title,
+				'title_english' => $title_english,
+				'Description' => $description,
+				'nb_crd' => $nb_credit,
+				'Remark' => $remark,
+				'dep_desc' => $dep_desc,
+				'category' => $category,
+				'id_teacher' => $teacher_id,
+				'semester' => $semester,
+				'lab' => $lab,
+				'ajout' => $ajout,
+				'yearlevel' => $yearlevel,
+				'active' => $active,
+				'date_entry' => $date_entry 
+	));
+
+	header('location:../list_cours.php');
+
+}else{
+	echo "Opération non effectué!!!";
  ?>
+ 	<a href="../list_cours.php">Retour</a>
+<?php 
+}
+ ?>
+ 
