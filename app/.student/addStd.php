@@ -1,5 +1,5 @@
 <?php 
-	require ('../data/backdb.php');
+	require ('../../data/backdb.php');
 
 	$student_nom = $_POST['student_nom'];
 	$student_prenom = $_POST['student_prenom'];
@@ -74,7 +74,7 @@
 	$image_tmp = $_FILES['image_student']['tmp_name'];
 	$extension = array('.jpg','.JPG','.png','.PNG','.jpeg','.JPEG');
 	$extension_image = strrchr($image,".");
-	$image_dest = 'photosetudiants/';
+	$image_dest = '../photosetudiants/';
 
 	$dbimage = $student_id.''.$image;
 
@@ -213,5 +213,5 @@
 		'date_entry' => $date_entry
 	));
 
-	header('location:../inscription.php');
+	header('location:../../src/inscription.php');
  ?>

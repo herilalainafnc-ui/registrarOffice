@@ -53,7 +53,9 @@ if ($cours_list['category'] == 0){
 		<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
 $findTeach = $dtb->query('SELECT * FROM teacher WHERE uid = "'.$cours_list['id_teacher'].'"');
 $showTeach = $findTeach->fetch();
-echo strtoupper($showTeach['name'])." ".$showTeach['lastName'];
+if(!empty($showTeach)) {
+	echo strtoupper($showTeach['name'])." ".$showTeach['lastName'];
+}
  ?></div></a></td>
 	</tr>
 

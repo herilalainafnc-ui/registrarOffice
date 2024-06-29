@@ -2,7 +2,7 @@
 <html>
 <head>
 	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
-	<title>Home</title>
+	<title>Ajout étudiant</title>
 </head>
 <body class="bg-slate-600 text-sm">
 	<div class="h-screen w-full bg-slate-600">

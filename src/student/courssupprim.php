@@ -82,8 +82,8 @@ if ($crs['cours_category'] == 0){
 					$showUser = $findUser->fetch(); echo $showUser['prenom'];
 				?></td>
 					<td><?=$crs['last_change_datetime']?></td>
-					<td class="p-0 text-center bg-green-700 w-[60px]"><a href="../app/recup-cours.php?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$a.$s?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>">Restaurer</a></td>
-					<td class="p-0 text-center bg-red-700 w-[60px]"><a href="../app/del-cours.definitive.php?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$a.$s?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>">Effacer</a></td>
+					<td class="p-0 text-center bg-green-700 w-[60px]"><a href="../app/.student/recup-cours.php?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$a.$s?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>">Restaurer</a></td>
+					<td class="p-0 text-center bg-red-700 w-[60px]"><a href="../app/.student/del-cours.definitive.php?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$a.$s?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>">Effacer</a></td>
 
 				</tr>
 

@@ -1,5 +1,6 @@
 <?php 
 	require('../data/backdb.php');
+
  ?>
 <table class="simpleTbl">
 	<thead class="bg-slate-500 text-white">

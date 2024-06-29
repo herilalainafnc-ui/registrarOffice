@@ -11,7 +11,9 @@
 							 <p><b class="text-lg"><?=$dep_desc?></b><br>Prof : <?php 
 $findTeach = $dtb->query('SELECT * FROM teacher WHERE uid = "'.$profil['id_teacher'].'"');
 $showTeach = $findTeach->fetch();
-echo strtoupper($showTeach['name'])." ".$showTeach['lastName'];
+if(!empty($showTeach)) {
+	echo strtoupper($showTeach['name'])." ".$showTeach['lastName'];
+}
  ?></p>
 						</div>
 						<hr>
@@ -78,7 +80,7 @@ if(isset($_GET['page']) and $_GET['page'] == "etudiants") {
 									</div>
 								</a>
 
-								<a href="#" class="toolInactive">
+								<a href="#" id="cours-suppr">
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md">
 										
 										<i class="bi-trash3"></i>

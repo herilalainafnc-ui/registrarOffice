@@ -1,5 +1,5 @@
 <?php 
-	require('../data/backdb.php');
+	require('../../data/backdb.php');
 
 	$id = $_GET['id'];
 	$as = $_GET['as'];
@@ -26,5 +26,5 @@
 
 	$updateNote->execute();
 
-	header('location:../src/student.php?id='.$id.'&page=transcript#semestre'.$as);
+	header('location:../../src/student.php?id='.$id.'&page=transcript#semestre'.$as);
  ?>

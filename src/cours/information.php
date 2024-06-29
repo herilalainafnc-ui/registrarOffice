@@ -1,5 +1,5 @@
 
-<form method="post" action="../app/updateCours.php?id=<?=$id?>" class="form-no-refrech">
+<form method="post" action="../app/.cours/updateCours.php?id=<?=$id?>" class="form-no-refrech">
 <div class="w-full grid gap-2 grid-cols-2">
 
 	<div class='m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
@@ -39,7 +39,9 @@ while ($showMent = $findSignMention->fetch()) {
 <?php 
 $findTeach = $dtb->query('SELECT * FROM teacher WHERE uid = "'.$profil['id_teacher'].'"');
 $showTeach = $findTeach->fetch();
-echo strtoupper($showTeach['name'])." ".$showTeach['lastName'];
+if(!empty($showTeach)) {
+	echo strtoupper($showTeach['name'])." ".$showTeach['lastName'];
+}
  ?>			
 			</p><select name="id_teacher" class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden">
 <?php 
@@ -138,7 +140,7 @@ if ($profil['category'] == 0){
 		$('.form-no-refrech').on('submit',function (e) {
 			e.preventDefault();
 
-			var url = '../app/updateCours.php?id=<?=$id?>';
+			var url = '../app/.cours/updateCours.php?id=<?=$id?>';
 			var data = $(this).serialize();
 
 			$.post(url,data,function(response){

@@ -1,5 +1,5 @@
 <?php
-	require ('../data/backdb.php');
+	require ('../../data/backdb.php');
 
 	$date_entry = date('Y-m-d');
 	$sigle = $_POST['sigle'];
@@ -20,7 +20,6 @@
 
 	$active = 1;
 
-<<<<<<< HEAD
 if($sigle !="" AND $title!="") {
 	$insertteacher = $dtb->prepare("INSERT INTO t_2023_cours(
 				Sigle,
@@ -72,66 +71,12 @@ if($sigle !="" AND $title!="") {
 				'date_entry' => $date_entry 
 	));
 
-	header('location:../list_cours.php');
+	header('location:../../src/accueil.cours.php');
 
 }else{
 	echo "Opération non effectué!!!";
  ?>
- 	<a href="../list_cours.php">Retour</a>
+ 	<a href="../../src/accueil.cours.php">Retour</a>
 <?php 
 }
  ?>
- 
-=======
-$insertteacher = $dtb->prepare("INSERT INTO t_2023_cours(
-			Sigle,
-			title,
-			title_english,
-			Description,
-			nb_crd,
-			Remark,
-			dep_desc,
-			category,
-			id_teacher,
-			semester,
-			lab,
-			ajout,
-			yearlevel,
-			active,
-			date_entry
-) VALUES (
-			:Sigle,
-			:title,
-			:title_english,
-			:Description,
-			:nb_crd,
-			:Remark,
-			:dep_desc,
-			:category,
-			:id_teacher,
-			:semester,
-			:lab,
-			:ajout,
-			:yearlevel,
-			:active,
-			:date_entry
-)");$insertteacher->execute(array(
-			'Sigle' => $sigle,
-			'title' => $title,
-			'title_english' => $title_english,
-			'Description' => $description,
-			'nb_crd' => $nb_credit,
-			'Remark' => $remark,
-			'dep_desc' => $dep_desc,
-			'category' => $category,
-			'id_teacher' => $teacher_id,
-			'semester' => $semester,
-			'lab' => $lab,
-			'ajout' => $ajout,
-			'yearlevel' => $yearlevel,
-			'active' => $active,
-			'date_entry' => $date_entry 
-));
-	header('location:../list_cours.php');
- ?>
->>>>>>> 85524414d66b1ba7e7b483083fca4da32379781b

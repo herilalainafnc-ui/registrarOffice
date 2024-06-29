@@ -1,5 +1,5 @@
 <?php 
-	require ('../data/backdb.php');
+	require ('../../data/backdb.php');
 
 	$id = $_GET['id'];
 	$student_id = $_GET['student_id'];
@@ -89,5 +89,5 @@
 
 		}
 	}
-	header('location:../src/student.php?id='.$id.'&page=transcript')
+	header('location:../../src/student.php?id='.$id.'&page=transcript')
  ?>

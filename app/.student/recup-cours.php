@@ -1,5 +1,5 @@
 <?php 
-require ('../data/backdb.php');
+require ('../../data/backdb.php');
 
 echo "<br>".$student_id = $_GET['student_id'];
 echo "<br>".$id = $_GET['id'];
@@ -26,6 +26,6 @@ echo "<br>".$last_change_user_id = $_GET['user_id'];
 
 	$updatenote->execute();
 
-header('location:../src/student.php?id='.$id.'&page=transcript#semestre'.$as);
+header('location:../../src/student.php?id='.$id.'&page=transcript#semestre'.$as);
 
  ?>

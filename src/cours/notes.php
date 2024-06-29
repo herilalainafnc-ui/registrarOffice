@@ -39,7 +39,7 @@ while ($cours_table = $cors->fetch()) {
 $idcours = $cours_table['id'];
  ?>
 
-<form method="post" action="../app/completnotes.php?id=<?=$id?>&idcours=<?=$idcours?>" class="form-no-refrech">
+<form method="post" action="../app/.cours/completnotes.php?id=<?=$id?>&idcours=<?=$idcours?>" class="form-no-refrech">
 					<tr>
 						<td class="bg-gradient-to-r from-orange-800 to-orange-400"><?=$cours_table['student_id']?></td>
 						<td class="c<?=$nbr.$i;?>"><?php
@@ -94,7 +94,7 @@ if ($cours_table['grade'] == -2 OR $cours_table['grade'] >= 10) {
 								<a href="#" class="btn nav-link" type="button" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="bi-three-dots-vertical"></span></a>
 								<ul class="dropdown-menu">
 							        <li>
-<a class="dropdown-item" href="actions/dell-listcours.incours.php?idSupprCours=<?=$idcours?>&id=<?=$id?>"><span class="bi-trash3-fill" style="color: red;"></span> Supprimer cet étudiant</a></li>
+<a class="dropdown-item" href="app/.cours/dell-listcours.incours.php?idSupprCours=<?=$idcours?>&id=<?=$id?>"><span class="bi-trash3-fill" style="color: red;"></span> Supprimer cet étudiant</a></li>
 					          		</ul>
 							</div>
 						</td>

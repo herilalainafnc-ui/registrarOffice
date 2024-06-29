@@ -1,5 +1,5 @@
 <?php 
-	require('../data/backdb.php');
+	require('../../data/backdb.php');
 
 	$id = $_GET['id'];
 	$student_id = $_GET['student_id'];
@@ -9,7 +9,7 @@
 	$image_tmp = $_FILES['image_student']['tmp_name'];
 	$extension = array('.jpg','.JPG','.png','.PNG','.jpeg','.JPEG','.NEF','.nef');
 	$extension_image = strrchr($image,".");
-	$image_dest = 'photosetudiants/';
+	$image_dest = '../photosetudiants/';
 
 	$date = date('Y-m-d');
 
@@ -32,5 +32,5 @@
 
 		$updateNote->execute();
 	}
-	header('location:../src/student.php?id='.$id.'&page=information');
+	header('location:../../src/student.php?id='.$id.'&page=information');
  ?>
