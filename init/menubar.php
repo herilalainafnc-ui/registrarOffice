@@ -11,7 +11,7 @@ if($page == "accueil.php" OR $page == "student.php") {
 				<span class="icon">
 					<ion-icon class="bi-people-fill"></ion-icon>
 				</span>
-				<span class="title">Liste des étudiants</span>
+				<span class="title">Liste d'étudiant</span>
 			
 		</li></a>
 
@@ -35,13 +35,14 @@ if($page == "accueil.cours.php" OR $page == "cours.php") {
 				<span class="icon">
 					<ion-icon class="bi-list-columns-reverse"></ion-icon>
 				</span>
-				<span class="title">Liste des cours</span>
+				<span class="title">Liste de cours</span>
 			
 		</li></a>
 
 		<a href="#" id="addCours"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
-if($page == "addCours.php") {
-	echo "bg-cyan-700";
+
+if($page != "addCours" AND $page != "accueil.cours.php" AND $page != "cours.php"){
+	echo "toolInactive";
 } ?>">
 			
 				<span class="icon">
@@ -59,13 +60,14 @@ if($page == "accueil.prof.php" OR $page == "prof.php") {
 				<span class="icon">
 					<ion-icon class="bi-person-lines-fill"></ion-icon>
 				</span>
-				<span class="title">Liste des enseignants</span>
+				<span class="title">Liste d'enseignant</span>
 			
 		</li></a>
 
-		<a href="#" class="toolInactive"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
-if($page == "addProf.php") {
-	echo "bg-cyan-700";
+		<a href="#" id="addProf"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
+
+if($page != "addProf" AND $page != "accueil.prof.php" AND $page != "prof.php"){
+	echo "toolInactive";
 } ?>">
 			
 				<span class="icon">

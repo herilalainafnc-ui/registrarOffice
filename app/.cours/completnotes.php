@@ -1,5 +1,5 @@
 <?php 
-	require ('../data/backdb.php');
+	require ('../../data/backdb.php');
 	
 	$id = $_GET['id'];
 	$idcours = $_GET['idcours'];
@@ -11,6 +11,6 @@
 	$update->bindParam(':idcours',$idcours,PDO::PARAM_INT);
 	$update->execute();
 
-	header('location:../src/cours.php?id='.$id.'&page=notes');
+	header('location:../../src/cours.php?id='.$id.'&page=notes');
 
  ?>

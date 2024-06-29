@@ -1,5 +1,5 @@
 <?php 
-require '../data/backdb.php';
+require '../../data/backdb.php';
 
 	$teacher_id = $_GET['id'];
 	$name = $_POST['name'];
@@ -44,4 +44,4 @@ require '../data/backdb.php';
 
 $update->execute();
 
-header('location:../src/prof.php?id='.$teacher_id.'&page=information');
+header('location:../../src/prof.php?id='.$teacher_id.'&page=information');
