@@ -341,7 +341,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 			$('#all-std').css({'display':'none'});
 
 		    $.ajax({
-				url:"../init/std-live.php",
+				url:"../init/.student/std-live.php",
 				method:"POST",
 				data:{trie:trie},
 
@@ -361,7 +361,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 			$('#all-cours').css({'display':'none'});
 
 		    $.ajax({
-				url:"../init/cours-live.php",
+				url:"../init/.cours/cours-live.php",
 				method:"POST",
 				data:{trie:trie},
 
@@ -382,7 +382,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 			$('#all-prof').css({'display':'none'});
 
 		    $.ajax({
-				url:"../init/prof-live.php",
+				url:"../init/.prof/prof-live.php",
 				method:"POST",
 				data:{trie:trie},
 
@@ -407,7 +407,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 			$('#all-std').css({'display':'none'});
 
 		    $.ajax({
-				url:"../init/std-livesearch.php",
+				url:"../init/.student/std-livesearch.php",
 				method:"POST",
 				data:{filter:filter , channel:channel},
 
@@ -431,7 +431,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 			$('#all-cours').css({'display':'none'});
 
 		    $.ajax({
-				url:"../init/cours-livesearch.php",
+				url:"../init/.cours/cours-livesearch.php",
 				method:"POST",
 				data:{filter:filter , channel:channel},
 
@@ -455,7 +455,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 			$('#all-prof').css({'display':'none'});
 
 		    $.ajax({
-				url:"../init/prof-livesearch.php",
+				url:"../init/.prof/prof-livesearch.php",
 				method:"POST",
 				data:{filter:filter , channel:channel},
 

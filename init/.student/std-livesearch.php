@@ -1,5 +1,5 @@
 <?php 
-	require('../data/backdb.php');	
+	require('../../data/backdb.php');
 
  ?>
 <table class="simpleTbl">
@@ -15,14 +15,23 @@
 		</tr>
 	</thead>
 	<tbody>
-<?php 
-if (isset($_POST['trie'])) {
-		
-	$trie = $_POST['trie'];
+<?php
 	
-	$recupsdt = $dtb->query('SELECT * FROM etudiant_second_semester_23 ORDER BY '.$trie.' limit 800');
-}
-	$sdt_nbLive = 1;
+	if (isset($_POST['input'])) {
+		
+		$input = $_POST['input'];
+
+	$recupsdt = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE student_id LIKE "%'.$input.'%" OR student_nom LIKE "%'.$input.'%" OR student_prenom LIKE "%'.$input.'%" OR sex LIKE "%'.$input.'%" OR student_email LIKE "%'.$input.'%" OR student_tel LIKE "%'.$input.'%" OR religion LIKE "%'.$input.'%" ORDER BY student_id DESC limit 100');
+	
+	}elseif (isset($_POST['filter']) AND isset($_POST['channel'])) {
+			$filter = $_POST['filter'];
+			$channel = $_POST['channel'];
+
+	$recupsdt = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE '.$filter.' LIKE "%'.$channel.'%" ORDER BY student_id DESC limit 800');
+
+	}
+
+	$sdt_nbLivesearch = 1;
 	while ($sdt_list = $recupsdt->fetch()) {
  ?>								
 		<tr id="std_<?=$sdt_nb?>" class="hover:bg-slate-300 hover:text-slate-800">	
@@ -42,7 +51,7 @@ if (isset($_POST['trie'])) {
 		</tr>
 
 <?php
-	$sdt_nbLive++;
+	$sdt_nbLivesearch++;
 	}
  ?>								
 

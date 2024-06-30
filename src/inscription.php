@@ -362,9 +362,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 
 				</div>
 </form>					
-				<div class="w-10/12 h-6 bg-slate-500 mt-1 absolute bottom-0">
-						
-				</div>
+				<?php require('../init/footer.php'); ?>
 			</div>
 
 

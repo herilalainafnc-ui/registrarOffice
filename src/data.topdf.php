@@ -41,7 +41,7 @@
 
 		if($ptype != "Badge" AND $ptype != "Abonnement Caf" AND $ptype !="ticketMail") { 
 		
-			require('../init/top.forPrint.php'); 
+			require('../init/.forPrint/top.forPrint.php'); 
 		
 		}
 		
@@ -78,7 +78,7 @@
 
 		if($ptype != "Badge" AND $ptype != "Abonnement Caf" AND $ptype != "Worked_point" AND $ptype !="ticketMail") {
 		
-			require('../init/foot.forPrint.php');
+			require('../init/.forPrint/foot.forPrint.php');
 
 		}
 	?>

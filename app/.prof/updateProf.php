@@ -1,10 +1,19 @@
 <?php 
 require '../../data/backdb.php';
-
+	
+	$last_change_user_id = $_GET['rg_id'];
 	$teacher_id = $_GET['id'];
 	$name = $_POST['name'];
 	$lastName = $_POST['lastName'];
-	$birthday = $_POST['birthday'];
+	
+	$bthday = $_POST['birthday'];
+    
+    if ($bthday =="") {
+		$birthday == "0000-00-00";
+	}else{
+		$birthday == $bthday;
+	}
+
     $lieuN = $_POST['lieuN'];
     $sex = $_POST['sex'];
     $religion = $_POST['religion'];
@@ -25,6 +34,7 @@ require '../../data/backdb.php';
 		diplome=:diplome,
 		phone=:phone,
 		email=:email,
+		last_change_user_id=:last_change_user_id,
 		last_change_datetime=:last_change_datetime
 
 		WHERE teacher_id=:teacher_id");
@@ -38,6 +48,7 @@ require '../../data/backdb.php';
 	$update->bindParam(':diplome',$diplome,PDO::PARAM_STR);
 	$update->bindParam(':phone',$phone,PDO::PARAM_STR);
 	$update->bindParam(':email',$email,PDO::PARAM_STR);
+	$update->bindParam(':last_change_user_id',$last_change_user_id,PDO::PARAM_INT);
 	$update->bindParam(':last_change_datetime',$last_change_datetime,PDO::PARAM_STR);
 	
 	$update->bindParam(':teacher_id',$teacher_id,PDO::PARAM_INT);

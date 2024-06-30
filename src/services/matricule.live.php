@@ -14,7 +14,31 @@
 		
 		$showO = $findOption->fetch();
 
-		echo (intval($showO['student_id'])+1);
+		if(!empty($showO)) {
+			echo (intval($showO['student_id'])+1);	
+		}else{
+			if ($mention == "THEO") {
+				echo "10000";	
+			}elseif ($mention == "GEST") {
+				echo "20000";	
+			}elseif ($mention == "INFO") {
+				echo "30000";	
+			}elseif ($mention == "NURS") {
+				echo "40000";	
+			}elseif ($mention == "EDUC") {
+				echo "50000";	
+			}elseif ($mention == "COMM") {
+				echo "60000";	
+			}elseif ($mention == "LANG") {
+				echo "70000";	
+			}elseif ($mention == "CPRE") {
+				echo "80000";	
+			}elseif ($mention == "DROI") {
+				echo "90000";	
+			}
+
+		}
+		
 
 	}elseif($annee_etude > 3){
 		
