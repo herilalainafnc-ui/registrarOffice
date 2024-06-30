@@ -113,7 +113,7 @@ echo "";
 }
 ?>
         <li><hr class="dropdown-divider"></li>
-        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../app/logout.php"><span class="bi-door-open-fill"></span> Déconnecter</a></li>
+        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="#" class="logOut"><span class="bi-door-open-fill"></span> Déconnecter</a></li>
 	</ul>
 				
 </div>

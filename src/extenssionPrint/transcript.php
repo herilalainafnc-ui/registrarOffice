@@ -25,14 +25,14 @@ $stdA = $searchStd->fetch();
  ?>
 
 
-<div class="mb-24">
+<div class="mb-24" id="exportToExcel">
 
 <center>
 	<b class="text-2xl">Transcript Semestriel</b>
 </center>
 
 <div class="border border-black flex text-xs px-1 py-1">
-	<div class="w-10/12 flex">
+	<div class="w-10/12" style="display: flex;">
 		<div class="text-right w-4/12">
 			<label>Matricule - </label><br>
 			<label>Noms - </label><br>

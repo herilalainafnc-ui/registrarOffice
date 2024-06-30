@@ -89,7 +89,7 @@ if($page == "settings.php") {
 			
 		</li></a>
 		<hr>
-		<a class="dropdown-item" href="../app/logout.php"><li class="hover:bg-cyan-500 py-2 rounded-md my-1">
+		<a class="dropdown-item logOut" href="#"><li class="hover:bg-cyan-500 py-2 rounded-md my-1">
 			
 				<span class="icon">
 					<ion-icon class="bi-door-open-fill"></ion-icon>
