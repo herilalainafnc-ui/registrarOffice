@@ -72,7 +72,7 @@ if(isset($_GET['page']) and $_GET['page'] == "information") {
 	echo "bg-cyan-700 text-white";
 } ?>">
 										<i class="bi-info-square"></i>
-												Informations
+												Information
 									</div>
 								</a>
 								

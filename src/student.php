@@ -53,19 +53,33 @@ $yes = 1;
 		$etude_option_ang = '';
 		}
 
-						require('../init/student.menubar.php');
+						require('../init/.student/student.menubar.php');
  ?>					
 					
 
 						<div class="my-1 p-2 mx-0.5 lg:w-9/12 xl:w-9/12 xxl:w-7/12 bg-slate-800 text-white overflow-auto" style="max-height: calc(100vh - 160px);">
 							<div class="h-20 flex pb-2">
-								<div class="w-4/12 flex px-1">
-									<b class="text-xl mt-3"><?php 
+								<div class="w-4/12 px-1">
+									<b class="text-lg mt-3"><?php 
 
 									if (isset($_GET['page']) AND !empty($_GET['page'])) {
 									$sdt_page = $_GET['page'];
 									if($sdt_page == "information") {
 										echo strtoupper($sdt_page);
+										if(!empty($profil['last_change_user_id'])) {?>
+									 
+										 <p class="toolInactive text-xs">Dernière modification<br>le <?=$profil['last_change_datetime']?>
+										 par <?php 
+							$findUserModif = $dtb->query('SELECT * FROM compt_utilisateur WHERE id = "'.$profil['last_change_user_id'].'"');
+							$showUserModif = $findUserModif->fetch();
+							echo $showUserModif['prenom'];
+										  ?>
+										</p>
+									 
+									 <?php }else{?>
+									 	<p class="toolInactive text-xs">Créé le <?=$profil['date_entry']?></p>
+									  <?php	
+									 	}
 									}elseif($sdt_page == "transcript") {
 										echo "TRANSCRIPT / SEMESTRE";
 									}elseif($sdt_page == "transcriptSS") {
@@ -83,7 +97,7 @@ $yes = 1;
 
 									 ?></b>
 								</div>
-								<!-- STUDENT TOOLBAR --><?php require ('../init/student.toolbar.php');?>
+								<!-- STUDENT TOOLBAR --><?php require ('../init/.student/student.toolbar.php');?>
 								<!-- NOTIFICATION MANAGER --><?php require('./student/notificationStd.php');?>
 							</div>
 							<?php 

@@ -32,19 +32,33 @@ $dep_desc = $profil['dep_desc'];
 $date_entry = $profil['date_entry'];
 $yes = 1;
 
-						require('../init/cours.menubar.php');
+						require('../init/.cours/cours.menubar.php');
  ?>					
 					
 
 						<div class="my-1 p-2 mx-0.5 lg:w-9/12 xl:w-9/12 xxl:w-7/12 bg-slate-800 text-white overflow-auto" style="max-height: calc(100vh - 160px);">
 							<div class="h-20 flex pb-2">
-								<div class="w-4/12 flex px-1">
+								<div class="w-4/12 px-1">
 									<b class="text-lg mt-3"><?php 
 
 									if (isset($_GET['page']) AND !empty($_GET['page'])) {
 									$cours_page = $_GET['page'];
 									if($cours_page == "information") {
 										echo strtoupper($cours_page);
+										if(!empty($profil['last_change_user_id'])) {?>
+									 
+										 <p class="toolInactive text-xs">Dernière modification<br>le <?=$profil['last_change_datetime']?>
+										 par <?php 
+							$findUserModif = $dtb->query('SELECT * FROM compt_utilisateur WHERE id = "'.$profil['last_change_user_id'].'"');
+							$showUserModif = $findUserModif->fetch();
+							echo $showUserModif['prenom'];
+										  ?>
+										</p>
+									 
+									 <?php }else{?>
+									 	<p class="toolInactive text-xs">Créé le <?=$profil['date_entry']?></p>
+									  <?php	
+									 	}
 									}elseif($cours_page == "notes") {
 										echo "NOTES";
 									}elseif($cours_page == "etudiants") {
@@ -54,7 +68,7 @@ $yes = 1;
 
 									 ?></b>
 								</div>
-								<!-- STUDENT TOOLBAR --><?php require ('../init/cours.toolbar.php');?>
+								<!-- STUDENT TOOLBAR --><?php require ('../init/.cours/cours.toolbar.php');?>
 								<!-- NOTIFICATION MANAGER --><?php require('./cours/notificationCours.php');?>
 							</div>
 							<?php 
@@ -80,20 +94,7 @@ $yes = 1;
 					</div>
 				</div>
 				
-				<div class="w-10/12 h-6 bg-slate-500 mt-1 py-0.5 px-2 absolute bottom-0 flex">
-					<div class="w-3/12">
-						
-					</div>
-					<div class="w-3/12">
-						
-					</div>
-					<div class="w-3/12">
-						
-					</div>
-					<div class="w-3/12 text-black">
-						<p>Aujourd'hui <?= date('d/m/Y')?></p>
-					</div>
-				</div>
+				<?php require('../init/footer.php'); ?>
 
 			</div>
 

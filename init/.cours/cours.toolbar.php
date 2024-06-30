@@ -56,7 +56,7 @@
 				</center>
 			
 		</a>
-		<a href="#" id="<?php if (!empty($_GET['page']) AND $_GET['page'] == 'notes'){echo 'exportNotesInThisCours';}
+		<a href="#" id="<?php if (!empty($_GET['page']) AND $_GET['page'] == 'notes'){echo 'exportRemiseNote';}
 							elseif(!empty($_GET['page']) AND $_GET['page'] == 'etudiants'){echo 'exportListStdInThisCours';}
 						?>" 
 

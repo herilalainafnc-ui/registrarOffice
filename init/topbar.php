@@ -128,7 +128,7 @@ echo "";
 				$('#all-std').css({'display':'none'});
 
 				$.ajax({
-					url:"../init/std-livesearch.php",
+					url:"../init/.student/std-livesearch.php",
 					method:"POST",
 					data:{input:input},
 
@@ -152,7 +152,7 @@ echo "";
 				$('#all-cours').css({'display':'none'});
 
 				$.ajax({
-					url:"../init/cours-livesearch.php",
+					url:"../init/.cours/cours-livesearch.php",
 					method:"POST",
 					data:{input:input},
 
@@ -176,7 +176,7 @@ echo "";
 				$('#all-prof').css({'display':'none'});
 
 				$.ajax({
-					url:"../init/prof-livesearch.php",
+					url:"../init/.prof/prof-livesearch.php",
 					method:"POST",
 					data:{input:input},
 

@@ -1,5 +1,5 @@
 <?php 
-	require('../data/backdb.php');	
+	require('../../data/backdb.php');	
 
  ?>
 <table class="simpleTbl">

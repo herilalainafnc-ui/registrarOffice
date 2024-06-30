@@ -1,5 +1,5 @@
 
-<form method="post" action="../app/.student/updateStd.php?id=<?=$id?>" class="form-no-refrech">
+<form method="post" action="../app/.student/updateStd.php?id=<?=$id?>&rg_id=<?=$rg_id?>" class="form-no-refrech">
 <div class="w-full grid gap-2 grid-cols-2">
 
 	<div class='m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
@@ -349,7 +349,7 @@ $y = $y - 1;
 		$('.form-no-refrech').on('submit',function (e) {
 			e.preventDefault();
 
-			var url = '../app/.student/updateStd.php?id=<?=$id?>';
+			var url = '../app/.student/updateStd.php?id=<?=$id?>&rg_id=<?=$rg_id?>';
 			var data = $(this).serialize();
 
 			$.post(url,data,function(response){

@@ -1,5 +1,5 @@
 
-<form method="post" action="../app/.cours/updateCours.php?id=<?=$id?>" class="form-no-refrech">
+<form method="post" action="../app/.cours/updateCours.php?id=<?=$id?>&rg_id=<?=$rg_id?>" class="form-no-refrech">
 <div class="w-full grid gap-2 grid-cols-2">
 
 	<div class='m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
@@ -59,7 +59,7 @@ while ($showTeach = $findTeach->fetch()) {
 				<p class="showPers">-- <?=$title?></p><input class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="title" value="<?=$title?>"><br>
 
 				<label class="text-sm text-slate-400">Titre en anglais</label>
-				<p class="showPers">-- <?=$title_english?></p><input class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="$title_english" value="<?=$title_english?>">
+				<p class="showPers">-- <?=$title_english?></p><input class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="title_english" value="<?=$title_english?>">
 				
 			</div>
 		</div>
@@ -90,14 +90,33 @@ while ($showTeach = $findTeach->fetch()) {
 					<option class="bg-slate-800" value="1" <?php if($profil['yearlevel'] == 1){echo 'selected';}?>>Licence 1</option>
 					<option class="bg-slate-800" value="2" <?php if($profil['yearlevel'] == 2){echo 'selected';}?>>Licence 2</option>
 					<option class="bg-slate-800" value="3" <?php if($profil['yearlevel'] == 3){echo 'selected';}?>>Licence 3</option>
+					<option class="bg-slate-800" value="3" <?php if($profil['yearlevel'] == 4){echo 'selected';}?>>Master 1</option>
+					<option class="bg-slate-800" value="3" <?php if($profil['yearlevel'] == 5){echo 'selected';}?>>Master 2</option>
 				</select><br>
 
 				<label class="text-sm text-slate-400">Crédit</label>
-				<p class="showContact">-- <?=$profil['nb_crd']?></p><input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="number" name="nb_crd" value="<?=$profil['nb_crd']?>">
+				<p class="showContact">-- <?=$profil['nb_crd']?> Crédits</p>
+				<select class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="nb_crd">
+					<option class="bg-slate-800" value="2" <?php if($profil['nb_crd'] == 2){echo 'selected';}?>>2 Crédits</option>
+					<option class="bg-slate-800" value="3" <?php if($profil['nb_crd'] == 3){echo 'selected';}?>>3 Crédits</option>
+					<option class="bg-slate-800" value="4" <?php if($profil['nb_crd'] == 4){echo 'selected';}?>>4 Crédits</option>
+					<option class="bg-slate-800" value="5" <?php if($profil['nb_crd'] == 5){echo 'selected';}?>>5 Crédits</option>
+					<option class="bg-slate-800" value="6" <?php if($profil['nb_crd'] == 6){echo 'selected';}?>>6 Crédits</option>
+					<option class="bg-slate-800" value="7" <?php if($profil['nb_crd'] == 7){echo 'selected';}?>>7 Crédits</option>
+					<option class="bg-slate-800" value="8" <?php if($profil['nb_crd'] == 8){echo 'selected';}?>>8 Crédits</option>
+					<option class="bg-slate-800" value="9" <?php if($profil['nb_crd'] == 9){echo 'selected';}?>>9 Crédits</option>
+					<option class="bg-slate-800" value="10" <?php if($profil['nb_crd'] == 10){echo 'selected';}?>>10 Crédits</option>
+				</select><br>
+				
 			</div>
 			<div class="w-6/12">
 				<label class="text-sm text-slate-400">Semestre</label>
-				<p class="showContact">-- <?=$profil['semester']?></p><input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="semester" value="<?=$profil['semester']?>"><br>
+				<p class="showContact">-- Semestre <?=$profil['semester']?></p>
+				<select class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="semester">
+					<option class="bg-slate-800" value="1" <?php if($profil['semester'] == 1){echo 'selected';}?>>Semestre 1</option>
+					<option class="bg-slate-800" value="2" <?php if($profil['semester'] == 2){echo 'selected';}?>>Semestre 2</option>
+				</select><br>
+
 				<label class="text-sm text-slate-400">Catégorie</label>
 				<p class="showContact">-- <?php 
 if ($profil['category'] == 0){
@@ -140,7 +159,7 @@ if ($profil['category'] == 0){
 		$('.form-no-refrech').on('submit',function (e) {
 			e.preventDefault();
 
-			var url = '../app/.cours/updateCours.php?id=<?=$id?>';
+			var url = '../app/.cours/updateCours.php?id=<?=$id?>&rg_id=<?=$rg_id?>';
 			var data = $(this).serialize();
 
 			$.post(url,data,function(response){

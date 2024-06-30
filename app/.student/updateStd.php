@@ -1,6 +1,7 @@
 <?php 
 require '../../data/backdb.php';
-
+	
+	$last_change_user_id = $_GET['rg_id'];
 	$id = $_GET['id'];
 	$student_nom = $_POST['student_nom'];
 	$student_prenom = $_POST['student_prenom'];
@@ -68,6 +69,7 @@ require '../../data/backdb.php';
 		sponsor_adresse=:sponsor_adresse,
 		sponsor_tel=:sponsor_tel,
 		annee_scolaire=:annee_scolaire,
+		last_change_user_id=:last_change_user_id,
 		last_change_datetime=:last_change_datetime,
 		status=:status,
 		new_student=:new_student,
@@ -100,6 +102,7 @@ require '../../data/backdb.php';
 	$update->bindParam(':sponsor_adresse',$sponsor_adresse,PDO::PARAM_STR);
 	$update->bindParam(':sponsor_tel',$sponsor_tel,PDO::PARAM_STR);
 	$update->bindParam(':annee_scolaire',$annee_scolaire,PDO::PARAM_STR);
+	$update->bindParam(':last_change_user_id',$last_change_user_id,PDO::PARAM_INT);
 	$update->bindParam(':last_change_datetime',$last_change_datetime,PDO::PARAM_STR);
 	$update->bindParam(':status',$status,PDO::PARAM_STR);
 	$update->bindParam(':new_student',$new_student,PDO::PARAM_STR);

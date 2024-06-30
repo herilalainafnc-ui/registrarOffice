@@ -1,4 +1,4 @@
-<select id="firstEtd" class="inscInput h-5 text-sm w-full requierd-9 mb-3" name="etude_option" >
+<select id="firstEtd" class="inscInput h-6 text-sm w-full requierd-9 mb-3" name="etude_option" >
 <?php
 	require('../../data/backdb.php');
 
