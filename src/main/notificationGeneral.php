@@ -426,6 +426,27 @@
 
 	</div>
 
+<!-- LOG OUT -->
+	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifLogOut" style="backdrop-filter: blur(3px);">
+
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+			<form method="post" action="./data.topdf.php?ptype=ticketMail" target="_blank">
+			<div class="p-2 text-black">
+				<b>Alert.</b>
+			</div>
+			<div class="p-2">
+				<p>Voulez-vous vraiment déconnecter?</p>
+			</div>
+			<div class="p-3">
+				<center>
+				<a href="#" id="cancelnotifLogOut" class="bg-slate-400 p-2 rounded-md">Annuler</a>
+				<a href="../app/logout.php" id="btnnotifLogOut" class="bg-red-600 p-2 text-white rounded-md mx-1">Ce déconnecter</a>
+				</center>
+			</div>
+			</form>
+		</div>
+
+	</div>
 
 <!-- ************************ -->
 
@@ -522,6 +543,16 @@
 			$('#notifTicketMail').css({'display':'none'});
 		});
 
+		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
+		
+		
+		$('.logOut').click(function(){
+			$('#notifLogOut').css({'display':'block'});
+		});
+		
+		$('#cancelnotifLogOut').click(function(){
+			$('#notifLogOut').css({'display':'none'});
+		});
 		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
 	});
 

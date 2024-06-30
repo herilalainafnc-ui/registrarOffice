@@ -1,0 +1,23 @@
+{
+  "name": "a.registrar2024",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JimmyLovasoa/registrarApp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JimmyLovasoa/registrarApp/issues"
+  },
+  "homepage": "https://github.com/JimmyLovasoa/registrarApp#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.4.4"
+  }
+}

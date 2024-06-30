@@ -60,17 +60,19 @@
 	<title>Log-in</title>
 </head>
 <body>
-	<div class="w-full h-screen bg-slate-800">
+
+	<div class="main">
 		<!-- <a href="#" class="b-white" data-bs-toggle="modal" data-bs-target="#notification-download" style="position: absolute; top: 10px; right: 10px" title="Assurez-vous de télécharger la version application de ce programme pour qu'il devienne indépendant du navigateur.">Télécharger l'app</a> -->
 		
-		<div class="h-40">
+		<div style="height: 20%;">
 			
 		</div>
-		<div class="md:w-4/12 lg:w-4/12 xl:w-3/12 xxl:w-3/12 bg-slate-600 rounded-md p-4 m-auto ">
+		<div class="rounded-md p-4" id="windowLog">
 			
 			<center>
-				<b class="text-slate-100 text-3xl">Bienvenue</b><br>
-				<p class="text-slate-100">Veuillez connecter pour continuer.</p>
+				<img src="../file/logo-coldbloud.png" style="width: 40px; height: 40px;">
+				<b style="font-size: 30px; color: #e6e9f0"> Infinit Registrar</b><br>
+				<p style="font-size: 17px; color: #e6e9f0">Veuillez connecter pour continuer.</p>
 			</center>
 			
 
@@ -78,18 +80,18 @@
 				
 				<div class="flex mt-10">
 					
-					<input class="h-10 w-full rounded-md px-2" type="text" name="infinit_pseudo" placeholder="Utilisateur">
+					<input class="inputLog" type="text" name="infinit_pseudo" placeholder="Utilisateur">
 				</div>
 				
 				<div class="flex mt-4">
 					
-					<input class="h-10 w-full rounded-md px-2" id="emp_password" type="password" name="infinit_password" placeholder="Mot de passe">
+					<input class="inputLog" id="emp_password" type="password" name="infinit_password" placeholder="Mot de passe">
 					
 				</div>
 
-				<div class="w-full text-right">
-					<i class="eye bi-eye-slash text-slate-100 pointer-events-auto" style="display: block;"><a href="#"> Afficher le mot de passe.</a></i>
-					<i class="eye bi-eye-fill text-slate-100 pointer-events-auto" style="display: none"><a href="#"> Cacher le mot de passe.</a></i>
+				<div style="text-align:right; width: 100%;">
+					<i class="eye bi-eye-slash text-slate-100 pointer-events-auto" style="display: block;"><a href="#"> Afficher le mot de passe</a></i>
+					<i class="eye bi-eye-fill text-slate-100 pointer-events-auto" style="display: none"><a href="#"> Cacher le mot de passe</a></i>
 
 				</div>
 				
@@ -229,5 +231,27 @@
 <style type="text/css">
 	#windows, #macbook{
 		margin-bottom: 12px;
+	}
+	#windowLog{
+		border: 1px solid #1f2633;
+		backdrop-filter: blur(50px);
+		margin: auto;
+		width: 450px;
+	}
+	.inputLog{
+		padding: 1px 4px 1px 4px;
+		height: 40px;
+		width: 100%;
+		border: none;
+		border-radius: 8px;
+		background-color: #e6e9f0;
+	}
+	.main{
+		background-image: url('./css/téléchargement.jpg');
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		width: 100%;
+		height: 100vh;
 	}
 </style>
