@@ -41,21 +41,21 @@
 			if($page == "accueil.php" OR $page == "student.php") {
 			 ?>
 			<form method="post" action="accueil.php">
-					<input id="std-search" type="text" name="search" placeholder="Rechercher un étudiant" class="h-8 px-2 text-sm border bg-slate-700 w-4/12">
+					<input id="std-search" type="text" name="search" placeholder="Search student..." class="h-8 px-2 text-sm border bg-slate-700 w-4/12">
 				<button type="submit" style="display: none" onclick="surligne();"></button>
 			</form>
 			<?php 
 			}elseif($page == "accueil.cours.php" OR $page == "cours.php") {
 			?>
 			<form method="post" action="accueil.cours.php">
-					<input id="cours-search" type="text" name="search" placeholder="Rechercher un cours" class="h-8 px-2 text-sm border bg-slate-700 w-4/12">
+					<input id="cours-search" type="text" name="search" placeholder="Search course..." class="h-8 px-2 text-sm border bg-slate-700 w-4/12">
 				<button type="submit" style="display: none" onclick="surligne();"></button>
 			</form>
 			<?php 
 			}elseif($page == "accueil.prof.php" OR $page == "prof.php") {
 			?>
 			<form method="post" action="accueil.cours.php">
-					<input id="prof-search" type="text" name="search" placeholder="Rechercher professeur" class="h-8 px-2 text-sm border bg-slate-700 w-4/12">
+					<input id="prof-search" type="text" name="search" placeholder="Search teacher..." class="h-8 px-2 text-sm border bg-slate-700 w-4/12">
 				<button type="submit" style="display: none" onclick="surligne();"></button>
 			</form>
 			<?php 
