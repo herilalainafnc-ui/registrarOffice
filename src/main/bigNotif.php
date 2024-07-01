@@ -78,19 +78,12 @@ while($ct = $cat->fetch()){
  					</select>
 				</div>
 				<div class="w-5/12">
-					<label>Professeur</label><br>
- 					<select class="input w-full" type="number" name="teacher_id">
-<?php 
-$teach = $dtb->query("SELECT * FROM teacher ORDER BY lastName");
-
-while($tch = $teach->fetch()){
-?>
- 						<option value="<?=$tch['uid'] ?>"><b><?=$tch['lastName']?></b> <?=$tch['name']; ?></option>
-
-<?php 
-}
-?>
- 					</select>
+					<label>Parcours</label>
+					<div id="parcours">
+	 					<select class="input w-full" type="number" name="parcours">
+							<option value="all">-</option>
+	 					</select>
+ 					</div>
 				</div>
 			</div>
 
@@ -124,12 +117,19 @@ while($tch = $teach->fetch()){
  					</select>
 				</div>
 				<div class="w-5/12">
-					<label>Parcours</label>
-					<div id="parcours">
-	 					<select class="input w-full" type="number" name="parcours">
-							<option value="all">-</option>
-	 					</select>
- 					</div>
+					<label>Professeur</label><br>
+ 					<select class="input w-full" type="number" name="teacher_id">
+<?php 
+$teach = $dtb->query("SELECT * FROM teacher ORDER BY lastName");
+
+while($tch = $teach->fetch()){
+?>
+ 						<option value="<?=$tch['uid'] ?>"><b><?=$tch['lastName']?></b> <?=$tch['name']; ?></option>
+
+<?php 
+}
+?>
+ 					</select>
 				</div>
 				
 			</div>
