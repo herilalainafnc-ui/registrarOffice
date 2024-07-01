@@ -203,7 +203,15 @@ while ($showSignMention = $findSignMention->fetch()) {
 											<option class="bg-slate-200">Interne</option>
 										</select>
 										
+										<div class="obtention_Bacc">
+											<label class="text-sm text-slate-400">Année d'obtention Bacc</label>
+											<input class="inscInput h-6 text-sm w-full mb-3" type="date" name="obtention_bacc">
+										</div>
 										
+										<div class="diplome_preced hidden">
+											<label class="text-sm text-slate-400">Diplôme précédent</label>
+											<input class="inscInput h-6 text-sm w-full mb-3" type="text" name="diplome_preced">
+										</div>
 									</div>
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">Parcours</label>
@@ -237,12 +245,29 @@ while ($showSignMention = $findSignMention->fetch()) {
 											<option class="bg-slate-200" value="1">Oui</option>
 										</select>
 										
+										<div class="obtention_Bacc">
+											<label class="text-sm text-slate-400">Série du Bacc</label>
+											<select class="inscInput h-6 text-sm w-full mb-3" name="serie_bacc">
+												<option class="bg-slate-200">A1</option>
+												<option class="bg-slate-200">A2</option>
+												<option class="bg-slate-200">C</option>
+												<option class="bg-slate-200">D</option>
+												<option class="bg-slate-200">G1</option>
+												<option class="bg-slate-200">G2</option>
+												<option class="bg-slate-200">G3</option>
+											</select>
+										</div>
 										
+										<div class="diplome_preced hidden">
+											<label class="text-sm text-slate-400">Date d'obtention</label>
+											<input class="inscInput h-6 text-sm w-full mb-3" type="date" name="date_obtent_diplome_preced">
+										</div>
+
 									</div>
 								</div>	
 							</div>
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->							
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->							
 							<div class="m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
 								<div class="w-full flex mb-4">
 									<div class="w-8/12">
@@ -422,6 +447,15 @@ while ($showSignMention = $findSignMention->fetch()) {
 					$("#student_id_form").val(data);
 				}
 			});
+			
+			if(annee_etude <= 3) {
+				$('.obtention_Bacc').css({'display':'block'});
+				$('.diplome_preced').css({'display':'none'});
+			}else if(annee_etude > 3) {
+				$('.obtention_Bacc').css({'display':'none'});
+				$('.diplome_preced').css({'display':'block'});
+			}
+
 		});
 
 		$('#btn-inscription').click(function() {
