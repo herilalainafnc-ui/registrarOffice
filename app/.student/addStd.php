@@ -50,6 +50,7 @@
 	$last_change_user_id = $_GET['rg_id'];
 	$date_entry = date("Y-m-d");
 
+
 	/*:::::::::::::::::::: PASSWORD MAIL GENERATE ::::::::::::::::::::*/
 
 	$a = rand(1000,9999);
@@ -81,6 +82,27 @@
 	in_array($extension_image, $extension);
 	move_uploaded_file($image_tmp, $image_dest.$dbimage);
 
+
+	/*:::::::::::::::::::: DIPLÔME PRECEDENT ::::::::::::::::::::*/
+
+	if($annee_etude <= 3 ) {
+	
+		$obtention_bacc	= $_POST['obtention_bacc'];
+		$serie_bacc= $_POST['serie_bacc'];
+
+	/*INTSERTION DANS UNE NOUVELLE TABLE t_2024_bacc*/
+	// student_id, date_obtent, bacc_serie, user_id, date_entry
+
+	}elseif($annee_etude > 3 ) {
+
+		$diplome_preced = $_POST['diplome_preced'];
+		$date_obtent_diplome_preced = $_POST['date_obtent_diplome_preced'];
+	
+	/*INTSERTION DANS UNE NOUVELLE TABLE t_2024_diplome_preced*/
+	// student_id, diplome_name, date_obtent, user_id, date_entry
+	
+	}
+	
 
 
 	$insertStd = $dtb->prepare('INSERT INTO etudiant_second_semester_23(
