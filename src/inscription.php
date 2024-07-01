@@ -209,7 +209,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 										<label class="text-sm text-slate-400">Parcours</label>
 										
 										<div id="etude_option">
-											<select id="firstEtd" class="inscInput h-6 text-sm w-full requierd-9 mb-3" name="etude_option" >
+											<select id="firstEtd" class="inscInput h-6 text-sm w-full requierd-9 mb-3" name="etude_option">
 												<option class="bg-slate-200"></option>
 											</select>
 										</div>

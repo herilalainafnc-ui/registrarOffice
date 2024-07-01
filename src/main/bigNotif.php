@@ -14,7 +14,7 @@
 			<div class="w-full gap-2 flex mb-3">
 				<div class="w-2/12">
 					<label>Sigle</label><br>
-				 	<input class="input w-full requierd-cours-1" type="text" name="sigle">
+				 	<input class="input w-full requierd-cours-1" type="text" name="sigle" id="sigleInput">
 				</div>
 				<div class="w-5/12">
 					<label>Titre du cours</label><br>
@@ -41,6 +41,16 @@
  						<option>8</option>
  						<option>9</option>
  						<option>10</option>
+ 						<option>11</option>
+ 						<option>12</option>
+ 						<option>13</option>
+ 						<option>14</option>
+ 						<option>15</option>
+ 						<option>16</option>
+ 						<option>17</option>
+ 						<option>18</option>
+ 						<option>19</option>
+ 						<option>20</option>
  					</select>
 				</div>
 				<div class="w-2/12">
@@ -53,14 +63,14 @@
  					</select>
 				</div>
 				<div class="w-3/12">
-					<label>Département</label><br>
- 					<select class="input w-full" type="number" name="dep_desc">
+					<label>Mention</label><br>
+ 					<select class="input w-full" name="dep_desc" id="mentionSelect">
 <?php 
 $cat = $dtb->query("SELECT * FROM filiere");
 
 while($ct = $cat->fetch()){
 ?>
- 						<option><?=$ct['filiere_sigle']; ?></option>
+ 						<option><?=$ct['filiere_sigle']?></option>
 
 <?php 
 }
@@ -114,7 +124,12 @@ while($tch = $teach->fetch()){
  					</select>
 				</div>
 				<div class="w-5/12">
-					
+					<label>Parcours</label>
+					<div id="parcours">
+	 					<select class="input w-full" type="number" name="parcours">
+							<option value="all">-</option>
+	 					</select>
+ 					</div>
 				</div>
 				
 			</div>
@@ -258,10 +273,26 @@ while($tch = $teach->fetch()){
 
 <script type="text/javascript">
 	$(document).ready(function() {
+		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+			$('#mentionSelect').on('change',function(){
+				var mentionSelect = $(this).val();
+					
+					$.ajax({
+					url:"./services/parcours.live.addCours.php",
+					method:"POST",
+					data:{mentionSelect:mentionSelect},
+
+					success:function(data){
+						$("#parcours").html(data);
+					}
+				});
+			});
+		
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
 		
 		$('#addCours').click(function(){
 			$('#bigNotifCours').css({'display':'block'});
+			$('#sigleInput').focus();
 		});
 		
 		$('#cancelnotifAddCours').click(function(){
@@ -339,9 +370,6 @@ while($tch = $teach->fetch()){
 				$('#alert-prof').text('Ces zones sont obligatoires !');
 			}
 		});
-		
-
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
 		
 	});
 </script>

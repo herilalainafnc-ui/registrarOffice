@@ -14,6 +14,7 @@
 	$nb_crd = $_POST['nb_crd'];
 	$semester = $_POST['semester'];
 	$category = $_POST['category'];
+	$parcours = $_POST['parcours'];
 
 	$last_change_datetime = date('Y-m-d');
 
@@ -27,6 +28,7 @@
 		nb_crd=:nb_crd,
 		semester=:semester,
 		category=:category,
+		parcours=:parcours,
 		last_change_user_id=:last_change_user_id,
 		last_change_datetime=:last_change_datetime
 	WHERE id=:id");
@@ -40,6 +42,7 @@
 		$update->bindParam('nb_crd',$nb_crd,PDO::PARAM_INT);
 		$update->bindParam('semester',$semester,PDO::PARAM_INT);
 		$update->bindParam('category',$category,PDO::PARAM_INT);
+		$update->bindParam('parcours',$parcours,PDO::PARAM_STR);
 		$update->bindParam('last_change_user_id',$last_change_user_id,PDO::PARAM_INT);
 		$update->bindParam('last_change_datetime',$last_change_datetime,PDO::PARAM_STR);
 		$update->bindParam('id',$id,PDO::PARAM_INT);

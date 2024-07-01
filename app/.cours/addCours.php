@@ -8,6 +8,7 @@
 	$nb_credit = $_POST['nb_credit'];
 	$category = $_POST['category'];
 	$dep_desc = $_POST['dep_desc'];
+	$parcours = $_POST['parcours'];
 	$teacher_id = $_POST['teacher_id'];;
 	$semester = $_POST['semester'];
 	$lab = $_POST['lab'];
@@ -30,6 +31,7 @@ if($sigle !="" AND $title!="") {
 				Remark,
 				dep_desc,
 				category,
+				parcours,
 				id_teacher,
 				semester,
 				lab,
@@ -46,6 +48,7 @@ if($sigle !="" AND $title!="") {
 				:Remark,
 				:dep_desc,
 				:category,
+				:parcours,
 				:id_teacher,
 				:semester,
 				:lab,
@@ -62,6 +65,7 @@ if($sigle !="" AND $title!="") {
 				'Remark' => $remark,
 				'dep_desc' => $dep_desc,
 				'category' => $category,
+				'parcours' => $parcours,
 				'id_teacher' => $teacher_id,
 				'semester' => $semester,
 				'lab' => $lab,

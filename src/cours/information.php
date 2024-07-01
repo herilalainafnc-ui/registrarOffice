@@ -90,8 +90,8 @@ while ($showTeach = $findTeach->fetch()) {
 					<option class="bg-slate-800" value="1" <?php if($profil['yearlevel'] == 1){echo 'selected';}?>>Licence 1</option>
 					<option class="bg-slate-800" value="2" <?php if($profil['yearlevel'] == 2){echo 'selected';}?>>Licence 2</option>
 					<option class="bg-slate-800" value="3" <?php if($profil['yearlevel'] == 3){echo 'selected';}?>>Licence 3</option>
-					<option class="bg-slate-800" value="3" <?php if($profil['yearlevel'] == 4){echo 'selected';}?>>Master 1</option>
-					<option class="bg-slate-800" value="3" <?php if($profil['yearlevel'] == 5){echo 'selected';}?>>Master 2</option>
+					<option class="bg-slate-800" value="4" <?php if($profil['yearlevel'] == 4){echo 'selected';}?>>Master 1</option>
+					<option class="bg-slate-800" value="5" <?php if($profil['yearlevel'] == 5){echo 'selected';}?>>Master 2</option>
 				</select><br>
 
 				<label class="text-sm text-slate-400">Crédit</label>
@@ -106,6 +106,39 @@ while ($showTeach = $findTeach->fetch()) {
 					<option class="bg-slate-800" value="8" <?php if($profil['nb_crd'] == 8){echo 'selected';}?>>8 Crédits</option>
 					<option class="bg-slate-800" value="9" <?php if($profil['nb_crd'] == 9){echo 'selected';}?>>9 Crédits</option>
 					<option class="bg-slate-800" value="10" <?php if($profil['nb_crd'] == 10){echo 'selected';}?>>10 Crédits</option>
+					<option class="bg-slate-800" value="11" <?php if($profil['nb_crd'] == 11){echo 'selected';}?>>11 Crédits</option>
+					<option class="bg-slate-800" value="12" <?php if($profil['nb_crd'] == 12){echo 'selected';}?>>12 Crédits</option>
+					<option class="bg-slate-800" value="13" <?php if($profil['nb_crd'] == 13){echo 'selected';}?>>13 Crédits</option>
+					<option class="bg-slate-800" value="14" <?php if($profil['nb_crd'] == 14){echo 'selected';}?>>14 Crédits</option>
+					<option class="bg-slate-800" value="15" <?php if($profil['nb_crd'] == 15){echo 'selected';}?>>15 Crédits</option>
+					<option class="bg-slate-800" value="16" <?php if($profil['nb_crd'] == 16){echo 'selected';}?>>16 Crédits</option>
+					<option class="bg-slate-800" value="17" <?php if($profil['nb_crd'] == 17){echo 'selected';}?>>17 Crédits</option>
+					<option class="bg-slate-800" value="18" <?php if($profil['nb_crd'] == 18){echo 'selected';}?>>18 Crédits</option>
+					<option class="bg-slate-800" value="19" <?php if($profil['nb_crd'] == 19){echo 'selected';}?>>19 Crédits</option>
+					<option class="bg-slate-800" value="20" <?php if($profil['nb_crd'] == 20){echo 'selected';}?>>20 Crédits</option>
+				</select><br>
+
+				<label class="text-sm text-slate-400">Parcours</label>
+				
+				<p class="showContact">-- <?php if($profil['parcours'] =='all') { 
+					echo "TRONC COMUN";
+				}else{
+					$prcrs = $dtb->query('SELECT * FROM filiere_parcours WHERE shortcode = "'.$profil['parcours'].'"'); 
+					$showprcrs = $prcrs->fetch();
+					echo $showprcrs['description'];
+				}?></p>
+				<select class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="parcours">
+				<?php 
+					$prcrs = $dtb->query('SELECT * FROM filiere_parcours WHERE departement = "'.$profil['dep_desc'].'"'); 
+				 ?>	
+					<option class="bg-slate-800" value="all">TRONC COMMUN</option>
+					<?php
+						while ($pr = $prcrs->fetch()) {
+					?>
+							<option class="bg-slate-800" value="<?=$pr['shortcode'];?>" <?php if($profil['parcours'] == $pr['shortcode']){echo 'selected';}?>><?=$pr['description'];?></option>
+					<?php		
+					}
+					?>	
 				</select><br>
 				
 			</div>
