@@ -13,6 +13,7 @@
 			<th>Niveau</th>
 			<th>Semestre</th>
 			<th>Enseignant</th>
+			<th>Parcours</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -57,6 +58,7 @@ if(!empty($showTeach)) {
 	echo strtoupper($showTeach['name'])." ".$showTeach['lastName'];
 }
  ?></div></a></td>
+ 		<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['parcours']?></div></a></td>
 	</tr>
 
  <?php

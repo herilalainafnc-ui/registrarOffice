@@ -374,7 +374,8 @@ $y = $y - 1;
 				$('#editParent').css({'display':'block'});
 				$('#editSpons').css({'display':'block'});
 				$('#editAutr').css({'display':'block'});
-/*
+				
+				/*
 				$('.editPers').css({'display':'none'});
 				$('.showPers').css({'display':'block'});
 				$('.editContact').css({'display':'none'});
