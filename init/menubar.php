@@ -77,7 +77,7 @@ if($page != "addProf" AND $page != "accueil.prof.php" AND $page != "prof.php"){
 			
 		</li></a>
 		<hr>
-		<a href="#"><li class="toolInactive hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
+		<a href="./accueil.classroom.php"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
 if($page == "settings.php") {
 	echo "bg-cyan-700";
 } ?>">
