@@ -30,12 +30,13 @@ if(empty($_POST['cours'])){
 <table class="tbl simpleTbl mb-0">
 	<thead class="bg-slate-200">
  			<tr>
- 				<td class="w-[30px] border-1" style="border-bottom: 0px;">No</td>
- 				<td class="w-[80px] border-1" style="border-bottom: 0px;">ID</td>
- 				<td class="w-[300px] border-1" style="border-bottom: 0px;">Nom et prénom</td>
- 				<td class="w-[160px] border-1" style="border-bottom: 0px;">Mention</td>
- 				<td class="w-[50px] border-1" style="border-bottom: 0px;">Niveau</td>
- 				<td class="w- border-1" style="border-bottom: 0px;">Contact</td>
+ 				<td class="border-1" style="border-bottom: 0px; width: 40px">No</td>
+ 				<td class="border-1" style="border-bottom: 0px; width: 50px">ID</td>
+ 				<td class="border-1" style="border-bottom: 0px; width: 300px">Nom et prénom</td>
+ 				<!-- <td class="w-[160px] border-1" style="border-bottom: 0px;">Mention</td> -->
+ 				<td class="border-1" style="border-bottom: 0px; width: 60px">Niveau</td>
+ 				<!-- <td class="w- border-1" style="border-bottom: 0px;">Contact</td> -->
+ 				<td class="border-1" style="border-bottom: 0px;">Email</td>
  			</tr>
  	</thead>
 </table>
@@ -59,17 +60,18 @@ if(empty($_POST['cours'])){
  	<div>
  		<table class="tbl simpleTbl mb-0">
  			<tr class="<?php if(!empty($_POST['cours'])){ echo"bg-slate-200"; } ?>">
- 				<td class="w-[30px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$n?></td>
- 				<td class="w-[80px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><b><?=$student_id = $affiche['student_id']?></b></td>
+ 				<td class="w-[40px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$n?></td>
+ 				<td class="w-[50px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><b><?=$student_id = $affiche['student_id']?></b></td>
  				<td class="w-[300px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$affiche['student_nom']." ".$affiche['student_prenom']?></td>
- 				<td class="w-[160px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$affiche['etude_option']?></td>
- 				<td class="w-[50px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?php
+ 				<!-- <td class="w-[160px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$affiche['etude_option']?></td> -->
+ 				<td class="w-[60px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?php
 				if($affiche['annee_etude']<=3) {
 					echo "L ".$affiche['annee_etude'];
 				}else{
 					echo "M ".($affiche['annee_etude']-3);
 				} ?></td>
- 				<td class="w-" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$affiche['student_tel']?></td>
+ 				<!-- <td class="w-" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$affiche['student_tel']?></td> -->
+ 				<td class="w-" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>; text-align: right;"><?=$affiche['student_email']?></td>
  				
  			</tr>
  		</table>
@@ -173,11 +175,11 @@ if(empty($_POST['cours'])){
 		<table class="tbl simpleTbl mb-1">
 			<thead class="bg-slate-200">
 				<tr>
-					<th class="border-1 w-[30px]"><b><?=$nombresS = ($n-1);?></b></th>
-					<th class="border-1 w-[80px]"></th>
-					<th class="border-1 w-[300px]"></th>
-					<th class="border-1 w-[160px]"></th>
+					<th class="border-1 w-[40px]"><b><?=$nombresS = ($n-1);?></b></th>
 					<th class="border-1 w-[50px]"></th>
+					<th class="border-1 w-[300px]"></th>
+					<th class="border-1 w-[60px]"></th>
+					<!-- <th class="border-1 w-[50px]"></th> -->
 					<th class="border-1 w-"></th>
 				</tr>
 			</thead>
@@ -196,11 +198,11 @@ if(empty($_POST['cours'])){
 		<table class="tbl simpleTbl mb-1">
 			<thead class="bg-slate-200">
 				<tr>
-					<th class="border-1 w-[30px]"><b><?=$nombre?></b></th>
-					<th class="border-1 w-[80px]"></th>
-					<th class="border-1 w-[300px]"><b>TOUT LES ETUDIANTS</b></th>
-					<th class="border-1 w-[160px]"></th>
+					<th class="border-1 w-[40px]"><b><?=$nombre?></b></th>
 					<th class="border-1 w-[50px]"></th>
+					<th class="border-1 w-[300px]"><b>TOUT LES ETUDIANTS</b></th>
+					<th class="border-1 w-[60px]"></th>
+					<!-- <th class="border-1 w-[50px]"></th> -->
 					<th class="border-1 w-"></th>
 				</tr>
 			</thead>
