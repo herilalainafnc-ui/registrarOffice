@@ -21,11 +21,11 @@ $date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
         </div>
         <div class="sm:w-5/12 sm:text-right lg:text-left lg:w-3/12">
             
-            <form action="export.php" method="post" id="exportForm">
+            <form action="data.toxlsx.php" method="post" id="exportForm">
                 
                 <input type="hidden" name="htmlContent" id="htmlContent" value="">
                 
-                <button type="button" class="px-2 py-1 rounded-md text-white bg-green-700" id="btnToExcel"><span class="bi-file-earmark-spreadsheet"></span> Excel</button>
+                <button type="submit" class="px-2 py-1 rounded-md text-white bg-green-700" id="btnToExcel"><span class="bi-file-earmark-spreadsheet"></span> Excel</button>
                 
                 <a href="#" onclick="printThisContent()" class="px-2 py-[5.5px] rounded-md text-white bg-red-800"><span class="bi-filetype-pdf"></span> Pdf</a>
                 
@@ -44,7 +44,7 @@ $date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
         
     <?php
 
-        if($ptype != "Badge" AND $ptype != "Abonnement Caf" AND $ptype !="ticketMail") { 
+        if($ptype != "Badge" AND $ptype != "Abonnement Caf" AND $ptype !="ticketMail" AND $ptype !="workedSlip") { 
         
             require('../init/.forPrint/top.forPrint.php'); 
         
@@ -78,10 +78,12 @@ $date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
             require ('./extenssionPrint/cours.list.php');
         }elseif($ptype == "ticketMail"){
             require ('./extenssionPrint/ticket.mail.php');
+        }elseif($ptype == "workedSlip"){
+            require ('./extenssionPrint/worked.Slip.php');
         }
 
 
-        if($ptype != "Badge" AND $ptype != "Abonnement Caf" AND $ptype != "Worked_point" AND $ptype !="ticketMail") {
+        if($ptype != "Badge" AND $ptype != "Abonnement Caf" AND $ptype != "Worked_point" AND $ptype !="ticketMail" AND $ptype !="workedSlip") {
         
             require('../init/.forPrint/foot.forPrint.php');
 
@@ -103,7 +105,7 @@ $date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script type="text/javascript">
-            
+
 var printConge = document.getElementById('printThisContent');
 
 function printThisContent(){
@@ -111,23 +113,23 @@ function printThisContent(){
     alert('Download PDF processing !');
 
     var opt = {
-      margin:       0.40,
-      filename:     '<?=$printName?> <?=$date?>.pdf',
-      image:        { type: 'jpeg', quality: 2 },
-      html2canvas:  { scale: 10 },
-      jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+        margin:     0.40,
+        filename:   '<?=$printName?> <?=$date?>.pdf',
+        image:      { type: 'jpeg', quality: 2 },
+        html2canvas:{ scale: 10 },
+        jsPDF:      { unit: 'in', format: 'a4', orientation: 'portrait' }
     };
 
-    // New Promise-based usage:
-    html2pdf().set(opt).from(printConge).save();
+     // New Promise-based usage:
+     html2pdf().set(opt).from(printConge).save();
 
-    // Old monolithic-style usage:
-    html2pdf(printConge, opt);
-}
+     // Old monolithic-style usage:
+     html2pdf(printConge, opt);
+    }
 
-// Ajouter le contenu HTML au champ caché et soumettre le formulaire
-document.getElementById('btnToExcel').addEventListener('click', function() {
-    document.getElementById('htmlContent').value = document.getElementById('exportToExcel').outerHTML;
+    // Ajouter le contenu HTML au champ caché et soumettre le formulaire
+    document.getElementById('btnToExcel').addEventListener('click', function() {
+    document.getElementById('htmlContent').value = document.getElementById('printThisContent').outerHTML;
     document.getElementById('exportForm').submit();
 });
 </script>
