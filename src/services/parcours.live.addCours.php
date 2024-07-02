@@ -8,7 +8,7 @@
 	$findOption = $dtb->query('SELECT * FROM filiere_parcours WHERE departement = "'.$mention.'"');
 	while ($showO = $findOption->fetch()) {
  ?>
-		<option class="bg-slate-200" value="<?=$showO['shortcode']?>"><?=$showO['description']?></option>
+		<option value="<?=$showO['shortcode']?>"><?=$showO['description']?></option>
 <?php
 	}
  ?>
