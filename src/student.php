@@ -18,7 +18,7 @@
 				
 				<div class="w-full px-0.5" style="height: calc(100vh - 157px);">
 					<div class="flex w-full">
-						<div class="bg-slate-800 my-1 mx-0.5 w-3/12 p-2 text-slate-100 overflow-auto hidden" id="stdSearch-result" style="height: calc(100vh - 157px);"></div>
+						<!-- <div class="bg-slate-800 my-1 mx-0.5 w-3/12 p-2 text-slate-100 overflow-auto hidden" id="stdSearch-result" style="height: calc(100vh - 157px);"></div> -->
 <?php
 	$id = $_GET['id'];
 	$retrouve = $dtb->query("SELECT * FROM etudiant_second_semester_23 WHERE id ='".$id."' LIMIT 1");

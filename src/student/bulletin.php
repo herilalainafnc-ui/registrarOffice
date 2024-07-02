@@ -58,6 +58,9 @@
 	$tMaj = 0;
 	$tTMaj = 0;
 	$tcredit = 0;
+	/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+	$tcreditMaj = 0;
+	/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 	$tnote = 0;
 	$tnotecredit = 0;
 	
@@ -118,7 +121,20 @@ if ($crs['grade'] < 10) {
 	<?php
 $credit = 0;
 $notes = 0;
+/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+$creditMaj = 0;
+/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 $tcredit+= $credit + $crs['credit'];
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur")) {
+
+	$tcreditMaj+=$creditMaj+ $crs['credit'];
+	$nbrMaj++;
+
+}else{
+	$tcreditMaj+=$creditMaj+ 0;
+}
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 $tnote+= $note + $crs['grade'];
 $tnotecredit+= $notecredit + $notecredi;
 
@@ -204,7 +220,9 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
  ?>
 				<tr>
 					<th colspan="4" class="text-right">Moyenne Majeur</th>
-					<th class="px-2"><?php if($nbrMaj != 0){echo round(($moyenMajSem = ($tTMaj/$tcredit)),6);}else{echo 0;$moyenMajSem =0;}?></th>
+					<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+					<th class="px-2"><?php if($nbrMaj != 0){echo round(($moyenMajSem = ($tTMaj/$tcreditMaj)),6);}else{echo 0;$moyenMajSem =0;}?></th>
+					<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 				</tr>
 				
 				<!--  -->

@@ -90,21 +90,54 @@
 		$obtention_bacc	= $_POST['obtention_bacc'];
 		$serie_bacc= $_POST['serie_bacc'];
 
-	/*INTSERTION DANS UNE NOUVELLE TABLE t_2024_bacc*/
-	// student_id, date_obtent, bacc_serie, user_id, date_entry
+		$insertBacc = $dtb->prepare('INSERT INTO t_2024_bacc(
+				student_id,
+				date_obtent,
+				bacc_serie,
+				user_id,
+				date_entry
+			)VALUES(
+				:student_id,
+				:date_obtent,
+				:bacc_serie,
+				:user_id,
+				:date_entry
+			)');$insertBacc->execute(array(
+				'student_id'  => $student_id,
+				'date_obtent' => $date_obtent,
+				'bacc_serie' => $bacc_serie,
+				'user_id' => $last_change_user_id,
+				'date_entry' => $date_entry
+			));
+
 
 	}elseif($annee_etude > 3 ) {
 
 		$diplome_preced = $_POST['diplome_preced'];
 		$date_obtent_diplome_preced = $_POST['date_obtent_diplome_preced'];
-	
-	/*INTSERTION DANS UNE NOUVELLE TABLE t_2024_diplome_preced*/
-	// student_id, diplome_name, date_obtent, user_id, date_entry
+
+		$insertBacc = $dtb->prepare('INSERT INTO t_2024_diplome_preced(
+				student_id,
+				diplome_name,
+				date_obtent,
+				user_id,
+				date_entry
+			)VALUES(
+				:student_id,
+				:diplome_name,
+				:date_obtent,
+				:user_id,
+				:date_entry
+			)');$insertBacc->execute(array(
+				'student_id' => $student_id,
+				'diplome_name' => $diplome_name,
+				'date_obtent' => $date_obtent,
+				'user_id' => $last_change_user_id,
+				'date_entry' => $date_entry
+			));
 	
 	}
 	
-
-
 	$insertStd = $dtb->prepare('INSERT INTO etudiant_second_semester_23(
 		student_nom,
 		student_prenom,
