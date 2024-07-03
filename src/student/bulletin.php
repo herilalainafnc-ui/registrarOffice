@@ -1,7 +1,15 @@
 
 <div>	
 <?php 
-	for ($a=1; $a <= $level; $a++) { 
+	/*::::::::::::::::::::::::::::::::::::::::*/
+	if ($level > 3) {
+		$init = 4;
+	}elseif($level <= 3) {
+		$init = 1;
+	}
+
+	for ($a=$init; $a <= $level; $a++) { 
+/*::::::::::::::::::::::::::::::::::::::::*/
 ?>
 	<div class='p-1 bg-slate-700 hover:bg-slate-600 mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 <b>
