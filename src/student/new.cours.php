@@ -103,7 +103,7 @@
  ?>
 
  <!-- DEBUT DU FORMULAIRE -->
- <form action="../app/checkCours.php?id=<?=$id?>&student_id=<?=$student_id?>&page=newCours&user_id=<?=$rg_id?>" method="post">
+ <form action="../app/.student/checkCours.php?id=<?=$id?>&student_id=<?=$student_id?>&page=newCours&user_id=<?=$rg_id?>" method="post">
 		<table class="simpleTbl mb-1">
 			<thead>
 				<tr class="text-center bg-gradient-to-r from-green-600">
