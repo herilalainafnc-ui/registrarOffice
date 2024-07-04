@@ -19,7 +19,7 @@
 
 	$updateNote = $dtb->prepare('UPDATE t_2023_notes SET grade=:note,last_change_user_id=:last_change_user_id,last_change_datetime=:last_change_datetime WHERE id=:note_id');
 
-	$updateNote->bindParam(':note',$note,PDO::PARAM_INT);
+	$updateNote->bindParam(':note',$note,PDO::PARAM_STR);
 	$updateNote->bindParam(':last_change_user_id',$last_change_user_id,PDO::PARAM_INT);
 	$updateNote->bindParam(':last_change_datetime',$date,PDO::PARAM_STR);
 	$updateNote->bindParam(':note_id',$note_id,PDO::PARAM_INT);

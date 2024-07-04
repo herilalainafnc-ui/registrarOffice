@@ -487,10 +487,11 @@ while ($showSignMention = $findSignMention->fetch()) {
 				$('.requierd-10').css({'border':'1px solid #FF6E6E','background':'#f4aeae'});
 			
 			}else{
-				
-				$('#form-inscription').attr('action','../app/addStd.php?rg_id=<?=$rg_id?>');
+
+				$('#form-inscription').attr('action','../app/.student/addStd.php?rg_id=<?=$rg_id?>');
+				$('#form-inscription').attr('method','post');
 				$(this).attr('types','submit');
-			
+
 			}
 		});
 
@@ -509,7 +510,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 			
 			if(r_1 !="" && r_2 !="" && r_3 !="" && r_4 !="" && r_5 !="" && r_6 !="" && r_7 !="" && r_8 !="" && r_9 !="" && r_10 !="") {			
 				$(this).attr('type','submit');
-				$('#form-inscription').attr('action','../app/addStd.php?rg_id=<?=$rg_id?>');
+				$('#form-inscription').attr('action','../app/.student/addStd.php?rg_id=<?=$rg_id?>');
 				$('#form-inscription').attr('method','post');
 			}
 		});

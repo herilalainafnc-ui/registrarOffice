@@ -130,8 +130,8 @@
 				:date_entry
 			)');$insertBacc->execute(array(
 				'student_id' => $student_id,
-				'diplome_name' => $diplome_name,
-				'date_obtent' => $date_obtent,
+				'diplome_name' => $diplome_preced,
+				'date_obtent' => $date_obtent_diplome_preced,
 				'user_id' => $last_change_user_id,
 				'date_entry' => $date_entry
 			));
