@@ -27,9 +27,17 @@ if($level <3 ){
 			<div class="h-[60px]"></div>
 		<?php 
 		if (isset($_GET['langue']) AND $langue == 'ANG') {
-			echo '<input type="text" value="Bachelor of '.$etude_envisage_ang.'" class="font-bahnschrift text-[42px] bg-transparent p-0 border-0 w-full text-center">';
+			if ($level>3) {
+				echo '<input type="text" value="Master of '.$etude_envisage_ang.'" class="font-bahnschrift text-[42px] bg-transparent p-0 border-0 w-full text-center">';	
+			}else{
+				echo '<input type="text" value="Bachelor of '.$etude_envisage_ang.'" class="font-bahnschrift text-[42px] bg-transparent p-0 border-0 w-full text-center">';	
+			}
 		}else{
-			echo '<input type="text" value="Licence en '.$etude_envisage.'" class="font-bahnschrift text-[42px] bg-transparent p-0 border-0 w-full text-center">';
+			if ($level>3) {
+				echo '<input type="text" value="Master en '.$etude_envisage.'" class="font-bahnschrift text-[42px] bg-transparent p-0 border-0 w-full text-center">';	
+			}else{
+				echo '<input type="text" value="Licence en '.$etude_envisage.'" class="font-bahnschrift text-[42px] bg-transparent p-0 border-0 w-full text-center">';	
+			}
 		}
 		?>
 			
