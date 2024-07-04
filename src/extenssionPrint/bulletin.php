@@ -7,14 +7,21 @@ $initA = 1;
 $initS = 1;
 $printName = $student_id."-BULLETIN";
  
-if($level == "all"){
-	$level = $_GET['std_niveau'];
-}elseif($level == 2){
-	$initA = 2;
-}elseif($level == 3){
-	$initA = 3;
-}
+if ($level > 3) {
 
+	$initA = 4;
+
+}elseif($level <= 3) {
+	
+	if($level == "all"){
+		$level = $_GET['std_niveau'];
+	}elseif($level == 2){
+		$initA = 2;
+	}elseif($level == 3){
+		$initA = 3;
+	}
+	
+}
 if ($semester == "all") {
 	$sem = 2;
 }

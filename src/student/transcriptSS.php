@@ -20,8 +20,15 @@
 	$cumulFinale = 0;
 
 	$beginAnual = $anual - $level;
-	
-	for ($i=1; $i <= ($level+1); $i++) {
+/*::::::::::::::::::::::::::::::::::::::::*/
+	if ($level > 3) {
+		$init = 4;
+	}elseif($level <= 3) {
+		$init = 1;
+	}
+
+	for ($a=$init; $a <= $level; $a++) { 
+/*::::::::::::::::::::::::::::::::::::::::*/
 		?>
 <div class='p-1 bg-slate-700 hover:bg-slate-600 mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 		<?php
