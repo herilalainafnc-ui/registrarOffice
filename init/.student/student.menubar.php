@@ -156,7 +156,7 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 <form method="post" action="../app/.student/updtateImgStd.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>" enctype="multipart/form-data">
 							<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 								<div class="p-2">
-									<p>Modifier l'image</p>
+									<p>Modifier l'image d'étudiant</p>
 								</div>
 								<div class="p-2">
 									
@@ -205,11 +205,9 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 <script type="text/javascript">
 	$(document).ready(function(){
 		$('#listOpt1').click(function(){
-			$('#imgOpt').css({'display':'none'});
 			$('#notifAffichIMG').css({'display':'block'});
 		});
 		$('#listOpt2').click(function(){
-			$('#imgOpt').css({'display':'none'});
 			$('#notifModifIMG').css({'display':'block'});
 		});
 		$('#cancelModifIMG').click(function(){
@@ -219,7 +217,7 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 			$('#notifAffichIMG').css({'display':'none'});
 		});
 		$('#image_student').on('change',function(){
-			image_student = $(this).val();
+			var image_student = $(this).val();
 			if(image_student!="") {
 				$('#imgNote').text('Image bien ajouté.');
 				$('#btnModify').attr('class','px-2 rounded-md py-1 text-white mx-1 bg-cyan-700');

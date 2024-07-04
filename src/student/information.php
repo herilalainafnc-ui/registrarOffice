@@ -160,9 +160,11 @@ while ($showR = $findRegion->fetch()) {
 				<br>
 				<label class="text-sm text-slate-400">Matricule</label>
 				<p class=""><i class="bi-lock-fill"></i> <?=$profil['student_id']?></p><br>
+				
 				<label class="text-sm text-slate-400">Status</label>
 				<p class="showEtd">-- <?=$profil['status']?></p>
 				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="status">
+					<option class="bg-slate-800"></option>
 					<option class="bg-slate-800" <?php if($profil['status'] == 'Externe'){echo 'selected';}?>>Externe</option>
 					<option class="bg-slate-800" <?php if($profil['status'] == 'Interne'){echo 'selected';}?>>Interne</option>
 				</select>
