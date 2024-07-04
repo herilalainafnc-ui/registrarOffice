@@ -35,14 +35,14 @@
 									if(!empty($profil['teacher_image'])) {
 										if ($profil['teacher_image'] !="" OR $imangeLen >=10) {
 								?>
-								<a href="#" id="listOpt1"><p class="px-2 py-1 hover:bg-cyan-500">Agrandir</p></a>
+								<a href="#" id="listOpt1Teacher"><p class="px-2 py-1 hover:bg-cyan-500">Agrandir</p></a>
 
 								<?php
 										} 
 									}
 								?>
 
-								<a href="#" id="listOpt2"><p class="px-2 py-1 hover:bg-cyan-500">Modifier</p></a>
+								<a href="#" id="listOpt2Teacher"><p class="px-2 py-1 hover:bg-cyan-500">Modifier</p></a>
 							</ul>
 
 							<div class="w-9/12 text-left pl-3">
@@ -108,25 +108,25 @@ if(isset($_GET['page']) and $_GET['page'] == "newCours") {
 
 							<!-- MODIF IMAGE -->
 
-						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifModifIMG" style="backdrop-filter: blur(30px);">
+						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifModifIMGTeacher" style="backdrop-filter: blur(30px);">
 <form method="post" action="../app/.prof/updateImgProf.php?id=<?=$id?>&user_id=<?=$rg_id?>" enctype="multipart/form-data">
 							<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 								<div class="p-2">
-									<p>Modifier l'image</p>
+									<p>Modifier l'image d'enseignant</p>
 								</div>
 								<div class="p-2">
 									
 									<div class="rounded-md bg-slate-300 h-20 text-center relative active hover:bg-slate-600 hover:text-white">
 										<label for="teacher_image" class="text-lg mt-4"><i class="bi-image"></i></label>
-										<p id="imgNote">Choisir une image sur votre PC</p>
+										<p id="imgNoteTeacher">Choisir une image sur votre PC</p>
 										<input type="file" name="teacher_image" id="teacher_image" class="w-full h-20 absolute z-40 top-0 left-0" style="opacity: 0;">
 									</div>
 									
 
 								</div>
 								<div class="flex p-2">
-									<a href="#" id="cancelModifIMG" class="px-2 bg-slate-300 rounded-md py-1 mx-1">Annuler</a>
-									<button type="submit" class="px-2 rounded-md py-1 text-white mx-1 btnInactive" id="btnModify">Modifier</button>
+									<a href="#" id="cancelModifIMGTeacher" class="px-2 bg-slate-300 rounded-md py-1 mx-1">Annuler</a>
+									<button type="submit" class="px-2 rounded-md py-1 text-white mx-1 btnInactive" id="btnModifyTeacher">Modifier</button>
 								</div>
 							</div>
 </form>
@@ -134,7 +134,7 @@ if(isset($_GET['page']) and $_GET['page'] == "newCours") {
 
 <!-- AFFICHE IMAGE -->
 
-						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifAffichIMG" style="backdrop-filter: blur(30px);">
+						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifAffichIMGTeacher" style="backdrop-filter: blur(30px);">
 
 							<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 								
@@ -145,7 +145,7 @@ if(isset($_GET['page']) and $_GET['page'] == "newCours") {
 
 								</div>
 								<div class="flex p-2">
-									<a href="#" id="cancelAffichIMG" class="px-2 bg-slate-300 rounded-md py-1 mx-1">Retour</a>
+									<a href="#" id="cancelAffichIMGTeacher" class="px-2 bg-slate-300 rounded-md py-1 mx-1">Retour</a>
 								</div>
 							</div>
 
@@ -159,26 +159,25 @@ if(isset($_GET['page']) and $_GET['page'] == "newCours") {
 
 
 <script type="text/javascript">
-	$(document).ready(function(){
-		$('#listOpt1').click(function(){
-			$('#imgOpt').css({'display':'none'});
-			$('#notifAffichIMG').css({'display':'block'});
+	$(document).ready(function() {
+		$('#listOpt1Teacher').click(function() {
+			$('#notifAffichIMGTeacher').css({'display':'block'});
 		});
-		$('#listOpt2').click(function(){
-			$('#imgOpt').css({'display':'none'});
-			$('#notifModifIMG').css({'display':'block'});
+		$('#listOpt2Teacher').click(function() {
+			$('#notifModifIMGTeacher').css({'display':'block'});
 		});
-		$('#cancelModifIMG').click(function(){
-			$('#notifModifIMG').css({'display':'none'});
+		$('#cancelModifIMGTeacher').click(function() {
+			$('#notifModifIMGTeacher').css({'display':'none'});
 		});
-		$('#cancelAffichIMG').click(function(){
+		$('#cancelAffichIMG').click(function() {
 			$('#notifAffichIMG').css({'display':'none'});
 		});
-		$('#teacher_image').on('change',function(){
-			image_student = $(this).val();
-			if(image_student!="") {
-				$('#imgNote').text('Image bien ajouté.');
-				$('#btnModify').attr('class','px-2 rounded-md py-1 text-white mx-1 bg-cyan-700');
+		$('#teacher_image').on('change',function() {
+			var teacher_image = $(this).val();
+			alert (teacher_image);
+			if(teacher_image !="") {
+				$('#imgNoteTeacher').text('Image bien ajouté.');
+				$('#btnModifyTeacher').attr('class','px-2 rounded-md py-1 text-white mx-1 bg-cyan-700');
 			}
 		});
 	});
