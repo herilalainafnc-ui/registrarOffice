@@ -260,3 +260,13 @@ for ($y=1; $y <= 3; $y++) {
 }
  ?>
 </div>
+<style type="text/css">
+	.tbl{
+		font-size: 12px;
+		border-collapse: collapse;
+	}
+	.tbl thead tr, tbody td{
+		border: 1px solid black;
+		padding: 0px 5px 0px 5px;
+	}
+</style>
