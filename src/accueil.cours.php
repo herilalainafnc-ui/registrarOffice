@@ -30,12 +30,13 @@
 									<th>Sigle</th>
 									<th>Cours</th>
 									<th>Mention</th>
+									<th>Parcours</th>
 									<th>Crédit</th>
 									<th>Catégorie</th>
 									<th>Niveau</th>
 									<th>Semestre</th>
 									<th>Enseignant</th>
-									<th>Parcours</th>
+									
 								</tr>
 							</thead>
 							<tbody>
@@ -54,6 +55,15 @@
 									<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['Sigle']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['title']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['dep_desc']?></div></a></td>
+									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
+if($cours_list['parcours'] == "all") { echo "Tronc comun";}else{
+	$findParcours = $dtb->query('SELECT * FROM filiere_parcours WHERE shortcode = "'.$cours_list['parcours'].'"');
+	$showParcours = $findParcours->fetch();
+	if(!empty($showParcours)) {
+		echo $showParcours['description'];
+	}
+}
+								?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['nb_crd']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
 if ($cours_list['category'] == 0){
@@ -70,7 +80,12 @@ if ($cours_list['category'] == 0){
 	echo "-";
 }
 								?></div></a></td>
-									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['yearlevel']?></div></a></td>
+									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php
+										if($cours_list['yearlevel']<=3) {
+											echo "Licence ".$cours_list['yearlevel'];
+										}else{
+											echo "Master ".($cours_list['yearlevel']-3);
+										} ?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['semester']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
 $findTeach = $dtb->query('SELECT * FROM teacher WHERE uid = "'.$cours_list['id_teacher'].'"');
@@ -79,7 +94,6 @@ if(!empty($showTeach)) {
 	echo strtoupper($showTeach['name'])." ".$showTeach['lastName'];
 }
 ?></div></a></td>
-									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['parcours']?></div></a></td>
 								</tr>
 
 <?php
