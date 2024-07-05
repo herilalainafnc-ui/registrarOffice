@@ -1,6 +1,23 @@
 <?php 
 $date = date('Y-m-d');
 $langue = $_GET['langue'];
+
+require("./student/level.php");
+
+if ($totalGenCumul >= 17) {
+	$mentionPromANG = "With High Distinction";
+	$mentionPromFR = "Mention très bien";
+}elseif($totalGenCumul >= 15.5 AND $totalGenCumul <= 16.99) {
+	$mentionPromANG = "With Distinction";
+	$mentionPromFR = "Mention bien";
+}elseif($totalGenCumul >= 14 AND $totalGenCumul <= 15.49) {
+	$mentionPromANG = "With Distinction";
+	$mentionPromFR = "Mention assez bien";
+}elseif($totalGenCumul < 14){
+	$mentionPromANG = "";
+	$mentionPromFR = "";
+}
+
 if($level <3 ){
 ?>
 <div class='p-1 bg-slate-700 hover:bg-slate-600 mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>	
@@ -47,10 +64,10 @@ if($level <3 ){
 		<?php 
 		if (isset($_GET['langue']) AND $langue == 'ANG') {
 			echo '<input type="text" value="'.$etude_option_ang.' course" class="font-bahnschrift text-[16px] bg-transparent p-0 border-0 w-full text-center">';
-			echo '<input type="text" value="Mention" class="font-candara text-italic text-[16px] bg-transparent p-0 border-0 w-full text-center">';
+			echo '<input type="text" value="'.$mentionPromANG.'" class="font-candara text-italic text-[19px] bg-transparent p-0 border-0 w-full text-center">';
 		}else{
 			echo '<input type="text" value="Parcours: '.$etude_option.'" class="font-bahnschrift text-[16px] bg-transparent p-0 border-0 w-full text-center">';
-			echo '<input type="text" value="Mention" class="font-candara text-italic text-[16px] bg-transparent p-0 border-0 w-full text-center">';
+			echo '<input type="text" value="'.$mentionPromFR.'" class="font-candara text-italic text-[19px] bg-transparent p-0 border-0 w-full text-center">';
 		}
 		?>	
 			
