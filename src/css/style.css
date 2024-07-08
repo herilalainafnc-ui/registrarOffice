@@ -33,7 +33,7 @@ body::-webkit-scrollbar-thumb {
 }
 .simpleTbl th, .simpleTbl td{
 	padding: 0px 3px 0px 3px;
-	border: 1px solid #334155;
+	border: 1px solid #1e293b;
 }
 
 .classicTbl{

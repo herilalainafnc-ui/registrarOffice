@@ -17,12 +17,16 @@ require '../../data/backdb.php';
 	$lieuNaissance = $_POST['lieuNaissance'];
 	$num_cin = $_POST['num_cin'];
 	
-	$cdelivre = $_POST['cin_date_delivre'];
+	$cin_datedelivre = $_POST['cin_date_delivre'];
 	
-	if ($cdelivre =="") {
-		$cin_date_delivre == "0000-00-00";
+	if ($cin_datedelivre == "0000-00-00") {
+
+		$cin_date_delivre = "0000-00-00";
+
 	}else{
-		$cin_date_delivre == $cdelivre;
+
+		$cin_date_delivre = $cin_datedelivre;
+
 	}
 
 	$father_name = $_POST['father_name'];
@@ -42,7 +46,27 @@ require '../../data/backdb.php';
 	$religion = $_POST['religion'];
 	$num_visa = $_POST['num_visa'];
 	$last_change_datetime = date('Y-m-d');
+
+	/*$serie_bacc = $_POST['serie_bacc'];
+	$obtention_bacc = $_POST['obtention_bacc'];
+
+	$diplome_preced = $_POST['diplome_preced'];
+	$date_obtent_diplome_preced = $_POST['date_obtent_diplome_preced'];
+
+
+	$updDiplome = $dtb->prepare("UPDATE t_2024_bacc SET 
+				date_obtent=:date_obtent,
+				bacc_serie=:bacc_serie,
+				user_id=:user_id,
+				date_entry=:date_entry
+				WHERE student_id=:student_id,,");
 	
+	$updDiplome->bindParam(':student_nom',$student_nom,PDO::PARAM_STR);
+	$updDiplome->bindParam(':student_nom',$student_nom,PDO::PARAM_STR);
+	$updDiplome->bindParam(':student_nom',$student_nom,PDO::PARAM_STR);
+	$updDiplome->bindParam(':student_nom',$student_nom,PDO::PARAM_STR);
+	$updDiplome->bindParam(':student_nom',$student_nom,PDO::PARAM_STR);*/
+
 
 	$update = $dtb->prepare("UPDATE etudiant_second_semester_23 SET 
 		student_nom=:student_nom,

@@ -5,7 +5,7 @@
 <!-- FOR BULLETIN -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifBulletin" style="backdrop-filter: blur(3px);">
 
-		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+		<div class="w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 			<div class="p-2 text-black">
 				<b>Afficher le Bulletin de</b>
 			</div>
@@ -43,7 +43,7 @@
 			</div>
 			<div class="p-3">
 				<center>
-				<a href="#" id="cancelnotifBulletin" class="bg-slate-400 p-2 rounded-md">Annuler</a>
+				<a href="#" id="cancelnotifBulletin" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
 				<a href="./data.topdf.php?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=Bulletin&level=all&semester=all" id="showBulletin" target="_blank" class="bg-cyan-800 p-2 rounded-md text-white mx-1">Afficher</a>	
 				</center>
 			</div>
@@ -55,7 +55,7 @@
 <!-- FOR TRANSCRIPT -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifTranscript" style="backdrop-filter: blur(3px);">
 
-		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+		<div class="w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 			<div class="p-2 text-black">
 				<b>Afficher le Transcript Semestriel de</b>
 			</div>
@@ -93,7 +93,7 @@
 			</div>
 			<div class="p-3">
 				<center>
-				<a href="#" id="cancelnotifTranscript" class="bg-slate-400 p-2 rounded-md">Annuler</a>
+				<a href="#" id="cancelnotifTranscript" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
 				<a href="./data.topdf.php?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=Transcript&level=all&semester=all" id="showTranscript" target="_blank" class="bg-cyan-800 p-2 rounded-md text-white mx-1">Afficher</a>
 				</center>	
 			</div>
@@ -104,7 +104,7 @@
 <!-- FOR TRANSCRIPT SESSION -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifTranscriptSS" style="backdrop-filter: blur(3px);">
 
-		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+		<div class="w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 			<div class="p-2 text-black">
 				<b>Afficher le Transcript par Session de</b>
 			</div>
@@ -142,7 +142,7 @@
 			</div>
 			<div class="p-3">
 				<center>
-				<a href="#" id="cancelnotifTranscriptSS" class="bg-slate-400 p-2 rounded-md">Annuler</a>
+				<a href="#" id="cancelnotifTranscriptSS" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
 				<a href="./data.topdf.php?student_id=<?=$student_id?>&annee_scolaire=<?=$annee_scolaire?>&std_niveau=<?=$level?>&ptype=TranscriptSS&level=all&semester=all" id="showTranscriptSS" target="_blank" class="bg-cyan-800 p-2 rounded-md text-white mx-1">Afficher</a>
 				</center>	
 			</div>
@@ -155,13 +155,13 @@
 <!-- FOR DIPLOME -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifDiplome" style="backdrop-filter: blur(3px);">
 
-		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+		<div class="w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 			<div class="p-2 text-black">
 				<b>Exporter ce Diplôme</b>
 			</div>
 			<div class="p-3">
 				<center>
-				<a href="#" id="cancelnotifDiplome" class="bg-slate-400 p-2 rounded-md">Annuler</a>
+				<a href="#" id="cancelnotifDiplome" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
 				<!-- <a href="#" id="showDiplome" onclick="printThisDiplome()" class="bg-cyan-800 p-2 rounded-md text-white mx-1">Continuer</a> -->
 				<button type="button" onclick="printThisDiplome()" class="bg-cyan-800 p-2 rounded-md text-white mx-1"><span class="bi-download"></span> Obtenir PDF</button>
 				</center>

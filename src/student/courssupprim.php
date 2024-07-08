@@ -3,7 +3,7 @@
 <?php 
 	for ($a=1; $a <= $level; $a++) { 
 ?>
-	<div class='p-1 bg-slate-700 hover:bg-slate-600 mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+	<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 <b>
 		<?php 
 		if($a<=3) {
@@ -37,7 +37,7 @@
 					<th colspan="2" class="w-[29px]"></th>
 				</tr>	
 			</thead>
-			<tbody class="bg-slate-500">
+			<tbody class="<?=$bg_four_color?>">
 	<?php
 	$cours = $dtb->query("SELECT * FROM t_2023_notes WHERE student_id ='".$student_id."' AND ajout = 0 AND yearlevel='".$a."' AND semester='".$s."' ORDER BY id");
 	
@@ -59,7 +59,7 @@
 			$session_id = $crs['session_id'];
 			$annee_scolaire = $crs['annee_scolaire'];
 	 ?>
-				<tr class="hover:transition-all duration-75 hover:bg-slate-400 hover:text-black">
+				<tr class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black">
 					<td class="bg-gradient-to-r from-orange-800 to-orange-400"><?=$crs['Sigle']?></td>
 					<td><?=$crs['title_cours']?></td>
 					<td><?=$crs['credit']?></td>

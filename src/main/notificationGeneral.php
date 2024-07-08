@@ -516,7 +516,7 @@
 			</div>
 			<div class="p-3">
 				<center>
-				<a href="#" id="cancelnotifLogOut" class="bg-slate-400 p-2 rounded-md">Annuler</a>
+				<a href="#" id="cancelnotifLogOut" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
 				<a href="../app/logout.php" id="btnnotifLogOut" class="bg-red-600 p-2 text-white rounded-md mx-1">Ce déconnecter</a>
 				</center>
 			</div>
@@ -568,7 +568,7 @@
 			
 			}else{
 			
-				$('#btnFOP').attr('class','bg-slate-400 p-2 rounded-md mx-1 toolInactive');
+				$('#btnFOP').attr('class','<?=$bg_five_color?> p-2 rounded-md mx-1 toolInactive');
 			}
 
 		});
@@ -590,7 +590,7 @@
 			
 			}else{
 			
-				$('#btnMesupres').attr('class','bg-slate-400 p-2 rounded-md mx-1 toolInactive');
+				$('#btnMesupres').attr('class','<?=$bg_five_color?> p-2 rounded-md mx-1 toolInactive');
 			}
 
 		});
@@ -612,7 +612,7 @@
 			
 			}else{
 			
-				$('#btnTicketMail').attr('class','bg-slate-400 p-2 rounded-md mx-1 toolInactive');
+				$('#btnTicketMail').attr('class','<?=$bg_five_color?> p-2 rounded-md mx-1 toolInactive');
 			}
 
 		});
@@ -644,7 +644,7 @@
 			
 			}else{
 			
-				$('#btnworkedSlip').attr('class','bg-slate-400 p-2 rounded-md mx-1 toolInactive');
+				$('#btnworkedSlip').attr('class','<?=$bg_five_color?> p-2 rounded-md mx-1 toolInactive');
 			}
 
 		});

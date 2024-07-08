@@ -9,21 +9,21 @@ if($page == "accueil.php" OR $page == "student.php" OR $page=="inscription.php")
 	echo "exportListCours";
 }elseif($page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "exportListProf";
-} ?>" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1">
+} ?>" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
 				<center>
 				<i class="bi-filetype-pdf text-2xl"></i><br>
 						Exporter la liste
 				</center>
 			
 		</a>
-		<a target="_blank" href="./data.topdf.php?ptype=Statistique" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1">
+		<a target="_blank" href="./data.topdf.php?ptype=Statistique" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
 				<center>
 				<i class="bi-list-columns text-2xl"></i><br>
 						Statistique
 				</center>
 			
 		</a>
-		<a href="#" id="exportListFOP" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
+		<a href="#" id="exportListFOP" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
 } ?>">
@@ -38,7 +38,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 <!-- BRANCHE D'OUTILS 2 -->	
 	<div class="w-2/12 border-r flex px-1">
 
-		<a href="#" id="exportMesupres" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
+		<a href="#" id="exportMesupres" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
 } ?>">
@@ -49,7 +49,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 			
 		</a>
 		
-		<a href="#" id="exportListCSV" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
+		<a href="#" id="exportListCSV" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
 } ?>">
@@ -59,7 +59,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 				</center>
 			
 		</a>
-		<a href="#" id="exportTicketMail" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
+		<a href="#" id="exportTicketMail" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
 } ?>">
@@ -76,7 +76,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 <!-- BRANCHE D'OUTILS 3 -->		
 	<div class="w-2/12 border-r flex px-1">
 		
-		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
+		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
 } ?>">
@@ -86,7 +86,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 				</center>
 			
 		</a>
-		<a href="#" id="workedSlip" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
+		<a href="#" id="workedSlip" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
 } ?>">
@@ -102,7 +102,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 <!-- BRANCHE D'OUTILS 4 -->		
 	<div class="w-2/12 border-r flex px-1">
 		
-		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
+		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "student.php" OR $page == "cours.php" OR $page == "prof.php" OR $page == "inscription.php") {
 	echo "toolInactive";
 } ?>" data-bs-toggle="dropdown" aria-expanded="false">
@@ -112,7 +112,7 @@ if($page == "student.php" OR $page == "cours.php" OR $page == "prof.php" OR $pag
 				</center>
 			
 		</a>
-		<ul class="dropdown-menu border bg-slate-300 text-black p-0 rounded-0 text-xs" style="max-height:400px; min-width: 200px;">
+		<ul class="dropdown-menu border <?=$bg_six_color?> text-black p-0 rounded-0 text-xs" style="max-height:400px; min-width: 200px;">
 <?php if ($page == "accueil.php") { ?>
 					<li><a href="#?trie=student_id" class="stdTriage"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">ID</p>
 					</a></li>
@@ -162,7 +162,7 @@ if($page == "student.php" OR $page == "cours.php" OR $page == "prof.php" OR $pag
 		</ul>
 
 
-		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
+		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "student.php" OR $page == "cours.php" OR $page == "prof.php" OR $page == "inscription.php") {
 	echo "toolInactive";
 } ?>" data-bs-toggle="dropdown" aria-expanded="false">
@@ -173,7 +173,7 @@ if($page == "student.php" OR $page == "cours.php" OR $page == "prof.php" OR $pag
 			
 		</a>
 
-		<ul class="dropdown-menu border bg-slate-300 text-black p-0 rounded-0 text-xs overflow-auto" style="max-height:400px; min-width: 200px;">
+		<ul class="dropdown-menu border <?=$bg_six_color?> text-black p-0 rounded-0 text-xs overflow-auto" style="max-height:400px; min-width: 200px;">
 
 <?php if ($page == "accueil.php") { ?>
 					<b class="text-grey bg-cyan-400 px-2">Mention</b>
@@ -263,7 +263,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 <?php } ?>
 		</ul>
 
-		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 searchTool">
+		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 searchTool">
 				<center>
 				<i class="bi-search text-2xl"></i><br>
 						Rechercher
@@ -276,7 +276,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 <!-- BRANCHE D'OUTILS 5 -->		
 	<div class="w-2/12 border-r flex px-1">
 		
-		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
+		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
 } ?>">
@@ -287,7 +287,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 			
 		</a>
 		
-		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
+		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
 } ?>">
@@ -297,7 +297,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 				</center>
 			
 		</a>
-		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 toolInactive">
+		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 toolInactive">
 				<center>
 				<i class="bi-gear-fill text-2xl"></i><br>
 						Paramètres

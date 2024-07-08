@@ -1,7 +1,7 @@
-<div class='p-1 bg-slate-700 hover:bg-slate-600 mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 
 <table class="simpleTbl">
-							<thead class="bg-slate-500 text-white">
+							<thead class="<?=$bg_four_color?> text-white">
 								<tr>
 									<th>Sigle</th>
 									<th>Cours</th>
@@ -19,7 +19,7 @@
 	$cours_nb = 1;
 	while ($cours_list = $recupcours->fetch()) {
  ?>								
-								<tr id="cours_<?=$cours_nb?>" class="hover:bg-slate-300 hover:text-slate-800">	
+								<tr id="cours_<?=$cours_nb?>" class="hover:<?=$bg_six_color?> hover:text-slate-800">	
 									<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['Sigle']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['title']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['dep_desc']?></div></a></td>

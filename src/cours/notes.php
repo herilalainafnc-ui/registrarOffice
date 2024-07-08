@@ -6,7 +6,7 @@ $soustract = $year - $i;
 $preced = $soustract - 1;	
 ?>
 
-<div class='p-1 bg-slate-700 hover:bg-slate-600 mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 <div class="text-center bg-gradient-to-r from-cyan-500">
 	<b>Etudiants en année <?php echo $scolaire = $preced." - ".$soustract; ?>.</b>
 </div>
@@ -28,7 +28,7 @@ $preced = $soustract - 1;
 						<td class="w-4"><span class="bi-trash3-fill"></span></td>
 					</tr>
 				</thead>
-				<tbody class="bg-slate-500">
+				<tbody class="<?=$bg_four_color?>">
 <?php
 $sigle = $profil['Sigle'];
 $title = $profil['title'];
@@ -58,7 +58,7 @@ if($apotr){
 					?></td>
 					<td class="c<?=$nbr.$i;?>">L<?=$apotr['annee_etude']?></td>
 					<td class="c<?=$nbr.$i;?>"><?=$cours_table['semester']?></td>
-						<td class="bg-slate-300 text-slate-800 px-0">
+						<td class="<?=$bg_six_color?> text-slate-800 px-0">
 							<input class="insimple text-sm bg-transparent px-2 g<?=$nbr.$i;?>" type="text" name="note" value="<?=$cours_table['grade'];?>" min="0" max="20">
 						</td>
 						<td class='stp<?=$nbr.$i;?> <?php 

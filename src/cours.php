@@ -4,8 +4,8 @@
 	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
 	<title>Cours</title>
 </head>
-<body class="bg-slate-600 text-sm">
-	<div class="h-screen w-full bg-slate-600">
+<body class="<?=$bg_three_color?> text-sm">
+	<div class="h-screen w-full <?=$bg_three_color?>">
 		
 		<!-- TOP BAR --><?php require('../init/topbar.php');?>
 

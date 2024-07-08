@@ -4,8 +4,8 @@
 	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
 	<title>Cours</title>
 </head>
-<body class="bg-slate-600 text-sm">
-	<div class="h-screen w-full bg-slate-600">
+<body class="<?=$bg_three_color?> text-sm">
+	<div class="h-screen w-full <?=$bg_three_color?>">
 		
 		<!-- TOP BAR --><?php require('../init/topbar.php');?>
 
@@ -29,7 +29,7 @@
 									</div>
 									<div class="w-2/12 text-right py-1 border">
 										<a href="#" class="">
-											<span class="py-1 px-2 rounded-xl hover:bg-slate-500 w-3 h-3">
+											<span class="py-1 px-2 rounded-xl hover:<?=$bg_four_color?> w-3 h-3">
 												<i class="bi-three-dots-vertical"></i>
 											</span>
 										</a>

@@ -20,14 +20,14 @@ if ($totalGenCumul >= 17) {
 
 if($level <3 ){
 ?>
-<div class='p-1 bg-slate-700 hover:bg-slate-600 mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>	
-	<h1 class="text-red-500 text-center"><em>Diplome non disponible</em></h1>
+<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>	
+	<h1 class="text-red-500 text-center"><em>Le diplôme de <b><?=$student_prenom?></b> n'est pas encore disponible !</em></h1>
 </div>
 <?php
 }else{
  ?>
 
-<div class='p-1 bg-slate-700 hover:bg-slate-600 mb-2 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-2 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 	<div class="relative" id="diplomeConcept">
 		<?php 
 		if (isset($_GET['langue']) AND $langue == 'ANG') {
@@ -104,7 +104,7 @@ if($level <3 ){
 
 </div>
 
-<div class='p-1 bg-slate-700 hover:bg-slate-600 mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>	
+<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>	
 	<button type="button" onclick="printThisDiplome()" class="bg-green-600 w-full p-2 rounded-md text-white"><span class="bi-download"></span> Exporter</button>
 </div>
 

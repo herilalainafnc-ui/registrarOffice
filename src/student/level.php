@@ -171,7 +171,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 	}
 ?>
 <!-- CUMULATIVE -->
-<div class='p-1 bg-slate-600 hover:bg-slate-500 mb-2 rounded-md border-2 border-slate-600 hover:border-cyan-500 transition-all text-xs text-white'>
+<div class='p-1 <?=$bg_three_color?> hover:<?=$bg_four_color?> mb-2 rounded-md border-2 border-slate-600 hover:border-cyan-500 transition-all text-xs text-white'>
 		<label>Moyenne Majeur Cumulative = </label>
 		<b><?=$totalMajCumul = round(($cumulMaj*20)/((($a-1)*2)*20),6);?></b>
 		&nbsp;&nbsp;&nbsp;

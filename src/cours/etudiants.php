@@ -6,7 +6,7 @@ $soustract = $year - $i;
 $preced = $soustract - 1;	
 ?>
 
-<div class='p-1 bg-slate-700 hover:bg-slate-600 mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 <div class="text-center bg-gradient-to-r from-cyan-500">
 	<b>Etudiants en année <?php echo $scolaire = $preced." - ".$soustract; ?>.</b>
 </div>
@@ -26,7 +26,7 @@ $preced = $soustract - 1;
 						<td class="w-4"><span class="bi-trash3-fill"></span></td>
 					</tr>
 				</thead>
-				<tbody class="bg-slate-500">
+				<tbody class="<?=$bg_four_color?>">
 <?php
 $sigle = $profil['Sigle'];
 $title = $profil['title'];

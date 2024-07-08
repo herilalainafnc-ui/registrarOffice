@@ -1,24 +1,6 @@
 <?php 
-	session_start();
 	$path = $_SERVER['PHP_SELF'];
 	$page = basename($path);
-
-	/*:::::::::::::::::::::::: SESSION COLORS ::::::::::::::::::::::::*/
-	
-	$bg_one_color = $_SESSION['bg_one_color'];
-	$bg_two_color = $_SESSION['bg_two_color'];
-	$bg_three_color = $_SESSION['bg_three_color'];
-	$bg_four_color = $_SESSION['bg_four_color'];
-	$bg_five_color = $_SESSION['bg_five_color'];
-	$bg_six_color = $_SESSION['bg_six_color'];
-	$bg_seven_color = $_SESSION['bg_seven_color'];
-	$bg_eight_color = $_SESSION['bg_eight_color'];
-	
-	$txt_one_color = $_SESSION['txt_one_color'];
-	$txt_two_color = $_SESSION['txt_two_color'];
-	$txt_three_color = $_SESSION['txt_three_color'];
-	
-	/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
 	
 	$infinit_pseudo = $_SESSION['infinit_pseudo'] ;
 	$infinit_password = $_SESSION['infinit_password'];

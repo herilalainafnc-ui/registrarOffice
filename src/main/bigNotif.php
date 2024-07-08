@@ -1,7 +1,7 @@
 <!-- AJOUT DE COURS -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="bigNotifCours" style="backdrop-filter: blur(3px);">
 
-		<div class="w-[700px] bg-slate-300 border-2 border-slate-700 mx-auto my-[1%] opacity-100 drop-shadow-2xl">
+		<div class="w-[700px] <?=$bg_six_color?> border-2 border-slate-700 mx-auto my-[1%] opacity-100 drop-shadow-2xl">
 			<form method="post" action="../app/.cours/addCours.php" enctype="multipart/form-data" class="form-no-refrech-cours">
 			<div class="p-2 text-black">
 				<b>Ajouter un cours.</b>
@@ -151,8 +151,8 @@ while($tch = $teach->fetch()){
 			</div>
 			<div class="p-3">
 				<center>
-				<a href="#" id="cancelnotifAddCours" class="bg-slate-400 p-2 rounded-md">Annuler</a>
-				<input id="btnAddCours" type="submit" class="bg-slate-400 p-2 rounded-md mx-1 toolInactive" value="Enregistrer">
+				<a href="#" id="cancelnotifAddCours" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
+				<input id="btnAddCours" type="submit" class="<?=$bg_five_color?> p-2 rounded-md mx-1 toolInactive" value="Enregistrer">
 				</center>
 			</div>
 			</form>
@@ -164,7 +164,7 @@ while($tch = $teach->fetch()){
 <!-- AJOUT DE PROF -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="bigNotifProf" style="backdrop-filter: blur(3px);">
 
-		<div class="w-[700px] bg-slate-300 border-2 border-slate-700 mx-auto my-[1%] opacity-100 drop-shadow-2xl">
+		<div class="w-[700px] <?=$bg_six_color?> border-2 border-slate-700 mx-auto my-[1%] opacity-100 drop-shadow-2xl">
 			<form id="formToAddProf" enctype="multipart/form-data">
 			<div class="p-2 text-black flex">
 				<div class="w-7/12">
@@ -221,7 +221,7 @@ while($tch = $teach->fetch()){
 		<label class="text-sm" for="teacher_image">Photos</label><br>
 
 		<label for="teacher_image">
-			<div class="bg-slate-600 rounded-md h-20 w-20 text-center py-3">
+			<div class="<?=$bg_three_color?> rounded-md h-20 w-20 text-center py-3">
 				<i class="bi-image text-4xl text-white"></i>
 			</div>
 		</label>
@@ -262,7 +262,7 @@ while($tch = $teach->fetch()){
 			</div>
 			<div class="p-3">
 				<center>
-					<a href="#" id="cancelnotifAddProf" class="bg-slate-400 p-2 rounded-md">Annuler</a>
+					<a href="#" id="cancelnotifAddProf" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
 					<input id="btnAddProf" type="button" class="bg-cyan-800 p-2 rounded-md text-white mx-1" value="Enregistrer">
 				</center>
 			</div>
@@ -303,7 +303,7 @@ while($tch = $teach->fetch()){
 
 			if ($(this).val() == "" || r_2 == "") {
 
-				$('#btnAddCours').attr('class','bg-slate-400 p-2 rounded-md mx-1 toolInactive');
+				$('#btnAddCours').attr('class','<?=$bg_five_color?> p-2 rounded-md mx-1 toolInactive');
 			
 			}else{
 			
@@ -317,7 +317,7 @@ while($tch = $teach->fetch()){
 
 			if ($(this).val() == "" || r_1 == "") {
 
-				$('#btnAddCours').attr('class','bg-slate-400 p-2 rounded-md mx-1 toolInactive');
+				$('#btnAddCours').attr('class','<?=$bg_five_color?> p-2 rounded-md mx-1 toolInactive');
 				
 			}else{
 

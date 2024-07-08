@@ -88,7 +88,7 @@
 
 	for ($a=$init; $a <= $level; $a++) {
  ?>
-	<div class='p-1 bg-slate-700 hover:bg-slate-600 mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+	<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 <b>
 		<?php 
 		if($a<=3) {
@@ -119,7 +119,7 @@
 					<th class="w-20">Categorie</th>
 				</tr>	
 			</thead>
-			<tbody class="bg-slate-500">
+			<tbody class="<?=$bg_four_color?>">
 	<?php
 	$parcour = $dtb->query('SELECT * FROM filiere_parcours WHERE description = "'.$etude_option.'"');
 	$afparc = $parcour->fetch();
@@ -151,7 +151,7 @@
 			$annee_scolaire = $crs['yearlevel'];
 			$semester = $crs['semester'];
 	 ?>
-				<tr id="cours<?=$a.$s.$nbr;?>" class="hover:transition-all duration-75 hover:bg-slate-400 hover:text-black">
+				<tr id="cours<?=$a.$s.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black">
 					<td class="p-0" style="height: 15px;"><input id="chk<?=$a.$s.$nbr;?>" type="checkbox" name="checklist[]" value="<?=$note_id?>" style="width: 100%; height: 100%;margin: none; border: none;"></td>
 					<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><?=$crs['Sigle']?></td>
 					<td><?=$crs['title']?></td>
@@ -179,7 +179,7 @@ if ($crs['category'] == 0){
 								$(this).attr("class","bg-blue-500");
 								$('#chk<?=$a.$s.$nbr;?>').prop("checked", true);	
 							}else{
-								$(this).attr("class","hover:transition-all duration-75 hover:bg-slate-400 hover:text-black");
+								$(this).attr("class","hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black");
 								$('#chk<?=$a.$s.$nbr;?>').prop("checked", false);	
 							}
 
@@ -191,7 +191,7 @@ if ($crs['category'] == 0){
 								$('#cours<?=$a.$s.$nbr;?>').attr("class","bg-blue-500");
 								$(this).prop("checked", true);	
 							}else{
-								$('#cours<?=$a.$s.$nbr;?>').attr("class","hover:transition-all duration-75 hover:bg-slate-400 hover:text-black");
+								$('#cours<?=$a.$s.$nbr;?>').attr("class","hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black");
 								$(this).prop("checked", false);	
 							}
 
@@ -217,7 +217,7 @@ $tcredit+= $credit + $crs['nb_crd'];
 					<th></th>
 				</tr>
 				<tr>
-					<td colspan="5" class="bg-slate-500">
+					<td colspan="5" class="<?=$bg_four_color?>">
 						<a href="#" id="selectAll<?=$a.$s;?>" class="px-2 py-0 m-1"><i class="bi-arrow-90deg-up"></i> Cocher tout</a>
 						<a href="#" id="deselectAll<?=$a.$s;?>" class="px-2 py-0 m-1 hidden"><i class="bi-arrow-90deg-up"></i> Décocher tout</a>
 						
@@ -253,7 +253,7 @@ $tcredit+= $credit + $crs['nb_crd'];
 						
 						
 
-						<button id="submit<?=$a.$s;?>" type="submit" class="px-2 py-0 m-1 bg-slate-700 text-slate-400 text-center" style="pointer-events: none;">Ajouter au transcript</button>
+						<button id="submit<?=$a.$s;?>" type="submit" class="px-2 py-0 m-1 <?=$bg_two_color?> text-slate-400 text-center" style="pointer-events: none;">Ajouter au transcript</button>
 					</td>
 				</tr>
 												<script type="text/javascript">
@@ -280,7 +280,7 @@ $tcredit+= $credit + $crs['nb_crd'];
 
 															for (var i = 0; i < nbr ; i++) {
 																$('#chk<?=$a.$s;?>'+i).prop("checked", false);
-																$('#cours<?=$a.$s;?>'+i).attr("class","hover:transition-all duration-75 hover:bg-slate-400 hover:text-black");
+																$('#cours<?=$a.$s;?>'+i).attr("class","hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black");
 															}
 
 														});
@@ -293,7 +293,7 @@ $tcredit+= $credit + $crs['nb_crd'];
 																$('#submit<?=$a.$s;?>').attr('class','px-2 text-center py-0 m-1 bg-black text-white');
 																$('#submit<?=$a.$s;?>').css({'pointer-events':'auto'});
 															}else{
-																$('#submit<?=$a.$s;?>').attr('class','px-2 text-center py-0 m-1 bg-slate-700 text-slate-400');
+																$('#submit<?=$a.$s;?>').attr('class','px-2 text-center py-0 m-1 <?=$bg_two_color?> text-slate-400');
 																$('#submit<?=$a.$s;?>').css({'pointer-events':'none'});
 															}
 
@@ -307,7 +307,7 @@ $tcredit+= $credit + $crs['nb_crd'];
 																$('#submit<?=$a.$s;?>').attr('class','px-2 text-center py-0 m-1 bg-black text-white');
 																$('#submit<?=$a.$s;?>').css({'pointer-events':'auto'});
 															}else{
-																$('#submit<?=$a.$s;?>').attr('class','px-2 text-center py-0 m-1 bg-slate-700 text-slate-400');
+																$('#submit<?=$a.$s;?>').attr('class','px-2 text-center py-0 m-1 <?=$bg_two_color?> text-slate-400');
 																$('#submit<?=$a.$s;?>').css({'pointer-events':'none'});
 															}
 

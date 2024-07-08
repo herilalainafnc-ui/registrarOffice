@@ -1,7 +1,7 @@
 
-<div class="xl:w-2/12 lg:w-3/12 bg-slate-700" style="height: calc(100vh - 48px);">
+<div class="xl:w-2/12 lg:w-3/12 <?=$bg_two_color?>" style="height: calc(100vh - 48px);">
 
-	<ul class="text-slate-100 text-bold my-3 mx-2">
+	<ul class="<?=$txt_one_color?> text-bold my-3 mx-2">
 		
 		<a href="./accueil.php"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
 if($page == "accueil.php" OR $page == "student.php") {

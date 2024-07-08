@@ -1,6 +1,6 @@
 <div class="w-3/12 border-r flex px-1">
 		
-		<a href="#" class="text-xs w-6/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information' or $_GET['page'] == 'diplome') or empty($_GET['page'])) {
+		<a href="#" class="text-xs w-6/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information' or $_GET['page'] == 'diplome') or empty($_GET['page'])) {
 																								echo "toolInactive";
 																							}?>" data-bs-toggle="dropdown" aria-expanded="false">
 				<center>
@@ -9,7 +9,7 @@
 				</center>
 			
 		</a>
-				<ul class="dropdown-menu border bg-slate-300 text-black p-0 rounded-0 text-xs">
+				<ul class="dropdown-menu border <?=$bg_six_color?> text-black p-0 rounded-0 text-xs">
 
 					<li><a href="?id=<?=$id;?>&page=transcriptSS"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Classement en session</p>
 					</a></li>
@@ -19,7 +19,7 @@
 
 				</ul>
 
-		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information' or $_GET['page'] == 'diplome') or empty($_GET['page'])) {
+		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information' or $_GET['page'] == 'diplome') or empty($_GET['page'])) {
 																								echo "toolInactive";
 																							}?>">
 				<center>
@@ -28,7 +28,7 @@
 				</center>
 			
 		</a>
-		<a href="#" class="text-xs w-6/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {
+		<a href="#" class="text-xs w-6/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {
 																								echo "toolInactive";
 																							}?>" data-bs-toggle="dropdown" aria-expanded="false">
 				<center>
@@ -36,7 +36,7 @@
 						Langues
 				</center>
 		</a>
-				<ul class="dropdown-menu border bg-slate-300 text-black p-0 rounded-0 text-xs">
+				<ul class="dropdown-menu border <?=$bg_six_color?> text-black p-0 rounded-0 text-xs">
 
 					<li><a href="?id=<?=$id;?>&page=<?=$_GET['page']?>&langue=FR"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Français</p>
 					</a></li>
@@ -46,7 +46,7 @@
 				</ul>
 	</div>
 	<div class="w-3/12 flex px-1">
-		<a href="?id=<?=$id?>&page=newCours" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1">
+		<a href="?id=<?=$id?>&page=newCours" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
 				<center>
 				<i class="bi-folder-plus text-2xl"></i><br>
 						Ajout cours
@@ -55,7 +55,7 @@
 		</a>
 		
 		
-		<a href="?id=<?=$id;?>&page=courssupprim" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1">
+		<a href="?id=<?=$id;?>&page=courssupprim" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
 				<center>
 				<i class="bi-trash2 text-2xl"></i><br>
 						Cours supprimé
@@ -67,7 +67,7 @@
 							elseif(!empty($_GET['page']) AND $_GET['page'] == 'transcriptSS'){echo 'exportTranscriptSS';}
 						?>" 
 
-			class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information' or $_GET['page'] == 'newCours' or $_GET['page'] == 'diplome') or empty($_GET['page'])) {
+			class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information' or $_GET['page'] == 'newCours' or $_GET['page'] == 'diplome') or empty($_GET['page'])) {
 																								echo "toolInactive";
 																							}?>">
 		

@@ -1,6 +1,7 @@
-<?php
-
-	session_start();
+<!DOCTYPE html>
+<html>
+<head>
+	<?php require ('../init/head.php');
 	
 	/*require('../data/connectdb.php');*/
 	require('../data/backdb.php');
@@ -18,9 +19,28 @@
 	$_SESSION['bg_seven_color'] = 'bg-slate-200';
 	$_SESSION['bg_eight_color'] = 'bg-slate-100';
 
+	$_SESSION['br_two_color'] = 'border-slate-700';
+	$_SESSION['br_three_color'] = 'border-slate-200';
+	
 	$_SESSION['txt_one_color'] = 'text-slate-100';
 	$_SESSION['txt_two_color'] = 'text-slate-400';
-	$_SESSION['txt_three_color'] = 'text-black';
+	$_SESSION['txt_three_color'] = 'text-slate-800';
+
+	/*$_SESSION['bg_one_color'] = 'bg-slate-100';
+	$_SESSION['bg_two_color'] = 'bg-slate-200';
+	$_SESSION['bg_three_color'] = 'bg-slate-300';
+	$_SESSION['bg_four_color'] = 'bg-slate-400';
+	$_SESSION['bg_five_color'] = 'bg-slate-500';
+	$_SESSION['bg_six_color'] = 'bg-slate-600';
+	$_SESSION['bg_seven_color'] = 'bg-slate-700';
+	$_SESSION['bg_eight_color'] = 'bg-slate-800';
+
+	$_SESSION['br_two_color'] = 'border-slate-200';
+	$_SESSION['br_three_color'] = 'border-slate-700';
+
+	$_SESSION['txt_one_color'] = 'text-slate-800';
+	$_SESSION['txt_two_color'] = 'text-slate-400';
+	$_SESSION['txt_three_color'] = 'text-slate-100';*/
 
 	/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
 
@@ -68,12 +88,9 @@
 				}
 			}
 		}
-	
-?>
-<!DOCTYPE html>
-<html>
-<head>
-	<?php require ('../init/head.php');?>
+
+
+	?>
 	<title>Log-in</title>
 </head>
 <body>

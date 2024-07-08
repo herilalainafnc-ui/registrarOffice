@@ -4,8 +4,8 @@
 	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
 	<title>Student</title>
 </head>
-<body class="bg-slate-600 text-sm">
-	<div class="h-screen w-full bg-slate-600">
+<body class="<?=$bg_three_color?> text-sm">
+	<div class="h-screen w-full <?=$bg_three_color?>">
 		
 		<!-- TOP BAR --><?php require('../init/topbar.php');?>
 
@@ -57,7 +57,7 @@ $yes = 1;
  ?>					
 					
 
-						<div class="my-1 p-2 mx-0.5 lg:w-9/12 xl:w-9/12 xxl:w-7/12 <?=$bg_one_color?> text-white overflow-auto" style="max-height: calc(100vh - 160px);">
+						<div class="my-1 p-2 mx-0.5 lg:w-9/12 xl:w-9/12 xxl:w-7/12 <?=$bg_one_color?> <?=$txt_one_color?> overflow-auto" style="max-height: calc(100vh - 160px);">
 							<div class="h-20 flex pb-2">
 								<div class="w-4/12 px-1">
 									<b class="text-lg mt-3"><?php 

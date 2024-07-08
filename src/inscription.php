@@ -4,8 +4,8 @@
 	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
 	<title>Ajout étudiant</title>
 </head>
-<body class="bg-slate-600 text-sm">
-	<div class="h-screen w-full bg-slate-600">
+<body class="<?=$bg_three_color?> text-sm">
+	<div class="h-screen w-full <?=$bg_three_color?>">
 		
 		<!-- TOP BAR --><?php require('../init/topbar.php');?>
 
@@ -38,7 +38,7 @@
 							
 							
 <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-							<div class="m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
+							<div class="m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
 										<div class="w-full flex mb-4">
 											<div class="w-8/12">
 												<b>Infos personnelle</b>	
@@ -78,12 +78,12 @@
 											<div class="w-6/12">
 												<label class="text-sm text-slate-400">CIN région</label>
 												<select class="inscInput h-6 text-sm w-full" name="cin_region">
-													<option class="bg-slate-200"></option>
+													<option class="<?=$bg_seven_color?>"></option>
 								<?php 
 								$findRegion = $dtb->query('SELECT * FROM region ORDER BY region');
 								while ($showR = $findRegion->fetch()) {
 								 ?>	
-								 					<option class="bg-slate-200" value="<?=$showR['id']?>"><?=$showR['region']?></option>
+								 					<option class="<?=$bg_seven_color?>" value="<?=$showR['id']?>"><?=$showR['region']?></option>
 								 <?php 
 								}
 								 ?>
@@ -98,8 +98,8 @@
 											<div class="w-6/12">
 												<label class="text-sm text-slate-400">Genre</label>
 												<select class="inscInput h-6 text-sm w-full" name="sex">
-													<option class="bg-slate-200" value="1">Masculin</option>
-													<option class="bg-slate-200" value="0">Feminin</option>
+													<option class="<?=$bg_seven_color?>" value="1">Masculin</option>
+													<option class="<?=$bg_seven_color?>" value="0">Feminin</option>
 												</select>
 											</div>
 											<div class="w-6/12">
@@ -110,7 +110,7 @@
 							</div>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-							<div class="m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
+							<div class="m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
 								<div class="w-full flex mb-4">
 									<div class="w-8/12">
 										<b>Infos du contact</b>	
@@ -127,12 +127,12 @@
 										<input class="inscInput h-6 text-sm w-full requierd-5 mb-3" type="text" name="pays_origine" placeholder="--">
 										<label class="text-sm text-slate-400">Région</label>
 										<select class="inscInput h-6 text-sm w-full requierd-6 mb-3" name="student_region">
-											<option class="bg-slate-200"></option>
+											<option class="<?=$bg_seven_color?>"></option>
 						<?php 
 						$findRegion = $dtb->query('SELECT * FROM region ORDER BY region');
 						while ($showR = $findRegion->fetch()) {
 						 ?>	
-						 					<option class="bg-slate-200" value="<?=$showR['id']?>"><?=$showR['region']?></option>
+						 					<option class="<?=$bg_seven_color?>" value="<?=$showR['id']?>"><?=$showR['region']?></option>
 						 <?php 
 						}
 						 ?>
@@ -157,7 +157,7 @@
 							</div>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->			
-							<div class="m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
+							<div class="m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
 								<div class="w-full flex mb-4">
 									<div class="w-8/12">
 										<b>Infos d'étude</b>	
@@ -175,12 +175,12 @@
 										<label class="text-sm text-slate-400">Mention</label>
 										
 										<select class="inscInput h-6 text-sm w-full requierd-8 mb-3" name="etude_envisage" id="etude_envisage">
-											<option class="bg-slate-200"></option>
+											<option class="<?=$bg_seven_color?>"></option>
 <?php 
 $findSignMention = $dtb->query('SELECT * FROM filiere ORDER BY filiere_description');
 while ($showSignMention = $findSignMention->fetch()) {
  ?>	
-											<option class="bg-slate-200" value="<?=$showSignMention['filiere_sigle']?>"><?=$showSignMention['filiere_description']?></option>
+											<option class="<?=$bg_seven_color?>" value="<?=$showSignMention['filiere_sigle']?>"><?=$showSignMention['filiere_description']?></option>
  <?php 
 }
  ?>												
@@ -189,18 +189,18 @@ while ($showSignMention = $findSignMention->fetch()) {
 										<label class="text-sm text-slate-400">Niveau</label>
 										
 										<select class="inscInput h-6 text-sm w-full mb-3" name="annee_etude" id="annee_etude">
-											<option class="bg-slate-200" value="1">Licence 1</option>
-											<option class="bg-slate-200" value="2">Licence 2</option>
-											<option class="bg-slate-200" value="3">Licence 3</option>
-											<option class="bg-slate-200" value="4">Master 1</option>
-											<option class="bg-slate-200" value="5">Master 2</option>
+											<option class="<?=$bg_seven_color?>" value="1">Licence 1</option>
+											<option class="<?=$bg_seven_color?>" value="2">Licence 2</option>
+											<option class="<?=$bg_seven_color?>" value="3">Licence 3</option>
+											<option class="<?=$bg_seven_color?>" value="4">Master 1</option>
+											<option class="<?=$bg_seven_color?>" value="5">Master 2</option>
 										</select>
 												
 										<label class="text-sm text-slate-400">Status</label>
 										
 										<select class="inscInput h-6 text-sm w-full mb-3" name="status">
-											<option class="bg-slate-200">Externe</option>
-											<option class="bg-slate-200">Interne</option>
+											<option class="<?=$bg_seven_color?>">Externe</option>
+											<option class="<?=$bg_seven_color?>">Interne</option>
 										</select>
 										
 										<div class="obtention_Bacc">
@@ -218,20 +218,20 @@ while ($showSignMention = $findSignMention->fetch()) {
 										
 										<div id="etude_option">
 											<select id="firstEtd" class="inscInput h-6 text-sm w-full requierd-9 mb-3" name="etude_option">
-												<option class="bg-slate-200"></option>
+												<option class="<?=$bg_seven_color?>"></option>
 											</select>
 										</div>
 										<label class="text-sm text-slate-400">Année universitaire</label>
 										
 										<select class="inscInput h-6 text-sm w-full requierd-10 mb-3" name="annee_scolaire">
-											<option class="bg-slate-200"></option>
+											<option class="<?=$bg_seven_color?>"></option>
 						<?php
 						$y = date('Y');
 						for ($i=0; $i <= 8; $i++) { 
 							
 							$as = $y." - ".($y+1);
 							?>
-											<option class="bg-slate-200"><?=$as?></option>
+											<option class="<?=$bg_seven_color?>"><?=$as?></option>
 						<?php
 						$y = $y - 1;
 						}
@@ -241,20 +241,20 @@ while ($showSignMention = $findSignMention->fetch()) {
 										<label class="text-sm text-slate-400">Ancien étudiant</label>
 									
 										<select class="inscInput h-6 text-sm w-full mb-3" name="new_student">
-											<option class="bg-slate-200" value="0">Non</option>
-											<option class="bg-slate-200" value="1">Oui</option>
+											<option class="<?=$bg_seven_color?>" value="0">Non</option>
+											<option class="<?=$bg_seven_color?>" value="1">Oui</option>
 										</select>
-										
+									
 										<div class="obtention_Bacc">
 											<label class="text-sm text-slate-400">Série du Bacc</label>
 											<select class="inscInput h-6 text-sm w-full mb-3" name="serie_bacc">
-												<option class="bg-slate-200">A1</option>
-												<option class="bg-slate-200">A2</option>
-												<option class="bg-slate-200">C</option>
-												<option class="bg-slate-200">D</option>
-												<option class="bg-slate-200">G1</option>
-												<option class="bg-slate-200">G2</option>
-												<option class="bg-slate-200">G3</option>
+												<option class="<?=$bg_seven_color?>">A1</option>
+												<option class="<?=$bg_seven_color?>">A2</option>
+												<option class="<?=$bg_seven_color?>">C</option>
+												<option class="<?=$bg_seven_color?>">D</option>
+												<option class="<?=$bg_seven_color?>">G1</option>
+												<option class="<?=$bg_seven_color?>">G2</option>
+												<option class="<?=$bg_seven_color?>">G3</option>
 											</select>
 										</div>
 										
@@ -263,12 +263,13 @@ while ($showSignMention = $findSignMention->fetch()) {
 											<input class="inscInput h-6 text-sm w-full mb-3" type="date" name="date_obtent_diplome_preced">
 										</div>
 
+					
 									</div>
 								</div>	
 							</div>
 <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->							
-							<div class="m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
+							<div class="m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
 								<div class="w-full flex mb-4">
 									<div class="w-8/12">
 										<b>Infos parentale</b>	
@@ -308,7 +309,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 							</div>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->							
-							<div class="m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
+							<div class="m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
 								<div class="w-full flex mb-4">
 									<div class="w-8/12">
 										<b>Infos du sponsor</b>	
@@ -338,7 +339,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 							</div>
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->							
-							<div class="m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
+							<div class="m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
 								<div class="w-full flex mb-4">
 									<div class="w-8/12">
 										<b>Autres...</b>	
@@ -349,8 +350,8 @@ while ($showSignMention = $findSignMention->fetch()) {
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">État civil</label>
 										<select class="inscInput h-6 text-sm w-full" name="situationf" placeholder="--">
-											<option class="bg-slate-200">Célibataire</option>
-											<option class="bg-slate-200">Marié</option>
+											<option class="<?=$bg_seven_color?>">Célibataire</option>
+											<option class="<?=$bg_seven_color?>">Marié</option>
 										</select>
 									</div>
 									<div class="w-6/12">
@@ -366,8 +367,8 @@ while ($showSignMention = $findSignMention->fetch()) {
 									<div class="w-6/12">
 										<label class="text-sm text-slate-400">Réligion</label>
 										<select id="firstAutr" class="inscInput h-6 text-sm w-full" name="religion">
-											<option class="bg-slate-200">Adventiste</option>
-											<option class="bg-slate-200">non Adventiste</option>
+											<option class="<?=$bg_seven_color?>">Adventiste</option>
+											<option class="<?=$bg_seven_color?>">non Adventiste</option>
 										</select>
 									</div>
 								</div>

@@ -2,7 +2,7 @@
 require('../data/session.php');
 /*require('../data/connectdb.php');*/
 require('../data/backdb.php');
-require('../init/head.php');
+require('../init/head.noTem.php');
 $ptype = $_GET['ptype'];
 $h = (date('H')+3);
 $date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');

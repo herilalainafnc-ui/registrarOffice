@@ -11,7 +11,7 @@
 	for ($a=$init; $a <= $level; $a++) { 
 /*::::::::::::::::::::::::::::::::::::::::*/
 ?>
-	<div class='p-1 bg-slate-700 hover:bg-slate-600 mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+	<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 <b>
 		<?php 
 		if($a<=3) {
@@ -44,7 +44,7 @@
 					<th class="w-4">Etat</th>
 				</tr>	
 			</thead>
-			<tbody class="bg-slate-500">
+			<tbody class="<?=$bg_four_color?>">
 	<?php
 	$cours = $dtb->query("SELECT * FROM t_2023_notes WHERE student_id ='".$student_id."' AND grade>10 AND ajout = '".$yes."' AND yearlevel='".$a."' AND semester='".$s."' ORDER BY id");
 	
@@ -78,7 +78,7 @@
 			$session_id = $crs['session_id'];
 			$annee_scolaire = $crs['annee_scolaire'];
 	 ?>
-				<tr class="hover:transition-all duration-75 hover:bg-slate-400 hover:text-black">
+				<tr class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black">
 					<td class="bg-gradient-to-r from-orange-800 to-orange-400"><?=$crs['Sigle']?></td>
 					<td><?=$crs['title_cours']?></td>
 					<td><?=$crs['credit']?></td>
@@ -209,17 +209,17 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 		}
  ?>
 
-				<tr class="bg-slate-500 text-right">
+				<tr class="<?=$bg_four_color?> text-right">
 					<td colspan="4">Note de Work Education</td>
 					<td class="text-left"><?=$grade_work_educ?></td>
 				</tr>
 				
-				<tr class="bg-slate-500 text-right">
+				<tr class="<?=$bg_four_color?> text-right">
 					<td colspan="4">Remarque académique</td>
 					<td class="text-left"><?=$grade_remark_acad?></td>
 				</tr>
 				
-				<tr class="bg-slate-500 text-right">
+				<tr class="<?=$bg_four_color?> text-right">
 					<td colspan="4">Note de participation à l'exercice de chapelle et à la semaine de prière</td>
 					<td class="text-left"><?=$grade_chapel_part?></td>
 				</tr>

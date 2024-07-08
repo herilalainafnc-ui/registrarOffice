@@ -30,7 +30,7 @@
 	for ($a=$init; $a <= $level; $a++) { 
 /*::::::::::::::::::::::::::::::::::::::::*/
 		?>
-<div class='p-1 bg-slate-700 hover:bg-slate-600 mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 		<?php
 		$combinAnual = $beginAnual." - ".$beginAnual+1;
 
@@ -86,9 +86,9 @@ $tnotecredit = 0;
 					while($crs=$cours->fetch()){
 						if (!empty($crs)) {
 							?>
-							<tbody class="bg-slate-500">
+							<tbody class="<?=$bg_four_color?>">
 								<form method="post" action="../app/.student/updatenote.php?id=<?=$id;?>&nbr=<?=$s.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$a.$s?>&user_id=<?=$rg_id?>">			
-				<tr id="note<?=$s.$nbr;?>" class="hover:transition-all duration-75 hover:bg-slate-400 hover:text-black">
+				<tr id="note<?=$s.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black">
 					<td class="bg-gradient-to-r from-orange-800 to-orange-400"><?=$crs['Sigle']?></td>
 					<td><?=$crs['title_cours']?></td>
 					<td><?=$crs['credit']?></td>
@@ -107,7 +107,7 @@ if ($crs['cours_category'] == 0){
 	echo "-";
 }
 						 ?></td>
-					<td class="bg-slate-300 text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="nb_crd<?=$s.$nbr;?>" value="<?=$crs['grade']?>"></td>
+					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="nb_crd<?=$s.$nbr;?>" value="<?=$crs['grade']?>"></td>
 					<td><?=$notecredi = $crs['credit'] * $crs['grade']?></td>
 					
 					<td class="<?php 
@@ -143,7 +143,7 @@ if ($crs['grade'] == -2 OR $crs['grade'] > 10) {
 					<td><div class="relative">
 						<a href="#" id="coursPush<?=$a.$s.$nbr?>" data-bs-toggle="dropdown" aria-expanded="false" title="Historique de solde"><span class="bi-three-dots-vertical"></span></a>
 
-							<ul class="dropdown-menu absolute border bg-slate-300 text-black p-0 rounded-0 text-xs">
+							<ul class="dropdown-menu absolute border <?=$bg_six_color?> text-black p-0 rounded-0 text-xs">
 
 								<li><a href="../app/.student/del-cours.momentanee.php?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$a.$s?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>">		<p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Supprimer</p>
 								</a></li>
@@ -244,19 +244,19 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 		}
  ?>
 
-				<tr class="bg-slate-500 text-right">
+				<tr class="<?=$bg_four_color?> text-right">
 					<td colspan="4">Note de Work Education</td>
-					<td class="bg-slate-300 text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_work_educ" value="<?=$grade_work_educ?>"></td>
+					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_work_educ" value="<?=$grade_work_educ?>"></td>
 				</tr>
 
-				<tr class="bg-slate-500 text-right">
+				<tr class="<?=$bg_four_color?> text-right">
 					<td colspan="4">Remarque académique</td>
-					<td class="bg-slate-300 text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_remark_acad" value="<?=$grade_remark_acad?>"></td>
+					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_remark_acad" value="<?=$grade_remark_acad?>"></td>
 				</tr>
 
-				<tr class="bg-slate-500 text-right">
+				<tr class="<?=$bg_four_color?> text-right">
 					<td colspan="4">Note de participation à l'exercice de chapelle et à la semaine de prière</td>
-					<td class="bg-slate-300 text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_chapel_part" value="<?=$grade_chapel_part?>"></td>
+					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_chapel_part" value="<?=$grade_chapel_part?>"></td>
 				</tr>
 
 				<button type="submit" class="hidden"></button>
@@ -304,10 +304,10 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 
 	?>
 
-<div class='p-1 bg-slate-600 hover:bg-slate-500 mb-4 rounded-md border-2 border-slate-600 hover:border-cyan-500 transition-all text-xs text-white'>
+<div class='p-1 <?=$bg_three_color?> hover:<?=$bg_four_color?> mb-4 rounded-md border-2 border-slate-600 hover:border-cyan-500 transition-all text-xs text-white'>
 	<b>MOYENNE CUMULATIVE</b>
 	<table class="simpleTbl mb-1 w-full">
-		<tbody class=" bg-slate-700">
+		<tbody class=" <?=$bg_two_color?>">
 			<tr>
 				<td class="p-1 w-8/12 text-right">Note de Work Education cumulative</td>
 				<td class="px-2 w-2/12 text-bold"><?=round(($cumulWorkNote*20)/((($i-1)*2)*20),3);?></td>

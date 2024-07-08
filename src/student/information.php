@@ -2,7 +2,7 @@
 <form method="post" action="../app/.student/updateStd.php?id=<?=$id?>&rg_id=<?=$rg_id?>" class="form-no-refrech">
 <div class="w-full grid gap-2 grid-cols-2">
 
-	<div class='m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all'>
 		<div class="w-full flex mb-4">
 			<div class="w-8/12">
 				<b>Infos personnelle</b>	
@@ -10,7 +10,7 @@
 			<div class="w-4/12 text-right">
 				<div class="w-full flex gap-1 relative">
 					<input type="submit" class="submitPers rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier">
-					<a href="#" class="annulPers rounded-md px-2 bg-slate-500 text-center hidden absolute right-0">Annuler</a>
+					<a href="#" class="annulPers rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
 				</div>
 				<a href="#" id="editPers" class="text-right"><i class="bi-pencil-square"></i></a>	
 			</div>
@@ -74,7 +74,7 @@ while ($showR = $findRegion->fetch()) {
 
 <!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-	<div class='m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all'>
 		<div class="w-full flex mb-4">
 			<div class="w-8/12">
 				<b>Infos du contact</b>	
@@ -82,7 +82,7 @@ while ($showR = $findRegion->fetch()) {
 			<div class="w-4/12 text-right">
 				<div class="w-full flex gap-1 relative">
 					<input type="submit" class="submitContact rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier">
-					<a href="#" class="annulContact rounded-md px-2 bg-slate-500 text-center hidden absolute right-0">Annuler</a>
+					<a href="#" class="annulContact rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
 				</div>
 				<a href="#" id="editContact" class="text-right"><i class="bi-pencil-square"></i></a>
 			</div>
@@ -115,9 +115,42 @@ while ($showR = $findRegion->fetch()) {
 				<p class="showContact">-- <?=$profil['student_adresse']?></p><input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="student_adresse" value="<?=$profil['student_adresse']?>"><br>
 			</div>
 			<div class="w-6/12">
-				<label class="text-sm text-slate-400">Ext</label>
-				<p class="showContact">-- </p><br>
+				<?php 
+					if ($level <= 3) {
+				 ?>	
+				<div class="obtention_Bacc">
+					<label class="text-sm text-slate-400">Série du Bacc</label>
+					<select class="editParent p-0 bg-transparent h-5 text-sm border-0 w-11/12" name="serie_bacc">
+						<option class="<?=$bg_one_color?>">A1</option>
+						<option class="<?=$bg_one_color?>">A2</option>
+						<option class="<?=$bg_one_color?>">C</option>
+						<option class="<?=$bg_one_color?>">D</option>
+						<option class="<?=$bg_one_color?>">G1</option>
+						<option class="<?=$bg_one_color?>">G2</option>
+						<option class="<?=$bg_one_color?>">G3</option>
+					</select>
+				</div>
+				<br>
+				<div class="obtention_Bacc">
+					<label class="text-sm text-slate-400">Année d'obtention Bacc</label>
+					<input class="editParent p-0 bg-transparent h-5 text-sm border-0 w-11/12" type="date" name="obtention_bacc">
+				</div>
 				
+				<?php 
+					}elseif($level > 3){
+				?>
+					<div class="diplome_preced">
+						<label class="text-sm text-slate-400">Diplôme précédent</label>
+						<input class="editParent p-0 bg-transparent h-5 text-sm border-0 w-11/12" type="text" name="diplome_preced">
+					</div>
+					<br>
+					<div class="diplome_preced">
+						<label class="text-sm text-slate-400">Date d'obtention</label>
+						<input class="editParent p-0 bg-transparent h-5 text-sm border-0 w-11/12" type="date" name="date_obtent_diplome_preced">
+					</div>
+				<?php 
+					}
+				?>
 			</div>
 		</div>
 
@@ -125,7 +158,7 @@ while ($showR = $findRegion->fetch()) {
 
 <!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-	<div class='m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all'>
 		<div class="w-full flex mb-4">
 			<div class="w-8/12">
 				<b>Infos d'étude</b>	
@@ -133,7 +166,7 @@ while ($showR = $findRegion->fetch()) {
 			<div class="w-4/12 text-right">
 				<div class="w-full flex gap-1 relative">
 					<input type="submit" class="submitEtd rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier">
-					<a href="#" class="annulEtd rounded-md px-2 bg-slate-500 text-center hidden absolute right-0">Annuler</a>
+					<a href="#" class="annulEtd rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
 				</div>
 				<a href="#" id="editEtd" class="text-right"><i class="bi-pencil-square"></i></a>
 			</div>
@@ -223,7 +256,7 @@ $y = $y - 1;
 
 <!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-	<div class='m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all'>
 		<div class="w-full flex mb-4">
 			<div class="w-8/12">
 				<b>Infos parentale</b>	
@@ -231,7 +264,7 @@ $y = $y - 1;
 			<div class="w-4/12 text-right">
 				<div class="w-full flex gap-1 relative">
 					<input type="submit" class="submitParent rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier">
-					<a href="#" class="annulParent rounded-md px-2 bg-slate-500 text-center hidden absolute right-0">Annuler</a>
+					<a href="#" class="annulParent rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
 				</div>
 				<a href="#" id="editParent" class="text-right"><i class="bi-pencil-square"></i></a>
 			</div>
@@ -261,7 +294,7 @@ $y = $y - 1;
 
 <!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-	<div class='m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all'>
 		<div class="w-full flex mb-4">
 			<div class="w-8/12">
 				<b>Infos du sponsor</b>	
@@ -269,7 +302,7 @@ $y = $y - 1;
 			<div class="w-4/12 text-right">
 				<div class="w-full flex gap-1 relative">
 					<input type="submit" class="submitSpons rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier">
-					<a href="#" class="annulSpons rounded-md px-2 bg-slate-500 text-center hidden absolute right-0">Annuler</a>
+					<a href="#" class="annulSpons rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
 				</div>
 				<a href="#" id="editSpons" class="text-right"><i class="bi-pencil-square"></i></a>
 			</div>
@@ -296,7 +329,7 @@ $y = $y - 1;
 
 <!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-	<div class='m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all'>
 		<div class="w-full flex mb-4">
 			<div class="w-8/12">
 				<b>Autres...</b>	
@@ -304,7 +337,7 @@ $y = $y - 1;
 			<div class="w-4/12 text-right">
 				<div class="w-full flex gap-1 relative">
 					<input type="submit" class="submitAutr rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier">
-					<a href="#" class="annulAutr rounded-md px-2 bg-slate-500 text-center hidden absolute right-0">Annuler</a>
+					<a href="#" class="annulAutr rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
 				</div>
 				<a href="#" id="editAutr" class="text-right"><i class="bi-pencil-square"></i></a>
 			</div>

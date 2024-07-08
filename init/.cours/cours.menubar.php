@@ -96,13 +96,13 @@ if(isset($_GET['page']) and $_GET['page'] == "etudiants") {
 
 						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifModifIMG" style="backdrop-filter: blur(30px);">
 <form method="post" action="../app/updtadeImgStd.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>" enctype="multipart/form-data" class="form-no-refrech">
-							<div class="w-3/12 bg-slate-100 border-2 border-slate-700 mx-auto my-[12%] opacity-100 drop-shadow-2xl">
+							<div class="w-3/12 <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[12%] opacity-100 drop-shadow-2xl">
 								<div class="p-2">
 									<p>Modifier l'image</p>
 								</div>
 								<div class="p-2">
 									
-									<div class="rounded-md bg-slate-300 h-20 text-center relative active hover:bg-slate-600 hover:text-white">
+									<div class="rounded-md <?=$bg_six_color?> h-20 text-center relative active hover:<?=$bg_three_color?> hover:text-white">
 										<label for="image_student" class="text-lg mt-4"><i class="bi-image"></i></label>
 										<p>Choisir une image sur votre PC</p>
 										<input type="file" name="image_student" id="image_student" class="w-full h-20 absolute z-40 top-0 left-0" style="opacity: 0;">
@@ -111,7 +111,7 @@ if(isset($_GET['page']) and $_GET['page'] == "etudiants") {
 
 								</div>
 								<div class="flex p-2">
-									<a href="#" id="cancelModifIMG" class="px-2 bg-slate-300 rounded-md py-1 mx-1">Annuler</a>
+									<a href="#" id="cancelModifIMG" class="px-2 <?=$bg_six_color?> rounded-md py-1 mx-1">Annuler</a>
 									<button type="submit" class="px-2 rounded-md py-1 text-white mx-1 btnInactive" id="btnModify">Modifier</button>
 								</div>
 							</div>
@@ -122,7 +122,7 @@ if(isset($_GET['page']) and $_GET['page'] == "etudiants") {
 
 						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifAffichIMG" style="backdrop-filter: blur(30px);">
 
-							<div class="w-3/12 bg-slate-100 border-2 border-slate-700 mx-auto my-[12%] opacity-100 drop-shadow-2xl">
+							<div class="w-3/12 <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[12%] opacity-100 drop-shadow-2xl">
 								
 								<div class="p-2">
 									<div class="w-full h-[400px]" style="background-image: url('../app/photosetudiants/<?=$profil['image_student']?>');background-position: center; background-size: cover;background-repeat: no-repeat;">
@@ -131,7 +131,7 @@ if(isset($_GET['page']) and $_GET['page'] == "etudiants") {
 
 								</div>
 								<div class="flex p-2">
-									<a href="#" id="cancelAffichIMG" class="px-2 bg-slate-300 rounded-md py-1 mx-1">Retour</a>
+									<a href="#" id="cancelAffichIMG" class="px-2 <?=$bg_six_color?> rounded-md py-1 mx-1">Retour</a>
 								</div>
 							</div>
 

@@ -29,7 +29,7 @@
 								
 							</div></a>
 
-							<ul class="dropdown-menu border bg-slate-400 text-black p-0 rounded-0 text-xs" style="max-height:400px;">
+							<ul class="dropdown-menu border <?=$bg_five_color?> text-black p-0 rounded-0 text-xs" style="max-height:400px;">
 								
 								<?php 
 									if(!empty($profil['teacher_image'])) {
@@ -110,13 +110,13 @@ if(isset($_GET['page']) and $_GET['page'] == "newCours") {
 
 						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifModifIMGTeacher" style="backdrop-filter: blur(30px);">
 <form method="post" action="../app/.prof/updateImgProf.php?id=<?=$id?>&user_id=<?=$rg_id?>" enctype="multipart/form-data">
-							<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+							<div class="w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 								<div class="p-2">
 									<p>Modifier l'image d'enseignant</p>
 								</div>
 								<div class="p-2">
 									
-									<div class="rounded-md bg-slate-300 h-20 text-center relative active hover:bg-slate-600 hover:text-white">
+									<div class="rounded-md <?=$bg_six_color?> h-20 text-center relative active hover:<?=$bg_three_color?> hover:text-white">
 										<label for="teacher_image" class="text-lg mt-4"><i class="bi-image"></i></label>
 										<p id="imgNoteTeacher">Choisir une image sur votre PC</p>
 										<input type="file" name="teacher_image" id="teacher_image" class="w-full h-20 absolute z-40 top-0 left-0" style="opacity: 0;">
@@ -125,7 +125,7 @@ if(isset($_GET['page']) and $_GET['page'] == "newCours") {
 
 								</div>
 								<div class="flex p-2">
-									<a href="#" id="cancelModifIMGTeacher" class="px-2 bg-slate-300 rounded-md py-1 mx-1">Annuler</a>
+									<a href="#" id="cancelModifIMGTeacher" class="px-2 <?=$bg_six_color?> rounded-md py-1 mx-1">Annuler</a>
 									<button type="submit" class="px-2 rounded-md py-1 text-white mx-1 btnInactive" id="btnModifyTeacher">Modifier</button>
 								</div>
 							</div>
@@ -136,7 +136,7 @@ if(isset($_GET['page']) and $_GET['page'] == "newCours") {
 
 						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifAffichIMGTeacher" style="backdrop-filter: blur(30px);">
 
-							<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+							<div class="w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 								
 								<div class="p-2">
 									<div class="w-full h-[400px]" style="background-image: url('../app/photosenseignants/<?=$profil['teacher_image']?>');background-position: center; background-size: cover;background-repeat: no-repeat;">
@@ -145,7 +145,7 @@ if(isset($_GET['page']) and $_GET['page'] == "newCours") {
 
 								</div>
 								<div class="flex p-2">
-									<a href="#" id="cancelAffichIMGTeacher" class="px-2 bg-slate-300 rounded-md py-1 mx-1">Retour</a>
+									<a href="#" id="cancelAffichIMGTeacher" class="px-2 <?=$bg_six_color?> rounded-md py-1 mx-1">Retour</a>
 								</div>
 							</div>
 

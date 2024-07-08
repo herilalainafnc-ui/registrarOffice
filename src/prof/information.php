@@ -2,7 +2,7 @@
 <form method="post" action="../app/.prof/updateProf.php?id=<?=$teacher_id?>&rg_id=<?=$rg_id?>" class="form-no-refrech">
 <div class="w-full grid gap-2 grid-cols-2">
 
-	<div class='m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 		<div class="w-full flex mb-4">
 			<div class="w-8/12">
 				<b>Infos personnelle</b>	
@@ -10,7 +10,7 @@
 			<div class="w-4/12 text-right">
 				<div class="w-full flex gap-1 relative">
 					<input type="submit" class="submitPers rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier">
-					<a href="#" class="annulPers rounded-md px-2 bg-slate-500 text-center hidden absolute right-0">Annuler</a>
+					<a href="#" class="annulPers rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
 				</div>
 				<a href="#" id="editPers" class="text-right"><i class="bi-pencil-square"></i></a>	
 			</div>
@@ -54,7 +54,7 @@
 
 <!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-	<div class='m-0 p-2 bg-slate-700 hover:bg-slate-600 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 		<div class="w-full flex mb-4">
 			<div class="w-8/12">
 				<b>Infos du contact</b>	
@@ -62,7 +62,7 @@
 			<div class="w-4/12 text-right">
 				<div class="w-full flex gap-1 relative">
 					<input type="submit" class="submitContact rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier">
-					<a href="#" class="annulContact rounded-md px-2 bg-slate-500 text-center hidden absolute right-0">Annuler</a>
+					<a href="#" class="annulContact rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
 				</div>
 				<a href="#" id="editContact" class="text-right"><i class="bi-pencil-square"></i></a>
 			</div>

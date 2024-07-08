@@ -1,28 +1,4 @@
 <head>
-	<?php 
-	session_start();
-
-	/*:::::::::::::::::::::::: SESSION COLORS ::::::::::::::::::::::::*/
-	
-	$bg_one_color = $_SESSION['bg_one_color'];
-	$bg_two_color = $_SESSION['bg_two_color'];
-	$bg_three_color = $_SESSION['bg_three_color'];
-	$bg_four_color = $_SESSION['bg_four_color'];
-	$bg_five_color = $_SESSION['bg_five_color'];
-	$bg_six_color = $_SESSION['bg_six_color'];
-	$bg_seven_color = $_SESSION['bg_seven_color'];
-	$bg_eight_color = $_SESSION['bg_eight_color'];
-	
-	$br_two_color = $_SESSION['br_two_color'];
-	$br_three_color = $_SESSION['br_three_color'];
-
-	$txt_one_color = $_SESSION['txt_one_color'];
-	$txt_two_color = $_SESSION['txt_two_color'];
-	$txt_three_color = $_SESSION['txt_three_color'];
-	
-	/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-	 ?>
-	
 	<?php/* require('../data/connectdb.php');*/ ?>
 
 	<?php require('../data/backdb.php'); ?>
