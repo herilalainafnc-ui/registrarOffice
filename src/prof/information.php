@@ -27,8 +27,8 @@
 				<label class="text-sm text-slate-400">Genre</label>
 				<p class="showPers">-- <?php if($profil['sex'] == '0'){echo 'Feminin';}else{echo 'Masculin';}?></p>
 				<select class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="sex" default>
-					<option class="bg-slate-800" value="1" <?php if($profil['sex'] == '1'){echo 'selected';}?>>Masculin</option>
-					<option class="bg-slate-800" value="0" <?php if($profil['sex'] == '0'){echo 'selected';}?>>Feminin</option>
+					<option class="<?=$bg_one_color?>" value="1" <?php if($profil['sex'] == '1'){echo 'selected';}?>>Masculin</option>
+					<option class="<?=$bg_one_color?>" value="0" <?php if($profil['sex'] == '0'){echo 'selected';}?>>Feminin</option>
 				</select><br>
                 
                 <label class="text-sm text-slate-400">Diplôme</label>
@@ -44,8 +44,8 @@
                 <label class="text-sm text-slate-400">Réligion</label>
 				<p class="showPers">-- <?=$profil['religion']?></p>
                 <select id="firstAutr" class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="religion">
-					<option class="bg-slate-800" <?php if($religion == 'Adventiste' OR $religion == 'Adventiste du Septieme-jour'){echo 'selected';}?>>Adventiste</option>
-					<option class="bg-slate-800" <?php if($religion != 'Adventiste' AND $religion != 'Adventiste du Septieme-jour'){echo 'selected';}?>>non Adventiste</option>
+					<option class="<?=$bg_one_color?>" <?php if($religion == 'Adventiste' OR $religion == 'Adventiste du Septieme-jour'){echo 'selected';}?>>Adventiste</option>
+					<option class="<?=$bg_one_color?>" <?php if($religion != 'Adventiste' AND $religion != 'Adventiste du Septieme-jour'){echo 'selected';}?>>non Adventiste</option>
 				</select><br>
 			</div>
 		</div>

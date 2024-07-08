@@ -3,8 +3,26 @@
 	$path = $_SERVER['PHP_SELF'];
 	$page = basename($path);
 
+	/*:::::::::::::::::::::::: SESSION COLORS ::::::::::::::::::::::::*/
+	
+	$bg_one_color = $_SESSION['bg_one_color'];
+	$bg_two_color = $_SESSION['bg_two_color'];
+	$bg_three_color = $_SESSION['bg_three_color'];
+	$bg_four_color = $_SESSION['bg_four_color'];
+	$bg_five_color = $_SESSION['bg_five_color'];
+	$bg_six_color = $_SESSION['bg_six_color'];
+	$bg_seven_color = $_SESSION['bg_seven_color'];
+	$bg_eight_color = $_SESSION['bg_eight_color'];
+	
+	$txt_one_color = $_SESSION['txt_one_color'];
+	$txt_two_color = $_SESSION['txt_two_color'];
+	$txt_three_color = $_SESSION['txt_three_color'];
+	
+	/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+	
 	$infinit_pseudo = $_SESSION['infinit_pseudo'] ;
-	$infinit_password = $_SESSION['infinit_password'] ;
+	$infinit_password = $_SESSION['infinit_password'];
+
 
 	if($infinit_pseudo !='' && $infinit_password !=''){
 		/*$rg_utilisateur = $dtb->query("SELECT * FROM rg_user WHERE user_pseudo='".$infinit_pseudo."' AND user_password='".$infinit_password."' limit 1");
@@ -26,10 +44,9 @@
 	}else{
 		header('location:./index.php');
 	}
-
  ?>
 
-<div class="flex w-full h-12 shadow-sm p-1 bg-slate-800 text-slate-100">
+<div class="flex w-full h-12 shadow-sm p-1 <?=$bg_one_color?> <?=$txt_one_color?>">
 	<div class="w-2/12 px-2 mt-2 flex">
 		<img src="../file/logo-coldbloud.png" class="w-6 h-6 mx-2">
 		<b> Infinit Registrar</b>
@@ -41,21 +58,21 @@
 			if($page == "accueil.php" OR $page == "student.php") {
 			 ?>
 			<form method="post" action="accueil.php">
-					<input id="std-search" type="text" name="search" placeholder="Search student..." class="h-8 px-2 text-sm border bg-slate-700 w-4/12">
+					<input id="std-search" type="text" name="search" placeholder="Search student..." class="h-8 px-2 text-sm border <?=$bg_two_color?> w-4/12">
 				<button type="submit" style="display: none" onclick="surligne();"></button>
 			</form>
 			<?php 
 			}elseif($page == "accueil.cours.php" OR $page == "cours.php") {
 			?>
 			<form method="post" action="accueil.cours.php">
-					<input id="cours-search" type="text" name="search" placeholder="Search course..." class="h-8 px-2 text-sm border bg-slate-700 w-4/12">
+					<input id="cours-search" type="text" name="search" placeholder="Search course..." class="h-8 px-2 text-sm border <?=$bg_two_color?> w-4/12">
 				<button type="submit" style="display: none" onclick="surligne();"></button>
 			</form>
 			<?php 
 			}elseif($page == "accueil.prof.php" OR $page == "prof.php") {
 			?>
 			<form method="post" action="accueil.cours.php">
-					<input id="prof-search" type="text" name="search" placeholder="Search teacher..." class="h-8 px-2 text-sm border bg-slate-700 w-4/12">
+					<input id="prof-search" type="text" name="search" placeholder="Search teacher..." class="h-8 px-2 text-sm border <?=$bg_two_color?> w-4/12">
 				<button type="submit" style="display: none" onclick="surligne();"></button>
 			</form>
 			<?php 
@@ -71,7 +88,7 @@
 	<a href="#" class="w-2/12 relative text-right" data-bs-toggle="dropdown" aria-expanded="false">
 		<div class="px-2 w-full">
 			<b class="pt-2 absolute right-14"><?=$rg_last_name;?></b>
-			<div class="rounded-full bg-slate-100 w-9 h-9 mx-2 absolute top-0.5 right-0 p-0.5">
+			<div class="rounded-full <?=$bg_eight_color?> w-9 h-9 mx-2 absolute top-0.5 right-0 p-0.5">
 				<img src="../app/photosuser/<?=$rg_photos?>" class="rounded-full w-full h-full">
 			</div>		
 		</div>

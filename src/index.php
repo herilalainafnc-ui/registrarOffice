@@ -7,6 +7,23 @@
 
 	/* SESSION LOG */
 
+	/*:::::::::::::::::::::::: SESSION COLORS ::::::::::::::::::::::::*/
+
+	$_SESSION['bg_one_color'] = 'bg-slate-800';
+	$_SESSION['bg_two_color'] = 'bg-slate-700';
+	$_SESSION['bg_three_color'] = 'bg-slate-600';
+	$_SESSION['bg_four_color'] = 'bg-slate-500';
+	$_SESSION['bg_five_color'] = 'bg-slate-400';
+	$_SESSION['bg_six_color'] = 'bg-slate-300';
+	$_SESSION['bg_seven_color'] = 'bg-slate-200';
+	$_SESSION['bg_eight_color'] = 'bg-slate-100';
+
+	$_SESSION['txt_one_color'] = 'text-slate-100';
+	$_SESSION['txt_two_color'] = 'text-slate-400';
+	$_SESSION['txt_three_color'] = 'text-black';
+
+	/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+
 	if ((isset($_COOKIE['infinit_pseudo']) and isset($_COOKIE['infinit_password'])) AND (!empty($_COOKIE['infinit_pseudo']) and !empty($_COOKIE['infinit_password']))) {
 		$_SESSION['infinit_pseudo'] = $_COOKIE['infinit_pseudo'];
 		$_SESSION['infinit_password'] = $_COOKIE['infinit_password'];

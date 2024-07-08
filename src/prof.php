@@ -44,7 +44,7 @@ $yes = 1;
  ?>					
 					
 
-						<div class="my-1 p-2 mx-0.5 lg:w-9/12 xl:w-9/12 xxl:w-7/12 bg-slate-800 text-white overflow-auto" style="max-height: calc(100vh - 160px);">
+						<div class="my-1 p-2 mx-0.5 lg:w-9/12 xl:w-9/12 xxl:w-7/12 <?=$bg_one_color?> text-white overflow-auto" style="max-height: calc(100vh - 160px);">
 							<div class="h-20 flex pb-2">
 								<div class="w-4/12 px-1">
 									<b class="text-lg mt-3"><?php 

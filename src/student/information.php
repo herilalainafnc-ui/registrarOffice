@@ -27,8 +27,8 @@
 				<label class="text-sm text-slate-400">Genre</label>
 				<p class="showPers">-- <?php if($profil['sex'] == '0'){echo 'Feminin';}else{echo 'Masculin';}?></p>
 				<select class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="sex" default>
-					<option class="bg-slate-800" value="1" <?php if($profil['sex'] == '1'){echo 'selected';}?>>Masculin</option>
-					<option class="bg-slate-800" value="0" <?php if($profil['sex'] == '0'){echo 'selected';}?>>Feminin</option>
+					<option class="<?=$bg_one_color?>" value="1" <?php if($profil['sex'] == '1'){echo 'selected';}?>>Masculin</option>
+					<option class="<?=$bg_one_color?>" value="0" <?php if($profil['sex'] == '0'){echo 'selected';}?>>Feminin</option>
 				</select><br>
 
 				<label class="text-sm text-slate-400">CIN</label>
@@ -37,12 +37,12 @@
 				<label class="text-sm text-slate-400">CIN région</label>
 				<p class="showPers">-- <?php $findRegi = $dtb->query('SELECT * FROM region WHERE id ="'.$profil['cin_region'].'"'); $showRegi = $findRegi->fetch(); if(!empty($showRegi)){echo $showRegi['region'];}?></p>
 				<select class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="cin_region">
-					<option class="bg-slate-800"></option>
+					<option class="<?=$bg_one_color?>"></option>
 <?php 
 $findRegion = $dtb->query('SELECT * FROM region ORDER BY region');
 while ($showR = $findRegion->fetch()) {
  ?>	
- 					<option class="bg-slate-800" value="<?=$showR['id']?>" <?php if($profil['cin_region'] == $showR['id'] OR $profil['cin_region'] == $showR['region']){echo 'selected';}?>><?=$showR['region']?></option>
+ 					<option class="<?=$bg_one_color?>" value="<?=$showR['id']?>" <?php if($profil['cin_region'] == $showR['id'] OR $profil['cin_region'] == $showR['region']){echo 'selected';}?>><?=$showR['region']?></option>
  <?php 
 }
  ?>
@@ -99,12 +99,12 @@ while ($showR = $findRegion->fetch()) {
 				<label class="text-sm text-slate-400">Région</label>
 				<p class="showContact">-- <?php $findRegi = $dtb->query('SELECT * FROM region WHERE id ="'.$profil['student_region'].'"'); $showRegi = $findRegi->fetch(); if (!empty($showRegi)) {echo $showRegi['region'];}?></p>
 				<select class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="student_region">
-					<option class="bg-slate-800"></option>
+					<option class="<?=$bg_one_color?>"></option>
 <?php 
 $findRegion = $dtb->query('SELECT * FROM region ORDER BY region');
 while ($showR = $findRegion->fetch()) {
  ?>	
- 					<option class="bg-slate-800" value="<?=$showR['id']?>" <?php if($profil['student_region'] == $showR['id'] OR $profil['student_region'] == $showR['region']){echo 'selected';}?>><?=$showR['region']?></option>
+ 					<option class="<?=$bg_one_color?>" value="<?=$showR['id']?>" <?php if($profil['student_region'] == $showR['id'] OR $profil['student_region'] == $showR['region']){echo 'selected';}?>><?=$showR['region']?></option>
  <?php 
 }
  ?>
@@ -151,11 +151,11 @@ while ($showR = $findRegion->fetch()) {
 					} ?>	
 				</p>
 				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="annee_etude">
-					<option class="bg-slate-800" value="1" <?php if($profil['annee_etude'] == 1){echo 'selected';}?>>Licence 1</option>
-					<option class="bg-slate-800" value="2" <?php if($profil['annee_etude'] == 2){echo 'selected';}?>>Licence 2</option>
-					<option class="bg-slate-800" value="3" <?php if($profil['annee_etude'] == 3){echo 'selected';}?>>Licence 3</option>
-					<option class="bg-slate-800" value="4" <?php if($profil['annee_etude'] == 4){echo 'selected';}?>>Master 1</option>
-					<option class="bg-slate-800" value="5" <?php if($profil['annee_etude'] == 5){echo 'selected';}?>>Master 2</option>
+					<option class="<?=$bg_one_color?>" value="1" <?php if($profil['annee_etude'] == 1){echo 'selected';}?>>Licence 1</option>
+					<option class="<?=$bg_one_color?>" value="2" <?php if($profil['annee_etude'] == 2){echo 'selected';}?>>Licence 2</option>
+					<option class="<?=$bg_one_color?>" value="3" <?php if($profil['annee_etude'] == 3){echo 'selected';}?>>Licence 3</option>
+					<option class="<?=$bg_one_color?>" value="4" <?php if($profil['annee_etude'] == 4){echo 'selected';}?>>Master 1</option>
+					<option class="<?=$bg_one_color?>" value="5" <?php if($profil['annee_etude'] == 5){echo 'selected';}?>>Master 2</option>
 				</select>
 				<br>
 				<label class="text-sm text-slate-400">Matricule</label>
@@ -164,9 +164,9 @@ while ($showR = $findRegion->fetch()) {
 				<label class="text-sm text-slate-400">Status</label>
 				<p class="showEtd">-- <?=$profil['status']?></p>
 				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="status">
-					<option class="bg-slate-800"></option>
-					<option class="bg-slate-800" <?php if($profil['status'] == 'Externe'){echo 'selected';}?>>Externe</option>
-					<option class="bg-slate-800" <?php if($profil['status'] == 'Interne'){echo 'selected';}?>>Interne</option>
+					<option class="<?=$bg_one_color?>"></option>
+					<option class="<?=$bg_one_color?>" <?php if($profil['status'] == 'Externe'){echo 'selected';}?>>Externe</option>
+					<option class="<?=$bg_one_color?>" <?php if($profil['status'] == 'Interne'){echo 'selected';}?>>Interne</option>
 				</select>
 				<br>
 				
@@ -175,7 +175,7 @@ while ($showR = $findRegion->fetch()) {
 				<label class="text-sm text-slate-400">Parcours</label>
 				<p class="showEtd">-- <?=$etude_option?></p>
 				<select id="firstEtd" class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="etude_option">
-					<option class="bg-slate-800" ></option>
+					<option class="<?=$bg_one_color?>" ></option>
 <?php 
 $findSignMention = $dtb->query('SELECT * FROM filiere WHERE filiere_description ="'.$etude_envisage.'"');
 
@@ -186,7 +186,7 @@ $findSignMention = $dtb->query('SELECT * FROM filiere WHERE filiere_description 
 $findOption = $dtb->query('SELECT * FROM filiere_parcours WHERE departement ="'.$SignMention.'" ORDER BY description');
 while ($showO = $findOption->fetch()) {
  ?>	
- 					<option class="bg-slate-800" <?php if($profil['etude_option'] == $showO['description']){echo 'selected';}?>><?=$showO['description']?></option>
+ 					<option class="<?=$bg_one_color?>" <?php if($profil['etude_option'] == $showO['description']){echo 'selected';}?>><?=$showO['description']?></option>
  <?php 
 }
  ?>		
@@ -201,7 +201,7 @@ for ($i=0; $i <= 8; $i++) {
 	
 	$as = $y." - ".($y+1);
 	?>
-		<option class="bg-slate-800" <?php if($profil['annee_scolaire'] == $as){echo 'selected';}?>><?=$as?></option>
+		<option class="<?=$bg_one_color?>" <?php if($profil['annee_scolaire'] == $as){echo 'selected';}?>><?=$as?></option>
 <?php
 $y = $y - 1;
 }
@@ -211,8 +211,8 @@ $y = $y - 1;
 				<label class="text-sm text-slate-400">Ancien étudiant</label>
 				<p class="showEtd">-- <?php if($profil['new_student'] == 1){echo 'Non';}else{echo 'Oui';}?></p>
 				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="new_student">
-					<option class="bg-slate-800" <?php if($profil['new_student'] == 1){echo 'selected';}?> value="0">Non</option>
-					<option class="bg-slate-800" <?php if($profil['new_student'] == 0){echo 'selected';}?> value="1">Oui</option>
+					<option class="<?=$bg_one_color?>" <?php if($profil['new_student'] == 1){echo 'selected';}?> value="0">Non</option>
+					<option class="<?=$bg_one_color?>" <?php if($profil['new_student'] == 0){echo 'selected';}?> value="1">Oui</option>
 				</select>
 				<br>
 				
@@ -315,8 +315,8 @@ $y = $y - 1;
 				<label class="text-sm text-slate-400">État civil</label>
 				<p class="showAutr">-- <?=$profil['situationf']?></p>
 				<select id="firstAutr" class="editAutr p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="">
-					<option class="bg-slate-800" <?php if($profil['situationf'] == 'Célibataire'){echo 'selected';}?>>Célibataire</option>
-					<option class="bg-slate-800" <?php if($profil['situationf'] == 'Marié'){echo 'selected';}?>>Marié</option>
+					<option class="<?=$bg_one_color?>" <?php if($profil['situationf'] == 'Célibataire'){echo 'selected';}?>>Célibataire</option>
+					<option class="<?=$bg_one_color?>" <?php if($profil['situationf'] == 'Marié'){echo 'selected';}?>>Marié</option>
 				</select>
 					<br>
 				<label class="text-sm text-slate-400">Nombre d'enfant</label>
@@ -330,8 +330,8 @@ $y = $y - 1;
 				<label class="text-sm text-slate-400">Réligion</label>
 				<p class="showAutr">-- <?=$profil['religion']?></p>
 				<select id="firstAutr" class="editAutr p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="religion">
-					<option class="bg-slate-800" <?php if($profil['religion'] == 'Adventiste' OR $profil['religion'] == 'Adventiste du Septieme-jour'){echo 'selected';}?>>Adventiste</option>
-					<option class="bg-slate-800" <?php if($profil['religion'] != 'Adventiste' AND $profil['religion'] != 'Adventiste du Septieme-jour'){echo 'selected';}?>>non Adventiste</option>
+					<option class="<?=$bg_one_color?>" <?php if($profil['religion'] == 'Adventiste' OR $profil['religion'] == 'Adventiste du Septieme-jour'){echo 'selected';}?>>Adventiste</option>
+					<option class="<?=$bg_one_color?>" <?php if($profil['religion'] != 'Adventiste' AND $profil['religion'] != 'Adventiste du Septieme-jour'){echo 'selected';}?>>non Adventiste</option>
 				</select><br>
 			</div>
 		</div>

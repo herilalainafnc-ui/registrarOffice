@@ -49,7 +49,7 @@
 								<th colspan="10" id="semestre<?=$a.$s;?>"><?=$showSs['session_name']?> - Session N*<?=$showSs['session_semester']?> | Année <?=$combinAnual?></th>
 							</tr>
 						</thead>
-						<thead class="bg-slate-800 text-white">
+						<thead class="<?=$bg_one_color?> text-white">
 							<tr>
 								<th class="w-20">SIGLE</th>
 								<th class="w-">TITRE DU COURS</th>
@@ -217,7 +217,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 						$nbr++;
 					}
 				?>
-<tfoot class="bg-slate-800 text-white">
+<tfoot class="<?=$bg_one_color?> text-white">
 				<tr>
 					<th colspan="2"><?=$nbr?> cours</th>
 					<th><?php if(!empty($tcredit)) { echo $tcredit;}?></th>

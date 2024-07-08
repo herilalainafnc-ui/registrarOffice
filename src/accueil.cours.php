@@ -18,11 +18,11 @@
 			
 				<div class="w-full px-0.5 flex" style="height: calc(100vh - 152px);">
 					
-					<div class="bg-slate-800 my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto hidden" id="coursSearch-result"></div>
+					<div class="<?=$bg_one_color?> my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto hidden" id="coursSearch-result"></div>
 
-					<div class="bg-slate-800 my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto hidden" id="coursTriage-result"></div>
+					<div class="<?=$bg_one_color?> my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto hidden" id="coursTriage-result"></div>
 					
-					<div class="bg-slate-800 my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto" id="all-cours">
+					<div class="<?=$bg_one_color?> my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto" id="all-cours">
 						
 						<table class="simpleTbl">
 							<thead class="bg-slate-500 text-white">

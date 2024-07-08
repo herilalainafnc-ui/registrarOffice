@@ -2,23 +2,18 @@
 	use Dompdf\Dompdf;
 	use Dompdf\Options;
 
+	$page = $_GET['page'];
+	$ptype = $_GET['ficheInscription'];
 	$date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
 
 	require 'dompdf/vendor/autoload.php';
 	require_once 'dompdf/autoload.inc.php';
 
 	ob_start();
-
-	// CONDITION 
-
-
-
-	require 'printinscription.php';
-	
-
-
-
-	// CONDITION
+		require './print/fiche.inscription.php';
+	/*if ($ptype == "ficheInscription") {
+		
+	}*/
 	
 	$html = ob_get_contents();
 	ob_end_clean();
@@ -36,5 +31,7 @@
 	$dompdf->setPaper('A4','portrait');
 
 	$dompdf->render();
-	$dompdf->stream($printName' '.$date.'.pdf');
+	$dompdf->stream($printName.' '.$date.'.pdf');
+
+	header('location:../student.php?id='.$id.'&page='.$page);
  ?>

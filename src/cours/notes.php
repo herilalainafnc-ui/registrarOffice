@@ -17,7 +17,7 @@ $preced = $soustract - 1;
 
 
 			<table class="simpleTbl mb-1">
-				<thead class="bg-slate-800 text-white">
+				<thead class="<?=$bg_one_color?> text-white">
 					<tr>
 						<td class="w-20">ID</td>
 						<td>Nom et Prénoms</td>

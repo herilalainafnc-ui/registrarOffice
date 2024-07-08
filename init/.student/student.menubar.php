@@ -3,7 +3,7 @@
 						<div class="flex my-2 relative">
 
 							<a href="#" data-bs-toggle="dropdown" aria-expanded="false">
-							<div class="w-[75px] bg-slate-800">
+							<div class="w-[75px] <?=$bg_one_color?>">
 								<?php
 								if (!empty($profil['image_student'])) {
 								

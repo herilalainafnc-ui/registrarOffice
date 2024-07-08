@@ -110,7 +110,7 @@
 					<th colspan="10">SEMESTRE <?=$s?></th>
 				</tr>
 			</thead>
-			<thead class="bg-slate-800 text-white">
+			<thead class="<?=$bg_one_color?> text-white">
 				<tr>
 					<th class="w-5"></th>
 					<th class="w-20">SIGLE</th>
@@ -209,7 +209,7 @@ $tcredit+= $credit + $crs['nb_crd'];
 	}
 	 ?>			
 			</tbody>
-			<tfoot class="bg-slate-800 text-white">
+			<tfoot class="<?=$bg_one_color?> text-white">
 				<tr>
 					<th colspan="2"></th>
 					<th><?=$nbr?> cours</th>

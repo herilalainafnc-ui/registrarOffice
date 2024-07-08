@@ -18,7 +18,7 @@
 				
 				<div class="w-full px-0.5" style="height: calc(100vh - 157px);">
 					<div class="flex w-full">
-						<!-- <div class="bg-slate-800 my-1 mx-0.5 w-4/12 p-2 text-slate-100 overflow-auto hidden" id="stdSearch-result-mini" style="height: calc(100vh - 157px);"></div> -->
+						<!-- <div class="<?=$bg_one_color?> my-1 mx-0.5 w-4/12 p-2 text-slate-100 overflow-auto hidden" id="stdSearch-result-mini" style="height: calc(100vh - 157px);"></div> -->
 <?php
 	$id = $_GET['id'];
 	$retrouve = $dtb->query("SELECT * FROM t_2023_cours WHERE id ='".$id."' LIMIT 1");
@@ -36,7 +36,7 @@ $yes = 1;
  ?>					
 					
 
-						<div class="my-1 p-2 mx-0.5 lg:w-9/12 xl:w-9/12 xxl:w-7/12 bg-slate-800 text-white overflow-auto" style="max-height: calc(100vh - 160px);">
+						<div class="my-1 p-2 mx-0.5 lg:w-9/12 xl:w-9/12 xxl:w-7/12 <?=$bg_one_color?> text-white overflow-auto" style="max-height: calc(100vh - 160px);">
 							<div class="h-20 flex pb-2">
 								<div class="w-4/12 px-1">
 									<b class="text-lg mt-3"><?php 

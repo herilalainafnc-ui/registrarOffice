@@ -18,7 +18,7 @@
 
 <form id="form-inscription" enctype="multipart/form-data">
 			
-				<div class="bg-slate-800 w-all mx-1 px-2 py-1 text-slate-100 flex">
+				<div class="<?=$bg_one_color?> w-all mx-1 px-2 py-1 text-slate-100 flex">
 					<div class="w-2/12">
 						<p><b>Inscription</b></p>	
 					</div>	
@@ -32,9 +32,9 @@
 
 				<div class="w-full px-0.5 flex" style="height: calc(100vh - 180px);">
 						
-						<div class="bg-slate-800 my-1 mx-0.5 w-4/12 p-2 text-slate-100 overflow-auto hidden" id="stdSearch-result"></div>
+						<div class="<?=$bg_one_color?> my-1 mx-0.5 w-4/12 p-2 text-slate-100 overflow-auto hidden" id="stdSearch-result"></div>
 
-						<div class="bg-slate-800 my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto grid gap-2 lg:grid-cols-2 xl:grid-cols-3">
+						<div class="<?=$bg_one_color?> my-1 mx-0.5 w-full p-2 text-slate-100 overflow-auto grid gap-2 lg:grid-cols-2 xl:grid-cols-3">
 							
 							
 <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -146,7 +146,7 @@
 										<label class="text-sm text-slate-400" for="student_images">Photos</label><br>
 
 										<label for="student_images">
-											<div class="bg-slate-800 rounded-md h-20 w-20 text-center py-3">
+											<div class="<?=$bg_one_color?> rounded-md h-20 w-20 text-center py-3">
 												<i class="bi-image text-4xl text-black"></i>
 											</div>
 										</label>

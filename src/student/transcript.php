@@ -51,7 +51,7 @@
 					<th colspan="10" id="semestre<?=$a.$s;?>">SEMESTRE <?=$s?></th>
 				</tr>
 			</thead>
-			<thead class="bg-slate-800 text-white">
+			<thead class="<?=$bg_one_color?> text-white">
 				<tr>
 					<th class="w-20">SIGLE</th>
 					<th class="w-">TITRE DU COURS</th>
@@ -243,7 +243,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 	}
 	 ?>			
 			</tbody>
-			<tfoot class="bg-slate-800 text-white">
+			<tfoot class="<?=$bg_one_color?> text-white">
 				<tr>
 					<th class="px-2" colspan="2"><?=$nbr?> cours</th>
 					<th><?php if(!empty($tcredit)) { echo $tcredit;}?></th>
