@@ -40,7 +40,7 @@ if($level <3 ){
 		
 		<div class="absolute w-full text-black text-center top-0">
 			<div class="h-[220px]"></div>
-			<input type="text" value="<?=$student_nom." ".$student_prenom?>" class="font-tangerine text-[75px] bg-transparent p-0 border-0 w-full h-[90px] text-center">
+			<input type="text" value="<?=ucwords(strtolower($student_nom))." ".ucwords(strtolower($student_prenom))?>" class="font-tangerine text-[75px] bg-transparent p-0 border-0 w-full h-[90px] text-center">
 			<div class="h-[60px]"></div>
 		<?php 
 		if (isset($_GET['langue']) AND $langue == 'ANG') {
