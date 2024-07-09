@@ -63,57 +63,67 @@
 		</div>
 
 	</div>
-	<div class="w-1/12">
-		
+	<div class="w-3/12 flex text-right">
+		<div class="w-6/12">
+			
+		</div>
+		<div class="w-2/12">
+			<div class="p-1 text-lg">
+				<a href="#" id="light"><span class="bi-sun-fill"></span></a>
+				<a href="#" id="dark" class="hidden text-slate-800"><span class="bi-moon-stars-fill"></span></a>
+			</div>
+		</div>
+		<div class="px-2 w-4/12 relative text-right">
+
+			<a href="#" class="" data-bs-toggle="dropdown" aria-expanded="false">
+				<b class="pt-2 absolute right-14 text-xs"><?=$rg_last_name;?></b>
+				<div class="rounded-full <?=$bg_eight_color?> w-9 h-9 mx-2 absolute top-0.5 right-0 p-0.5">
+					<img src="../app/photosuser/<?=$rg_photos?>" class="rounded-full w-full h-full">
+				</div>		
+			</a>
+			<ul class="dropdown-menu border bg-slate-300 text-black p-0 rounded-0 text-xs" style="max-height:400px; min-width: 200px; position: absolute; right: 20px;">
+		            
+		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white toolInactive"><?=$rg_user['privilege'];?></li>
+		        
+		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="">
+		        <span class="bi-gear"></span>&nbsp;&nbsp; Mon compte</a></li>
+		<?php 		            
+		if(($rg_user['privilege'] == 'administrator') OR ($rg_user['privilege_2'] == 'administrator') OR ($rg_user['privilege_3'] == 'administrator') OR ($rg_user['privilege_4'] == 'administrator')) {
+		?>
+				<li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../wordpress/wp-login.php" target="_blank">
+		        <span class="bi-wordpress"></span>&nbsp;&nbsp; Wordpress</a></li>
+		        
+		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../../phpmyadmin/index.php?route=/database/structure&db=registrar_db" target="_blank">
+		        <span class="bi-database-exclamation"></span>&nbsp;&nbsp; Base de donnée MySQL</a></li>
+		        
+		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="https://getbootstrap.com/docs/5.3/getting-started/introduction/" target="_blank">
+		        <span class="bi-bootstrap-fill"></span>&nbsp;&nbsp; Bootstrap Site</a></li>
+
+		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="https://tailwindcss.com/docs/installation"  target="_blank"><i class="bi-filetype-css"></i>&nbsp;&nbsp; Tailwind CSS</a></li>
+
+		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../../rhm/" target="_blank">
+		        <span class="bi-app-indicator"></span>&nbsp;&nbsp; Resource Humaine</a></li>
+
+
+		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../../uaz-site/" target="_blank">
+		        <span class="bi-award-fill"></span>&nbsp;&nbsp; UAZ SITE</a></li>
+
+		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../../" target="_blank">
+		        <span class="bi-alexa"></span>&nbsp;&nbsp; Registrar</a></li>
+		        
+		<?php
+		}else{
+		echo "";
+		}
+		?>
+		        <li><hr class="dropdown-divider"></li>
+		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="#" class="logOut"><span class="bi-door-open-fill"></span> Déconnecter</a></li>
+			</ul>
+		</div>
 	</div>
 	
-	<a href="#" class="w-2/12 relative text-right" data-bs-toggle="dropdown" aria-expanded="false">
-		<div class="px-2 w-full">
-			<b class="pt-2 absolute right-14"><?=$rg_last_name;?></b>
-			<div class="rounded-full <?=$bg_eight_color?> w-9 h-9 mx-2 absolute top-0.5 right-0 p-0.5">
-				<img src="../app/photosuser/<?=$rg_photos?>" class="rounded-full w-full h-full">
-			</div>		
-		</div>
-	</a>
 
-	<ul class="dropdown-menu border bg-slate-300 text-black p-0 rounded-0 text-xs" style="max-height:400px; min-width: 200px; position: absolute; right: 20px;">
-		            
-        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white toolInactive"><?=$rg_user['privilege'];?></li>
-        
-        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="">
-        <span class="bi-gear"></span>&nbsp;&nbsp; Mon compte</a></li>
-<?php 		            
-if(($rg_user['privilege'] == 'administrator') OR ($rg_user['privilege_2'] == 'administrator') OR ($rg_user['privilege_3'] == 'administrator') OR ($rg_user['privilege_4'] == 'administrator')) {
-?>
-		<li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../wordpress/wp-login.php" target="_blank">
-        <span class="bi-wordpress"></span>&nbsp;&nbsp; Wordpress</a></li>
-        
-        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../../phpmyadmin/index.php?route=/database/structure&db=registrar_db" target="_blank">
-        <span class="bi-database-exclamation"></span>&nbsp;&nbsp; Base de donnée MySQL</a></li>
-        
-        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="https://getbootstrap.com/docs/5.3/getting-started/introduction/" target="_blank">
-        <span class="bi-bootstrap-fill"></span>&nbsp;&nbsp; Bootstrap Site</a></li>
-
-        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="https://tailwindcss.com/docs/installation"  target="_blank"><i class="bi-filetype-css"></i>&nbsp;&nbsp; Tailwind CSS</a></li>
-
-        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../../rhm/" target="_blank">
-        <span class="bi-app-indicator"></span>&nbsp;&nbsp; Resource Humaine</a></li>
-
-
-        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../../uaz-site/" target="_blank">
-        <span class="bi-award-fill"></span>&nbsp;&nbsp; UAZ SITE</a></li>
-
-        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../../" target="_blank">
-        <span class="bi-alexa"></span>&nbsp;&nbsp; Registrar</a></li>
-        
-<?php
-}else{
-echo "";
-}
-?>
-        <li><hr class="dropdown-divider"></li>
-        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="#" class="logOut"><span class="bi-door-open-fill"></span> Déconnecter</a></li>
-	</ul>
+	
 				
 </div>
 
@@ -189,6 +199,57 @@ echo "";
 				$('#profSearch-result').css({'display':'none'});
 				$('#all-prof').css({'display':'block'});
 			}
+		});
+/*/////////////////////////////////////////////////////////////////*/
+		$('#light').click(function(){
+			var bg_one_color = '<?=$bg_one_color?>';
+			var bg_two_color = '<?=$bg_two_color?>';
+			var bg_three_color = '<?=$bg_three_color?>';
+			var bg_four_color = '<?=$bg_four_color?>';
+			var bg_five_color = '<?=$bg_five_color?>';
+			var bg_six_color = '<?=$bg_six_color?>';
+			var bg_seven_color = '<?=$bg_seven_color?>';
+			var bg_eight_color = '<?=$bg_eight_color?>';
+	
+			var br_two_color = '<?=$br_two_color?>';
+			var br_three_color = '<?=$br_three_color?>';
+
+			var txt_one_color = '<?=$txt_one_color?>';
+			var txt_two_color = '<?=$txt_two_color?>';
+			var txt_three_color = '<?=$txt_three_color?>';
+
+			$(this).css({'display':'none'});
+			$('#dark').css({'display':'block'});
+
+			$.ajax({
+					url:"../init/head.php",
+					method:"POST",
+					data:{
+						bg_one_color : bg_one_color,
+						bg_two_color : bg_two_color,
+						bg_three_color : bg_three_color,
+						bg_four_color : bg_four_color,
+						bg_five_color : bg_five_color,
+						bg_six_color : bg_six_color,
+						bg_seven_color : bg_seven_color,
+						bg_eight_color : bg_eight_color,
+						br_two_colo : br_two_colo,
+						br_three_color : br_three_color,
+						txt_one_color : txt_one_color,
+						txt_two_color : txt_two_color,
+						txt_three_color : txt_three_color
+					},
+
+					success:function(data){
+						//$("#profSearch-result").html(data);
+					}
+				});
+
+		});
+
+		$('#dark').click(function(){
+			$(this).css({'display':'none'});
+			$('#light').css({'display':'block'});
 		});
 	});
 
