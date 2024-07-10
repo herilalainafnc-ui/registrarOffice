@@ -3,6 +3,7 @@ require '../../data/backdb.php';
 	
 	$last_change_user_id = $_GET['rg_id'];
 	$id = $_GET['id'];
+	$student_id = $_GET['student_id'];
 	$student_nom = $_POST['student_nom'];
 	$student_prenom = $_POST['student_prenom'];
 	$etude_option = $_POST['etude_option'];
@@ -47,25 +48,92 @@ require '../../data/backdb.php';
 	$num_visa = $_POST['num_visa'];
 	$last_change_datetime = date('Y-m-d');
 
-	/*$serie_bacc = $_POST['serie_bacc'];
-	$obtention_bacc = $_POST['obtention_bacc'];
+	if(isset($_POST['serie_bacc']) AND isset($_POST['obtention_bacc'])) {
 
-	$diplome_preced = $_POST['diplome_preced'];
-	$date_obtent_diplome_preced = $_POST['date_obtent_diplome_preced'];
+		$serie_bacc = $_POST['serie_bacc'];
+		$obtention_bacc = $_POST['obtention_bacc'];
 
-
-	$updDiplome = $dtb->prepare("UPDATE t_2024_bacc SET 
+		$searchBacc = $dtb->query('SELECT * FROM t_2024_bacc WHERE student_id = "'.$student_id.'"');
+		$trouveBacc = $searchBacc->fetch();
+		if (!empty($trouveBacc)) {
+			$updDiplome = $dtb->prepare("UPDATE t_2024_bacc SET 
 				date_obtent=:date_obtent,
 				bacc_serie=:bacc_serie,
 				user_id=:user_id,
 				date_entry=:date_entry
-				WHERE student_id=:student_id,,");
+				WHERE student_id=:student_id");
 	
-	$updDiplome->bindParam(':student_nom',$student_nom,PDO::PARAM_STR);
-	$updDiplome->bindParam(':student_nom',$student_nom,PDO::PARAM_STR);
-	$updDiplome->bindParam(':student_nom',$student_nom,PDO::PARAM_STR);
-	$updDiplome->bindParam(':student_nom',$student_nom,PDO::PARAM_STR);
-	$updDiplome->bindParam(':student_nom',$student_nom,PDO::PARAM_STR);*/
+			$updDiplome->bindParam(':date_obtent',$obtention_bacc,PDO::PARAM_STR);
+			$updDiplome->bindParam(':bacc_serie',$serie_bacc,PDO::PARAM_STR);
+			$updDiplome->bindParam(':user_id',$last_change_user_id,PDO::PARAM_STR);
+			$updDiplome->bindParam(':date_entry',$last_change_datetime,PDO::PARAM_STR);
+			$updDiplome->bindParam(':student_id',$student_id,PDO::PARAM_STR);
+			$updDiplome->update();
+		}else{
+			$insertBacc = $dtb->prepare('INSERT INTO t_2024_bacc(
+				student_id,
+				date_obtent,
+				bacc_serie,
+				user_id,
+				date_entry
+			)VALUES(
+				:student_id,
+				:date_obtent,
+				:bacc_serie,
+				:user_id,
+				:date_entry
+			)');$insertBacc->execute(array(
+				'student_id'  => $student_id,
+				'date_obtent' => $obtention_bacc,
+				'bacc_serie' => $serie_bacc,
+				'user_id' => $last_change_user_id,
+				'date_entry' => $last_change_datetime
+			));
+		}
+	}
+	
+	if(isset($_POST['diplome_preced']) AND isset($_POST['date_obtent_diplome_preced'])) {
+		$diplome_preced = $_POST['diplome_preced'];
+		$date_obtent_diplome_preced = $_POST['date_obtent_diplome_preced'];
+
+		$searchDiplome = $dtb->query('SELECT * FROM t_2024_diplome_preced WHERE student_id = "'.$student_id.'"');
+		$trouveDiplome = $searchDiplome->fetch();
+		if (!empty($trouveDiplome)) {
+			$updDiplome = $dtb->prepare("UPDATE t_2024_diplome_preced SET 
+				diplome_name=:diplome_name,
+				date_obtent=:date_obtent,
+				user_id=:user_id,
+				date_entry=:date_entry
+				WHERE student_id=:student_id");
+	
+			$updDiplome->bindParam(':diplome_name',$diplome_preced,PDO::PARAM_STR);
+			$updDiplome->bindParam(':date_obtent',$date_obtent_diplome_preced,PDO::PARAM_STR);
+			$updDiplome->bindParam(':user_id',$last_change_user_id,PDO::PARAM_STR);
+			$updDiplome->bindParam(':date_entry',$last_change_datetime,PDO::PARAM_STR);
+			$updDiplome->bindParam(':student_id',$student_id,PDO::PARAM_STR);
+			$updDiplome->update();
+		}else{
+			$insertDiplome = $dtb->prepare('INSERT INTO t_2024_bacc(
+				student_id,
+				diplome_name,
+				date_obtent,
+				user_id,
+				date_entry
+			)VALUES(
+				:student_id,
+				:diplome_name,
+				:date_obtent,
+				:user_id,
+				:date_entry
+			)');$insertDiplome->execute(array(
+				'student_id'  => $student_id,
+				'diplome_name' => $diplome_preced,
+				'date_obtent' => $date_obtent_diplome_preced,
+				'user_id' => $last_change_user_id,
+				'date_entry' => $last_change_datetime
+			));
+		}
+	}
 
 
 	$update = $dtb->prepare("UPDATE etudiant_second_semester_23 SET 

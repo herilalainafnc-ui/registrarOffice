@@ -1,5 +1,5 @@
 
-<form method="post" action="../app/.student/updateStd.php?id=<?=$id?>&rg_id=<?=$rg_id?>" class="form-no-refrech">
+<form method="post" action="../app/.student/updateStd.php?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>" class="form-no-refrech">
 <div class="w-full grid gap-2 grid-cols-2">
 
 	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all'>
@@ -117,36 +117,51 @@ while ($showR = $findRegion->fetch()) {
 			<div class="w-6/12">
 				<?php 
 					if ($level <= 3) {
+$findBacc = $dtb->query('SELECT * FROM t_2024_bacc WHERE student_id = "'.$student_id.'"');
+$showBacc = $findBacc->fetch();
 				 ?>	
 				<div class="obtention_Bacc">
 					<label class="text-sm text-slate-400">Série du Bacc</label>
-					<select class="editParent p-0 bg-transparent h-5 text-sm border-0 w-11/12" name="serie_bacc">
-						<option class="<?=$bg_one_color?>">A1</option>
-						<option class="<?=$bg_one_color?>">A2</option>
-						<option class="<?=$bg_one_color?>">C</option>
-						<option class="<?=$bg_one_color?>">D</option>
-						<option class="<?=$bg_one_color?>">G1</option>
-						<option class="<?=$bg_one_color?>">G2</option>
-						<option class="<?=$bg_one_color?>">G3</option>
+					<p class="showContact">--<?php if(!empty($showBacc)) {echo $showBacc['bacc_serie'];}?></p>
+					<select class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="serie_bacc">
+						<option class="<?=$bg_one_color?>"></option>
+						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'A1') { echo 'selected';}}?>>A1</option>
+						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'A2') { echo 'selected';}}?>>A2</option>
+						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'BTP') { echo 'selected';}}?>>BTP</option>
+						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'C') { echo 'selected';}}?>>C</option>
+						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'D') { echo 'selected';}}?>>D</option>
+						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'Electronique') { echo 'selected';}}?>>Electronique</option>
+						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'G1') { echo 'selected';}}?>>G1</option>
+						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'G2') { echo 'selected';}}?>>G2</option>
+						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'G3') { echo 'selected';}}?>>G3</option>
+						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'L') { echo 'selected';}}?>>L</option>
+						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'S') { echo 'selected';}}?>>S</option>
+						
+						
 					</select>
 				</div>
 				<br>
 				<div class="obtention_Bacc">
 					<label class="text-sm text-slate-400">Année d'obtention Bacc</label>
-					<input class="editParent p-0 bg-transparent h-5 text-sm border-0 w-11/12" type="date" name="obtention_bacc">
+					<p class="showContact">--<?php if(!empty($showBacc)) {echo $showBacc['date_obtent'];}?></p>
+					<input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="date" name="obtention_bacc" value="<?=$showBacc['date_obtent']?>">
 				</div>
 				
 				<?php 
 					}elseif($level > 3){
+$findDiplome = $dtb->query('SELECT * FROM t_2024_diplome_preced WHERE student_id = "'.$student_id.'"');
+$showDiplome = $findDiplome->fetch();
 				?>
 					<div class="diplome_preced">
 						<label class="text-sm text-slate-400">Diplôme précédent</label>
-						<input class="editParent p-0 bg-transparent h-5 text-sm border-0 w-11/12" type="text" name="diplome_preced">
+						<p class="showContact">--<?php if(!empty($showDiplome)) {echo $showDiplome['diplome_name'];}?></p>
+						<input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="diplome_preced" value="<?=$showDiplome['diplome_name']?>">
 					</div>
 					<br>
 					<div class="diplome_preced">
 						<label class="text-sm text-slate-400">Date d'obtention</label>
-						<input class="editParent p-0 bg-transparent h-5 text-sm border-0 w-11/12" type="date" name="date_obtent_diplome_preced">
+						<p class="showContact">--<?php if(!empty($showDiplome)) {echo $showDiplome['date_obtent'];}?></p>
+						<input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="date" name="date_obtent_diplome_preced" value="<?=$showDiplome['date_obtent']?>">
 					</div>
 				<?php 
 					}
@@ -382,7 +397,7 @@ $y = $y - 1;
 	$(document).ready(function(){
 
 		$('.form-no-refrech').on('submit',function (e) {
-			e.preventDefault();
+			//e.preventDefault();
 
 			var url = '../app/.student/updateStd.php?id=<?=$id?>&rg_id=<?=$rg_id?>';
 			var data = $(this).serialize();

@@ -34,7 +34,7 @@
 	$sdt_nbLivesearch = 1;
 	while ($sdt_list = $recupsdt->fetch()) {
  ?>								
-		<tr id="std_<?=$sdt_nb?>" class="hover:<?=$bg_six_color?> hover:text-slate-800">	
+		<tr id="std_<?=$sdt_nb?>" class="hover:<?=$bg_six_color?> hover:<?=$txt_three_color?> <?=$txt_one_color?>">	
 			<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['student_id']?></div></a></td>
 			<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=strtoupper($sdt_list['student_nom'])?></div></a></td>
 			<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['student_prenom']?></div></a></td>
