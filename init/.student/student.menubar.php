@@ -105,7 +105,7 @@ if(isset($_GET['page']) and $_GET['page'] == "newCours") {
 } ?>">
 										
 										<i class="bi-folder-plus"></i>
-												Nouveau cours
+												Ajout de cours
 									</div>
 								</a>
 		
@@ -138,8 +138,8 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 									</div>
 								</a>
 
-								<a href="#" class="toolInactive">
-									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md">
+								<a href="#" id="linkSupprStd">
+									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 text-red-600 rounded-md">
 										
 										<i class="bi-trash3"></i>
 												Supprimer
@@ -222,6 +222,9 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 				$('#imgNote').text('Image bien ajouté.');
 				$('#btnModify').attr('class','px-2 rounded-md py-1 text-white mx-1 bg-cyan-700');
 			}
+		});
+		$('#linkSupprStd').click(function(){
+			$('#notifSupprStd').css({'display':'block'});
 		});
 	});
 </script>

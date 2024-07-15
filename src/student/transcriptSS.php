@@ -111,7 +111,7 @@ if ($crs['cours_category'] == 0){
 					<td><?=$notecredi = $crs['credit'] * $crs['grade']?></td>
 					
 					<td class="<?php 
-if ($crs['grade'] == -2 OR $crs['grade'] > 10) {
+if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 	echo "bg-green-500";
 
 }elseif ($crs['grade'] < 10 and $crs['grade'] > 0) {
@@ -121,7 +121,7 @@ if ($crs['grade'] == -2 OR $crs['grade'] > 10) {
 }
 
 					 ?> text-center" title="<?php 
-if ($crs['grade'] == -2 OR $crs['grade'] > 10) {
+if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 	echo "Succès";
 }elseif ($crs['grade'] < 10 and $crs['grade'] > 0){
 	echo "Echec";
@@ -130,7 +130,7 @@ if ($crs['grade'] == -2 OR $crs['grade'] > 10) {
 }
 
 							 ?>"><?php 
-if ($crs['grade'] == -2 OR $crs['grade'] > 10) {
+if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 	echo "S";
 }elseif($crs['grade'] < 10 and $crs['grade'] > 0){
 	echo "E";

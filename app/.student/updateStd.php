@@ -68,7 +68,7 @@ require '../../data/backdb.php';
 			$updDiplome->bindParam(':user_id',$last_change_user_id,PDO::PARAM_STR);
 			$updDiplome->bindParam(':date_entry',$last_change_datetime,PDO::PARAM_STR);
 			$updDiplome->bindParam(':student_id',$student_id,PDO::PARAM_STR);
-			$updDiplome->update();
+			$updDiplome->execute();
 		}else{
 			$insertBacc = $dtb->prepare('INSERT INTO t_2024_bacc(
 				student_id,
@@ -111,7 +111,7 @@ require '../../data/backdb.php';
 			$updDiplome->bindParam(':user_id',$last_change_user_id,PDO::PARAM_STR);
 			$updDiplome->bindParam(':date_entry',$last_change_datetime,PDO::PARAM_STR);
 			$updDiplome->bindParam(':student_id',$student_id,PDO::PARAM_STR);
-			$updDiplome->update();
+			$updDiplome->execute();
 		}else{
 			$insertDiplome = $dtb->prepare('INSERT INTO t_2024_bacc(
 				student_id,

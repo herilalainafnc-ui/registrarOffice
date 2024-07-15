@@ -21,7 +21,13 @@ if ($totalGenCumul >= 17) {
 if($level <3 ){
 ?>
 <div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>	
-	<h1 class="text-red-500 text-center"><em>Le diplôme de <b><?=$student_prenom?></b> n'est pas encore disponible !</em></h1>
+	<h1 class="text-red-500 text-center"><em><i class="bi-exclamation-triangle-fill"></i> Le diplôme de <b><?=$student_prenom?></b> n'est pas disponible, car son niveau n'est pas encore Licence 3.</em></h1>
+</div>
+<?php
+}elseif($level >= 3 AND $totalGenCumul <= 5 ) {
+ ?>
+<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>	
+	<h1 class="text-red-500 text-center"><em><i class="bi-exclamation-triangle-fill"></i> Le diplôme de <b><?=$student_prenom?></b> n'est pas encore disponible, car toutes les notes ne sont pas encore remise.</em></h1>
 </div>
 <?php
 }else{

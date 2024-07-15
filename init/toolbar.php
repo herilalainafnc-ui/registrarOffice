@@ -1,4 +1,4 @@
-<div class="w-full h-23 bg-slate-400 py-1 flex shadow-md">
+<div class="w-full h-23 <?=$txt_one_color?> py-1 flex shadow-md">
 <!-- BRANCHE D'OUTILS 1 -->	
 	<div class="w-2/12 border-r flex px-1">
 		

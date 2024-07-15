@@ -170,6 +170,27 @@
 
 	</div>
 
+<!-- SUPPRESION ETUDIANT-->
+	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifSupprStd" style="backdrop-filter: blur(3px);">
+
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+			<form method="post" action="./data.topdf.php?ptype=ticketMail" target="_blank">
+			<div class="p-2 text-black">
+				<b>Alert.</b>
+			</div>
+			<div class="p-2 text-black">
+				<p>Voulez-vous vraiment supprimer cet étudiant ?</p>
+			</div>
+			<div class="p-3">
+				<center>
+				<a href="#" id="cancelnotifLogOut" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
+				<a href="../app/.student/delStd.php?id=<?=$id?>&rg_id=<?=$rg_id?>" id="btnnotifLogOut" class="bg-red-600 p-2 text-white rounded-md mx-1">Supprimer</a>
+				</center>
+			</div>
+			</form>
+		</div>
+
+	</div>
 
 
 <!-- ----------------------------------------------------------------- SCRIPTS ----------------------------------------------------------------------------- -->

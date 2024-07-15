@@ -252,9 +252,13 @@ while ($showSignMention = $findSignMention->fetch()) {
 												<option class="<?=$bg_seven_color?>">A2</option>
 												<option class="<?=$bg_seven_color?>">C</option>
 												<option class="<?=$bg_seven_color?>">D</option>
+												<option class="<?=$bg_seven_color?>">Electronique</option>
 												<option class="<?=$bg_seven_color?>">G1</option>
 												<option class="<?=$bg_seven_color?>">G2</option>
 												<option class="<?=$bg_seven_color?>">G3</option>
+												<option class="<?=$bg_seven_color?>">L</option>
+												<option class="<?=$bg_seven_color?>">S</option>
+												<option class="<?=$bg_seven_color?>">OSE</option>
 											</select>
 										</div>
 										

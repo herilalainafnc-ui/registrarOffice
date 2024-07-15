@@ -122,7 +122,7 @@ $showBacc = $findBacc->fetch();
 				 ?>	
 				<div class="obtention_Bacc">
 					<label class="text-sm text-slate-400">Série du Bacc</label>
-					<p class="showContact">--<?php if(!empty($showBacc)) {echo $showBacc['bacc_serie'];}?></p>
+					<p class="showContact">-- <?php if(!empty($showBacc)) {echo $showBacc['bacc_serie'];}?></p>
 					<select class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="serie_bacc">
 						<option class="<?=$bg_one_color?>"></option>
 						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'A1') { echo 'selected';}}?>>A1</option>
@@ -136,6 +136,7 @@ $showBacc = $findBacc->fetch();
 						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'G3') { echo 'selected';}}?>>G3</option>
 						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'L') { echo 'selected';}}?>>L</option>
 						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'S') { echo 'selected';}}?>>S</option>
+						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'OSE') { echo 'selected';}}?>>OSE</option>
 						
 						
 					</select>
@@ -143,7 +144,7 @@ $showBacc = $findBacc->fetch();
 				<br>
 				<div class="obtention_Bacc">
 					<label class="text-sm text-slate-400">Année d'obtention Bacc</label>
-					<p class="showContact">--<?php if(!empty($showBacc)) {echo $showBacc['date_obtent'];}?></p>
+					<p class="showContact">-- <?php if(!empty($showBacc)) {echo $showBacc['date_obtent'];}?></p>
 					<input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="date" name="obtention_bacc" value="<?=$showBacc['date_obtent']?>">
 				</div>
 				
@@ -154,13 +155,13 @@ $showDiplome = $findDiplome->fetch();
 				?>
 					<div class="diplome_preced">
 						<label class="text-sm text-slate-400">Diplôme précédent</label>
-						<p class="showContact">--<?php if(!empty($showDiplome)) {echo $showDiplome['diplome_name'];}?></p>
-						<input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="diplome_preced" value="<?=$showDiplome['diplome_name']?>">
+						<p class="showContact">-- <?php if(!empty($showDiplome)) {echo $showDiplome['diplome_name'];}?></p>
+						<input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="diplome_preced" value="<?php if(!empty($showDiplome)) {echo $showDiplome['diplome_name'];}?>">
 					</div>
 					<br>
 					<div class="diplome_preced">
 						<label class="text-sm text-slate-400">Date d'obtention</label>
-						<p class="showContact">--<?php if(!empty($showDiplome)) {echo $showDiplome['date_obtent'];}?></p>
+						<p class="showContact">-- <?php if(!empty($showDiplome)) {echo $showDiplome['date_obtent'];}?></p>
 						<input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="date" name="date_obtent_diplome_preced" value="<?=$showDiplome['date_obtent']?>">
 					</div>
 				<?php 
@@ -397,7 +398,7 @@ $y = $y - 1;
 	$(document).ready(function(){
 
 		$('.form-no-refrech').on('submit',function (e) {
-			//e.preventDefault();
+			e.preventDefault();
 
 			var url = '../app/.student/updateStd.php?id=<?=$id?>&rg_id=<?=$rg_id?>';
 			var data = $(this).serialize();
