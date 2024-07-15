@@ -64,16 +64,16 @@
 
 	</div>
 	<div class="w-3/12 flex text-right">
-		<div class="w-6/12">
+		<div class="w-4/12">
 			
 		</div>
-		<div class="w-2/12">
+		<div class="w-1/12 border">
 			<div class="p-1 text-lg">
 				<a href="#" id="light"><span class="bi-sun-fill"></span></a>
 				<a href="#" id="dark" class="hidden text-slate-800"><span class="bi-moon-stars-fill"></span></a>
 			</div>
 		</div>
-		<div class="px-2 w-4/12 relative text-right">
+		<div class="px-2 w-7/12 relative text-right">
 
 			<a href="#" class="" data-bs-toggle="dropdown" aria-expanded="false">
 				<b class="pt-2 absolute right-14 text-xs"><?=$rg_last_name;?></b>
@@ -202,6 +202,7 @@
 		});
 /*/////////////////////////////////////////////////////////////////*/
 		$('#light').click(function(){
+			
 			var bg_one_color = '<?=$bg_one_color?>';
 			var bg_two_color = '<?=$bg_two_color?>';
 			var bg_three_color = '<?=$bg_three_color?>';
@@ -221,35 +222,14 @@
 			$(this).css({'display':'none'});
 			$('#dark').css({'display':'block'});
 
-			$.ajax({
-					url:"../init/head.php",
-					method:"POST",
-					data:{
-						bg_one_color : bg_one_color,
-						bg_two_color : bg_two_color,
-						bg_three_color : bg_three_color,
-						bg_four_color : bg_four_color,
-						bg_five_color : bg_five_color,
-						bg_six_color : bg_six_color,
-						bg_seven_color : bg_seven_color,
-						bg_eight_color : bg_eight_color,
-						br_two_colo : br_two_colo,
-						br_three_color : br_three_color,
-						txt_one_color : txt_one_color,
-						txt_two_color : txt_two_color,
-						txt_three_color : txt_three_color
-					},
-
-					success:function(data){
-						//$("#profSearch-result").html(data);
-					}
-				});
-
 		});
 
 		$('#dark').click(function(){
+			
 			$(this).css({'display':'none'});
 			$('#light').css({'display':'block'});
+
+
 		});
 	});
 
