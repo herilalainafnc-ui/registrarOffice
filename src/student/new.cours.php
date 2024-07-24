@@ -80,7 +80,7 @@
 	}
  	
  	if ($level>1) {
- 		$init = $level-1;
+ 		$init = $level-2;
  	}elseif($level==1){
  		$init = $level;
  	}

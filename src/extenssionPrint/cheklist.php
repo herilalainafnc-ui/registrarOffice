@@ -132,7 +132,14 @@ if(!empty($cours_table_selective)){
 			<td>
 <?php	
 	if (empty($nt_selective)) {
-		echo "";
+		
+		$searchcours = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id = "'.$student_id.'" AND title_cours LIKE "%'.$cours_table_selective['title'].'%" ');
+		$showCours = $searchcours->fetch();
+		if (!empty($showCours)) {
+			echo $showCours['grade'];
+		}else{
+			echo "";
+		}
 	}elseif($nt_selective['grade'] == 0){
 		echo "";
 	}

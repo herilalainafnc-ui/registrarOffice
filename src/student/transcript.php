@@ -30,7 +30,7 @@
 	for ($a=$init; $a <= $level; $a++) { 
 /*::::::::::::::::::::::::::::::::::::::::*/
 ?>
-	<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+	<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all'>
 <b>
 		<?php 
 		if($a<=3) {
@@ -51,7 +51,7 @@
 					<th colspan="10" id="semestre<?=$a.$s;?>">SEMESTRE <?=$s?></th>
 				</tr>
 			</thead>
-			<thead class="<?=$bg_one_color?> text-white">
+			<thead class="<?=$bg_one_color?> <?=$txt_one_color?>">
 				<tr>
 					<th class="w-20">SIGLE</th>
 					<th class="w-">TITRE DU COURS</th>
@@ -102,8 +102,8 @@ $cours = $dtb->query("SELECT * FROM t_2023_notes WHERE student_id ='".$student_i
 		$annee_scolaire = $crs['annee_scolaire'];
 	 ?>
 <form method="post" action="../app/.student/updatenote.php?id=<?=$id;?>&nbr=<?=$s.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$a.$s?>&user_id=<?=$rg_id?>">			
-				<tr id="note<?=$s.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black">
-					<td class="bg-gradient-to-r from-orange-800 to-orange-400"><?=$crs['Sigle']?></td>
+				<tr id="note<?=$s.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black ">
+					<td class="bg-gradient-to-r from-orange-800 to-orange-400 text-white"><?=$crs['Sigle']?></td>
 					<td><?=$crs['title_cours']?></td>
 					<td><?=$crs['credit']?></td>
 					<td><?php 
@@ -121,7 +121,7 @@ if ($crs['cours_category'] == 0){
 	echo "-";
 }
 						 ?></td>
-					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="nb_crd<?=$s.$nbr;?>" value="<?php if($crs['grade']==-2){echo "Ok";}else{echo $crs['grade'];}?>"></td>
+					<td class="<?=$bg_six_color?> <?=$txt_three_color?> px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="nb_crd<?=$s.$nbr;?>" value="<?php if($crs['grade']==-2){echo "Ok";}else{echo $crs['grade'];}?>"></td>
 					<td><?php if($crs['grade']==-2){echo "";}else{echo $notecredi = $crs['credit'] * $crs['grade'];}?></td>
 					
 					<td class="<?php 
@@ -134,7 +134,7 @@ if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 	echo "bg-none";
 }
 
-					 ?> text-center" title="<?php 
+					 ?> text-center <?=$txt_three_color?>" title="<?php 
 if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 	echo "Succès";
 }elseif ($crs['grade'] < 10 and $crs['grade'] > 0){
@@ -243,7 +243,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 	}
 	 ?>			
 			</tbody>
-			<tfoot class="<?=$bg_one_color?> text-white">
+			<tfoot class="<?=$bg_one_color?> <?=$txt_one_color?>">
 				<tr>
 					<th class="px-2" colspan="2"><?=$nbr?> cours</th>
 					<th><?php if(!empty($tcredit)) { echo $tcredit;}?></th>
@@ -272,17 +272,17 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 
 				<tr class="<?=$bg_four_color?> text-right">
 					<td colspan="4">Note de Work Education</td>
-					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_work_educ" value="<?=$grade_work_educ?>"></td>
+					<td class="<?=$bg_six_color?> <?=$txt_three_color?> px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_work_educ" value="<?=$grade_work_educ?>"></td>
 				</tr>
 
 				<tr class="<?=$bg_four_color?> text-right">
 					<td colspan="4">Remarque académique</td>
-					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_remark_acad" value="<?=$grade_remark_acad?>"></td>
+					<td class="<?=$bg_six_color?> <?=$txt_three_color?> px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_remark_acad" value="<?=$grade_remark_acad?>"></td>
 				</tr>
 
 				<tr class="<?=$bg_four_color?> text-right">
 					<td colspan="4">Note de participation à l'exercice de chapelle et à la semaine de prière</td>
-					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_chapel_part" value="<?=$grade_chapel_part?>"></td>
+					<td class="<?=$bg_six_color?> <?=$txt_three_color?> px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_chapel_part" value="<?=$grade_chapel_part?>"></td>
 				</tr>
 
 				<button type="submit" class="hidden"></button>
@@ -304,7 +304,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 				<!--  -->
 				<tr>
 					<th colspan="4" class="text-right">Moyenne Générale</th>
-					<th class="px-2 bg-cyan-700"><?php if($nbr != 0){echo round(($moyenGenSem = $tnotecredit/$tcredit),6);}else{echo 0;$moyenGenSem =0;}?></th>
+					<th class="px-2 bg-cyan-700 text-white"><?php if($nbr != 0){echo round(($moyenGenSem = $tnotecredit/$tcredit),6);}else{echo 0;$moyenGenSem =0;}?></th>
 				</tr>
 
 				<!-- <tr>
@@ -333,10 +333,10 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 	}
 ?>
 <!-- CUMULATIVE -->
-<div class='p-1 <?=$bg_three_color?> hover:<?=$bg_four_color?> mb-4 rounded-md border-2 border-slate-600 hover:border-cyan-500 transition-all text-xs text-white'>
-	<b>MOYENNE CUMULATIVE</b>
+<div class='p-1 <?=$bg_three_color?> hover:<?=$bg_four_color?> mb-4 rounded-md border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all text-xs text-white'>
+	<b class="<?=$txt_one_color?>">MOYENNE CUMULATIVE</b>
 	<table class="simpleTbl mb-1 w-full">
-		<tbody class=" <?=$bg_two_color?>">
+		<tbody class=" <?=$bg_two_color?> <?=$txt_one_color?>">
 			<tr>
 				<td class="p-1 w-8/12 text-right">Note de Work Education cumulative</td>
 				<td class="px-2 w-2/12 text-bold"><?=round(($cumulWorkNote*20)/((($a-1)*2)*20),3);?></td>

@@ -64,7 +64,7 @@
 
 	</div>
 	<div class="w-3/12 flex text-right">
-		<div class="w-6/12">
+		<div class="w-5/12">
 			
 		</div>
 		<div class="w-2/12">
@@ -73,7 +73,7 @@
 				<a href="#" id="dark" class="hidden text-slate-800"><span class="bi-moon-stars-fill"></span></a>
 			</div>
 		</div>
-		<div class="px-2 w-4/12 relative text-right">
+		<div class="px-2 w-5/12 relative text-right">
 
 			<a href="#" class="" data-bs-toggle="dropdown" aria-expanded="false">
 				<b class="pt-2 absolute right-14 text-xs"><?=$rg_last_name;?></b>
