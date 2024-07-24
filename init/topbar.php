@@ -67,7 +67,7 @@
 		<div class="w-4/12">
 			
 		</div>
-		<div class="w-1/12 border">
+		<div class="w-1/12">
 			<div class="p-1 text-lg">
 				<a href="#" id="light"><span class="bi-sun-fill"></span></a>
 				<a href="#" id="dark" class="hidden text-slate-800"><span class="bi-moon-stars-fill"></span></a>

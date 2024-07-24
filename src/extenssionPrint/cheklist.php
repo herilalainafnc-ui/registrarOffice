@@ -19,7 +19,7 @@ $stdA = $searchStd->fetch();
 ?>
 
 	<center>
-		<b class="text-2xl">Check list</b>
+		<b class="text-2xl">Remise de notes</b>
 	</center>
 <div class="border border-black flex text-xs px-2 py-1 my-2">
 	<div class="w-full flex">
@@ -76,101 +76,7 @@ if ($etude_envisage == "Théologie") {
 	
 	$tout = 'all';
 
-	$courseselective = $dtb->query("SELECT * FROM t_2023_cours WHERE dep_desc='".$dep_desc."' AND yearlevel = 1 AND semester = 1 AND (parcours = '".$parcours."' OR parcours = '".$tout."') AND category = 2 ORDER BY title");
-	$cours_table_selective = $courseselective->fetch()
-?>
-<table class="tbl w-full">
 
-	<thead>
-<?php 
-if(!empty($cours_table_selective)){
- ?>
-		<tr style="background: #d7f0fb;">	
-			<th style="width: 20px">Nb</th>
-			<th style="width: 70px">SIGLE</th>
-			<th>Cours Séléctive | Semestre 1</th>
-			<th style="width: 30px">Cr</th>
-			<th style="width: 20px">X</th>
-			<th style="width: 20px"></th>
-			<th style="width: 20px"></th>
-			<th style="width: 50px"></th>
-		</tr>
-<?php 
-}
- ?>
-	</thead>
-	<tbody>
-<?php
-	$n_selective = 1;
-	$credit_selective = 0;
-	$tcredit_selective = 0;
-	while ($cours_table_selective = $courseselective->fetch()) {
-?>
-		<tr>
-			
-			<td><?=$n_selective;?></td>
-			<td><?php echo $sigle = $cours_table_selective['Sigle'];?></td>
-			<td><?=$cours_table_selective['title'];?></td>
-			<td><?=$cours_table_selective['nb_crd'];?></td>
-			<td>
-<?php 
-	$notes_selective = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id = "'.$student_id.'" AND Sigle = "'.$sigle.'" LIMIT 1');
-	$nt_selective = $notes_selective->fetch();
-	if (empty($nt_selective)) {
-		echo "";
-	}elseif($nt_selective['grade'] == 0){
-		echo "";
-	}
-	else{
-		echo "x";	
-	}
-
-?>
-			</td>
-			<td></td>
-			<td></td>
-			<td>
-<?php	
-	if (empty($nt_selective)) {
-		echo "";
-	}elseif($nt_selective['grade'] == 0){
-		echo "";
-	}
-	else{
-		echo $nt_selective['grade'];	
-	}
-?>
-			</td>
-		</tr>
-<?php
-		$tcredit_selective+= $credit_selective + $cours_table_selective['nb_crd'];
-		$n_selective++;
-	}
-?>
-	</tbody>
-	<tfoot>
-<?php 
-if(!empty($cours_table_selective)){
- ?>		
-		<tr>		
-			<td></td>
-			<td></td>
-			<td></td>
-			<td><?=$tcredit_selective?></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-<?php 
-}
- ?>
-	</tfoot>
-</table><br>
-
-
-
-<?php
 for ($y=1; $y <= 3; $y++) {
 	for ($i=1; $i <=2 ; $i++) { 
 		$course = $dtb->query("SELECT * FROM t_2023_cours WHERE dep_desc='".$dep_desc."' AND yearlevel ='".$y."' AND semester ='".$i."' AND (category = 1 OR category = 0) AND (parcours = '".$parcours."' OR parcours = '".$tout."') ORDER BY title");
@@ -178,82 +84,208 @@ for ($y=1; $y <= 3; $y++) {
 <table class="tbl w-full">
 	<thead>
 		<tr style="background: #d7f0fb;">
-			<th style="width: 70px">Prérequis</th>
 			<th style="width: 20px">Nb</th>
 			<th style="width: 70px">SIGLE</th>
-			<th>Année <?=$y;?> | Semestre <?=$i;?></th>
-			<th style="width: 30px">Cr</th>
-			<th style="width: 20px">X</th>
-			<th style="width: 20px"></th>
-			<th style="width: 20px"></th>
-			<th style="width: 50px"></th>
+			<th>Cours - Année <?=$y;?> | Semestre <?=$i;?></th>
+			<th style="width: 40px">Cr</th>
+			<th style="width: 40px">Categ</th>
+			<th style="width: 40px">Notes</th>
+			<th style="width: 40px">Cr*Notes</th>
 		</tr>
 	</thead>
 	<tbody>
 <?php
 	$n = 1;
+	$nbrMaj = 0;
+	$note = 0;
 	$credit = 0;
 	$tcredit = 0;
+	$notecredit = 0;
+
+	$nbrGen = 0;
+	$tGen = 0;
+	$tTGen = 0;
+
+	/**/
+	$nbrFinale = 0;
+	$tFinale = 0;
+	$tTFinale = 0;
+
+	$tMaj = 0;
+	$tTMaj = 0;
+	$tcredit = 0;
+	$tcreditMaj = 0;
+	$tnote = 0;
+	$tnotecredit = 0;
+
 	while ($cours_table = $course->fetch()) {
 ?>
 	
 		<tr>
-			<td><em> -></em></td>
 			<td><?=$n;?></td>
 			<td><b><?php echo $sigle = $cours_table['Sigle'];?></b></td>
 			<td><?=$cours_table['title'];?></td>
-			<td><?=$cours_table['nb_crd'];?></td>
+			<td><?= $credit=$cours_table['nb_crd'];?></td>
 			<td>
 <?php 
-	$notes = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id = "'.$student_id.'" AND Sigle = "'.$sigle.'" LIMIT 1');
-	$nt = $notes->fetch();
-	if (empty($nt)) {
-		echo "";
-	}elseif($nt['grade'] == 0){
-		echo "";
-	}
-	else{
-		echo "x";	
-	}
+	if ($cours_table['category'] == 0){
+	echo "Général";
+}elseif ($cours_table['category'] == 1) {
+	echo "Majeur";
+}elseif ($cours_table['category'] == -1 OR $crs['cours_category'] == 2) {
+	echo "Selective";
+}elseif ($cours_table['category'] == 3) {
+	echo "Additionnel";
+}elseif ($cours_table['category'] == 5) {
+	echo "``";
+}else{
+	echo "-";
+}
 
 ?>
 			</td>
-			<td></td>
-			<td></td>
 			<td>
 <?php	
-	if (empty($nt)) {
-		echo "";
-	}elseif($nt['grade'] == 0){
-		echo "";
-	}
-	else{
-		echo round($nt['grade'],2);	
-	}
+	//if (empty($nt)) {
+	
+		$finding = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id = "'.$student_id.'" AND title_cours  LIKE "%'.$cours_table['title'].'%" AND credit = "'.$cours_table['nb_crd'].'" AND credit = "'.$cours_table['nb_crd'].'" ORDER BY grade DESC LIMIT 1');
+		$showing = $finding->fetch();
+		if(!empty($showing)){
+			echo "<a style='color:green'>".$grade = $showing['grade']."</a>";
+		}else{
+
+			$firstSpace = strpos($cours_table['title']," ");
+			$captFirstWord = substr($cours_table['title'], 0, $firstSpace);
+			$suitWord = strchr($cours_table['title'],$firstSpace+1);
+
+
+			$findingSecond = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id = "'.$student_id.'" AND title_cours LIKE "%'.$captFirstWord.'%" AND credit = "'.$cours_table['nb_crd'].'" ORDER BY grade DESC LIMIT 1');
+			
+			$showingSecond = $findingSecond->fetch();
+				
+				if(!empty($showingSecond)){
+					echo "<a style='color:orange'>".$grade = $showingSecond['grade']."</a>";
+				}else{
+
+					$findingTierd = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id = "'.$student_id.'" AND title_cours LIKE "%'.$suitWord.'%" AND credit = "'.$cours_table['nb_crd'].'" ORDER BY grade DESC LIMIT 1');
+			
+					$showingTierd = $findingTierd->fetch();
+						if(!empty($showingTierd)){
+							echo "<a style='color:red'>".$grade = $showingTierd['grade']."</a>";
+						}
+
+
+				}
+			
+			
+		}
+		
+	// }elseif($nt['grade'] == 0){
+	// 	echo "";
+	// }
+	// else{
+	// 	echo round($nt['grade'],2);	
+	// }
 ?>
 			</td>
+			<td><?= $noteCredi = floatval($grade) * intval($credit)?></td>
+<?php 
+	if ($cours_table['category'] == 1) {
+		$valmajeur = $grade;
+		$ident = 1;
+	}else {
+		$valmajeur = 0;
+		$ident = 0;
+	}
+ ?>
+
 		</tr>
 	
 <?php
-		$tcredit+= $credit + $cours_table['nb_crd'];
+$crdt = 0;
+$notes = 0;
+/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+$creditMaj = 0;
+/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+$tcredit+= $crdt + $credit;
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+if (($cours_table['category'] == 1) OR ($cours_table['category'] == "Majeur")) {
+
+	$tcreditMaj+=$creditMaj + $credit;
+	$nbrMaj++;
+
+}else{
+	$tcreditMaj+=$creditMaj+ 0;
+}
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+
+$tnote+= $note + floatval($grade);
+$tnotecredit+= $notecredit + $noteCredi;
+
+/* --- CALCULE DES NOTES GENERAL --- */
+
+if (($cours_table['category'] == 0) OR ($cours_table['category'] == "Général")) {
+	$gradeGen = $grade;
+	$nbrGen++;
+}else{
+	$gradeGen = 0;
+}
+	$tTGen += $tGen + floatval($gradeGen);
+
+/* --- CALCULE DES NOTES MAJEURS --- */
+ 
+if (($cours_table['category'] == 1) OR ($cours_table['category'] == "Majeur")) {
+	$gradeMaj = $noteCredi;
+	$nbrMaj++;
+}else{
+	$gradeMaj = 0;
+}
+
+	$tTMaj += $tMaj + $gradeMaj;
+
+/* --- CALCULE DES NOTES FINALES --- */
+ 
+if (($cours_table['category'] == 1) OR ($cours_table['category'] == "Majeur") OR ($cours_table['category'] == 0) OR ($cours_table['category'] == "Général")) {
+	$gradeFinale = $grade;
+	$nbrFinale++;
+}else{
+	$gradeFinale = 0;
+}
+
+	$tTFinale += $tFinale + floatval($gradeFinale);
+
+		$tcredit+= $crdt + $credit;
 		$n++;
 	}
 ?>
 	</tbody>
 	<tfoot>
-		<tr>
-			<td style="border: none"></td>
-			<td style="border: none"></td>
-			<td style="border: none"></td>
-			<td style="border: none"></td>
-			<td style="border: none"><?=$tcredit?></td>
-			<td style="border: none"></td>
-			<td style="border: none"></td>
-			<td style="border: none"></td>
-			<td style="border: none"></td>
+		<tr style="background : #e9e9e9">
+			<td></td>
+			<td></td>
+			<td></td>
+			<td><?=$tcredit?></td>
+			<td></td>
+			<td><?=$tnote?></td>
+			<td><?=$tnotecredit?></td>
+		</tr>
+	</tfoot>	
+</table>
+<table class="tbl w-full" style="margin-top: 10px">
+	<tfoot>
+		<tr style="background : #e9e9e9">
+			<td colspan="4" style="text-align: right;">Moyenne générale</td>
+			<td style="width: 63px"><?php if($nbrMaj != 0){echo round(($moyenMajSem = ($tTMaj/$tcreditMaj)),6);}else{echo 0;$moyenMajSem =0;}?></td>
+		</tr>
+	</tfoot>
+	<tfoot>
+		<tr style="background : #e9e9e9">
+			<td colspan="4" style="text-align: right;">Moyenne mageur</td>
+			<td style="width: 63px"><?php if($n != 0){echo round(($moyenGenSem = $tnotecredit/$tcredit),6);}else{echo 0;$moyenGenSem =0;}?></td>
 		</tr>
 	</tfoot>
 </table>
+<br>
 
 <?php
 	}
@@ -263,9 +295,14 @@ for ($y=1; $y <= 3; $y++) {
 <style type="text/css">
 	.tbl{
 		font-size: 12px;
+		font-family: "arial",sans-serif;
 		border-collapse: collapse;
 	}
-	.tbl thead tr, tbody td{
+	.tbl thead th, tbody td{
+		border: 1px solid black;
+		padding: 0px 5px 0px 5px;
+	}
+	.tbl tfoot td{
 		border: 1px solid black;
 		padding: 0px 5px 0px 5px;
 	}

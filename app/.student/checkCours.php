@@ -89,7 +89,7 @@
 
 		}
 	}
-	//header('location:../../src/student.php?id='.$id.'&page=transcript');
+	header('location:../../src/student.php?id='.$id.'&page=transcript');
 	
-	header('location:../../src/genPDF/dom.php?id='.$id.'&page=transcript&ptype=ficheInscription');
+	//header('location:../../src/genPDF/dom.php?id='.$id.'&page=transcript&ptype=ficheInscription');
  ?>

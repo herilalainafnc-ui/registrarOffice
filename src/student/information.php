@@ -398,7 +398,7 @@ $y = $y - 1;
 	$(document).ready(function(){
 
 		$('.form-no-refrech').on('submit',function (e) {
-			e.preventDefault();
+			//e.preventDefault();
 
 			var url = '../app/.student/updateStd.php?id=<?=$id?>&rg_id=<?=$rg_id?>';
 			var data = $(this).serialize();
