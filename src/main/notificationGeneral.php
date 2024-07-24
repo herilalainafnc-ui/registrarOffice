@@ -503,6 +503,8 @@
 		</div>
 
 	</div>
+
+
 <!-- LOG OUT -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifLogOut" style="backdrop-filter: blur(3px);">
 

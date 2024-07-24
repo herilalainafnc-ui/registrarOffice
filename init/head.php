@@ -20,7 +20,7 @@
 	$_SESSION['txt_two_color'] = 'text-slate-400';
 	$_SESSION['txt_three_color'] = 'text-slate-800';
 
-	/*$_SESSION['bg_one_color'] = 'bg-slate-100';
+/*	$_SESSION['bg_one_color'] = 'bg-slate-100';
 	$_SESSION['bg_two_color'] = 'bg-slate-200';
 	$_SESSION['bg_three_color'] = 'bg-slate-300';
 	$_SESSION['bg_four_color'] = 'bg-slate-400';

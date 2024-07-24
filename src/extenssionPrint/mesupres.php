@@ -105,13 +105,26 @@ if($af['sex'] == 1 OR $af['sex'] == "Masculin") {
 				<td><?=$af['dateNaissance']?></td>
 				<td><?php if($af['num_cin']==0){ echo "";}else{ echo "_".$af['num_cin'];}?></td>
 				<td><?=$af['nationalite']?></td>
+<?php 
+	if ($af['annee_etude'] <= 3) {
+	$findBacc = $dtb->query('SELECT * FROM t_2024_bacc WHERE student_id = "'.$af['student_id'].'"');
+	$showBacc = $findBacc->fetch();
+?>				
+				<td><?php if(!empty($showBacc)){ echo substr($showBacc['date_obtent'],0,4);}?></td>
 				
-				<td></td>
+				<td><?php if(!empty($showBacc)){ echo $showBacc['bacc_serie'];}?></td>
 				
-				<td></td>
+<?php 
+}elseif ($af['annee_etude'] > 3) {
+	$findDiplome = $dtb->query('SELECT * FROM t_2024_diplome_preced WHERE student_id = "'.$af['student_id'].'"');
+	$showDiplome = $findDiplome->fetch();
+?>
+				<td><?php if(!empty($showDiplome)){ echo substr($showDiplome['date_obtent'],0,4);}?></td>
 				
-				
-
+				<td><?php if(!empty($showDiplome)){ echo $showDiplome['diplome_name'];}?></td>
+<?php 
+}
+?>
 				
 
 				<td>N</td>

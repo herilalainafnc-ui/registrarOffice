@@ -3,7 +3,7 @@
 
  ?>
 <table class="simpleTbl">
-	<thead class="<?=$bg_four_color?> text-white">
+	<thead class="bg-slate-500 text-white">
 		<tr>
 			<th>ID</th>
 			<th>Nom</th>
@@ -25,7 +25,7 @@ if (isset($_POST['trie'])) {
 	$sdt_nbLive = 1;
 	while ($sdt_list = $recupsdt->fetch()) {
  ?>								
-		<tr id="std_<?=$sdt_nb?>" class="hover:<?=$bg_six_color?> hover:text-slate-800">	
+		<tr id="std_<?=$sdt_nb?>" class="hover:bg-slate-300 hover:bg-slate-600 text-slate-100">	
 			<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['student_id']?></div></a></td>
 			<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=strtoupper($sdt_list['student_nom'])?></div></a></td>
 			<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['student_prenom']?></div></a></td>

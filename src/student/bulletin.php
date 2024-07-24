@@ -110,7 +110,7 @@ if ($crs['grade'] < 10) {
 					 ?> text-center"><?php 
 if ($crs['grade'] < 10) {
 	echo "E";
-}elseif ($crs['grade'] == -2 OR $crs['grade'] > 10){
+}elseif ($crs['grade'] == -2 OR $crs['grade'] >= 10){
 	echo "S";
 }
 

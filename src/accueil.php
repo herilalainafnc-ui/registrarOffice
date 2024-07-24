@@ -41,7 +41,7 @@
 
 	if (isset($_POST['search']) AND !empty($_POST['search'])) {
 			$input = htmlspecialchars($_POST['search']);
-			$recupsdt = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE student_id LIKE "%'.$input.'%" OR student_nom LIKE "%'.$input.'%" OR student_prenom LIKE "%'.$input.'%" OR sex LIKE "%'.$input.'%" OR student_email LIKE "%'.$input.'%" OR student_tel LIKE "%'.$input.'%" OR religion LIKE "%'.$input.'%" ORDER BY id DESC limit 200');	
+			$recupsdt = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE student_id LIKE "%'.$input.'%" OR student_nom LIKE "%'.$input.'%" OR student_prenom LIKE "%'.$input.'%" OR sex LIKE "%'.$input.'%" OR student_email LIKE "%'.$input.'%" OR student_tel LIKE "%'.$input.'%" OR religion LIKE "%'.$input.'%" ORDER BY id DESC limit 800');	
 		}else{
 			$recupsdt = $dtb->query('SELECT * FROM etudiant_second_semester_23 ORDER BY id DESC limit 200');
 		}

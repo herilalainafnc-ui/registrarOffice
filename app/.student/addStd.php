@@ -104,8 +104,8 @@
 				:date_entry
 			)');$insertBacc->execute(array(
 				'student_id'  => $student_id,
-				'date_obtent' => $date_obtent,
-				'bacc_serie' => $bacc_serie,
+				'date_obtent' => $obtention_bacc,
+				'bacc_serie' => $serie_bacc,
 				'user_id' => $last_change_user_id,
 				'date_entry' => $date_entry
 			));
