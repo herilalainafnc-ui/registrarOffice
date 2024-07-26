@@ -113,21 +113,18 @@ require '../../data/backdb.php';
 			$updDiplome->bindParam(':student_id',$student_id,PDO::PARAM_STR);
 			$updDiplome->execute();
 		}else{
-			$insertDiplome = $dtb->prepare('INSERT INTO t_2024_bacc(
-				student_id,
+			$insertDiplome = $dtb->prepare('INSERT INTO t_2024_diplome_preced(
 				diplome_name,
 				date_obtent,
 				user_id,
 				date_entry
 			)VALUES(
-				:student_id,
 				:diplome_name,
 				:date_obtent,
 				:user_id,
 				:date_entry
 			)');$insertDiplome->execute(array(
-				'student_id'  => $student_id,
-				'diplome_name' => $diplome_preced,
+				'diplome_name'  => $student_id,
 				'date_obtent' => $date_obtent_diplome_preced,
 				'user_id' => $last_change_user_id,
 				'date_entry' => $last_change_datetime
