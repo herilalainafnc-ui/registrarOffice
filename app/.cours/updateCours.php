@@ -31,21 +31,22 @@
 		parcours=:parcours,
 		last_change_user_id=:last_change_user_id,
 		last_change_datetime=:last_change_datetime
+	
 	WHERE id=:id");
 
-		$update->bindParam('sigle',$sigle,PDO::PARAM_STR);
-		$update->bindParam('dep_desc',$dep_desc,PDO::PARAM_STR);
-		$update->bindParam('id_teacher',$id_teacher,PDO::PARAM_INT);
-		$update->bindParam('title',$title,PDO::PARAM_STR);
-		$update->bindParam('title_english',$title_english,PDO::PARAM_STR);
-		$update->bindParam('yearlevel',$yearlevel,PDO::PARAM_INT);
-		$update->bindParam('nb_crd',$nb_crd,PDO::PARAM_INT);
-		$update->bindParam('semester',$semester,PDO::PARAM_INT);
-		$update->bindParam('category',$category,PDO::PARAM_INT);
-		$update->bindParam('parcours',$parcours,PDO::PARAM_STR);
-		$update->bindParam('last_change_user_id',$last_change_user_id,PDO::PARAM_INT);
-		$update->bindParam('last_change_datetime',$last_change_datetime,PDO::PARAM_STR);
-		$update->bindParam('id',$id,PDO::PARAM_INT);
+		$update->bindParam(':sigle',$sigle,PDO::PARAM_STR);
+		$update->bindParam(':dep_desc',$dep_desc,PDO::PARAM_STR);
+		$update->bindParam(':id_teacher',$id_teacher,PDO::PARAM_INT);
+		$update->bindParam(':title',$title,PDO::PARAM_STR);
+		$update->bindParam(':title_english',$title_english,PDO::PARAM_STR);
+		$update->bindParam(':yearlevel',$yearlevel,PDO::PARAM_INT);
+		$update->bindParam(':nb_crd',$nb_crd,PDO::PARAM_INT);
+		$update->bindParam(':semester',$semester,PDO::PARAM_INT);
+		$update->bindParam(':category',$category,PDO::PARAM_INT);
+		$update->bindParam(':parcours',$parcours,PDO::PARAM_STR);
+		$update->bindParam(':last_change_user_id',$last_change_user_id,PDO::PARAM_INT);
+		$update->bindParam(':last_change_datetime',$last_change_datetime,PDO::PARAM_STR);
+		$update->bindParam(':id',$id,PDO::PARAM_INT);
 
 		$update->execute();
 
@@ -57,10 +58,12 @@
 		credit=:nb_crd,
 		teacher_id=:id_teacher,
 		semester=:semester,
+		category=:category,
 		lab=:lab,
 		yearlevel=:yearlevel,
 		last_change_user_id=:last_change_user_id,
 		last_change_datetime=:last_change_datetime
+	
 	WHERE id_cours=:id');
 
 	$modify->bindParam(':sigle',$sigle,PDO::PARAM_STR);
@@ -69,6 +72,7 @@
 	$modify->bindParam(':nb_crd',$nb_crd,PDO::PARAM_INT);
 	$modify->bindParam(':id_teacher',$id_teacher,PDO::PARAM_STR);
 	$modify->bindParam(':semester',$semester,PDO::PARAM_INT);
+	$modify->bindParam(':category',$category,PDO::PARAM_INT);
 	$modify->bindParam(':lab',$lab,PDO::PARAM_INT);
 	$modify->bindParam(':yearlevel',$yearlevel,PDO::PARAM_INT);
 	$modify->bindParam('last_change_user_id',$last_change_user_id,PDO::PARAM_INT);

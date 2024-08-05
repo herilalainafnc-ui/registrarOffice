@@ -6,13 +6,13 @@ require("./student/level.php");
 
 if ($totalGenCumul >= 17) {
 	$mentionPromANG = "With High Distinction";
-	$mentionPromFR = "Mention très bien";
+	$mentionPromFR = "Mention : Très Bien";
 }elseif($totalGenCumul >= 15.5 AND $totalGenCumul <= 16.99) {
 	$mentionPromANG = "With Distinction";
-	$mentionPromFR = "Mention bien";
+	$mentionPromFR = "Mention : Bien";
 }elseif($totalGenCumul >= 14 AND $totalGenCumul <= 15.49) {
 	$mentionPromANG = "With Distinction";
-	$mentionPromFR = "Mention assez bien";
+	$mentionPromFR = "Mention : Assez Bien";
 }elseif($totalGenCumul < 14){
 	$mentionPromANG = "";
 	$mentionPromFR = "";
@@ -24,7 +24,7 @@ if($level <3 ){
 	<h1 class="text-red-500 text-center"><em><i class="bi-exclamation-triangle-fill"></i> Le diplôme de <b><?=$student_prenom?></b> n'est pas disponible, car son niveau n'est pas encore Licence 3.</em></h1>
 </div>
 <?php
-}elseif($level >= 3 AND $totalGenCumul <= 5 ) {
+}elseif($level >= 3 AND $totalGenCumul < 0 ) {
  ?>
 <div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>	
 	<h1 class="text-red-500 text-center"><em><i class="bi-exclamation-triangle-fill"></i> Le diplôme de <b><?=$student_prenom?></b> n'est pas encore disponible, car toutes les notes ne sont pas encore remise.</em></h1>
@@ -57,9 +57,12 @@ if($level <3 ){
 			}
 		}else{
 			if ($level>3) {
-				echo '<input type="text" value="Master en '.$etude_envisage.'" class="font-bahnschrift text-[42px] bg-transparent p-0 border-0 w-full text-center">';	
+				echo '<input type="text" value="Master en '.$etude_envisage.'" class="font-bahnschrift text-[42px] bg-transparent p-0 border-0 w-full text-center">';
+				if($etude_envisage == "Gestion") {
+					echo '<input type="text" value="(Master of Business Administration)" class="font-bahnschrift text-[42px] bg-transparent p-0 border-0 w-full text-center">';
+				}	
 			}else{
-				echo '<input type="text" value="Licence en '.$etude_envisage.'" class="font-bahnschrift text-[42px] bg-transparent p-0 border-0 w-full text-center">';	
+				echo '<input type="text" value="Licence en '.$etude_envisage.'" class="font-bahnschrift text-[42px] bg-transparent p-0 border-0 w-full text-center">';
 			}
 		}
 		?>
@@ -93,9 +96,7 @@ if($level <3 ){
 			<?php
 		}else{
 			?>
-				<p class="font-times text-[17px]">
-				 <br> 
-		
+				<p class="font-times text-[17px] mt-[15px]">	
 			<input type="text" value="pour en jouir avec les droits et prérogatives qui y sont attachés." class="bg-transparent p-0 border-0 w-full text-center">
 			<input type="text" value="Remis à Sambaina Antsirabe, Madagascar, en ce Dimanche <?php echo '04 août '.date('Y');?>" class="bg-transparent p-0 border-0 w-full text-center mt-[20px]">
 			</p>
