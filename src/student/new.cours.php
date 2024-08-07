@@ -79,12 +79,15 @@
 		$eE = 'DROI';
 	}
  	
- 	if ($level>1) {
- 		$init = $level-2;
- 	}elseif($level==1){
+ 	if($level==1) {
  		$init = $level;
+ 	}elseif($level>=2 AND $level<=3) {
+ 		$init = $level-1;
+ 	}elseif($level==4) {
+ 		$init = $level;
+ 	}elseif($level==5) {
+ 		$init = $level-1;
  	}
- 	
 
 	for ($a=$init; $a <= $level; $a++) {
  ?>
