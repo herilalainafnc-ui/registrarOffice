@@ -63,7 +63,7 @@ $date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
         }elseif($ptype == "Diplôme"){
             require ('./extenssionPrint/diplome.php');
         }elseif($ptype == "Checklist"){
-            require ('./extenssionPrint/cheklist.php');
+            require ('./extenssionPrint/vrai.cheklist.php');
         }elseif($ptype == "Certificat de scolarité"){
             require ('./extenssionPrint/certScolarity.php');
         }elseif($ptype == "Abonnement Caf"){

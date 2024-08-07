@@ -3,7 +3,14 @@ $level = $_GET['level'];
 $semester = $_GET['semester'];
 $student_id = $_GET['student_id'];
 $yes = 1;
-$initA = 1;
+if($_GET['std_niveau'] <=3) {
+	$initA = 1;	
+	$stage = "Licence";
+}elseif($_GET['std_niveau'] >3){
+	$initA = 4;
+	$stage = "Master";
+}
+
 $initS = 1;
 $printName = $student_id."-TRANSCRIPT_SEMMESTRE";
  
@@ -79,9 +86,10 @@ $stdA = $searchStd->fetch();
 
 	for ($a=$initA; $a <= $level; $a++) {
 		?>
-			<div <?php if($initA > 1) { echo "style='min-height: 790px;'";}?>>
+			<div>
 		<?php
-	echo "<div> <b>NIVEAU L".$a."</b>";
+	echo "<div> <b>NIVEAU ".$stage." ";
+	if($a<=3){echo $a;}elseif($a>3){echo $a-3;}
 		
 		if ($semester == 1) {
 			$sem = 1;
@@ -89,7 +97,7 @@ $stdA = $searchStd->fetch();
 			$initS = 2;
 			$sem = 2;
 		}
-
+	echo "</b>";
 		for ($s=$initS; $s <=$sem ; $s++) { 
 			
 		
