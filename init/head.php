@@ -84,17 +84,3 @@
 	<link rel="stylesheet" type="text/css" href="./css/style.css">
 
 </head>
-
-<style type="text/css">
-	.btnInactive{
-		background: #7a93b2;
-		color: white;
-		pointer-events: none;
-	}
-	input{
-		padding: 0px 10px 0px 10px;
-	}
-	select{
-		border-radius: 0px;
-	}
-</style>

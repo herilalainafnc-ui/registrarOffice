@@ -1,3 +1,4 @@
+<div class=" mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">
 <?php
 	$anual = substr($annee_scolaire, 0, 4);
 
@@ -340,4 +341,5 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 			</tr>
 		</thead>
 	</table>
+</div>
 </div>

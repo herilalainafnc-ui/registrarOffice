@@ -1,3 +1,4 @@
+<div class=" mt-2 p-2 pb-0 overflow-auto" style="max-height: calc(100vh - 246px);">
 <?php 
 $date = date('Y-m-d');
 $langue = $_GET['langue'];
@@ -46,7 +47,29 @@ if($level <3 ){
 		
 		<div class="absolute w-full text-black text-center top-0">
 			<div class="h-[220px]"></div>
-			<input type="text" value="<?=ucwords(strtolower($student_nom))." ".ucwords(strtolower($student_prenom))?>" class="font-tangerine text-[75px] bg-transparent p-0 border-0 w-full h-[90px] text-center">
+			<input type="text" value="<?=ucwords(strtolower($student_nom))." ".ucwords(strtolower($student_prenom))?>" class="font-tangerine 
+<?php 
+	$carName = intval(strlen($student_nom));
+	$carLastName = intval(strlen($student_prenom));
+	$strlen = $carName + $carLastName;
+
+	if($strlen > 70) {
+		echo 'text-[45px]';	
+	}elseif($strlen > 60) {
+		echo 'text-[50px]';	
+	}elseif($strlen > 50) {
+		echo 'text-[55px]';	
+	}elseif($strlen > 40) {
+		echo 'text-[65px]';	
+	}elseif($strlen > 30) {
+		echo 'text-[70px]';	
+	}elseif($strlen <= 30){
+		echo 'text-[75px]';	
+	}
+	
+ ?>
+
+			 bg-transparent p-0 border-0 w-full h-[90px] text-center">
 			<div class="h-[60px]"></div>
 		<?php 
 		if (isset($_GET['langue']) AND $langue == 'ANG') {
@@ -90,7 +113,7 @@ if($level <3 ){
 				 <br> 
 		
 			<input type="text" value="With all the rights, privileges and honors pertaining to it." class="bg-transparent p-0 border-0 w-full text-center">
-			<input type="text" value="Granted in Sambaina, Antsirabe, Madagascar, on this Sunday <?php echo '04 Aogust '.date('Y');?>" class="bg-transparent p-0 border-0 w-full text-center mt-[20px]">
+			<input type="text" value="Granted in Sambaina, Antsirabe, Madagascar, on this Sunday <?php echo $strlen.' 04 Aogust '.date('Y');?>" class="bg-transparent p-0 border-0 w-full text-center mt-[20px]">
 			</p>
 
 			<?php
@@ -98,7 +121,7 @@ if($level <3 ){
 			?>
 				<p class="font-times text-[17px] mt-[15px]">	
 			<input type="text" value="pour en jouir avec les droits et prérogatives qui y sont attachés." class="bg-transparent p-0 border-0 w-full text-center">
-			<input type="text" value="Remis à Sambaina Antsirabe, Madagascar, en ce Dimanche <?php echo '04 août '.date('Y');?>" class="bg-transparent p-0 border-0 w-full text-center mt-[20px]">
+			<input type="text" value="Remis à Sambaina Antsirabe, Madagascar, en ce Dimanche <?php echo $strlen.' 04 août '.date('Y');?>" class="bg-transparent p-0 border-0 w-full text-center mt-[20px]">
 			</p>
 
 			<?php
@@ -111,14 +134,14 @@ if($level <3 ){
 
 </div>
 
-<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>	
+<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>	
 	<button type="button" onclick="printThisDiplome()" class="bg-green-600 w-full p-2 rounded-md text-white"><span class="bi-download"></span> Exporter</button>
 </div>
 
 <?php 
  }
  ?>
-
+</div>
 <style type="text/css">
 	
 	@font-face{font-family: 'trajanPro'; src: url('css/fonts/TrajanPro-Bold.otf');}

@@ -60,7 +60,7 @@
 		</thead>
 		<tbody>
 <?php
-$std = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE annee_scolaire = "'.$annee_scolaire.'" AND etude_envisage = "'.$ment.'" ORDER BY annee_etude,student_id');	
+$std = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire = "'.$annee_scolaire.'" AND etude_envisage = "'.$ment.'" ORDER BY annee_etude,student_id');	
 $nb = 0;
 	while($af = $std->fetch()){
 		$nb++;

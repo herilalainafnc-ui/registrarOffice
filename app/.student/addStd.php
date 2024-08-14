@@ -138,7 +138,7 @@
 	
 	}
 	
-	$insertStd = $dtb->prepare('INSERT INTO etudiant_second_semester_23(
+	$insertStd = $dtb->prepare('INSERT INTO tbl_2024_etudiant(
 		student_nom,
 		student_prenom,
 		dateNaissance,
@@ -268,5 +268,9 @@
 		'date_entry' => $date_entry
 	));
 
-	header('location:../../src/inscription.php');
+	$findId = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'" LIMIT 1');
+	$showId = $findId->fetch();
+	$id = $showId['id'];
+	
+	header('location:../../src/student.php?id='.$id.'&page=information')
  ?>

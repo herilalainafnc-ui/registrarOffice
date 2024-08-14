@@ -19,7 +19,7 @@
 		move_uploaded_file($image_tmp, $image_dest.$dbimage);
 
 
-		$updateNote = $dtb->prepare('UPDATE etudiant_second_semester_23 SET 
+		$updateNote = $dtb->prepare('UPDATE tbl_2024_etudiant SET 
 			image_student=:image_student,
 			last_change_user_id=:last_change_user_id,
 			last_change_datetime=:last_change_datetime

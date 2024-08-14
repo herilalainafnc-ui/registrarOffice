@@ -96,8 +96,8 @@
 		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../../phpmyadmin/index.php?route=/database/structure&db=registrar_db" target="_blank">
 		        <span class="bi-database-exclamation"></span>&nbsp;&nbsp; Base de donnée MySQL</a></li>
 		        
-		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="https://getbootstrap.com/docs/5.3/getting-started/introduction/" target="_blank">
-		        <span class="bi-bootstrap-fill"></span>&nbsp;&nbsp; Bootstrap Site</a></li>
+		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="https://icons.getbootstrap.com/" target="_blank">
+		        <span class="bi-bootstrap-fill"></span>&nbsp;&nbsp; Bootstrap Icon</a></li>
 
 		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="https://tailwindcss.com/docs/installation"  target="_blank"><i class="bi-filetype-css"></i>&nbsp;&nbsp; Tailwind CSS</a></li>
 

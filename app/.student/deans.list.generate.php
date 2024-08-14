@@ -3,7 +3,7 @@
 
 	$annee_scolaire = (date('Y')-1).' - '.date('Y');
 
-	$student = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE annee_etude >= 3 AND annee_scolaire = "'.$annee_scolaire.'" ORDER BY student_id');
+	$student = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_etude >= 3 AND annee_scolaire = "'.$annee_scolaire.'" ORDER BY student_id');
 
 	while($std = $student->fetch()){
 		echo "<br>";

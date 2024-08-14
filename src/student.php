@@ -21,7 +21,7 @@
 						<!-- <div class="<?=$bg_one_color?> my-1 mx-0.5 w-3/12 p-2 text-slate-100 overflow-auto hidden" id="stdSearch-result" style="height: calc(100vh - 157px);"></div> -->
 <?php
 	$id = $_GET['id'];
-	$retrouve = $dtb->query("SELECT * FROM etudiant_second_semester_23 WHERE id ='".$id."' LIMIT 1");
+	$retrouve = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE id ='".$id."' LIMIT 1");
 
 if($retrouve->rowCount() > 0) {
 $profil = $retrouve->fetch();
@@ -57,8 +57,8 @@ $yes = 1;
  ?>					
 					
 
-						<div class="my-1 p-2 mx-0.5 lg:w-9/12 xl:w-9/12 xxl:w-7/12 <?=$bg_one_color?> <?=$txt_one_color?> overflow-auto" style="max-height: calc(100vh - 160px);">
-							<div class="h-20 flex pb-2">
+						<div class="my-1 mx-0.5 lg:w-9/12 xl:w-9/12 xxl:w-7/12 <?=$bg_one_color?> <?=$txt_one_color?>" style="max-height: calc(100vh - 160px);">
+							<div class="h-[70px] p-2 flex">
 								<div class="w-4/12 px-1">
 									<b class="text-lg mt-3"><?php 
 

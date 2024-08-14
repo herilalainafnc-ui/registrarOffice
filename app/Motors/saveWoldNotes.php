@@ -11,7 +11,7 @@ try {
 	/*NEW BASE */ require('../../data/backdb.php');
 
 
-/*$stdSearch = $dtb->query('SELECT * FROM etudiant_second_semester_23');
+/*$stdSearch = $dtb->query('SELECT * FROM tbl_2024_etudiant');
 
 while($show = $stdSearch->fetch()){
 

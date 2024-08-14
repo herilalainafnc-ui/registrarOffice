@@ -1,6 +1,6 @@
 
 <form method="post" action="../app/.student/updateStd.php?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>" class="form-no-refrech">
-<div class="w-full grid gap-2 grid-cols-2">
+<div class="w-full grid gap-2 grid-cols-2 mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">
 
 	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all'>
 		<div class="w-full flex mb-4">
@@ -137,8 +137,6 @@ $showBacc = $findBacc->fetch();
 						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'L') { echo 'selected';}}?>>L</option>
 						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'S') { echo 'selected';}}?>>S</option>
 						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'OSE') { echo 'selected';}}?>>OSE</option>
-						
-						
 					</select>
 				</div>
 				<br>

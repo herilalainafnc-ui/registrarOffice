@@ -44,7 +44,7 @@ $idcours = $cours_table['id'];
 						<td class="bg-gradient-to-r from-orange-800 to-orange-400"><?=$cours_table['student_id']?></td>
 						<td class="c<?=$nbr.$i;?>"><?php
 
-$jer = $dtb->query("SELECT * FROM etudiant_second_semester_23 WHERE student_id='".$cours_table['student_id']."'");
+$jer = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE student_id='".$cours_table['student_id']."'");
 $apotr = $jer->fetch();
 if($apotr){
 	if(is_null($apotr['student_nom']) AND is_null($apotr['student_prenom'])){

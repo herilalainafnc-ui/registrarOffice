@@ -133,7 +133,7 @@ require '../../data/backdb.php';
 	}
 
 
-	$update = $dtb->prepare("UPDATE etudiant_second_semester_23 SET 
+	$update = $dtb->prepare("UPDATE tbl_2024_etudiant SET 
 		student_nom=:student_nom,
 		student_prenom=:student_prenom,
 		etude_option=:etude_option,

@@ -69,3 +69,17 @@ body::-webkit-scrollbar-thumb {
 	color: #567396;
 	pointer-events: none;
 }
+.btnInactive{
+		background: #7a93b2;
+		color: white;
+		pointer-events: none;
+	}
+input{
+	padding: 0px 10px 0px 10px;
+}
+select{
+	border-radius: 0px;
+}
+select option{
+	pading: 0px 5px 0px 5px;
+}

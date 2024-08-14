@@ -1,5 +1,5 @@
 
-<div>	
+<div class=" mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">	
 <?php 
 	for ($a=1; $a <= $level; $a++) { 
 ?>

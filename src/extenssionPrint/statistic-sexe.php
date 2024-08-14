@@ -41,21 +41,21 @@ for ($i=0; $i < 1 ; $i++) {
 	$sex2 = 1;
 	
 	
-		$adventist = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE annee_scolaire = "'.$yearScoolNow.'" AND etude_envisage="'.$filiere.'" AND (sex="'.$sex1.'" OR sex="'.$sex2.'")');
+		$adventist = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire = "'.$yearScoolNow.'" AND etude_envisage="'.$filiere.'" AND (sex="'.$sex1.'" OR sex="'.$sex2.'")');
 		
 		$nbadvt = 0;
 		while($advt = $adventist->fetch()){
 			$nbadvt++;
 		}
 
-		$nonAdventist = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE annee_scolaire = "'.$yearScoolNow.'" AND etude_envisage="'.$filiere.'" AND sex!="'.$sex1.'" AND sex!="'.$sex2.'"');
+		$nonAdventist = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire = "'.$yearScoolNow.'" AND etude_envisage="'.$filiere.'" AND sex!="'.$sex1.'" AND sex!="'.$sex2.'"');
 		
 		$nbNonAdvt = 0;
 		while($nonAdvt = $nonAdventist->fetch()){
 			$nbNonAdvt++;
 		}
 
-		$niveau = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE annee_scolaire = "'.$yearScoolNow.'" AND etude_envisage="'.$filiere.'"');
+		$niveau = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire = "'.$yearScoolNow.'" AND etude_envisage="'.$filiere.'"');
 		
 		$nbLevel1 = 0;
 		$nbLevel2 = 0;

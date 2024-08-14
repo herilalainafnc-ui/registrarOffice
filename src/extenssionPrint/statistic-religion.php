@@ -33,14 +33,14 @@ for ($i=0; $i < 1 ; $i++) {
 	$advent2 = 'Adventiste';
 	
 	
-		$adventist = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE annee_scolaire = "'.$yearScoolNow.'" AND etude_envisage="'.$filiere.'" AND (religion="'.$advent1.'" OR religion="'.$advent2.'")');
+		$adventist = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire = "'.$yearScoolNow.'" AND etude_envisage="'.$filiere.'" AND (religion="'.$advent1.'" OR religion="'.$advent2.'")');
 		
 		$nbadvt = 0;
 		while($advt = $adventist->fetch()){
 			$nbadvt++;
 		}
 
-		$nonAdventist = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE annee_scolaire = "'.$yearScoolNow.'" AND etude_envisage="'.$filiere.'" AND religion!="'.$advent1.'" AND religion!="'.$advent2.'"');
+		$nonAdventist = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire = "'.$yearScoolNow.'" AND etude_envisage="'.$filiere.'" AND religion!="'.$advent1.'" AND religion!="'.$advent2.'"');
 		
 		$nbNonAdvt = 0;
 		while($nonAdvt = $nonAdventist->fetch()){

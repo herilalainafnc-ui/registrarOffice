@@ -1,3 +1,4 @@
+
 <?php 
 	/*::::::::::::::::::::::: SESSION GENERATE ::::::::::::::::::::::*/
 
@@ -58,7 +59,7 @@
 			}
 		}
  ?>
-<div>	
+<div class=" mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">	
 <?php
 	
 	if ($etude_envisage == "Théologie") {

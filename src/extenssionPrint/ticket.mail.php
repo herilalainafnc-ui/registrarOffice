@@ -5,9 +5,9 @@
 
 	$printName = "TICKET_EMAIL_ETUDIANT";
 	if ($types == "TOUT") {
-		$student = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE annee_scolaire = "'.$yearTicket.'" AND annee_etude = 1 ORDER BY student_id');
+		$student = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire = "'.$yearTicket.'" AND annee_etude = 1 ORDER BY student_id');
 	}else{
-		$student = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE annee_scolaire = "'.$yearTicket.'" AND annee_etude = 1 AND etude_envisage="'.$types.'" ORDER BY student_id');
+		$student = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire = "'.$yearTicket.'" AND annee_etude = 1 AND etude_envisage="'.$types.'" ORDER BY student_id');
 	}
 	
 

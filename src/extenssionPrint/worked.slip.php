@@ -9,9 +9,9 @@ $date_end = $_POST['date_end'];
 $printName = "WORKED_SLIP_ETUDIANT";
 	
 	if ($mention == "TOUT") {
-		$student = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE annee_scolaire = "'.$annee_scolaire.'" ORDER BY student_id');
+		$student = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire = "'.$annee_scolaire.'" ORDER BY student_id');
 	}else{
-		$student = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE annee_scolaire = "'.$annee_scolaire.'" AND etude_envisage="'.$mention.'" ORDER BY student_id');
+		$student = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire = "'.$annee_scolaire.'" AND etude_envisage="'.$mention.'" ORDER BY student_id');
 	}
 ?>
 <div class="w-full grid gap-2 grid-cols-2">

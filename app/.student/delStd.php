@@ -7,7 +7,7 @@ require '../../data/backdb.php';
 	$type_retrait = 5;
 
 
-	$delete = $dtb->prepare("UPDATE etudiant_second_semester_23 SET
+	$delete = $dtb->prepare("UPDATE tbl_2024_etudiant SET
 		type_retrait=:type_retrait,
 		retrait_date=:retrait_date,
 		last_change_user_id=:last_change_user_id

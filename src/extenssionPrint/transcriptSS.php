@@ -8,7 +8,7 @@
 	$initS = 1;
 	$printName = $student_id."-TRANSCRIPT_SESSION";
 
-	$searchStd = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE student_id = "'.$student_id.'"');
+	$searchStd = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'"');
 
 	$stdA = $searchStd->fetch();
 	

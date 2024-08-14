@@ -44,14 +44,14 @@ if(empty($_POST['cours'])){
 }else{ echo "";}
 		$anneescolaire = $_POST['anneescolaire'];
 		
-		$etudiant = $dtb->query("SELECT * FROM etudiant_second_semester_23 WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude < 4 ORDER BY annee_etude ASC, student_id ASC");
+		$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude < 4 ORDER BY annee_etude ASC, student_id ASC");
 		if(!empty($_POST['master'])){
-			$etudiant = $dtb->query("SELECT * FROM etudiant_second_semester_23 WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' ORDER BY annee_etude, etude_option, student_id");
+			$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' ORDER BY annee_etude, etude_option, student_id");
 		}
 		
 		if($_POST['annee_etude']<>"tout"){
 			$annee_etude = $_POST['annee_etude'];
-			$etudiant = $dtb->query("SELECT * FROM etudiant_second_semester_23 WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude= '".$annee_etude."' ORDER BY annee_etude, etude_option, student_id");
+			$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude= '".$annee_etude."' ORDER BY annee_etude, etude_option, student_id");
 		}
 	
 	$n = 1;

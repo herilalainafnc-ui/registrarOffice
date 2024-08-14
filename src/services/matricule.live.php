@@ -11,7 +11,7 @@
 	
 			if ($annee_etude <= 3) {
 			
-			$findOption = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE etude_envisage="'.$etude_envisage.'" AND annee_etude <= 3 ORDER BY student_id DESC limit 1');
+			$findOption = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE etude_envisage="'.$etude_envisage.'" AND annee_etude <= 3 ORDER BY student_id DESC limit 1');
 			
 			$showO = $findOption->fetch();
 
@@ -43,7 +43,7 @@
 
 		}elseif($annee_etude > 3){
 			
-			$findOptionmaster = $dtb->query('SELECT * FROM etudiant_second_semester_23 WHERE etude_envisage="'.$etude_envisage.'" AND annee_etude > 3 ORDER BY id DESC limit 1');
+			$findOptionmaster = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE etude_envisage="'.$etude_envisage.'" AND annee_etude > 3 ORDER BY id DESC limit 1');
 
 			$showOmaster = $findOptionmaster->fetch();
 			
