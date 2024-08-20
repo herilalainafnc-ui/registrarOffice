@@ -103,7 +103,7 @@ if ($cours_table['grade'] == -2 OR $cours_table['grade'] >= 10) {
 		<script type="text/javascript">
 			$(document).ready(function(){
 				$('.form-no-refrech').on('submit',function(e){
-					e.preventDefault();
+					//e.preventDefault();
 					var url = 'actions/completnotes.php';
 					var data = $(this).serialize();
 

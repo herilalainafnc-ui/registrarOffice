@@ -82,6 +82,79 @@
 	in_array($extension_image, $extension);
 	move_uploaded_file($image_tmp, $image_dest.$dbimage);
 
+	/*:::::::::::::::::::: FINANCE ::::::::::::::::::::*/
+
+	if($status == 'Interne'){
+		$cout_logement =  354000;
+	}else{
+		$cout_logement =  0;
+	}
+
+	$cout_fondDepot_dortoir = 0;
+	$cout_fondDepot_medical = 0;
+	$cout_frais_graduation = 0;
+	$cout_totalCours = 0;
+	$cout_totalLab = 0;
+
+	$cout_fraix_generaux = 165000;
+
+	if($mention == 'THEO') {
+		$cout_livre_theo = 8000;
+	}else{
+		$cout_livre_theo = 0;
+	}
+
+
+	$insertFinance = $dtb->prepare("INSERT INTO t_2024_etudiant_finace(
+		student_id,
+		mention,
+		level,
+		status,
+		cout_logement,
+		cout_fraix_generaux,
+		cout_livre_theo,
+		cout_fondDepot_dortoir,
+		cout_fondDepot_medical,
+		cout_frais_graduation,
+		cout_totalCours,
+		cout_totalLab,
+		date_entry,
+		last_change_user_id
+	)VALUES(
+		:student_id,
+		:mention,
+		:level,
+		:status,
+		:cout_logement,
+		:cout_fraix_generaux,
+		:cout_livre_theo,
+		:cout_fondDepot_dortoir,
+		:cout_fondDepot_medical,
+		:cout_frais_graduation,
+		:cout_totalCours,
+		:cout_totalLab,
+		:date_entry,
+		:last_change_user_id
+	
+	)");$insertFinance->execute(array(
+		'student_id' => $student_id,
+		'mention' => $mention,
+		'level' => $annee_etude,
+		'status' => $status,
+		'cout_logement' => $cout_logement,
+		'cout_fraix_generaux' => $cout_fraix_generaux,
+		'cout_livre_theo' => $cout_livre_theo,
+		'cout_fondDepot_dortoir' => $cout_fondDepot_dortoir,
+		'cout_fondDepot_medical' => $cout_fondDepot_medical,
+		'cout_frais_graduation' => $cout_frais_graduation,
+		'cout_totalCours' => $cout_totalCours,
+		'cout_totalLab' => $cout_totalLab,
+		'date_entry' => $date_entry,
+		'last_change_user_id' => $last_change_user_id
+	));
+
+
+
 
 	/*:::::::::::::::::::: DIPLÔME PRECEDENT ::::::::::::::::::::*/
 
@@ -267,6 +340,8 @@
 		'last_change_user_id' => $last_change_user_id,
 		'date_entry' => $date_entry
 	));
+
+
 
 	$findId = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'" LIMIT 1');
 	$showId = $findId->fetch();

@@ -45,8 +45,47 @@ require '../../data/backdb.php';
 	$status = $_POST['status'];
 	$cin_region = $_POST['cin_region'];
 	$religion = $_POST['religion'];
+	$graduated = $_POST['graduated'];
 	$num_visa = $_POST['num_visa'];
 	$last_change_datetime = date('Y-m-d');
+
+	/*:::::::::::::::::::: FINANCE ::::::::::::::::::::*/
+
+	if($status == 'Interne'){
+		$cout_logement =  354000;
+	}else{
+		$cout_logement =  0;
+	}
+		$updateStatus = $dtb->prepare("UPDATE t_2024_etudiant_finace SET status=:status,cout_logement=:cout_logement WHERE student_id=:student_id");
+		$updateStatus->bindParam(':status',$status,PDO::PARAM_STR);
+		$updateStatus->bindParam(':cout_logement',$cout_logement,PDO::PARAM_STR);
+		$updateStatus->bindParam(':student_id',$student_id,PDO::PARAM_STR);
+		$updateStatus->execute();
+
+	if ($graduated == 1) {
+		$cout_frais_graduation = 150000;
+	}else{
+		$cout_frais_graduation = 0;
+	}
+		$updateFraixGrad = $dtb->prepare("UPDATE t_2024_etudiant_finace SET cout_frais_graduation=:cout_frais_graduation WHERE student_id=:student_id");
+		$updateFraixGrad->bindParam(':cout_frais_graduation',$cout_frais_graduation,PDO::PARAM_STR);
+		$updateFraixGrad->bindParam(':student_id',$student_id,PDO::PARAM_STR);
+		$updateFraixGrad->execute();
+
+	$cout_fondDepot_dortoir = 0;
+	$cout_fondDepot_medical = 0;
+	$cout_frais_graduation = 0;
+	$cout_totalCours = 0;
+	$cout_totalLab = 0;
+
+	$cout_fraix_generaux = 165000;
+
+	if($mention == 'THEO') {
+		$cout_livre_theo = 8000;
+	}else{
+		$cout_livre_theo = 0;
+	}
+
 
 	if(isset($_POST['serie_bacc']) AND isset($_POST['obtention_bacc'])) {
 
@@ -161,6 +200,7 @@ require '../../data/backdb.php';
 		last_change_user_id=:last_change_user_id,
 		last_change_datetime=:last_change_datetime,
 		status=:status,
+		graduated=:graduated,
 		new_student=:new_student,
 		cin_region=:cin_region,
 		religion=:religion,
@@ -194,6 +234,7 @@ require '../../data/backdb.php';
 	$update->bindParam(':last_change_user_id',$last_change_user_id,PDO::PARAM_INT);
 	$update->bindParam(':last_change_datetime',$last_change_datetime,PDO::PARAM_STR);
 	$update->bindParam(':status',$status,PDO::PARAM_STR);
+	$update->bindParam(':graduated',$graduated,PDO::PARAM_STR);
 	$update->bindParam(':new_student',$new_student,PDO::PARAM_STR);
 	$update->bindParam(':cin_region',$cin_region,PDO::PARAM_STR);
 	$update->bindParam(':religion',$religion,PDO::PARAM_STR);

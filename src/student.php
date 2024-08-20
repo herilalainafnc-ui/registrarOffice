@@ -91,7 +91,7 @@ $yes = 1;
 									}elseif($sdt_page == "diplome") {
 										echo strtoupper($sdt_page);
 									}elseif($sdt_page == "courssupprim") {
-										echo "COURS SUPPRIMÉ";
+										echo "COURS RETIRÉ";
 									}
 								}
 

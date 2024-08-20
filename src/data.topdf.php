@@ -25,7 +25,7 @@ $date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
                 
                 <input type="hidden" name="htmlContent" id="htmlContent" value="">
                 
-                <button type="submit" class="px-2 py-1 rounded-md text-white bg-green-700" id="btnToExcel"><span class="bi-file-earmark-spreadsheet"></span> Excel</button>
+                <button type="submit" class="px-2 py-1 rounded-md text-white bg-green-700 opacity-0" id="btnToExcel"><span class="bi-file-earmark-spreadsheet"></span> Excel</button>
                 
                 <a href="#" onclick="printThisContent()" class="px-2 py-[5.5px] rounded-md text-white bg-red-800"><span class="bi-filetype-pdf"></span> Pdf</a>
                 
@@ -80,10 +80,12 @@ $date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
             require ('./extenssionPrint/ticket.mail.php');
         }elseif($ptype == "workedSlip"){
             require ('./extenssionPrint/worked.Slip.php');
+        }elseif($ptype == "Fiche_inscription"){
+            require ('./extenssionPrint/fiche_inscription.php');
         }
 
 
-        if($ptype != "Badge" AND $ptype != "Abonnement Caf" AND $ptype != "Worked_point" AND $ptype !="ticketMail" AND $ptype !="workedSlip") {
+        if($ptype != "Badge" AND $ptype != "Fiche_inscription" AND $ptype != "Abonnement Caf" AND $ptype != "Worked_point" AND $ptype !="ticketMail" AND $ptype !="workedSlip") {
         
             require('../init/.forPrint/foot.forPrint.php');
 

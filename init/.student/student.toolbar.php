@@ -148,7 +148,7 @@
 		<a href="?id=<?=$id;?>&page=courssupprim" class="text-[11px] leading-tight w-1/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
 				<center>
 				<i class="bi-trash2 text-2xl text-red-500"></i><br>
-						Cours supprimé
+						Cours retiré
 				</center>
 			
 		</a>

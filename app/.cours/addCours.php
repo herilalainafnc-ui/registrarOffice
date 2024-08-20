@@ -13,6 +13,16 @@
 	$semester = $_POST['semester'];
 	$lab = $_POST['lab'];
 	
+	if($lab == "0" OR $lab == "") {
+ 				$cout_lab = 0;
+ 			}else{
+ 				$cout_lab = 30000;
+			}
+
+ 			$cCrd = 18000;
+
+ 			$cout = $cCrd * $nb_crd;
+
 	$ajout = 1;
 
 	$yearlevel = $_POST['yearlevel'];
@@ -35,6 +45,8 @@ if($sigle !="" AND $title!="") {
 				id_teacher,
 				semester,
 				lab,
+				cout,
+				cout_lab,
 				ajout,
 				yearlevel,
 				active,
@@ -52,6 +64,8 @@ if($sigle !="" AND $title!="") {
 				:id_teacher,
 				:semester,
 				:lab,
+				:cout,
+				:cout_lab,
 				:ajout,
 				:yearlevel,
 				:active,
@@ -69,6 +83,8 @@ if($sigle !="" AND $title!="") {
 				'id_teacher' => $teacher_id,
 				'semester' => $semester,
 				'lab' => $lab,
+				'cout' => $cout,
+				'cout_lab' => $cout_lab,
 				'ajout' => $ajout,
 				'yearlevel' => $yearlevel,
 				'active' => $active,

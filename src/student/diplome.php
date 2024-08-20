@@ -121,7 +121,7 @@ if($level <3 ){
 			?>
 				<p class="font-times text-[17px] mt-[15px]">	
 			<input type="text" value="pour en jouir avec les droits et prérogatives qui y sont attachés." class="bg-transparent p-0 border-0 w-full text-center">
-			<input type="text" value="Remis à Sambaina Antsirabe, Madagascar, en ce Dimanche <?php echo $strlen.' 04 août '.date('Y');?>" class="bg-transparent p-0 border-0 w-full text-center mt-[20px]">
+			<input type="text" value="Remis à Sambaina Antsirabe, Madagascar, en ce Dimanche <?php echo ' 04 août '.date('Y');?>" class="bg-transparent p-0 border-0 w-full text-center mt-[20px]">
 			</p>
 
 			<?php

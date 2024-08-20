@@ -258,8 +258,15 @@ $y = $y - 1;
 				<label class="text-sm text-slate-400">Ancien étudiant</label>
 				<p class="showEtd">-- <?php if($profil['new_student'] == 1){echo 'Non';}else{echo 'Oui';}?></p>
 				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="new_student">
-					<option class="<?=$bg_one_color?>" <?php if($profil['new_student'] == 1){echo 'selected';}?> value="0">Non</option>
-					<option class="<?=$bg_one_color?>" <?php if($profil['new_student'] == 0){echo 'selected';}?> value="1">Oui</option>
+					<option class="<?=$bg_one_color?>" <?php if($profil['new_student'] == 1){echo 'selected';}?> value="1">Non</option>
+					<option class="<?=$bg_one_color?>" <?php if($profil['new_student'] == 0){echo 'selected';}?> value="0">Oui</option>
+				</select>
+				<br>
+				<label class="text-sm text-slate-400">Gradué</label>
+				<p class="showEtd">-- <?php if($profil['graduated'] == "" OR $profil['graduated'] == 0){echo 'Non';}else{echo 'Oui';}?></p>
+				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="graduated">
+					<option class="<?=$bg_one_color?>" <?php if($profil['graduated'] == 0){echo 'selected';}?> value="0">Non</option>
+					<option class="<?=$bg_one_color?>" <?php if($profil['graduated'] == 1){echo 'selected';}?> value="1">Oui</option>
 				</select>
 				<br>
 				
@@ -311,7 +318,7 @@ $y = $y - 1;
 	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all'>
 		<div class="w-full flex mb-4">
 			<div class="w-8/12">
-				<b>Infos du sponsor</b>	
+				<b>Infos sponsoring</b>	
 			</div>
 			<div class="w-4/12 text-right">
 				<div class="w-full flex gap-1 relative">

@@ -15,6 +15,14 @@
 	$semester = $_POST['semester'];
 	$category = $_POST['category'];
 	$parcours = $_POST['parcours'];
+	$lab = $_POST['lab'];
+	$cout = $_POST['cout'];
+
+	if($lab == "0" OR $lab == "") {
+ 				$cout_lab = 0;
+ 			}else{
+ 				$cout_lab = 30000;
+ 			}
 
 	$last_change_datetime = date('Y-m-d');
 
@@ -26,6 +34,9 @@
 		title_english=:title_english,
 		yearlevel=:yearlevel,
 		nb_crd=:nb_crd,
+		lab=:lab,
+		cout=:cout,
+		cout_lab=:cout_lab,
 		semester=:semester,
 		category=:category,
 		parcours=:parcours,
@@ -41,6 +52,9 @@
 		$update->bindParam(':title_english',$title_english,PDO::PARAM_STR);
 		$update->bindParam(':yearlevel',$yearlevel,PDO::PARAM_INT);
 		$update->bindParam(':nb_crd',$nb_crd,PDO::PARAM_INT);
+		$update->bindParam(':lab',$lab,PDO::PARAM_INT);
+		$update->bindParam(':cout',$cout,PDO::PARAM_STR);
+		$update->bindParam(':cout_lab',$cout_lab,PDO::PARAM_STR);
 		$update->bindParam(':semester',$semester,PDO::PARAM_INT);
 		$update->bindParam(':category',$category,PDO::PARAM_INT);
 		$update->bindParam(':parcours',$parcours,PDO::PARAM_STR);

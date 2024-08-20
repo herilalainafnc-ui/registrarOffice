@@ -59,7 +59,30 @@ while ($showTeach = $findTeach->fetch()) {
 				<p class="showPers">-- <?=$title?></p><input class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="title" value="<?=$title?>"><br>
 
 				<label class="text-sm text-slate-400">Titre en anglais</label>
-				<p class="showPers">-- <?=$title_english?></p><input class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="title_english" value="<?=$title_english?>">
+				<p class="showPers">-- <?=$title_english?></p><input class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="title_english" value="<?=$title_english?>"><br>
+
+				<label class="text-sm text-slate-400">Parcours</label>
+				
+				<p class="showPers">-- <?php if($profil['parcours'] =='all') { 
+					echo "TRONC COMUN";
+				}else{
+					$prcrs = $dtb->query('SELECT * FROM filiere_parcours WHERE shortcode = "'.$profil['parcours'].'"'); 
+					$showprcrs = $prcrs->fetch();
+					echo $showprcrs['description'];
+				}?></p>
+				<select class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="parcours">
+				<?php 
+					$prcrs = $dtb->query('SELECT * FROM filiere_parcours WHERE departement = "'.$profil['dep_desc'].'"'); 
+				 ?>	
+					<option class="<?=$bg_one_color?>" value="all">TRONC COMMUN</option>
+					<?php
+						while ($pr = $prcrs->fetch()) {
+					?>
+							<option class="<?=$bg_one_color?>" value="<?=$pr['shortcode'];?>" <?php if($profil['parcours'] == $pr['shortcode']){echo 'selected';}?>><?=$pr['description'];?></option>
+					<?php		
+					}
+					?>	
+				</select><br>
 				
 			</div>
 		</div>
@@ -122,28 +145,11 @@ while ($showTeach = $findTeach->fetch()) {
 					<option class="<?=$bg_one_color?>" value="20" <?php if($profil['nb_crd'] == 20){echo 'selected';}?>>20 Crédits</option>
 				</select><br>
 
-				<label class="text-sm text-slate-400">Parcours</label>
+				<label class="text-sm text-slate-400">Coût</label>
 				
-				<p class="showContact">-- <?php if($profil['parcours'] =='all') { 
-					echo "TRONC COMUN";
-				}else{
-					$prcrs = $dtb->query('SELECT * FROM filiere_parcours WHERE shortcode = "'.$profil['parcours'].'"'); 
-					$showprcrs = $prcrs->fetch();
-					echo $showprcrs['description'];
-				}?></p>
-				<select class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="parcours">
-				<?php 
-					$prcrs = $dtb->query('SELECT * FROM filiere_parcours WHERE departement = "'.$profil['dep_desc'].'"'); 
-				 ?>	
-					<option class="<?=$bg_one_color?>" value="all">TRONC COMMUN</option>
-					<?php
-						while ($pr = $prcrs->fetch()) {
-					?>
-							<option class="<?=$bg_one_color?>" value="<?=$pr['shortcode'];?>" <?php if($profil['parcours'] == $pr['shortcode']){echo 'selected';}?>><?=$pr['description'];?></option>
-					<?php		
-					}
-					?>	
-				</select><br>
+				<p class="showContact">-- <?=$profil['cout'];?> Ar</p>
+				<input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="cout" value="<?=$profil['cout'];?>"><br>
+				<br>
 				
 			</div>
 			<div class="w-6/12">
@@ -179,6 +185,25 @@ if ($profil['category'] == 0){
 					
 				</select><br>
 				
+				<label class="text-sm text-slate-400">Laboratoire</label>
+				<p class="showContact">-- <?php
+if($profil['lab'] == 0 OR $profil['lab'] == ''){echo 'Sans Laboratoire';}
+elseif($profil['lab'] == 1){echo 'Lab 1';}
+elseif($profil['lab'] == 2){echo 'Lab 2';}
+elseif($profil['lab'] == 3){echo 'Lab 3';}
+elseif($profil['lab'] == 4){echo 'Simulation Room';}
+elseif($profil['lab'] == 5){echo 'Labo recherche';}
+
+				?></p>
+				<select class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="lab">
+					<option class="<?=$bg_one_color?>" value="0" <?php if($profil['lab'] == 0){echo 'selected';}?>>Sans Laboratoire</option>
+					<option class="<?=$bg_one_color?>" value="1" <?php if($profil['lab'] == 1){echo 'selected';}?>>Lab 1</option>
+					<option class="<?=$bg_one_color?>" value="2" <?php if($profil['lab'] == 2){echo 'selected';}?>>Lab 2</option>
+					<option class="<?=$bg_one_color?>" value="3" <?php if($profil['lab'] == 3){echo 'selected';}?>>Lab 3</option>
+					<option class="<?=$bg_one_color?>" value="4" <?php if($profil['lab'] == 4){echo 'selected';}?>>Simulation Room</option>
+					<option class="<?=$bg_one_color?>" value="5" <?php if($profil['lab'] == 5){echo 'selected';}?>>Labo recherche</option>
+				</select><br>
+
 			</div>
 		</div>
 

@@ -100,6 +100,7 @@ $cours = $dtb->query("SELECT * FROM t_2023_notes WHERE student_id ='".$student_i
 		$note_id = $crs['id'];
 		$session_id = $crs['session_id'];
 		$annee_scolaire = $crs['annee_scolaire'];
+		$id_cours = $crs['id_cours'];
 	 ?>
 <form method="post" action="../app/.student/updatenote.php?id=<?=$id;?>&nbr=<?=$s.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$a.$s?>&user_id=<?=$rg_id?>">			
 				<tr id="note<?=$s.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black ">
@@ -159,7 +160,7 @@ if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 
 							<ul class="dropdown-menu absolute border <?=$bg_six_color?> text-black p-0 rounded-0 text-xs">
 
-								<li><a href="../app/.student/del-cours.momentanee.php?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$a.$s?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>">		<p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Supprimer</p>
+								<li><a href="../app/.student/del-cours.momentanee.php?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$a.$s?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>&id_cours=<?=$id_cours?>">		<p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Retirer</p>
 								</a></li>
 
 							</ul>

@@ -38,23 +38,23 @@
 
 
 /* MODIFICATION DE SESSION A CHAQUE COURS DANS LA TABLE NOTES*/
-$session = $dtb->query('SELECT * FROM t_2023_session');
+// $session = $dtb->query('SELECT * FROM t_2023_session');
 
-while ($ss = $session->fetch()) {
+// while ($ss = $session->fetch()) {
 	
-	$session_id = $ss['session_id'];
-	$session_year = $ss['session_year'];
-	$session_semester = $ss['session_semester'];
+// 	$session_id = $ss['session_id'];
+// 	$session_year = $ss['session_year'];
+// 	$session_semester = $ss['session_semester'];
 
-	$notes = $dtb->prepare('UPDATE t_2023_notes SET session_id=:session_id WHERE annee_scolaire=:session_year AND semester=:semester AND transfert!=1');
+// 	$notes = $dtb->prepare('UPDATE t_2023_notes SET session_id=:session_id WHERE annee_scolaire=:session_year AND semester=:semester AND transfert!=1');
 	
-	$notes->bindParam(':session_id',$session_id,PDO::PARAM_INT);
-	$notes->bindParam(':session_year',$session_year,PDO::PARAM_STR);
-	$notes->bindParam(':semester',$session_semester,PDO::PARAM_INT);
+// 	$notes->bindParam(':session_id',$session_id,PDO::PARAM_INT);
+// 	$notes->bindParam(':session_year',$session_year,PDO::PARAM_STR);
+// 	$notes->bindParam(':semester',$session_semester,PDO::PARAM_INT);
 
-	$notes->execute();
+// 	$notes->execute();
 
-}
+// }
 
 
 
@@ -114,5 +114,78 @@ while ($ss = $session->fetch()) {
 // 		}
 // 	}
 
-	header('location:./end.php');
+	
+ 		$cours = $dtb->query("SELECT * FROM t_2023_cours ORDER BY id");
+
+ 		while($showCous = $cours->fetch()) {
+ 			$id = $showCous['id'];
+			$nb_crd = $showCous['nb_crd'];
+ 			$lab = $showCous['lab'];
+// 			$student_id = $showCous['student_id'];
+
+			if($lab == "0" OR $lab == "") {
+ 				$cLab = 0;
+ 			}else{
+ 				$cLab = 30000;
+ 			}
+
+ 			$cCrd = 19000;
+
+ 			$cout = $cCrd * $nb_crd;
+
+ 			$updateCout = $dtb->prepare("UPDATE t_2023_cours SET cout=:cout,cout_lab=:cout_lab WHERE id=:id");
+
+ 			$updateCout->bindParam(':cout',$cout,PDO::PARAM_STR);
+			$updateCout->bindParam(':cout_lab',$cLab,PDO::PARAM_STR);
+ 			$updateCout->bindParam(':id',$id,PDO::PARAM_INT);
+ 			$updateCout->execute();
+			
+//			$insert_Finance = $dtb->prepare("INSERT INTO t_2024_cours_finance(
+//				student_id,
+//				cours_id,
+//				cours_sigle,
+//				cours_title,
+//				cours_credit,
+//				cours_cout,
+//				date_entry,
+//				last_change_user_id
+//			) VALUES (
+//				:student_id,
+//				:cours_id,
+//				:cours_sigle,
+//				:cours_title,
+//				:cours_credit,
+//				:cours_cout,
+//				:date_entry,
+//				:last_change_user_id
+//			)");
+//			$insert_Finance->execute(array(
+//				'student_id' => $student_id,
+//				'cours_id' => $cours_id,
+//				'cours_sigle' => $sigle,
+//				'cours_title' => $title_cours,
+//				'cours_credit' => $credit,
+//				'cours_cout' => $cout,
+//				'date_entry' => $date_entry,
+//				'last_change_user_id' => $user_id_entry
+//			));
+
+ 		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//	header('location:./end.php');
 ?>

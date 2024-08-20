@@ -32,8 +32,8 @@
 					<th class="w-20">CREDITS</th>
 					<th class="w-20">Categorie</th>
 					<th class="w-20">Notes/20</th>
-					<th class="w-[13%]">Supprimé par</th>
-					<th class="w-[13%]">Date de suppression</th>
+					<th class="w-[13%]">Retiré par</th>
+					<th class="w-[13%]">Date de retrait</th>
 					<th colspan="2" class="w-[29px]"></th>
 				</tr>	
 			</thead>
@@ -58,6 +58,7 @@
 			$note_id = $crs['id'];
 			$session_id = $crs['session_id'];
 			$annee_scolaire = $crs['annee_scolaire'];
+			$id_cours = $crs['id_cours'];
 	 ?>
 				<tr class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black">
 					<td class="bg-gradient-to-r from-orange-800 to-orange-400"><?=$crs['Sigle']?></td>
@@ -83,7 +84,7 @@ if ($crs['cours_category'] == 0){
 				?></td>
 					<td><?=$crs['last_change_datetime']?></td>
 					<td class="p-0 text-center bg-green-700 w-[60px]"><a href="../app/.student/recup-cours.php?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$a.$s?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>">Restaurer</a></td>
-					<td class="p-0 text-center bg-red-700 w-[60px]"><a href="../app/.student/del-cours.definitive.php?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$a.$s?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>">Effacer</a></td>
+					<td class="p-0 text-center bg-red-700 w-[60px]"><a href="../app/.student/del-cours.definitive.php?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$a.$s?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>&id_cours=<?=$id_cours?>">Effacer</a></td>
 
 				</tr>
 
