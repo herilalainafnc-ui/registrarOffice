@@ -24,6 +24,7 @@
 			
 			$grade = 0;
 				$recherche = $dtb->query("SELECT * FROM t_2023_cours WHERE id ='".$i."'");
+				
 				$affiche = $recherche->fetch();
 					$cours_id = $affiche['id'];
 		      		$sigle = $affiche['Sigle'];
@@ -95,6 +96,7 @@
 
 			$insert_Finance = $dtb->prepare("INSERT INTO t_2024_cours_finance(
 				student_id,
+				session_id,
 				cours_id,
 				cours_sigle,
 				cours_title,
@@ -105,6 +107,7 @@
 				last_change_user_id
 			) VALUES (
 				:student_id,
+				:session_id,
 				:cours_id,
 				:cours_sigle,
 				:cours_title,
@@ -116,6 +119,7 @@
 			)");
 			$insert_Finance->execute(array(
 				'student_id' => $student_id,
+				'session_id' => $session_id,
 				'cours_id' => $cours_id,
 				'cours_sigle' => $sigle,
 				'cours_title' => $title_cours,
@@ -135,7 +139,8 @@
 		$tCout;
 		$tCout_lab;
 		
-		$updateTotality = $dtb->prepare("UPDATE t_2024_etudiant_finace SET cout_totalCours=:cout_totalCours,cout_totalLab=:cout_totalLab WHERE student_id=:student_id");
+		$updateTotality = $dtb->prepare("UPDATE t_2024_etudiant_finace SET session_id=:session_id,cout_totalCours=:cout_totalCours,cout_totalLab=:cout_totalLab WHERE student_id=:student_id");
+		$updateTotality->bindParam(':session_id',$session_id,PDO::PARAM_INT);
 		$updateTotality->bindParam(':cout_totalCours',$tCout,PDO::PARAM_STR);
 		$updateTotality->bindParam(':cout_totalLab',$tCout_lab,PDO::PARAM_STR);
 		$updateTotality->bindParam(':student_id',$student_id,PDO::PARAM_STR);

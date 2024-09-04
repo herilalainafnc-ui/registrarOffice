@@ -89,7 +89,14 @@ $stdA = $searchStd->fetch();
 			<div>
 		<?php
 	echo "<div> <b>NIVEAU ".$stage." ";
-	if($a<=3){echo $a;}elseif($a>3){echo $a-3;}
+
+	if($a<=3) {
+			echo $a;
+			$nbrA = $a+1;
+		}else{
+			echo ($a-3);
+			$nbrA = $a-2;
+		}
 		
 		if ($semester == 1) {
 			$sem = 1;
@@ -363,16 +370,16 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 		<thead>
 			<tr>
 				<th class=" w-8/12 text-right">Moyenne Générale Cumulative</th>
-				<th class=" w-2/12"><?=round(($cumulGen*20)/((($a-1)*2)*20),3);?></th>
+				<th class=" w-2/12"><?=round(($cumulGen*20)/((($nbrA-1)*2)*20),3);?></th>
 			</tr>
 			<tr>
 				<th class=" w-8/12 text-right">Moyenne Majeur Cumulative</th>
-				<th class=" w-2/12"><?=round(($cumulMaj*20)/((($a-1)*2)*20),3);?></th>
+				<th class=" w-2/12"><?=round(($cumulMaj*20)/((($nbrA-1)*2)*20),3);?></th>
 			</tr>
 			<!--  -->
 			<tr>
 				<th class=" w-8/12 text-right">Moyenne Cumulative</th>
-				<th class=" w-2/12"><?=round(($cumulFinale*20)/((($a-1)*2)*20),3);?></th>
+				<th class=" w-2/12"><?=round(($cumulFinale*20)/((($nbrA-1)*2)*20),3);?></th>
 			</tr>
 		</thead>
 	</table>

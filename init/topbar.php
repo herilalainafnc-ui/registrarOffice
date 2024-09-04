@@ -23,16 +23,22 @@
 		$rg_userId = $rg_user['id'];
 		$rg_photos = $rg_user['photos'];
 
+		if ($page != 'inscription.php' AND $rg_user['privilege'] == 'visitor') {
+			header('location:../inscription/inscription.php');
+		}
+
 	}else{
 		header('location:./index.php');
 	}
  ?>
 
 <div class="flex w-full h-12 shadow-sm p-1 <?=$bg_one_color?> <?=$txt_one_color?>">
-	<div class="w-2/12 px-2 mt-2 flex">
-		<img src="../file/logo-coldbloud.png" class="w-6 h-6 mx-2">
-		<b> Infinit Registrar</b>
-	</div>
+	
+		<div class="w-2/12 px-2 mt-2"><a href="../src/" class="flex">
+			<img src="../file/logo-coldbloud.png" class="w-6 h-6 mx-2">
+			<b> Infinit Registrar</b></a>
+		</div>
+	
 	<div class="w-7/12 mt-1">
 		
 		<div class="search w-full hidden text-right">
@@ -90,6 +96,9 @@
 		<?php 		            
 		if(($rg_user['privilege'] == 'administrator') OR ($rg_user['privilege_2'] == 'administrator') OR ($rg_user['privilege_3'] == 'administrator') OR ($rg_user['privilege_4'] == 'administrator')) {
 		?>
+				<li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../app/Motors/" target="_blank">
+		        <span class="bi-code-slash"></span>&nbsp;&nbsp; Lanceur de code</a></li>
+
 				<li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../wordpress/wp-login.php" target="_blank">
 		        <span class="bi-wordpress"></span>&nbsp;&nbsp; Wordpress</a></li>
 		        

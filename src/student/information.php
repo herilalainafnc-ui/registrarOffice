@@ -214,6 +214,7 @@ $showDiplome = $findDiplome->fetch();
 					<option class="<?=$bg_one_color?>"></option>
 					<option class="<?=$bg_one_color?>" <?php if($profil['status'] == 'Externe'){echo 'selected';}?>>Externe</option>
 					<option class="<?=$bg_one_color?>" <?php if($profil['status'] == 'Interne'){echo 'selected';}?>>Interne</option>
+					<option class="<?=$bg_one_color?>" <?php if($profil['status'] == 'Bungalow'){echo 'selected';}?>>Bungalow</option>
 				</select>
 				<br>
 				
@@ -403,9 +404,10 @@ $y = $y - 1;
 	$(document).ready(function(){
 
 		$('.form-no-refrech').on('submit',function (e) {
-			//e.preventDefault();
+			e.preventDefault();
 
-			var url = '../app/.student/updateStd.php?id=<?=$id?>&rg_id=<?=$rg_id?>';
+			var url = '../app/.student/updateStd.php?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>';
+			
 			var data = $(this).serialize();
 
 			$.post(url,data,function(response){

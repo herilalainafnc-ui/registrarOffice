@@ -114,7 +114,7 @@ if(!empty($cours_table_selective)){
 			<td><?=$cours_table_selective['nb_crd'];?></td>
 			<td>
 <?php 
-	$notes_selective = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id = "'.$student_id.'" AND Sigle = "'.$sigle.'" LIMIT 1');
+	$notes_selective = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id = "'.$student_id.'" AND Sigle = "'.$sigle.'" AND ajout = 1 OR remove = 0 LIMIT 1');
 	$nt_selective = $notes_selective->fetch();
 	if (empty($nt_selective)) {
 		echo "";
@@ -132,7 +132,7 @@ if(!empty($cours_table_selective)){
 			<td>
 <?php	
 	if (empty($nt_selective)) {
-		$searchcours = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id = "'.$student_id.'" AND title_cours LIKE "%'.$cours_table_selective['title'].'%" ');
+		$searchcours = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id = "'.$student_id.'" AND title_cours LIKE "%'.$cours_table_selective['title'].'%" AND (ajout = 1)');
 		$showCours = $searchcours->fetch();
 		if (!empty($showCours)) {
 			echo $showCours['grade'];
@@ -211,7 +211,7 @@ for ($y=1; $y <= 3; $y++) {
 			<td><?=$cours_table['nb_crd'];?></td>
 			<td>
 <?php 
-	$notes = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id = "'.$student_id.'" AND Sigle = "'.$sigle.'" LIMIT 1');
+	$notes = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id = "'.$student_id.'" AND Sigle = "'.$sigle.'" AND (ajout = 1) LIMIT 1');
 	$nt = $notes->fetch();
 	if (empty($nt)) {
 		echo "";

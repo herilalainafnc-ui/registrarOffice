@@ -83,3 +83,11 @@ select{
 select option{
 	pading: 0px 5px 0px 5px;
 }
+.inscInput{
+	border: none;
+	background-color: #e0e0e0;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	border-radius: 2px;
+	color: black;
+}

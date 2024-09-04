@@ -148,7 +148,7 @@ for ($y=1; $y <= 3; $y++) {
 <?php	
 	//if (empty($nt)) {
 	
-		$finding = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id = "'.$student_id.'" AND title_cours  LIKE "%'.$cours_table['title'].'%" AND credit = "'.$cours_table['nb_crd'].'" AND credit = "'.$cours_table['nb_crd'].'" ORDER BY grade DESC LIMIT 1');
+		$finding = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id = "'.$student_id.'" AND title_cours LIKE "%'.$cours_table['title'].'%" AND credit = "'.$cours_table['nb_crd'].'" AND credit = "'.$cours_table['nb_crd'].'" ORDER BY grade DESC LIMIT 1');
 		$showing = $finding->fetch();
 		if(!empty($showing)){
 			echo "<a style='color:green'>".$grade = $showing['grade']."</a>";

@@ -15,15 +15,12 @@ if($page == "accueil.php" OR $page == "student.php") {
 			
 		</li></a>
 
-		<a href="./inscription.php"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
-if($page == "inscription.php") {
-	echo "bg-cyan-700";
-} ?>">
+		<a href="./creat.student.php"><li class="hover:bg-cyan-500 py-2 rounded-md my-1">
 			
 				<span class="icon">
 					<ion-icon class="bi-person-add"></ion-icon>
 				</span>
-				<span class="title">Ajouter étudiant</span>
+				<span class="title">Créer un étudiant</span>
 			
 		</li></a>
 		<hr>
@@ -39,16 +36,12 @@ if($page == "accueil.cours.php" OR $page == "cours.php") {
 			
 		</li></a>
 
-		<a href="#" id="addCours"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
-
-if($page != "addCours" AND $page != "accueil.cours.php" AND $page != "cours.php"){
-	echo "toolInactive";
-} ?>">
+		<a href="#" id="addCours"><li class="hover:bg-cyan-500 py-2 rounded-md my-1">
 			
 				<span class="icon">
 					<ion-icon class="bi-file-plus"></ion-icon>
 				</span>
-				<span class="title">Ajouter cours</span>
+				<span class="title">Créer un cours</span>
 			
 		</li></a>
 		<hr>
@@ -64,20 +57,16 @@ if($page == "accueil.prof.php" OR $page == "prof.php") {
 			
 		</li></a>
 
-		<a href="#" id="addProf"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
-
-if($page != "addProf" AND $page != "accueil.prof.php" AND $page != "prof.php"){
-	echo "toolInactive";
-} ?>">
+		<a href="#" id="addProf"><li class="hover:bg-cyan-500 py-2 rounded-md my-1">
 			
 				<span class="icon">
 					<ion-icon class="bi-person-add"></ion-icon>
 				</span>
-				<span class="title">Ajouter enseignant</span>
+				<span class="title">Créer un enseignant</span>
 			
 		</li></a>
 		<hr>
-		<a href="./accueil.classroom.php"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
+		<a href="./settings.php"><li class="hover:bg-cyan-500 py-2 rounded-md my-1 <?php 
 if($page == "settings.php") {
 	echo "bg-cyan-700";
 } ?>">
@@ -94,7 +83,7 @@ if($page == "settings.php") {
 				<span class="icon">
 					<ion-icon class="bi-door-open-fill"></ion-icon>
 				</span>
-				<span class="title">Déconnecter</span>
+				<span class="title"><b>Déconnecter</b></span>
 			
 		</li></a>
 

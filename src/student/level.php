@@ -29,9 +29,12 @@
 
 	for ($a=$init; $a <= $level; $a++) { 
 /*::::::::::::::::::::::::::::::::::::::::*/
-?>
+		if($a<=3) {
+			$nbrA = $a+1;
+		}else{
+			$nbrA = $a-2;
+		}
 
-<?php
 		for ($s=1; $s <=2 ; $s++) {	
 		
 
@@ -72,7 +75,7 @@
 	
 			
 				
-					if($crs['grade']==-2){echo "";}else{ $notecredi = $crs['credit'] * $crs['grade'];}
+					if($crs['grade']==-2){echo "";}else{ $notecredi = $crs['credit'] * floatval($crs['grade']);}
 					 
 	if ($crs['cours_category'] == 1) {
 		$valmajeur = $crs['grade'];
@@ -100,7 +103,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur")) {
 	$tcreditMaj+=$creditMaj+ 0;
 }
 /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-$tnote+= $note + $crs['grade'];
+$tnote+= $note + floatval($crs['grade']);
 $tnotecredit+= $notecredit + $notecredi;
 
 /* --- CALCULE DES NOTES GENERAL --- */
@@ -133,7 +136,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 	$gradeFinale = 0;
 }
 
-	$tTFinale += $tFinale + $gradeFinale;
+	$tTFinale += $tFinale + floatval($gradeFinale);
 
 
 		$nbr++;
@@ -173,10 +176,10 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 <!-- CUMULATIVE -->
 <div class='p-1 <?=$bg_three_color?> hover:<?=$bg_four_color?> mb-2 rounded-md border-2 border-slate-600 hover:border-cyan-500 transition-all text-xs text-white'>
 		<label>Moyenne Majeur Cumulative = </label>
-		<b><?=$totalMajCumul = round(($cumulMaj*20)/((($a-1)*2)*20),6);?></b>
+		<b><?=$totalMajCumul = round(($cumulMaj*20)/((($nbrA-1)*2)*20),6);?></b>
 		&nbsp;&nbsp;&nbsp;
 		<label>Moyenne Générale Cumulative = </label>
-		<b><?=$totalGenCumul = round(($cumulGen*20)/((($a-1)*2)*20),6);?></b>
+		<b><?=$totalGenCumul = round(($cumulGen*20)/((($nbrA-1)*2)*20),6);?></b>
 	</tr>
 </div>
 

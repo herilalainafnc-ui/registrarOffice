@@ -16,8 +16,10 @@
 		<?php 
 		if($a<=3) {
 			echo "NIVEAU Licence ".$a;
+			$nbrA = $a+1;
 		}else{
 			echo "NIVEAU Master ".($a-3);
+			$nbrA = $a-2;
 		}
 		?>		
 </b>	

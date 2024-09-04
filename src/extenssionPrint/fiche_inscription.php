@@ -42,12 +42,10 @@ $stdA = $searchStd->fetch();
 			<img src="../app/photosetudiants/<?=$stdA['image_student']?>">
 		</div>
 	</div>
-	<center>
-		<b class="text-xl">Liste des cours</b>
-	</center>
+		<b class="text-lg">Liste des cours</b>
 	<div>
 		
-		<table class="tbl simpleTbl mb-1">
+		<table class="tbl simpleTbl mb-2">
 			<thead class="bg-slate-200">
 				<tr>
 					<th style="width: 70px">SIGLE</th>
@@ -66,6 +64,7 @@ $stdA = $searchStd->fetch();
 	$tCout = 0;
 	$tLab = 0;
 	while($showCF = $findCoursFinance->fetch()) {
+		$session_id = $showCF['session_id'];
  ?>
 				<tr>
 					<td><?=$showCF['cours_sigle']?></td>
@@ -103,13 +102,64 @@ if ($showCat['category'] == 0){
 				<tr class="bg-slate-200">
 					<th colspan="2"><?=$nbr?> cours</th>
 					<th><?=$tCredit?></th>
-					<th></th>
+					<!-- <th></th>
 					<th class="text-right"><?=$tCout.' ar'?></th>
-					<th class="text-right"><?=$tLab.' ar'?></th>
+					<th class="text-right"><?=$tLab.' ar'?></th> -->
 				</tr>
 			</tfoot>
 		</table>
 
+<?php 
+
+	if(!empty($session_id)) {
+
+		$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE student_id = "'.$student_id.'" AND session_id = "'.$session_id.'" LIMIT 1');
+
+		$showFin = $findFinance->fetch();
+
+	
+	if (!empty($showFin['session_id']) OR $showFin['session_id'] != 0) {
+ ?>
+ 		<b class="text-lg">Finance</b>
+		<table class="tbl simpleTbl mb-2">
+			<thead class="bg-sky-200">
+				<tr>
+					<th>Frais Généraux</th>
+					<th>Frais de logement</th>
+					<th>Fond Dépôt Dortoir</th>
+					<th>Frais Graduation</th>
+					<th>Total Cours</th>
+					<th>Total Laboratoire</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="text-bold">
+					<td><?=$showFin['cout_fraix_generaux']?> ar</td>
+					<td><?=$showFin['cout_logement']?> ar</td>
+					<td><?=$showFin['cout_fondDepot_dortoir']?> ar</td>
+					<td><?=$showFin['cout_frais_graduation']?> ar</td>
+					<td><?=$showFin['cout_totalCours']?> ar</td>
+					<td><?=$showFin['cout_totalLab']?> ar</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<p class="text-sm mb-2">Montant : 
+			<b class="bg-orange-300 py-1 px-2"><?=$Montant = $showFin['cout_fraix_generaux'] + 
+							$showFin['cout_logement'] +
+							$showFin['cout_fondDepot_dortoir'] +
+							$showFin['cout_frais_graduation'] +
+							$showFin['cout_totalCours'] +
+							$showFin['cout_totalLab']
+				?> ar</b></p>
+		<b class="text-lg">Mode de payement</b>
+
+		<table  class="tbl simpleTbl mb-2">
+			
+		</table>
+
+
+<?php } } ?>
 	</div>
 <br>
 <b class="text-sm">WORK EDUCATION CHOISI : <input type="text" placeholder="____________________" class="h-4 p-0 border-0 text-xs"></b><br><br>

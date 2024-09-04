@@ -35,8 +35,10 @@
 		<?php 
 		if($a<=3) {
 			echo "NIVEAU Licence ".$a;
+			$nbrA = $a+1;
 		}else{
 			echo "NIVEAU Master ".($a-3);
+			$nbrA = $a-2;
 		}
 		?>		
 </b>	
@@ -356,17 +358,17 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 		<thead class="bg-slate-900">
 			<!-- <tr>
 				<th class="p-1 w-8/12 text-right">Moyenne Générale Cumulative</th>
-				<th class="py-1 px-2 w-2/12"><?=round(($cumulFinale*20)/((($a-1)*2)*20),3);?></th>
+				<th class="py-1 px-2 w-2/12"><?=round(($cumulFinale*20)/((($nbrA-1)*2)*20),3);?></th>
 			</tr> -->
 			<tr>
 				<th class="p-1 w-8/12 text-right">Moyenne Majeur Cumulative</th>
-				<th class="py-1 px-2 w-2/12"><?=round(($cumulMaj*20)/((($a-1)*2)*20),6);?></th>
+				<th class="py-1 px-2 w-2/12"><?=round(($cumulMaj*20)/((($nbrA-1)*2)*20),6);?></th>
 			</tr>
 			
 			<!--  -->
 			<tr>
 				<th class="p-1 w-8/12 text-right bg-cyan-700">Moyenne Générale Cumulative</th>
-				<th class="py-1 px-2 w-2/12 bg-cyan-700"><?=round(($cumulGen*20)/((($a-1)*2)*20),6);?></th>
+				<th class="py-1 px-2 w-2/12 bg-cyan-700"><?=round(($cumulGen*20)/((($nbrA-1)*2)*20),6);?></th>
 			</tr>
 		</thead>
 	</table>

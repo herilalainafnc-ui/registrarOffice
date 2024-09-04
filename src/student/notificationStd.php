@@ -183,8 +183,8 @@
 			</div>
 			<div class="p-3">
 				<center>
-				<a href="#" id="cancelnotifLogOut" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
-				<a href="../app/.student/delStd.php?id=<?=$id?>&rg_id=<?=$rg_id?>" id="btnnotifLogOut" class="bg-red-600 p-2 text-white rounded-md mx-1">Supprimer</a>
+				<a href="#" id="cancelnotifSupprStd" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
+				<a href="../app/.student/delStd.php?id=<?=$id?>&rg_id=<?=$rg_id?>" id="btnnotifSupprStd" class="bg-red-600 p-2 text-white rounded-md mx-1">Supprimer</a>
 				</center>
 			</div>
 			</form>
@@ -226,7 +226,9 @@
 		$('#cancelnotifDiplome').click(function(){
 			$('#notifDiplome').css({'display':'none'});
 		});
-		
+		$('#cancelnotifSupprStd').click(function(){
+			$('#notifSupprStd').css({'display':'none'});
+		});
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
 		$('#levelBulletin').on('change',function(){

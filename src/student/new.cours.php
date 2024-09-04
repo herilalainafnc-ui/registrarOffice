@@ -108,7 +108,7 @@
 
  <!-- DEBUT DU FORMULAIRE -->
  <form action="../app/.student/checkCours.php?id=<?=$id?>&student_id=<?=$student_id?>&page=newCours&user_id=<?=$rg_id?>" method="post">
-		<table class="simpleTbl mb-1">
+		<table class="simpleTbl mb-1 w-full">
 			<thead>
 				<tr class="text-center bg-gradient-to-r from-green-600">
 					<th colspan="10">SEMESTRE <?=$s?></th>
@@ -136,6 +136,8 @@
 	$tout = 'all';
 
 	$cours = $dtb->query("SELECT * FROM t_2023_cours WHERE dep_desc ='".$eE."' AND yearlevel='".$a."' AND semester='".$s."' AND (parcours = '".$parcours."' OR parcours = '".$tout."') ORDER BY title");
+
+	/*$cours = $dtb->query("SELECT * FROM t_2023_cours WHERE dep_desc ='".$eE."' AND yearlevel='".$a."' AND semester='".$s."' ORDER BY title");*/
 	
 	$nbr = 0;
 	$nbrMaj = 0;

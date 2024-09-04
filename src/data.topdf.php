@@ -7,6 +7,7 @@ $ptype = $_GET['ptype'];
 $h = (date('H')+3);
 $date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
 ?>
+<title>Exportation</title>
 
 <body class="bg-slate-600 h-screen" style="background-color: #475469;">
 

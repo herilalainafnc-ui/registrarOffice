@@ -27,6 +27,8 @@
 	$showM = $findMention->fetch();
 	$etude_envisage = $showM['filiere_description'];
 
+	$graduated = 'non';
+
 	$annee_etude = $_POST['annee_etude'];
 	$status = $_POST['status'];
 	$etude_option = $_POST['etude_option'];
@@ -84,26 +86,32 @@
 
 	/*:::::::::::::::::::: FINANCE ::::::::::::::::::::*/
 
-	if($status == 'Interne'){
-		$cout_logement =  354000;
-	}else{
-		$cout_logement =  0;
-	}
+	$verification_finance_licence = $dtb->query('SELECT * FROM t_2024_finance_detail_licence WHERE std_status = "'.$status.'" AND std_mention = "'.$mention.'" LIMIT 1');
 
-	$cout_fondDepot_dortoir = 0;
-	$cout_fondDepot_medical = 0;
-	$cout_frais_graduation = 0;
-	$cout_totalCours = 0;
-	$cout_totalLab = 0;
+	$result_finance = $verification_finance_licence->fetch();
 
-	$cout_fraix_generaux = 165000;
+		if($annee_etude == 1) {
+			$cout_fraix_generaux = $result_finance['frais_generaux'];
+		}else{
+			$cout_fraix_generaux = 0;
+		}
 
-	if($mention == 'THEO') {
-		$cout_livre_theo = 8000;
-	}else{
-		$cout_livre_theo = 0;
-	}
+		if($status == 'Interne'){
+			$cout_fondDepot_dortoir = $result_finance['fond_depot'];
+			$cout_logement = $result_finance['dortoir'] * $result_finance['nb_jours_semestre'];
+		}elseif($status == 'Bungalow'){
+			$cout_fondDepot_dortoir = 0;
+			$cout_logement = $result_finance['dortoir'] * $result_finance['nb_jours_semestre'];
+		}else{
+			$cout_fondDepot_dortoir = 0;
+			$cout_logement = 0;
+		}
 
+
+		
+		$cout_frais_graduation = 0;
+		$cout_totalCours = 0;
+		$cout_totalLab = 0;
 
 	$insertFinance = $dtb->prepare("INSERT INTO t_2024_etudiant_finace(
 		student_id,
@@ -112,9 +120,7 @@
 		status,
 		cout_logement,
 		cout_fraix_generaux,
-		cout_livre_theo,
 		cout_fondDepot_dortoir,
-		cout_fondDepot_medical,
 		cout_frais_graduation,
 		cout_totalCours,
 		cout_totalLab,
@@ -127,9 +133,7 @@
 		:status,
 		:cout_logement,
 		:cout_fraix_generaux,
-		:cout_livre_theo,
 		:cout_fondDepot_dortoir,
-		:cout_fondDepot_medical,
 		:cout_frais_graduation,
 		:cout_totalCours,
 		:cout_totalLab,
@@ -143,18 +147,13 @@
 		'status' => $status,
 		'cout_logement' => $cout_logement,
 		'cout_fraix_generaux' => $cout_fraix_generaux,
-		'cout_livre_theo' => $cout_livre_theo,
 		'cout_fondDepot_dortoir' => $cout_fondDepot_dortoir,
-		'cout_fondDepot_medical' => $cout_fondDepot_medical,
 		'cout_frais_graduation' => $cout_frais_graduation,
 		'cout_totalCours' => $cout_totalCours,
 		'cout_totalLab' => $cout_totalLab,
 		'date_entry' => $date_entry,
 		'last_change_user_id' => $last_change_user_id
 	));
-
-
-
 
 	/*:::::::::::::::::::: DIPLÔME PRECEDENT ::::::::::::::::::::*/
 
@@ -210,7 +209,66 @@
 			));
 	
 	}
+
+	/*:::::::::::::::::::: INSCRIPTION ::::::::::::::::::::*/
+
+	$inscriptionStd = $dtb->prepare('INSERT INTO t_2024_inscription_session(
+		student_id,
+		etude_mention,
+		status,
+		new_student,
+		graduated,
+		caisse_verification,
+		data_completion,
+		cours_selected,
+		impression_verification,
+		signatures,
+		depot_list,
+		session_id,
+		nbr_semester,
+		test_niveau,
+		annee_scolaire,
+		date_entry
+
+	)VALUES(
+		:student_id,
+		:etude_mention,
+		:status,
+		:new_student,
+		:graduated,
+		:caisse_verification,
+		:data_completion,
+		:cours_selected,
+		:impression_verification,
+		:signatures,
+		:depot_list,
+		:session_id,
+		:nbr_semester,
+		:test_niveau,
+		:annee_scolaire,
+		:date_entry
+
+	)');$inscriptionStd->execute(array(
+		'student_id' => $student_id,
+		'etude_mention' => $mention,
+		'status' => $status,
+		'new_student' => $new_student,
+		'graduated' => $graduated,
+		'caisse_verification' => 0,
+		'data_completion' => 1,
+		'cours_selected' => 0,
+		'impression_verification' => 0,
+		'signatures' => 0,
+		'depot_list' => '',
+		'session_id' => 0,
+		'nbr_semester' => 0,
+		'test_niveau' => 0,
+		'annee_scolaire' => $annee_scolaire,
+		'date_entry' => $date_entry
+	));
 	
+	/*:::::::::::::::::::: INFORMATION ::::::::::::::::::::*/
+
 	$insertStd = $dtb->prepare('INSERT INTO tbl_2024_etudiant(
 		student_nom,
 		student_prenom,

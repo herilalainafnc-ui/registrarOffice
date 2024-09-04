@@ -201,6 +201,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 										<select class="inscInput h-6 text-sm w-full mb-3" name="status">
 											<option class="<?=$bg_seven_color?>">Externe</option>
 											<option class="<?=$bg_seven_color?>">Interne</option>
+											<option class="<?=$bg_seven_color?>">Bungalow</option>
 										</select>
 										
 										<div class="obtention_Bacc">

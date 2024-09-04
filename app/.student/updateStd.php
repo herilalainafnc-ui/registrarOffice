@@ -138,19 +138,19 @@ require '../../data/backdb.php';
 		$searchDiplome = $dtb->query('SELECT * FROM t_2024_diplome_preced WHERE student_id = "'.$student_id.'"');
 		$trouveDiplome = $searchDiplome->fetch();
 		if (!empty($trouveDiplome)) {
-			$updDiplome = $dtb->prepare("UPDATE t_2024_diplome_preced SET 
+			$updDiplomePreced = $dtb->prepare("UPDATE t_2024_diplome_preced SET 
 				diplome_name=:diplome_name,
 				date_obtent=:date_obtent,
 				user_id=:user_id,
 				date_entry=:date_entry
 				WHERE student_id=:student_id");
 	
-			$updDiplome->bindParam(':diplome_name',$diplome_preced,PDO::PARAM_STR);
-			$updDiplome->bindParam(':date_obtent',$date_obtent_diplome_preced,PDO::PARAM_STR);
-			$updDiplome->bindParam(':user_id',$last_change_user_id,PDO::PARAM_STR);
-			$updDiplome->bindParam(':date_entry',$last_change_datetime,PDO::PARAM_STR);
-			$updDiplome->bindParam(':student_id',$student_id,PDO::PARAM_STR);
-			$updDiplome->execute();
+			$updDiplomePreced->bindParam(':diplome_name',$diplome_preced,PDO::PARAM_STR);
+			$updDiplomePreced->bindParam(':date_obtent',$date_obtent_diplome_preced,PDO::PARAM_STR);
+			$updDiplomePreced->bindParam(':user_id',$last_change_user_id,PDO::PARAM_STR);
+			$updDiplomePreced->bindParam(':date_entry',$last_change_datetime,PDO::PARAM_STR);
+			$updDiplomePreced->bindParam(':student_id',$student_id,PDO::PARAM_STR);
+			$updDiplomePreced->execute();
 		}else{
 			$insertDiplome = $dtb->prepare('INSERT INTO t_2024_diplome_preced(
 				diplome_name,
