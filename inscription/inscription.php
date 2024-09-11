@@ -13,7 +13,7 @@
 	<div class="w-full bg-slate-700 py-6" style="height: calc(100vh - 48px);">
 
 		<div class="xl:w-10/12 sm:w-11/12 sm:rounded-xl p-3 bg-slate-800 mx-auto shadow-sm" style="height: calc(100vh - 110px);">
-			<div id="header" class="flex w-full">
+			<div id="header" class="flex w-full h-[70px]">
 				<div class="text-white w-3/12">
 					<b>Inscription et réinscription</b>
 					<form method="post" action="#">
@@ -209,16 +209,16 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 
 							<div id="contentInformation" class="stage_0">
 								<div class="w-full text-center pt-20">
-									<a class="text-[30px] text-slate-600">Inscription commencée.</a>
+									<a class="text-[30px] text-slate-600">Cela est indispensable.</a>
 									<div class="w-5/12 m-auto mt-4 p-3 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-lg border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all">
 										<a class="text-white">Assurez-vous de déterminer la session à laquelle cet étudiant s'inscrira.</a>
 
 					<form method="post" action="./app/generate.student.php?student_id=<?=$student_id?>" class="session-no-refrech">
 
 										<select name="semesterSession" class="w-full bg-slate-800 rounded-lg my-2">
-											<option>Premier semestre</option>
+											<option <?php if (date('m') >= 7) { echo "selected"; } ?>>Premier semestre</option>
 											<option>Semestre d'été</option>
-											<option>Deuxième semestre</option>
+											<option <?php if (date('m') < 7) { echo "selected"; } ?>>Deuxième semestre</option>
 											<option>Semestre d'hiver</option>
 										</select>
 
@@ -343,34 +343,58 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 				alert("Session bien enregistré. Vous pouvez continué !!");
 				$('#upStage').attr('class','px-5 py-2 bg-cyan-700 rounded-md');
 				$('#submitSession').attr('class','my-2 px-5 py-2 bg-cyan-700 rounded-md toolInactive');
-			});
+				
+				var	student_id = '<?=$student_id?>';
 
+				$.ajax({
+						url:"./stages/top.stages.php",
+						method:"POST",
+						data:{student_id:student_id},
+
+						success:function(data){
+
+							$("#five-stages").html(data);
+						}
+					});
+
+				$.ajax({
+						url:"./stages/session.php",
+						method:"POST",
+						data:{student_id:student_id},
+
+						success:function(data){
+							
+							$("#session").html(data);
+						}
+					});
+
+			});
 
 		});
 
 		var	student_id = '<?=$student_id?>';
 
-			$.ajax({
-					url:"./stages/top.stages.php",
-					method:"POST",
-					data:{student_id:student_id},
+		$.ajax({
+				url:"./stages/top.stages.php",
+				method:"POST",
+				data:{student_id:student_id},
 
-					success:function(data){
+				success:function(data){
 
-						$("#five-stages").html(data);
-					}
-				});
+					$("#five-stages").html(data);
+				}
+			});
 
-			$.ajax({
-					url:"./stages/session.php",
-					method:"POST",
-					data:{student_id:student_id},
+		$.ajax({
+				url:"./stages/session.php",
+				method:"POST",
+				data:{student_id:student_id},
 
-					success:function(data){
-						
-						$("#session").html(data);
-					}
-				});
+				success:function(data){
+					
+					$("#session").html(data);
+				}
+			});
 
 
         function updateContent() {
@@ -394,6 +418,7 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 				$('#intNewcours').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
 				$('#intModepayement').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
 				$('#intFicheinscription').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
+
 
 				var url = './app/generate.stage.php?student_id=<?=$student_id?>&stage=1';
 

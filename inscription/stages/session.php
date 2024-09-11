@@ -21,7 +21,7 @@
 		if (date('m') >= 7) {
 			if ($showStudent_Session['annee_scolaire'] != $aSem) {
 
-				echo '<br><a class="text-sm text-red-400">Session non attribuée</a>';
+				echo '<br><a class="text-sm text-red-400">Non attribuée</a>';
 
 			}else{
 
@@ -35,7 +35,7 @@
 		}elseif (date('m') < 7) {
 			if ($showStudent_Session['annee_scolaire'] != $aSem_) {
 
-				echo '<br><a class="text-sm text-red-400">Session non attribuée</a>';
+				echo '<br><a class="text-sm text-red-400">Non attribuée</a>';
 
 			}else{
 
@@ -48,7 +48,7 @@
 			}
 		}
 	}else{
-		echo '<br><a class="text-sm text-red-400">Session non attribuée</a>';
+		echo '<br><a class="text-sm text-red-400">Non attribuée</a>';
 	}
 
  ?>
