@@ -21,13 +21,13 @@
 		
 		$input = $_POST['input'];
 
-	$recupsdt = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id LIKE "%'.$input.'%" OR student_nom LIKE "%'.$input.'%" OR student_prenom LIKE "%'.$input.'%" OR sex LIKE "%'.$input.'%" OR student_email LIKE "%'.$input.'%" OR student_tel LIKE "%'.$input.'%" OR religion LIKE "%'.$input.'%" ORDER BY student_id DESC limit 100');
+	$recupsdt = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id LIKE "%'.$input.'%" OR student_nom LIKE "%'.$input.'%" OR student_prenom LIKE "%'.$input.'%" OR sex LIKE "%'.$input.'%" OR student_email LIKE "%'.$input.'%" OR student_tel LIKE "%'.$input.'%" OR religion LIKE "%'.$input.'%" AND remove != 1 ORDER BY student_id DESC limit 100');
 	
 	}elseif (isset($_POST['filter']) AND isset($_POST['channel'])) {
 			$filter = $_POST['filter'];
 			$channel = $_POST['channel'];
 
-	$recupsdt = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE '.$filter.' LIKE "%'.$channel.'%" ORDER BY student_id DESC limit 800');
+	$recupsdt = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE '.$filter.' LIKE "%'.$channel.'%" AND remove != 1 ORDER BY student_id DESC limit 800');
 
 	}
 

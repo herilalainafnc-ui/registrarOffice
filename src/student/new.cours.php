@@ -107,7 +107,7 @@
  ?>
 
  <!-- DEBUT DU FORMULAIRE -->
- <form action="../app/.student/checkCours.php?id=<?=$id?>&student_id=<?=$student_id?>&page=newCours&user_id=<?=$rg_id?>" method="post">
+ <form action="../app/.student/checkCours.php?id=<?=$id?>&student_id=<?=$student_id?>&page=newCours&user_id=<?=$rg_id?>" method="post" class="form-newCours">
 		<table class="simpleTbl mb-1 w-full">
 			<thead>
 				<tr class="text-center bg-gradient-to-r from-green-600">
@@ -160,7 +160,13 @@
 				<tr id="cours<?=$a.$s.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black">
 					<td class="p-0" style="height: 15px;"><input id="chk<?=$a.$s.$nbr;?>" type="checkbox" name="checklist[]" value="<?=$note_id?>" style="width: 100%; height: 100%;margin: none; border: none;"></td>
 					<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><?=$crs['Sigle']?></td>
-					<td><?=$crs['title']?></td>
+					<td><?php
+							if ($etude_envisage == "Etudes anglophones") {
+								echo $crs['title_english'];
+							}else{
+								echo $crs['title'];
+							} 
+					?></td>
 					<td><?=$crs['nb_crd']?></td>
 					<td><?php 
 if ($crs['category'] == 0){
@@ -259,12 +265,12 @@ $tcredit+= $credit + $crs['nb_crd'];
 						
 						
 
-						<button id="submit<?=$a.$s;?>" type="submit" class="px-2 py-0 m-1 <?=$bg_two_color?> text-slate-400 text-center" style="pointer-events: none;">Ajouter au transcript</button>
+						<button id="submit<?=$a.$s;?>" type="submit" class="px-2 py-0 m-1 <?=$bg_two_color?> text-slate-400 text-center button" style="pointer-events: none;">Ajouter au transcript</button>
 					</td>
 				</tr>
 												<script type="text/javascript">
 													$(document).ready(function(){
-														
+													
 														var nbr = <?=$nbr;?>;
 														
 														$('#selectAll<?=$a.$s;?>').click(function() {
@@ -332,3 +338,25 @@ $tcredit+= $credit + $crs['nb_crd'];
 	}
 ?>
 </div>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$(".form-newCours").on('submit',function (e) {
+
+			e.preventDefault();
+
+			var url = '../app/.student/checkCours.php?id=<?=$id?>&student_id=<?=$student_id?>&page=newCours&user_id=<?=$rg_id?>';
+			
+			var data = $(this).serialize();
+
+			$.post(url,data,function(response){
+				
+				alert("Cours bien enregistré! Vous pouvez continué !!");
+
+				$('.button').attr('class','px-2 py-0 m-1 <?=$bg_two_color?> text-slate-400 text-center button toolInactive');
+				
+			});
+
+		});
+	});
+
+</script>

@@ -22,13 +22,13 @@
 		
 		$input = $_POST['input'];
 
-		$recupcours = $dtb->query('SELECT * FROM t_2023_cours WHERE Sigle LIKE "%'.$input.'%" OR title LIKE "%'.$input.'%" OR dep_desc LIKE "%'.$input.'%" OR nb_crd LIKE "%'.$input.'%" OR title_english LIKE "%'.$input.'%" ORDER BY title limit 200');
+		$recupcours = $dtb->query('SELECT * FROM t_2023_cours WHERE Sigle LIKE "%'.$input.'%" OR title LIKE "%'.$input.'%" OR dep_desc LIKE "%'.$input.'%" OR nb_crd LIKE "%'.$input.'%" OR title_english LIKE "%'.$input.'%" AND remove != 1 ORDER BY title limit 200');
  
 	}elseif (isset($_POST['filter']) AND isset($_POST['channel'])) {
 			$filter = $_POST['filter'];
 			$channel = $_POST['channel'];
 		
-		$recupcours = $dtb->query('SELECT * FROM t_2023_cours WHERE '.$filter.' LIKE "%'.$channel.'%" ORDER BY title limit 800');
+		$recupcours = $dtb->query('SELECT * FROM t_2023_cours WHERE '.$filter.' LIKE "%'.$channel.'%" AND remove != 1 ORDER BY title limit 800');
 	}
 
 	$cours_nb = 1;

@@ -21,13 +21,13 @@
 		
 		$input = $_POST['input'];
 
-		$recupprof = $dtb->query('SELECT * FROM teacher WHERE teacher_id LIKE "%'.$input.'%" OR name LIKE "%'.$input.'%" OR lastName LIKE "%'.$input.'%" OR email LIKE "%'.$input.'%" OR phone LIKE "%'.$input.'%" ORDER BY teacher_id DESC limit 200');	
+		$recupprof = $dtb->query('SELECT * FROM teacher WHERE teacher_id LIKE "%'.$input.'%" OR name LIKE "%'.$input.'%" OR lastName LIKE "%'.$input.'%" OR email LIKE "%'.$input.'%" OR phone LIKE "%'.$input.'%" AND remove != 1 ORDER BY teacher_id DESC limit 200');	
 
 	}elseif (isset($_POST['filter']) AND isset($_POST['channel'])) {
 			$filter = $_POST['filter'];
 			$channel = $_POST['channel'];
 		
-		$recupprof = $dtb->query('SELECT * FROM teacher WHERE '.$filter.' LIKE "%'.$channel.'%" ORDER BY teacher_id DESC limit 800');
+		$recupprof = $dtb->query('SELECT * FROM teacher WHERE '.$filter.' LIKE "%'.$channel.'%" AND remove != 1 ORDER BY teacher_id DESC limit 800');
 	}
 
 	$prof_nb = 1;

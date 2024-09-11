@@ -91,7 +91,7 @@
 		            
 		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white toolInactive"><?=$rg_user['privilege'];?></li>
 		        
-		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="">
+		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="./my.account.php">
 		        <span class="bi-gear"></span>&nbsp;&nbsp; Mon compte</a></li>
 		<?php 		            
 		if(($rg_user['privilege'] == 'administrator') OR ($rg_user['privilege_2'] == 'administrator') OR ($rg_user['privilege_3'] == 'administrator') OR ($rg_user['privilege_4'] == 'administrator')) {

@@ -41,9 +41,9 @@
 
 	if (isset($_POST['search']) AND !empty($_POST['search'])) {
 			$input = htmlspecialchars($_POST['search']);
-			$recupprof = $dtb->query('SELECT * FROM teacher WHERE teacher_id LIKE "%'.$input.'%" OR name LIKE "%'.$input.'%" OR lastName LIKE "%'.$input.'%" OR email LIKE "%'.$input.'%" OR phone LIKE "%'.$input.'%" ORDER BY teacher_id DESC limit 200');	
+			$recupprof = $dtb->query('SELECT * FROM teacher WHERE teacher_id LIKE "%'.$input.'%" OR name LIKE "%'.$input.'%" OR lastName LIKE "%'.$input.'%" OR email LIKE "%'.$input.'%" OR phone LIKE "%'.$input.'%" AND remove != 1 ORDER BY teacher_id DESC limit 200');	
 		}else{
-			$recupprof = $dtb->query('SELECT * FROM teacher ORDER BY teacher_id DESC limit 200');
+			$recupprof = $dtb->query('SELECT * FROM teacher WHERE remove != 1 ORDER BY teacher_id DESC limit 200');
 		}
 	$prof_nb = 1;
 	while ($prof_list = $recupprof->fetch()) {

@@ -32,6 +32,7 @@
 	$annee_etude = $_POST['annee_etude'];
 	$status = $_POST['status'];
 	$etude_option = $_POST['etude_option'];
+	$semester = $_POST['semestre'];
 	$annee_scolaire = $_POST['annee_scolaire'];
 	$new_student = $_POST['new_student'];
 	$father_name = $_POST['father_name'];
@@ -52,6 +53,13 @@
 	$last_change_user_id = $_GET['rg_id'];
 	$date_entry = date("Y-m-d");
 
+	/*:::::::::::::::::::: VERIFICATION SESSION ::::::::::::::::::::*/
+
+	$find_session = $dtb->query('SELECT * FROM t_2023_session WHERE session_semester = "'.$semester.'" AND session_year = "'.$annee_scolaire.'" LIMIT 1');
+
+	$showSession = $find_session->fetch();
+
+	$session_id = $showSession['session_id'];
 
 	/*:::::::::::::::::::: PASSWORD MAIL GENERATE ::::::::::::::::::::*/
 
@@ -86,7 +94,7 @@
 
 	/*:::::::::::::::::::: FINANCE ::::::::::::::::::::*/
 
-	$verification_finance_licence = $dtb->query('SELECT * FROM t_2024_finance_detail_licence WHERE std_status = "'.$status.'" AND std_mention = "'.$mention.'" LIMIT 1');
+	/*$verification_finance_licence = $dtb->query('SELECT * FROM t_2024_finance_detail_licence WHERE std_status = "'.$status.'" AND std_mention = "'.$mention.'" LIMIT 1');
 
 	$result_finance = $verification_finance_licence->fetch();
 
@@ -111,9 +119,9 @@
 		
 		$cout_frais_graduation = 0;
 		$cout_totalCours = 0;
-		$cout_totalLab = 0;
+		$cout_totalLab = 0;*/
 
-	$insertFinance = $dtb->prepare("INSERT INTO t_2024_etudiant_finace(
+	/*$insertFinance = $dtb->prepare("INSERT INTO t_2024_etudiant_finace(
 		student_id,
 		mention,
 		level,
@@ -153,7 +161,7 @@
 		'cout_totalLab' => $cout_totalLab,
 		'date_entry' => $date_entry,
 		'last_change_user_id' => $last_change_user_id
-	));
+	));*/
 
 	/*:::::::::::::::::::: DIPLÔME PRECEDENT ::::::::::::::::::::*/
 
@@ -212,7 +220,7 @@
 
 	/*:::::::::::::::::::: INSCRIPTION ::::::::::::::::::::*/
 
-	$inscriptionStd = $dtb->prepare('INSERT INTO t_2024_inscription_session(
+	/*$inscriptionStd = $dtb->prepare('INSERT INTO t_2024_inscription_session(
 		student_id,
 		etude_mention,
 		status,
@@ -260,12 +268,12 @@
 		'impression_verification' => 0,
 		'signatures' => 0,
 		'depot_list' => '',
-		'session_id' => 0,
-		'nbr_semester' => 0,
+		'session_id' => $session_id,
+		'nbr_semester' => $semester,
 		'test_niveau' => 0,
 		'annee_scolaire' => $annee_scolaire,
 		'date_entry' => $date_entry
-	));
+	));*/
 	
 	/*:::::::::::::::::::: INFORMATION ::::::::::::::::::::*/
 

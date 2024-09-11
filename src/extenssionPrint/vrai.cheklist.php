@@ -76,7 +76,7 @@ if ($etude_envisage == "Théologie") {
 	
 	$tout = 'all';
 
-	$courseselective = $dtb->query("SELECT * FROM t_2023_cours WHERE dep_desc='".$dep_desc."' AND yearlevel = 1 AND semester = 1 AND (parcours = '".$parcours."' OR parcours = '".$tout."') AND category = 2 ORDER BY title");
+	$courseselective = $dtb->query("SELECT * FROM t_2023_cours WHERE dep_desc='".$dep_desc."' AND yearlevel = 1 AND semester = 1 AND (parcours = '".$parcours."' OR parcours = '".$tout."') AND category = 2 AND remove != 1  ORDER BY title");
 	$cours_table_selective = $courseselective->fetch()
 ?>
 <table class="tbl w-full">
@@ -85,15 +85,13 @@ if ($etude_envisage == "Théologie") {
 <?php 
 if(!empty($cours_table_selective)){
  ?>
-		<tr style="background: #d7f0fb;">	
+		<tr>	
 			<th style="width: 20px">Nb</th>
-			<th style="width: 70px">SIGLE</th>
-			<th>Cours Séléctive | Semestre 1</th>
-			<th style="width: 30px">Cr</th>
-			<th style="width: 20px">X</th>
-			<th style="width: 20px"></th>
-			<th style="width: 20px"></th>
-			<th style="width: 50px"></th>
+			<th style="width: 90px">SIGLE</th>
+			<th>Cours Séléctive - Semestre 1</th>
+			<th style="width: 30px">Crd</th>
+			<th style="width: 20px">Ch</th>
+			<th style="width: 50px">Final</th>
 		</tr>
 <?php 
 }
@@ -109,7 +107,7 @@ if(!empty($cours_table_selective)){
 		<tr>
 			
 			<td><?=$n_selective;?></td>
-			<td><?php echo $sigle = $cours_table_selective['Sigle'];?></td>
+			<td class="sigle"><?php echo $sigle = $cours_table_selective['Sigle'];?></td>
 			<td><?=$cours_table_selective['title'];?></td>
 			<td><?=$cours_table_selective['nb_crd'];?></td>
 			<td>
@@ -122,13 +120,11 @@ if(!empty($cours_table_selective)){
 		echo "";
 	}
 	else{
-		echo "x";	
+		echo "<i class='bi-check text-green'></i>";	
 	}
 
 ?>
 			</td>
-			<td></td>
-			<td></td>
 			<td>
 <?php	
 	if (empty($nt_selective)) {
@@ -165,8 +161,6 @@ if(!empty($cours_table_selective)){
 			<td><?=$tcredit_selective?></td>
 			<td></td>
 			<td></td>
-			<td></td>
-			<td></td>
 		</tr>
 <?php 
 }
@@ -179,20 +173,18 @@ if(!empty($cours_table_selective)){
 <?php
 for ($y=1; $y <= 3; $y++) {
 	for ($i=1; $i <=2 ; $i++) { 
-		$course = $dtb->query("SELECT * FROM t_2023_cours WHERE dep_desc='".$dep_desc."' AND yearlevel ='".$y."' AND semester ='".$i."' AND (category = 1 OR category = 0) AND (parcours = '".$parcours."' OR parcours = '".$tout."') ORDER BY title");
+		$course = $dtb->query("SELECT * FROM t_2023_cours WHERE dep_desc='".$dep_desc."' AND yearlevel ='".$y."' AND semester ='".$i."' AND (category = 1 OR category = 0) AND (parcours = '".$parcours."' OR parcours = '".$tout."') AND remove != 1 ORDER BY title");
 ?>
 <table class="tbl w-full">
 	<thead>
-		<tr style="background: #d7f0fb;">
+		<tr>
 			<th style="width: 70px">Prérequis</th>
 			<th style="width: 20px">Nb</th>
-			<th style="width: 70px">SIGLE</th>
-			<th>Année <?=$y;?> | Semestre <?=$i;?></th>
-			<th style="width: 30px">Cr</th>
-			<th style="width: 20px">X</th>
-			<th style="width: 20px"></th>
-			<th style="width: 20px"></th>
-			<th style="width: 50px"></th>
+			<th style="width: 90px">SIGLE</th>
+			<th>Année <?=$y;?> - Semestre <?=$i;?></th>
+			<th style="width: 30px">Crd</th>
+			<th style="width: 20px">Ch</th>
+			<th style="width: 50px">Final</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -204,9 +196,9 @@ for ($y=1; $y <= 3; $y++) {
 ?>
 	
 		<tr>
-			<td><em> -></em></td>
+			<td><em>-</em></td>
 			<td><?=$n;?></td>
-			<td><b><?php echo $sigle = $cours_table['Sigle'];?></b></td>
+			<td class="sigle"><b><?php echo $sigle = $cours_table['Sigle'];?></b></td>
 			<td><?=$cours_table['title'];?></td>
 			<td><?=$cours_table['nb_crd'];?></td>
 			<td>
@@ -219,13 +211,11 @@ for ($y=1; $y <= 3; $y++) {
 		echo "";
 	}
 	else{
-		echo "x";	
+		echo "<b class='text-green-600'><i class='bi-check'></i></b>";	
 	}
 
 ?>
 			</td>
-			<td></td>
-			<td></td>
 			<td>
 <?php	
 	if (empty($nt)) {
@@ -255,8 +245,6 @@ for ($y=1; $y <= 3; $y++) {
 			<td style="border: none"><?=$tcredit?></td>
 			<td style="border: none"></td>
 			<td style="border: none"></td>
-			<td style="border: none"></td>
-			<td style="border: none"></td>
 		</tr>
 	</tfoot>
 </table>
@@ -266,13 +254,3 @@ for ($y=1; $y <= 3; $y++) {
 }
  ?>
 </div>
-<style type="text/css">
-	.tbl{
-		font-size: 12px;
-		border-collapse: collapse;
-	}
-	.tbl thead tr, tbody td{
-		border: 1px solid black;
-		padding: 0px 5px 0px 5px;
-	}
-</style>

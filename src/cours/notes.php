@@ -39,8 +39,8 @@ while ($cours_table = $cors->fetch()) {
 $idcours = $cours_table['id'];
  ?>
 
-<form method="post" action="../app/.cours/completnotes.php?id=<?=$id?>&idcours=<?=$idcours?>" class="form-no-refrech">
-					<tr class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black">
+<form method="post" action="../app/.cours/completnotes.php?id=<?=$id?>&idcours=<?=$idcours?>&year=<?=$preced.$soustract;?>&sigle=<?=$cours_table['Sigle']?>" class="form-no-refrech">
+					<tr id="<?=$cours_table['Sigle'].$preced.$soustract?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black">
 						<td class="bg-gradient-to-r from-orange-800 to-orange-400"><?=$cours_table['student_id']?></td>
 						<td class="c<?=$nbr.$i;?>"><?php
 

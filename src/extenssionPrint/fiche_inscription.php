@@ -48,7 +48,7 @@ $stdA = $searchStd->fetch();
 		<table class="tbl simpleTbl mb-2">
 			<thead class="bg-slate-200">
 				<tr>
-					<th style="width: 70px">SIGLE</th>
+					<th style="width: 100px">SIGLE</th>
 					<th style="">TITRE DU COURS</th>
 					<th style="width: 60px">CREDITS</th>
 					<th style="width: 80px">CATÉGORIE</th>
@@ -58,7 +58,7 @@ $stdA = $searchStd->fetch();
 			</thead>
 			<tbody>
 <?php 
-	$findCoursFinance = $dtb->query('SELECT * FROM t_2024_cours_finance WHERE student_id="'.$student_id.'" AND date_entry = "'.$now.'"');
+	$findCoursFinance = $dtb->query('SELECT * FROM t_2024_cours_finance WHERE student_id="'.$student_id.'" AND remove != 1');
 	$nbr = 0;
 	$tCredit = 0;
 	$tCout = 0;
@@ -113,7 +113,7 @@ if ($showCat['category'] == 0){
 
 	if(!empty($session_id)) {
 
-		$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE student_id = "'.$student_id.'" AND session_id = "'.$session_id.'" LIMIT 1');
+		$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE student_id = "'.$student_id.'" AND session_id = "'.$session_id.'" AND remove != 1 LIMIT 1');
 
 		$showFin = $findFinance->fetch();
 
@@ -133,7 +133,7 @@ if ($showCat['category'] == 0){
 				</tr>
 			</thead>
 			<tbody>
-				<tr class="text-bold">
+				<tr class="text-bold text-right">
 					<td><?=$showFin['cout_fraix_generaux']?> ar</td>
 					<td><?=$showFin['cout_logement']?> ar</td>
 					<td><?=$showFin['cout_fondDepot_dortoir']?> ar</td>
@@ -153,11 +153,89 @@ if ($showCat['category'] == 0){
 							$showFin['cout_totalLab']
 				?> ar</b></p>
 		<b class="text-lg">Mode de payement</b>
+<?php 
+$findPayement = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE student_id="'.$student_id.'" AND session_id="'.$session_id.'"');
 
-		<table  class="tbl simpleTbl mb-2">
-			
-		</table>
+$showPayement = $findPayement->fetch();
 
+$modeP = $showPayement['mode_payement'];
+?>
+
+	<table class="tbl simpleTbl mb-2 w-5/12">
+			<thead>
+				<tr>
+					<th colspan="3" class="text-center text-bold">TYPE <?=$modeP?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php if ($modeP == 'A') {  ?>
+					<tr>
+						<td>100 %</td>
+						<td class="text-right"><?=$Montant?> ar</td>
+						<td>Le jour d'inscription</td>
+					</tr>
+				<?php }elseif ($modeP == 'B') {  ?>
+					<tr>
+						<td>50 %</td>
+						<td class="text-right"><?=($Montant*50) /100 ?> ar</td>
+						<td>Le jour d'inscription</td>
+					</tr>
+					<tr>
+						<td>50 %</td>
+						<td class="text-right"><?=($Montant*50) /100 ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full"></td>
+					</tr>
+				<?php }elseif ($modeP == 'C') {  ?>
+					<tr>
+						<td>75 %</td>
+						<td class="text-right"><?=($Montant*75) /100 ?> ar</td>
+						<td>Le jour d'inscription</td>
+					</tr>
+					<tr>
+						<td>25 %</td>
+						<td class="text-right"><?=($Montant*25) /100 ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full"></td>
+					</tr>
+				<?php }elseif ($modeP == 'D') {  ?>
+					<tr>
+						<td>40 %</td>
+						<td class="text-right"><?=($Montant*40) /100 ?> ar</td>
+						<td>Le jour d'inscription</td>
+					</tr>
+					<tr>
+						<td>30 %</td>
+						<td class="text-right"><?=($Montant*30) /100 ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full"></td>
+					</tr>
+					<tr>
+						<td>30 %</td>
+						<td class="text-right"><?=($Montant*30) /100 ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full"></td>
+					</tr>
+				<?php }elseif ($modeP == 'D') {  ?>
+					<tr>
+						<td>25 %</td>
+						<td class="text-right"><?=($Montant*25) /100 ?> ar</td>
+						<td>Le jour d'inscription</td>
+					</tr>
+					<tr>
+						<td>25 %</td>
+						<td class="text-right"><?=($Montant*25) /100 ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full"></td>
+					</tr>
+					<tr>
+						<td>25 %</td>
+						<td class="text-right"><?=($Montant*25) /100 ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full"></td>
+					</tr>
+					<tr>
+						<td>25 %</td>
+						<td class="text-right"><?=($Montant*25) /100 ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full"></td>
+					</tr>
+				<?php } ?>
+			</tbody>
+	</table>
 
 <?php } } ?>
 	</div>

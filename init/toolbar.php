@@ -306,19 +306,19 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 				</center>
 			
 		</a>
-		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 toolInactive">
+		
+
+	</div>
+
+<!-- BRANCHE D'OUTILS 6 -->		
+	<div class="w-2/12 flex px-1">
+		<a href="./settings.php" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
 				<center>
 				<i class="bi-gear-fill text-2xl"></i><br>
 						Paramètres
 				</center>
 			
 		</a>
-
-	</div>
-
-<!-- BRANCHE D'OUTILS 6 -->		
-	<div class="w-2/12 flex px-1 lg:hidden">
-		
 		
 
 	</div>

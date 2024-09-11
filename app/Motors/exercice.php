@@ -9,8 +9,8 @@
 		$etude_envisage = $std['etude_envisage'];
 		$session_id = 0;
 		$depot_list = 0;
-		$signatures = 0;
-		$impression_verification = 0;
+		$verification_signatures = 0;
+		$mode_payement = 0;
 		$cours_selected = 0;
 		$data_completion = 1;
 		$caisse_verification = 0;
@@ -57,8 +57,8 @@
 			caisse_verification,
 			data_completion,
 			cours_selected,
-			impression_verification,
-			signatures,
+			mode_payement,
+			verification_signatures,
 			depot_list,
 			session_id,
 			nbr_semester,
@@ -74,8 +74,8 @@
 			:caisse_verification,
 			:data_completion,
 			:cours_selected,
-			:impression_verification,
-			:signatures,
+			:mode_payement,
+			:verification_signatures,
 			:depot_list,
 			:session_id,
 			:nbr_semester,
@@ -91,8 +91,8 @@
 			'caisse_verification' => $caisse_verification,
 			'data_completion' => $data_completion,
 			'cours_selected' => $cours_selected,
-			'impression_verification' => $impression_verification,
-			'signatures' => $signatures,
+			'mode_payement' => $mode_payement,
+			'verification_signatures' => $verification_signatures,
 			'depot_list' => $depot_list,
 			'session_id' => $session_id,
 			'nbr_semester' => $nbr_semester,

@@ -24,7 +24,7 @@ if (isset($_POST['trie'])) {
 		
 	$trie = $_POST['trie'];
 	
-	$recupcours = $dtb->query('SELECT * FROM t_2023_cours ORDER BY '.$trie.' limit 800');
+	$recupcours = $dtb->query('SELECT * FROM t_2023_cours WHERE remove != 1 ORDER BY '.$trie.' limit 800');
 }
 	$cours_nb = 1;
 	while ($cours_list = $recupcours->fetch()) {

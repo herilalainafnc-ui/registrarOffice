@@ -113,7 +113,7 @@
 							<div class="m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
 								<div class="w-full flex mb-4">
 									<div class="w-8/12">
-										<b>Infos du contact</b>	
+										<b>Infos du contact, photos</b>	
 									</div>
 								</div>
 
@@ -164,15 +164,16 @@
 									</div>
 								</div>
 								
-								<label class="text-sm text-slate-400">Matricule</label>
-								<p class="mb-1" id="student_id"><i class="bi-lock-fill"></i>00000</p>
-								<input type="text" name="student_id" id="student_id_form" class="inscInput hidden">
 
 								<div class="w-full flex gap-2">
 									
 
 									<div class="w-6/12">
-										<label class="text-sm text-slate-400">Mention</label>
+										<label class="text-sm text-slate-400">Matricule</label>
+										<p class="mb-1" id="student_id"><i class="bi-lock-fill"></i>00000</p>
+										<input type="text" name="student_id" id="student_id_form" class="inscInput hidden">
+
+										<label class="text-sm text-slate-400 mt-3">Mention</label>
 										
 										<select class="inscInput h-6 text-sm w-full requierd-8 mb-3" name="etude_envisage" id="etude_envisage">
 											<option class="<?=$bg_seven_color?>"></option>
@@ -215,6 +216,12 @@ while ($showSignMention = $findSignMention->fetch()) {
 										</div>
 									</div>
 									<div class="w-6/12">
+										<label class="text-sm text-slate-400">Entrée du</label>
+										<select class="inscInput h-6 text-sm w-full mb-3" name="semestre">
+											<option class="<?=$bg_seven_color?>" value="1">Premier semestre</option>
+											<option class="<?=$bg_seven_color?>" value="2">Deuxieme semestre</option>
+										</select>
+
 										<label class="text-sm text-slate-400">Parcours</label>
 										
 										<div id="etude_option">
@@ -347,7 +354,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 							<div class="m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all">
 								<div class="w-full flex mb-4">
 									<div class="w-8/12">
-										<b>Autres...</b>	
+										<b>Situation familiale, autres...</b>	
 									</div>
 								</div>
 

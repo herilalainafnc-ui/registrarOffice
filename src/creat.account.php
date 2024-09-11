@@ -65,7 +65,7 @@ if(($rg_user['privilege'] == 'administrator') OR ($rg_user['privilege_2'] == 'ad
 								</div>
 								<div class="w-full mb-2">
 									<label>Confirmation</label><br>	
-									<input type="password" name="confirmpass" class="inscInput h-6 text-sm w-full requierd-1" placeholder="Confirmation">
+									<input type="password" name="confirmpass" class="inscInput h-6 text-sm w-full requierd-1" placeholder="Confirmez le mot de passe">
 								</div>
 								<br><hr><br>
 								<div class="w-full mb-2 mt-4">

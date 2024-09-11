@@ -68,7 +68,7 @@
 			</thead>
 			<tbody class="<?=$bg_four_color?>">
 	<?php
-$cours = $dtb->query("SELECT * FROM t_2023_notes WHERE student_id ='".$student_id."' AND ajout='".$yes."' AND yearlevel='".$a."' AND semester='".$s."' ORDER BY id");
+$cours = $dtb->query("SELECT * FROM t_2023_notes WHERE student_id ='".$student_id."' AND ajout='".$yes."' AND yearlevel='".$a."' AND semester='".$s."' AND remove != 1 ORDER BY id");
 	
 	$nbr = 0;
 	
@@ -260,7 +260,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 <?php
 	
 	if(!empty($session_id)){
-		$searchPromotion = $dtb->query('SELECT * FROM t_2023_promotion_notes WHERE student_id = "'.$student_id.'" AND session_id = "'.$session_id.'"');
+		$searchPromotion = $dtb->query('SELECT * FROM t_2023_promotion_notes WHERE student_id = "'.$student_id.'" AND session_id = "'.$session_id.'" AND remove != 1');
 		$showPromotion = $searchPromotion->fetch();
 		if (!empty($showPromotion)) {
 			$grade_work_educ = $showPromotion['grade_work_educ'];

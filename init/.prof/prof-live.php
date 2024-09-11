@@ -21,7 +21,7 @@ if (isset($_POST['trie'])) {
 		
 	$trie = $_POST['trie'];
 	
-	$recupprof = $dtb->query('SELECT * FROM teacher ORDER BY '.$trie.' limit 800');
+	$recupprof = $dtb->query('SELECT * FROM teacher WHERE remove != 1 ORDER BY '.$trie.' limit 800');
 }
 	$prof_nb = 1;
 	while ($prof_list = $recupprof->fetch()) {

@@ -292,18 +292,3 @@ if (($cours_table['category'] == 1) OR ($cours_table['category'] == "Majeur") OR
 }
  ?>
 </div>
-<style type="text/css">
-	.tbl{
-		font-size: 12px;
-		font-family: "arial",sans-serif;
-		border-collapse: collapse;
-	}
-	.tbl thead th, tbody td{
-		border: 1px solid black;
-		padding: 0px 5px 0px 5px;
-	}
-	.tbl tfoot td{
-		border: 1px solid black;
-		padding: 0px 5px 0px 5px;
-	}
-</style>

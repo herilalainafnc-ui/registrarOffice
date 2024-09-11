@@ -26,7 +26,7 @@ if ($semester == "all") {
 	$sem = 2;
 }
 
-$searchStd = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'"');
+$searchStd = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'" AND remove != 1');
 
 $stdA = $searchStd->fetch();
  ?>
@@ -67,7 +67,7 @@ $stdA = $searchStd->fetch();
 <?php 
 	for ($a=$initA; $a <= $level; $a++) {
 		?>
-			<div <?php if($initA > 1) { echo "style='min-height: 800px;'";}?>>
+			<div>
 		<?php 
 	echo "<div> <b>NIVEAU L".$a." 2023 - 2024</b>";
 		
@@ -90,7 +90,7 @@ $stdA = $searchStd->fetch();
 			</thead>
 			<thead class="bg-slate-200">
 				<tr>
-					<th style="width: 70px">SIGLE</th>
+					<th style="width: 100px">SIGLE</th>
 					<th style="width: 400px">TITRE DU COURS</th>
 					<th style="width: 50px">CREDITS</th>
 					<th style="width: 50px">Categorie</th>
@@ -101,7 +101,7 @@ $stdA = $searchStd->fetch();
 			</thead>
 			<tbody>
 	<?php
-	$cours = $dtb->query("SELECT * FROM t_2023_notes WHERE student_id ='".$student_id."' AND grade>10 AND ajout = '".$yes."' AND yearlevel='".$a."' AND semester='".$s."' ORDER BY id");
+	$cours = $dtb->query("SELECT * FROM t_2023_notes WHERE student_id ='".$student_id."' AND grade>10 AND ajout = '".$yes."' AND yearlevel='".$a."' AND semester='".$s."' AND remove != 1 ORDER BY id");
 	
 	$nbr = 0;
 	$nbrMaj = 0;
@@ -244,7 +244,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 				</tr>
 
 <?php 
-	$searchPromotion = $dtb->query('SELECT * FROM t_2023_promotion_notes WHERE student_id = "'.$student_id.'" AND session_id = "'.$session_id.'"');
+	$searchPromotion = $dtb->query('SELECT * FROM t_2023_promotion_notes WHERE student_id = "'.$student_id.'" AND session_id = "'.$session_id.'" AND remove != 1');
 	$showPromotion = $searchPromotion->fetch();
 	if (!empty($showPromotion)) {
 		$grade_work_educ = $showPromotion['grade_work_educ'];

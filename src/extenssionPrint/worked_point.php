@@ -109,18 +109,3 @@ $stdA = $searchStd->fetch();
 </div>
 
 </div>
-
-<style type="text/css">
-	.contenu{
-		border: 1px solid black;
-		border-collapse: collapse;
-		font-size: 13px;
-	}
-	.contenu th,.contenu td{
-		border: 1px solid black;
-		text-align: center;
-	}
-	.contenu td{
-		height: 35px;
-	}
-</style>

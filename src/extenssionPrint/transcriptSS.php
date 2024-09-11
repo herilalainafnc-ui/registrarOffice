@@ -91,7 +91,7 @@
 						</thead>
 						<thead class="bg-slate-200">
 							<tr>
-								<th style="width: 70px">SIGLE</th>
+								<th style="width: 100px">SIGLE</th>
 								<th style="width: 400px">TITRE DU COURS</th>
 								<th style="width: 50px">CREDITS</th>
 								<th style="width: 50px">Categorie</th>

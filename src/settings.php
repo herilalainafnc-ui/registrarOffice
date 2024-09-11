@@ -20,7 +20,7 @@
 			
 				<div class="back" style="height: calc(100vh - 152px);">
 					<div class="w-full grid gap-4 xl:grid-cols-4 sm:grdi-cols-1 p-4">
-						<a href="#">
+						<a href="./my.account.php">
 							<div class='m-0 p-3 <?=$bg_one_color?> hover:bg-slate-700 rounded-md border-2 border-slate-800 hover:border-cyan-500 transition-all text-white'>
 							<b class="text-lg"><i class="bi-gear"></i>&nbsp;&nbsp; Mon compte</b><br><br>
 							<p class="text-slate-500">Je peux modifier, configurer, verifier mon compte dans ce rubrique.</p>

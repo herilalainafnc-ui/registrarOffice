@@ -195,13 +195,6 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 
 						</div>
 
-
-
-
-
-
-
-
 <script type="text/javascript">
 	$(document).ready(function(){
 		$('#listOpt1').click(function(){

@@ -100,6 +100,46 @@ $date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
         </div>
     </div>
 </body>
+<style type="text/css">
+    .tbl{
+        font-size: 12px;
+        font-family: "arial",sans-serif;
+        border-collapse: collapse;
+    }
+    .sigle {
+        background-color: #f8e6da;
+    }
+    .tbl thead th {
+        background-color: #def3fc;
+        border: 1px solid #94a3b8;
+        color: #0c1465;
+        padding: 2px 5px 2px 5px;
+    }
+    .tbl tbody td{
+        border: 1px solid #94a3b8;
+        color: #0c1465;
+        padding: 2px 5px 2px 5px;
+    }
+    .tbl tfoot td{
+        border: 1px solid #94a3b8;
+        color: #0c1465;
+        padding: 2px 5px 2px 5px;
+    }
+    .contenu{
+        border: 1px solid #94a3b8;
+        color: #0c1465;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+    .contenu th,.contenu td{
+        border: 1px solid #94a3b8;
+        color: #0c1465;
+        text-align: center;
+    }
+    .contenu td{
+        height: 35px;
+    }
+</style>
 
 <!-- /////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 

@@ -20,7 +20,7 @@ if (isset($_POST['trie'])) {
 		
 	$trie = $_POST['trie'];
 	
-	$recupsdt = $dtb->query('SELECT * FROM tbl_2024_etudiant ORDER BY '.$trie.' limit 800');
+	$recupsdt = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE remove != 1 ORDER BY '.$trie.' limit 800');
 }
 	$sdt_nbLive = 1;
 	while ($sdt_list = $recupsdt->fetch()) {

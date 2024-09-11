@@ -6,11 +6,14 @@
 	$grade = $_POST['note'];
 	$date_entry = date('Y-m-d');
 
+	$year = $_GET['year'];
+	$sigle = $_GET['sigle'];
+
 	$update = $dtb->prepare("UPDATE t_2023_notes SET grade=:grade WHERE id=:idcours");
 	$update->bindParam(':grade',$grade,PDO::PARAM_STR);
 	$update->bindParam(':idcours',$idcours,PDO::PARAM_INT);
 	$update->execute();
 
-	header('location:../../src/cours.php?id='.$id.'&page=notes');
+	header('location:../../src/cours.php?id='.$id.'&page=notes#'.$sigle.$year);
 
  ?>

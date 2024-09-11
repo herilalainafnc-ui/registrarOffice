@@ -44,9 +44,9 @@
 
 	if (isset($_POST['search']) AND !empty($_POST['search'])) {
 			$input = htmlspecialchars($_POST['search']);
-			$recupcours = $dtb->query('SELECT * FROM t_2023_cours WHERE Sigle LIKE "%'.$input.'%" OR title LIKE "%'.$input.'%" OR dep_desc LIKE "%'.$input.'%" OR nb_crd LIKE "%'.$input.'%" OR title_english LIKE "%'.$input.'%" ORDER BY title limit 200');	
+			$recupcours = $dtb->query('SELECT * FROM t_2023_cours WHERE Sigle LIKE "%'.$input.'%" OR title LIKE "%'.$input.'%" OR dep_desc LIKE "%'.$input.'%" OR nb_crd LIKE "%'.$input.'%" OR title_english LIKE "%'.$input.'%" AND remove != 1 ORDER BY title limit 200');	
 		}else{
-			$recupcours = $dtb->query('SELECT * FROM t_2023_cours ORDER BY title limit 200');
+			$recupcours = $dtb->query('SELECT * FROM t_2023_cours WHERE remove != 1 ORDER BY title limit 200');
 		}
 	$cours_nb = 1;
 	while ($cours_list = $recupcours->fetch()) {
