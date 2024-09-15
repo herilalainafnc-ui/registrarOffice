@@ -92,7 +92,7 @@
 
 	for ($a=$init; $a <= $level; $a++) {
  ?>
-	<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+	<div id="year<?=$a?>" class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 <b>
 		<?php 
 		if($a<=3) {
@@ -110,7 +110,7 @@
  <form action="../app/.student/checkCours.php?id=<?=$id?>&student_id=<?=$student_id?>&page=newCours&user_id=<?=$rg_id?>" method="post" class="form-newCours">
 		<table class="simpleTbl mb-1 w-full">
 			<thead>
-				<tr class="text-center bg-gradient-to-r from-green-600">
+				<tr class="text-left bg-gradient-to-r from-green-600">
 					<th colspan="10">SEMESTRE <?=$s?></th>
 				</tr>
 			</thead>
@@ -156,9 +156,24 @@
 			$note_id = $crs['id'];
 			$annee_scolaire = $crs['yearlevel'];
 			$semester = $crs['semester'];
+
+	$verifyExisting = $dtb->query('SELECT * FROM t_2023_notes WHERE id_cours = "'.$note_id.'" AND student_id="'.$student_id.'" AND remove = 0');
+	$validExisting = $verifyExisting->fetch();
 	 ?>
-				<tr id="cours<?=$a.$s.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black">
-					<td class="p-0" style="height: 15px;"><input id="chk<?=$a.$s.$nbr;?>" type="checkbox" name="checklist[]" value="<?=$note_id?>" style="width: 100%; height: 100%;margin: none; border: none;"></td>
+				<tr 
+<?php if (empty($validExisting)) { ?>				
+				id="cours<?=$a.$s.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black"
+<?php }else{ ?>
+				class="bg-slate-700"
+<?php } ?>>
+					<td class="p-0 text-center" style="height: 15px;">
+
+<?php if (empty($validExisting)) { ?>		
+						<input id="chk<?=$a.$s.$nbr;?>" type="checkbox" name="checklist[]" value="<?=$note_id?>" style="width: 100%; height: 100%;margin: none; border: none;">
+<?php }else{ ?>						
+						<i class="bi-x-lg text-red-300"></i>			
+<?php } ?>			
+					</td>
 					<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><?=$crs['Sigle']?></td>
 					<td><?php
 							if ($etude_envisage == "Etudes anglophones") {
@@ -166,7 +181,12 @@
 							}else{
 								echo $crs['title'];
 							} 
-					?></td>
+if (!empty($validExisting)) {
+	echo " . <em class='text-green-400'>Déjà ajouté... Note = <b>".$validExisting['grade']."</b></em>";
+}
+
+					?>
+					</td>
 					<td><?=$crs['nb_crd']?></td>
 					<td><?php 
 if ($crs['category'] == 0){
@@ -235,37 +255,34 @@ $tcredit+= $credit + $crs['nb_crd'];
 						
 						<b>Session :</b>
 						<select name="semesterSession" class="h-[22px] m-1 py-0 text-black text-sm" id="scolarSs<?=$a.$s;?>">
-							<option></option>
-							<option>Premier semestre</option>
+							<option <?php if ($s == 1) {echo "selected";} ?>>Premier semestre</option>
 							<option>Semestre d'été</option>
-							<option>Deuxième semestre</option>
+							<option <?php if ($s == 2) {echo "selected";} ?>>Deuxième semestre</option>
 							<option>Semestre d'hiver</option>
 						</select>
 
 						<b>Année du cours :</b>
 						<select name="annee_scolaire" class="h-[22px] m-1 py-0 text-black text-sm" id="scolarA<?=$a.$s;?>">
-							<option></option>
 							<?php
 								$mois = date('m');
-								if (intval($mois) < 8){
+								if (intval($mois) < 7){
 									$z = date('Y');
 								}else{
 									
 									$z = date('Y') + 1;
 								}
 								$yn = 1;
-				        			for ($i=0; $i < 6; $i++) { 
+				        			for ($i=1; $i < 6; $i++) { 
 				        			?>
-				        				<option><?=$z." - ".($z+1)?></option>
+				        				<option><?=($z-1)." - ".$z?></option>
 				        			<?php
 				        			$z = $z-$yn;
 				        		}
 			        		 ?>
 						</select>
 						
-						
-
-						<button id="submit<?=$a.$s;?>" type="submit" class="px-2 py-0 m-1 <?=$bg_two_color?> text-slate-400 text-center button" style="pointer-events: none;">Ajouter au transcript</button>
+						<button id="submit<?=$a.$s;?>" type="submit" class="submiting px-2 text-center py-0 m-1 text-slate-400 bg-black">Ajouter au transcript</button>
+					
 					</td>
 				</tr>
 												<script type="text/javascript">
@@ -302,11 +319,9 @@ $tcredit+= $credit + $crs['nb_crd'];
 															var scolarSs<?=$a.$s;?> = $('#scolarSs<?=$a.$s;?>').val();
 															
 															if (scolarA<?=$a.$s;?> != '' && scolarSs<?=$a.$s;?> !='') {
-																$('#submit<?=$a.$s;?>').attr('class','px-2 text-center py-0 m-1 bg-black text-white');
-																$('#submit<?=$a.$s;?>').css({'pointer-events':'auto'});
+																$('#submit<?=$a.$s;?>').attr('class','submiting px-2 text-center py-0 m-1 text-white bg-black');
 															}else{
-																$('#submit<?=$a.$s;?>').attr('class','px-2 text-center py-0 m-1 <?=$bg_two_color?> text-slate-400');
-																$('#submit<?=$a.$s;?>').css({'pointer-events':'none'});
+																$('#submit<?=$a.$s;?>').attr('class','submiting px-2 text-center py-0 m-1 text-slate-400 bg-slate-700 toolInactive');
 															}
 
 														});
@@ -316,11 +331,9 @@ $tcredit+= $credit + $crs['nb_crd'];
 															var scolarA<?=$a.$s;?> = $('#scolarA<?=$a.$s;?>').val();
 															
 															if (scolarA<?=$a.$s;?> != '' && scolarSs<?=$a.$s;?> !='') {
-																$('#submit<?=$a.$s;?>').attr('class','px-2 text-center py-0 m-1 bg-black text-white');
-																$('#submit<?=$a.$s;?>').css({'pointer-events':'auto'});
+																$('#submit<?=$a.$s;?>').attr('class','submiting px-2 text-center py-0 m-1 text-white bg-black');
 															}else{
-																$('#submit<?=$a.$s;?>').attr('class','px-2 text-center py-0 m-1 <?=$bg_two_color?> text-slate-400');
-																$('#submit<?=$a.$s;?>').css({'pointer-events':'none'});
+																$('#submit<?=$a.$s;?>').attr('class','submiting px-2 text-center py-0 m-1 text-slate-400 bg-slate-700 toolInactive');
 															}
 
 														});
@@ -340,6 +353,12 @@ $tcredit+= $credit + $crs['nb_crd'];
 </div>
 <script type="text/javascript">
 	$(document).ready(function(){
+
+	    window.onload = function() {
+	        var a = '<?=$a-1?>';
+	        window.location.hash = '#year'+a;
+	    };
+
 		$(".form-newCours").on('submit',function (e) {
 
 			e.preventDefault();
@@ -351,8 +370,7 @@ $tcredit+= $credit + $crs['nb_crd'];
 			$.post(url,data,function(response){
 				
 				alert("Cours bien enregistré! Vous pouvez continué !!");
-
-				$('.button').attr('class','px-2 py-0 m-1 <?=$bg_two_color?> text-slate-400 text-center button toolInactive');
+				$(".submiting").attr('class','submiting px-2 text-center py-0 m-1 text-slate-400 bg-slate-700 toolInactive');
 				
 			});
 

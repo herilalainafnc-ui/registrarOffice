@@ -34,9 +34,11 @@
 
 <div class="flex w-full h-12 shadow-sm p-1 <?=$bg_one_color?> <?=$txt_one_color?>">
 	
-		<div class="w-2/12 px-2 mt-2"><a href="../src/" class="flex">
-			<img src="../file/logo-coldbloud.png" class="w-6 h-6 mx-2">
-			<b> Infinit Registrar</b></a>
+		<div class="w-2/12 px-2 mt-2">
+			<a href="../src/" class="flex">
+				<img src="../file/logo-coldbloud.png" class="w-6 h-6 mx-3 mx-2">
+				<b> Infinit Registrar</b>
+			</a>
 		</div>
 	
 	<div class="w-7/12 mt-1">

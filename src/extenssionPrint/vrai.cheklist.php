@@ -21,7 +21,7 @@ $stdA = $searchStd->fetch();
 	<center>
 		<b class="text-2xl">Check list</b>
 	</center>
-<div class="border border-black flex text-xs px-2 py-1 my-2">
+<div class="flex text-xs px-2 py-1 my-2" style="border: 1px solid #8e9bb2;">
 	<div class="w-full flex">
 		<div class="text-right w-4/12">
 			<label>Matricule - </label><br>
@@ -120,7 +120,7 @@ if(!empty($cours_table_selective)){
 		echo "";
 	}
 	else{
-		echo "<i class='bi-check text-green'></i>";	
+		echo "<i class='bi-check text-green-700'></i>";	
 	}
 
 ?>
@@ -175,9 +175,11 @@ for ($y=1; $y <= 3; $y++) {
 	for ($i=1; $i <=2 ; $i++) { 
 		$course = $dtb->query("SELECT * FROM t_2023_cours WHERE dep_desc='".$dep_desc."' AND yearlevel ='".$y."' AND semester ='".$i."' AND (category = 1 OR category = 0) AND (parcours = '".$parcours."' OR parcours = '".$tout."') AND remove != 1 ORDER BY title");
 ?>
+<div class="pt-1">
+	
 <table class="tbl w-full">
 	<thead>
-		<tr>
+		<tr style="page-break-inside: avoid;">
 			<th style="width: 70px">Prérequis</th>
 			<th style="width: 20px">Nb</th>
 			<th style="width: 90px">SIGLE</th>
@@ -195,7 +197,7 @@ for ($y=1; $y <= 3; $y++) {
 	while ($cours_table = $course->fetch()) {
 ?>
 	
-		<tr>
+		<tr style="page-break-inside: avoid;">
 			<td><em>-</em></td>
 			<td><?=$n;?></td>
 			<td class="sigle"><b><?php echo $sigle = $cours_table['Sigle'];?></b></td>
@@ -211,7 +213,7 @@ for ($y=1; $y <= 3; $y++) {
 		echo "";
 	}
 	else{
-		echo "<b class='text-green-600'><i class='bi-check'></i></b>";	
+		echo "<b class='text-green-700'><i class='bi-check'></i></b>";	
 	}
 
 ?>
@@ -237,7 +239,7 @@ for ($y=1; $y <= 3; $y++) {
 ?>
 	</tbody>
 	<tfoot>
-		<tr>
+		<tr style="page-break-inside: avoid;">
 			<td style="border: none"></td>
 			<td style="border: none"></td>
 			<td style="border: none"></td>
@@ -248,7 +250,7 @@ for ($y=1; $y <= 3; $y++) {
 		</tr>
 	</tfoot>
 </table>
-
+</div>
 <?php
 	}
 }

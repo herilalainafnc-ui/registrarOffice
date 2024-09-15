@@ -1,4 +1,5 @@
 <?php 
+
 require '../../data/backdb.php';
 	
 	$last_change_user_id = $_GET['rg_id'];
@@ -30,6 +31,7 @@ require '../../data/backdb.php';
 
 	}
 
+	$etude_envisage = $_GET['etude_envisage'];
 	$father_name = $_POST['father_name'];
 	$father_prof = $_POST['father_prof'];
 	$parent_tel = $_POST['parent_tel'];
@@ -46,137 +48,23 @@ require '../../data/backdb.php';
 	$cin_region = $_POST['cin_region'];
 	$religion = $_POST['religion'];
 	$graduated = $_POST['graduated'];
+	
+	$situationf = $_POST['situationf'];
+	$nb_enfant = $_POST['nb_enfant'];
+	$nom_conjoint = $_POST['nom_conjoint'];
+
 	$num_visa = $_POST['num_visa'];
+	$abonment = $_POST['abonment'];
+	
 	$last_change_datetime = date('Y-m-d');
 
-	/*:::::::::::::::::::: FINANCE ::::::::::::::::::::*/
+/*========================================== UPDATE STUDENT =====================================*/
 
-	if($status == 'Interne'){
-		$cout_logement =  354000;
-	}else{
-		$cout_logement =  0;
-	}
-		$updateStatus = $dtb->prepare("UPDATE t_2024_etudiant_finace SET status=:status,cout_logement=:cout_logement WHERE student_id=:student_id");
-		$updateStatus->bindParam(':status',$status,PDO::PARAM_STR);
-		$updateStatus->bindParam(':cout_logement',$cout_logement,PDO::PARAM_STR);
-		$updateStatus->bindParam(':student_id',$student_id,PDO::PARAM_STR);
-		$updateStatus->execute();
-
-	if ($graduated == 1) {
-		$cout_frais_graduation = 150000;
-	}else{
-		$cout_frais_graduation = 0;
-	}
-		$updateFraixGrad = $dtb->prepare("UPDATE t_2024_etudiant_finace SET cout_frais_graduation=:cout_frais_graduation WHERE student_id=:student_id");
-		$updateFraixGrad->bindParam(':cout_frais_graduation',$cout_frais_graduation,PDO::PARAM_STR);
-		$updateFraixGrad->bindParam(':student_id',$student_id,PDO::PARAM_STR);
-		$updateFraixGrad->execute();
-
-	$cout_fondDepot_dortoir = 0;
-	$cout_fondDepot_medical = 0;
-	$cout_frais_graduation = 0;
-	$cout_totalCours = 0;
-	$cout_totalLab = 0;
-
-	$cout_fraix_generaux = 165000;
-
-	if($mention == 'THEO') {
-		$cout_livre_theo = 8000;
-	}else{
-		$cout_livre_theo = 0;
-	}
-
-
-	if(isset($_POST['serie_bacc']) AND isset($_POST['obtention_bacc'])) {
-
-		$serie_bacc = $_POST['serie_bacc'];
-		$obtention_bacc = $_POST['obtention_bacc'];
-
-		$searchBacc = $dtb->query('SELECT * FROM t_2024_bacc WHERE student_id = "'.$student_id.'"');
-		$trouveBacc = $searchBacc->fetch();
-		if (!empty($trouveBacc)) {
-			$updDiplome = $dtb->prepare("UPDATE t_2024_bacc SET 
-				date_obtent=:date_obtent,
-				bacc_serie=:bacc_serie,
-				user_id=:user_id,
-				date_entry=:date_entry
-				WHERE student_id=:student_id");
-	
-			$updDiplome->bindParam(':date_obtent',$obtention_bacc,PDO::PARAM_STR);
-			$updDiplome->bindParam(':bacc_serie',$serie_bacc,PDO::PARAM_STR);
-			$updDiplome->bindParam(':user_id',$last_change_user_id,PDO::PARAM_STR);
-			$updDiplome->bindParam(':date_entry',$last_change_datetime,PDO::PARAM_STR);
-			$updDiplome->bindParam(':student_id',$student_id,PDO::PARAM_STR);
-			$updDiplome->execute();
-		}else{
-			$insertBacc = $dtb->prepare('INSERT INTO t_2024_bacc(
-				student_id,
-				date_obtent,
-				bacc_serie,
-				user_id,
-				date_entry
-			)VALUES(
-				:student_id,
-				:date_obtent,
-				:bacc_serie,
-				:user_id,
-				:date_entry
-			)');$insertBacc->execute(array(
-				'student_id'  => $student_id,
-				'date_obtent' => $obtention_bacc,
-				'bacc_serie' => $serie_bacc,
-				'user_id' => $last_change_user_id,
-				'date_entry' => $last_change_datetime
-			));
-		}
-	}
-	
-	if(isset($_POST['diplome_preced']) AND isset($_POST['date_obtent_diplome_preced'])) {
-		$diplome_preced = $_POST['diplome_preced'];
-		$date_obtent_diplome_preced = $_POST['date_obtent_diplome_preced'];
-
-		$searchDiplome = $dtb->query('SELECT * FROM t_2024_diplome_preced WHERE student_id = "'.$student_id.'"');
-		$trouveDiplome = $searchDiplome->fetch();
-		if (!empty($trouveDiplome)) {
-			$updDiplomePreced = $dtb->prepare("UPDATE t_2024_diplome_preced SET 
-				diplome_name=:diplome_name,
-				date_obtent=:date_obtent,
-				user_id=:user_id,
-				date_entry=:date_entry
-				WHERE student_id=:student_id");
-	
-			$updDiplomePreced->bindParam(':diplome_name',$diplome_preced,PDO::PARAM_STR);
-			$updDiplomePreced->bindParam(':date_obtent',$date_obtent_diplome_preced,PDO::PARAM_STR);
-			$updDiplomePreced->bindParam(':user_id',$last_change_user_id,PDO::PARAM_STR);
-			$updDiplomePreced->bindParam(':date_entry',$last_change_datetime,PDO::PARAM_STR);
-			$updDiplomePreced->bindParam(':student_id',$student_id,PDO::PARAM_STR);
-			$updDiplomePreced->execute();
-		}else{
-			$insertDiplome = $dtb->prepare('INSERT INTO t_2024_diplome_preced(
-				diplome_name,
-				date_obtent,
-				user_id,
-				date_entry
-			)VALUES(
-				:diplome_name,
-				:date_obtent,
-				:user_id,
-				:date_entry
-			)');$insertDiplome->execute(array(
-				'diplome_name'  => $student_id,
-				'date_obtent' => $date_obtent_diplome_preced,
-				'user_id' => $last_change_user_id,
-				'date_entry' => $last_change_datetime
-			));
-		}
-	}
-
-
-	$update = $dtb->prepare("UPDATE tbl_2024_etudiant SET 
+	$updateStudent = $dtb->prepare("UPDATE tbl_2024_etudiant SET 
 		student_nom=:student_nom,
 		student_prenom=:student_prenom,
 		etude_option=:etude_option,
-		student_tel=:student_tel, 
+		student_tel=:student_tel,
 		sex=:sex, 
 		student_email=:student_email, 
 		dateNaissance=:dateNaissance, 
@@ -201,47 +89,174 @@ require '../../data/backdb.php';
 		last_change_datetime=:last_change_datetime,
 		status=:status,
 		graduated=:graduated,
+		situationf=:situationf,
+		nb_enfant=:nb_enfant,
+		nom_conjoint=:nom_conjoint,
+		abonment=:abonment,
 		new_student=:new_student,
 		cin_region=:cin_region,
 		religion=:religion,
 		num_visa=:num_visa,
 		annee_etude=:annee_etude
+
 		WHERE id=:id");
-	$update->bindParam(':student_nom',$student_nom,PDO::PARAM_STR);
-	$update->bindParam(':student_prenom',$student_prenom,PDO::PARAM_STR);
-	$update->bindParam(':etude_option',$etude_option,PDO::PARAM_STR);
-	$update->bindParam(':student_tel',$student_tel,PDO::PARAM_STR);
-	$update->bindParam(':sex',$sex,PDO::PARAM_STR);
-	$update->bindParam(':student_email',$student_email,PDO::PARAM_STR);
-	$update->bindParam(':dateNaissance',$dateNaissance,PDO::PARAM_STR);
-	$update->bindParam(':nationalite',$nationalite,PDO::PARAM_STR);
-	$update->bindParam(':student_adresse',$student_adresse,PDO::PARAM_STR);
-	$update->bindParam(':student_region',$student_region,PDO::PARAM_STR);
-	$update->bindParam(':lieuNaissance',$lieuNaissance,PDO::PARAM_STR);
-	$update->bindParam(':num_cin',$num_cin,PDO::PARAM_STR);
-	$update->bindParam(':cin_date_delivre',$cin_date_delivre,PDO::PARAM_STR);
-	$update->bindParam(':father_name',$father_name,PDO::PARAM_STR);
-	$update->bindParam(':father_prof',$father_prof,PDO::PARAM_STR);
-	$update->bindParam(':parent_tel',$parent_tel,PDO::PARAM_STR);
-	$update->bindParam(':mother_name',$mother_name,PDO::PARAM_STR);
-	$update->bindParam(':mother_prof',$mother_prof,PDO::PARAM_STR);
-	$update->bindParam(':parent_adresse',$parent_adresse,PDO::PARAM_STR);
-	$update->bindParam(':sponsor_nom',$sponsor_nom,PDO::PARAM_STR);
-	$update->bindParam(':sponsor_prenom',$sponsor_prenom,PDO::PARAM_STR);
-	$update->bindParam(':sponsor_adresse',$sponsor_adresse,PDO::PARAM_STR);
-	$update->bindParam(':sponsor_tel',$sponsor_tel,PDO::PARAM_STR);
-	$update->bindParam(':annee_scolaire',$annee_scolaire,PDO::PARAM_STR);
-	$update->bindParam(':last_change_user_id',$last_change_user_id,PDO::PARAM_INT);
-	$update->bindParam(':last_change_datetime',$last_change_datetime,PDO::PARAM_STR);
-	$update->bindParam(':status',$status,PDO::PARAM_STR);
-	$update->bindParam(':graduated',$graduated,PDO::PARAM_STR);
-	$update->bindParam(':new_student',$new_student,PDO::PARAM_STR);
-	$update->bindParam(':cin_region',$cin_region,PDO::PARAM_STR);
-	$update->bindParam(':religion',$religion,PDO::PARAM_STR);
-	$update->bindParam(':num_visa',$num_visa,PDO::PARAM_STR);
-	$update->bindParam(':annee_etude',$annee_etude,PDO::PARAM_INT);
-	$update->bindParam(':id',$id,PDO::PARAM_INT);
 
-$update->execute();
+	$updateStudent->bindParam(':student_nom',$student_nom,PDO::PARAM_STR);
+	$updateStudent->bindParam(':student_prenom',$student_prenom,PDO::PARAM_STR);
+	$updateStudent->bindParam(':etude_option',$etude_option,PDO::PARAM_STR);
+	$updateStudent->bindParam(':student_tel',$student_tel,PDO::PARAM_STR);
+	$updateStudent->bindParam(':sex',$sex,PDO::PARAM_STR);
+	$updateStudent->bindParam(':student_email',$student_email,PDO::PARAM_STR);
+	$updateStudent->bindParam(':dateNaissance',$dateNaissance,PDO::PARAM_STR);
+	$updateStudent->bindParam(':nationalite',$nationalite,PDO::PARAM_STR);
+	$updateStudent->bindParam(':student_adresse',$student_adresse,PDO::PARAM_STR);
+	$updateStudent->bindParam(':student_region',$student_region,PDO::PARAM_STR);
+	$updateStudent->bindParam(':lieuNaissance',$lieuNaissance,PDO::PARAM_STR);
+	$updateStudent->bindParam(':num_cin',$num_cin,PDO::PARAM_STR);
+	$updateStudent->bindParam(':cin_date_delivre',$cin_date_delivre,PDO::PARAM_STR);
+	$updateStudent->bindParam(':father_name',$father_name,PDO::PARAM_STR);
+	$updateStudent->bindParam(':father_prof',$father_prof,PDO::PARAM_STR);
+	$updateStudent->bindParam(':parent_tel',$parent_tel,PDO::PARAM_STR);
+	$updateStudent->bindParam(':mother_name',$mother_name,PDO::PARAM_STR);
+	$updateStudent->bindParam(':mother_prof',$mother_prof,PDO::PARAM_STR);
+	$updateStudent->bindParam(':parent_adresse',$parent_adresse,PDO::PARAM_STR);
+	$updateStudent->bindParam(':sponsor_nom',$sponsor_nom,PDO::PARAM_STR);
+	$updateStudent->bindParam(':sponsor_prenom',$sponsor_prenom,PDO::PARAM_STR);
+	$updateStudent->bindParam(':sponsor_adresse',$sponsor_adresse,PDO::PARAM_STR);
+	$updateStudent->bindParam(':sponsor_tel',$sponsor_tel,PDO::PARAM_STR);
+	$updateStudent->bindParam(':annee_scolaire',$annee_scolaire,PDO::PARAM_STR);
+	$updateStudent->bindParam(':last_change_user_id',$last_change_user_id,PDO::PARAM_INT);
+	$updateStudent->bindParam(':last_change_datetime',$last_change_datetime,PDO::PARAM_STR);
+	$updateStudent->bindParam(':status',$status,PDO::PARAM_STR);
+	$updateStudent->bindParam(':graduated',$graduated,PDO::PARAM_STR);
+	$updateStudent->bindParam(':situationf',$situationf,PDO::PARAM_STR);
+	$updateStudent->bindParam(':nb_enfant',$nb_enfant,PDO::PARAM_INT);
+	$updateStudent->bindParam(':nom_conjoint',$nom_conjoint,PDO::PARAM_STR);
+	$updateStudent->bindParam(':abonment',$abonment,PDO::PARAM_INT);
+	$updateStudent->bindParam(':new_student',$new_student,PDO::PARAM_STR);
+	$updateStudent->bindParam(':cin_region',$cin_region,PDO::PARAM_STR);
+	$updateStudent->bindParam(':religion',$religion,PDO::PARAM_STR);
+	$updateStudent->bindParam(':num_visa',$num_visa,PDO::PARAM_STR);
+	$updateStudent->bindParam(':annee_etude',$annee_etude,PDO::PARAM_INT);
+	$updateStudent->bindParam(':id',$id,PDO::PARAM_INT);
 
-header('location:../../src/student.php?id='.$id.'&page=information');
+	$updateStudent->execute();
+	
+
+/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+
+
+	if(isset($_POST['serie_bacc']) OR isset($_POST['obtention_bacc'])) {
+
+		$serie_bacc = $_POST['serie_bacc'];
+		$obtention_bacc = $_POST['obtention_bacc'];
+
+		$searchBacc = $dtb->query('SELECT * FROM t_2024_bacc WHERE student_id = "'.$student_id.'"');
+		$trouveBacc = $searchBacc->fetch();
+		
+		if (!empty($trouveBacc)) {
+			
+			$updDiplome = $dtb->prepare("UPDATE t_2024_bacc SET 
+				date_obtent=:date_obtent,
+				bacc_serie=:bacc_serie,
+				user_id=:user_id,
+				date_entry=:date_entry
+				WHERE student_id=:student_id");
+	
+			$updDiplome->bindParam(':date_obtent',$obtention_bacc,PDO::PARAM_STR);
+			$updDiplome->bindParam(':bacc_serie',$serie_bacc,PDO::PARAM_STR);
+			$updDiplome->bindParam(':user_id',$last_change_user_id,PDO::PARAM_STR);
+			$updDiplome->bindParam(':date_entry',$last_change_datetime,PDO::PARAM_STR);
+			$updDiplome->bindParam(':student_id',$student_id,PDO::PARAM_STR);
+
+			$updDiplome->execute();
+
+		}else{
+			
+			$insertBacc = $dtb->prepare('INSERT INTO t_2024_bacc(
+				student_id,
+				date_obtent,
+				bacc_serie,
+				user_id,
+				date_entry
+			)VALUES(
+				:student_id,
+				:date_obtent,
+				:bacc_serie,
+				:user_id,
+				:date_entry
+			)');$insertBacc->execute(array(
+				'student_id'  => $student_id,
+				'date_obtent' => $obtention_bacc,
+				'bacc_serie' => $serie_bacc,
+				'user_id' => $last_change_user_id,
+				'date_entry' => $last_change_datetime
+			));
+		}
+	}
+	
+	if(isset($_POST['diplome_preced']) OR isset($_POST['date_obtent_diplome_preced'])) {
+
+		$diplome_preced = $_POST['diplome_preced'];
+		$date_obtent_diplome_preced = $_POST['date_obtent_diplome_preced'];
+
+		$searchDiplome = $dtb->query('SELECT * FROM t_2024_diplome_preced WHERE student_id = "'.$student_id.'"');
+		$trouveDiplome = $searchDiplome->fetch();
+		
+		if (!empty($trouveDiplome)) {
+			
+			$updDiplomePreced = $dtb->prepare("UPDATE t_2024_diplome_preced SET 
+				diplome_name=:diplome_name,
+				date_obtent=:date_obtent,
+				user_id=:user_id,
+				date_entry=:date_entry
+				WHERE student_id=:student_id");
+	
+			$updDiplomePreced->bindParam(':diplome_name',$diplome_preced,PDO::PARAM_STR);
+			$updDiplomePreced->bindParam(':date_obtent',$date_obtent_diplome_preced,PDO::PARAM_STR);
+			$updDiplomePreced->bindParam(':user_id',$last_change_user_id,PDO::PARAM_STR);
+			$updDiplomePreced->bindParam(':date_entry',$last_change_datetime,PDO::PARAM_STR);
+			$updDiplomePreced->bindParam(':student_id',$student_id,PDO::PARAM_STR);
+			$updDiplomePreced->execute();
+
+		}else{
+			
+			$insertDiplome = $dtb->prepare('INSERT INTO t_2024_diplome_preced(
+				diplome_name,
+				date_obtent,
+				user_id,
+				date_entry
+			)VALUES(
+				:diplome_name,
+				:date_obtent,
+				:user_id,
+				:date_entry
+			)');$insertDiplome->execute(array(
+				'diplome_name'  => $student_id,
+				'date_obtent' => $date_obtent_diplome_preced,
+				'user_id' => $last_change_user_id,
+				'date_entry' => $last_change_datetime
+			));
+		}
+	}
+
+/*:::::::::::::::::::: FINANCE ::::::::::::::::::::*/
+
+/*if ($_POST['session_id'] != "" OR $_POST['session_id'] != 0) {
+
+	$session_id = $_POST['session_id'];
+
+	echo '<script type="text/javascript">
+            
+            window.location.href = "updateFinance.php?status='.$status.'&etude_envisage='.$etude_envisage.'&student_id='.$student_id.'&session_id='.$session_id.'&annee_etude='.$annee_etude.'&abonment='.$abonment.'&graduated='.$graduated.';
+            
+          </script>';
+
+}
+*/
+
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+
+ header('location:../../src/student.php?id='.$id.'&page=information');
+
+?>

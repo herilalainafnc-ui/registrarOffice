@@ -12,7 +12,7 @@
 	
 	<div class="w-full bg-slate-700 py-6" style="height: calc(100vh - 48px);">
 
-		<div class="xl:w-10/12 sm:w-11/12 sm:rounded-xl p-3 bg-slate-800 mx-auto shadow-sm" style="height: calc(100vh - 110px);">
+		<div class="xl:w-11/12 sm:w-11/12 sm:rounded-xl p-3 bg-slate-800 mx-auto shadow-sm" style="height: calc(100vh - 110px);">
 			<div id="header" class="flex w-full h-[70px]">
 				<div class="text-white w-3/12">
 					<b>Inscription et réinscription</b>
@@ -64,7 +64,9 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 		$image_student = $profil['image_student'];
 		$lookup_code = $profil['lookup_code'];
 		$status = $profil['status'];
+		$graduated = $profil['graduated'];
 		$date_entry = $profil['date_entry'];
+
 
  ?>
 
@@ -236,9 +238,50 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 						}
 						 ?>
 										</select>
-										<button id="submitSession" type="submit" class="my-2 px-5 py-2 bg-cyan-700 rounded-md">Enregistrer</button><br>
-										<em class="text-slate-500">Veuillez enregistrer la session avant de passer à l'étape suivante.</em>
+										<button id="submitSession" type="submit" class="my-2 px-5 py-2 
+<?php 
+if (date('m') >= 7) {
+	if ($showStudent_Session['annee_scolaire'] == $aSem) {
+		echo "bg-slate-800 toolInactive";
+	} else{
+		echo "bg-cyan-700";
+	}
+}elseif (date('m') < 7) {
+	if ($showStudent_Session['annee_scolaire'] == $aSem_) {
+	echo "bg-slate-800 toolInactive";
+	}else{
+		echo "bg-cyan-700";
+	}
+}
 
+?>
+										 rounded-md">Enregistrer</button><br>
+<?php 
+if (date('m') >= 7) {
+	if (!empty($showStudent_Session['annee_scolaire'])) {
+		if ($showStudent_Session['annee_scolaire'] == $aSem) {
+			echo "<em class='text-green-500'>La session a déjà été créée. Vous pouvez passé à l'étape suivante.</em>";
+		}else{
+			echo "<em class='text-slate-500'>Veuillez enregistrer la session avant de passer à l'étape suivante.</em>";
+		}	
+	}else{
+		echo "<em class='text-slate-500'>Veuillez enregistrer la session avant de passer à l'étape suivante.</em>";
+	}
+	
+
+}elseif (date('m') < 7) {
+	if (!empty($showStudent_Session['annee_scolaire'])) {
+		if ($showStudent_Session['annee_scolaire'] == $aSem_) {
+			echo "<em class='text-green-500'>La session a déjà été créée. Vous pouvez passé à l'étape suivante.</em>";
+		}else{
+			echo "<em class='text-slate-500'>Veuillez enregistrer la session avant de passer à l'étape suivante.</em>";
+		}
+	}else{
+		echo "<em class='text-slate-500'>Veuillez enregistrer la session avant de passer à l'étape suivante.</em>";
+	}	
+	
+}
+?>
 					</form>
 
 									</div>
@@ -283,6 +326,9 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 							</div>
 							<div id="contentImpression" class="stage_5 hidden">
 								<div class="w-full text-center pt-40">
+									<i class="bi-pencil-fill text-[150px] text-yellow-300"></i>
+									<i class="bi-file-text-fill text-[150px] text-yellow-300"></i><br><br><br>
+									
 									<a class="text-[30px] text-slate-600">Finalisation des signatures.<br><br>Dépôt de la liste au registraire.</a>	
 								</div>
 								
@@ -340,7 +386,7 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 			var data = $(this).serialize();
 
 			$.post(url,data,function(response){
-				alert("Session bien enregistré. Vous pouvez continué !!");
+				alert("Session bien enregistrée.");
 				$('#upStage').attr('class','px-5 py-2 bg-cyan-700 rounded-md');
 				$('#submitSession').attr('class','my-2 px-5 py-2 bg-cyan-700 rounded-md toolInactive');
 				
@@ -445,6 +491,10 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 
 				$.post(url,function(response){});
 
+				var session_id = $("#session_id").text();
+
+				$("input[name='session_id']").attr('value', session_id);
+
             }else if (stage == 3 ) {
             	
             	$('.stage_0').css({'display':'none'});
@@ -479,6 +529,8 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 				$('#intNewcours').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
 				$('#intModepayement').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-cyan-500');
 				$('#intFicheinscription').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
+
+				$('#upStage').attr('class','px-5 py-2 bg-slate-700 rounded-md toolInactive');
             	
             	$('#stageMark_3').attr('class','text-xs p-1');
             	
@@ -563,6 +615,7 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
             //$('#contentMain').html(contentHtml);
             
         }
+        
         //updateContent();
 
 		$('#upStage').on('click', function(event) {
@@ -586,8 +639,8 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
             }else if(stage == 7) {
 
 	       		alert('This student is successfully registered. You must finish here!');
-	       		$(this).attr('class', 'px-5 py-2 bg-slate-400 rounded-md toolInactive');
-	       		$('#downStage').attr('class', 'px-5 py-2 bg-slate-400 rounded-md toolInactive');
+	       		$(this).attr('class', 'px-5 py-2 bg-slate-700 rounded-md toolInactive');
+	       		$('#downStage').attr('class', 'px-5 py-2 bg-slate-700 rounded-md toolInactive');
 
 	       		$('#intInformation').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400 toolInactive');
 				$('#intNewcours').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400 toolInactive');
@@ -622,7 +675,7 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
             	$('#upStage').data('stage', stage - 1);
 
            	}else {
-           		$(this).attr('class', 'px-5 py-2 bg-slate-400 rounded-md toolInactive');
+           		$(this).attr('class', 'px-5 py-2 bg-slate-700 rounded-md toolInactive');
            	}
             
             window.history.pushState({}, '', currentUrl);

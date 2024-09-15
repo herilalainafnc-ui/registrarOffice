@@ -18,7 +18,7 @@
 	<center>
 		<b class="text-2xl">Transcript par Session</b>
 	</center>
-	<div class="border border-black flex text-xs px-1 py-1">
+	<div class="flex text-xs px-1 py-1" style="border: 1px solid #8e9bb2;">
 		<div class="w-10/12 flex">
 			<div class="text-right w-4/12">
 				<label>Matricule - </label><br>
@@ -83,7 +83,7 @@
 				if ($cours->rowCount() > 0) {
 					?>
 					<b></b>
-					<table class="simpleTbl mb-1">
+					<table class="tbl mb-1" style="page-break-inside: avoid;">
 						<thead>
 							<tr class="text-center bg-slate-500 text-white">
 								<th colspan="10" id="semestre<?=$a.$s;?>"><?=$showSs['session_name']?> - Session N*<?=$showSs['session_semester']?> | Année <?=$combinAnual?></th>
@@ -310,7 +310,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 
 <div class='p-1 bg-slate-600 hover:bg-slate-500 mb-4 rounded-md border-2 border-slate-600 hover:border-cyan-500 transition-all text-xs text-white'>
 	<b>MOYENNE CUMULATIVE</b>
-	<table class="simpleTbl mb-1 w-full">
+	<table class="mb-1 w-full" style="page-break-inside: avoid;">
 		<tbody class=" bg-slate-700">
 			<tr>
 				<td class="p-1 w-8/12 text-right">Note de Work Education cumulative</td>
@@ -326,7 +326,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 			</tr>
 		</tbody>
 	</table>
-	<table class="simpleTbl mb-1 w-full">
+	<table class="mb-1 w-full" style="page-break-inside: avoid;">
 		<thead class="bg-slate-900">
 			<tr>
 				<th class="p-1 w-8/12 text-right">Moyenne Générale Cumulative</th>

@@ -27,8 +27,8 @@
 	$showM = $findMention->fetch();
 	$etude_envisage = $showM['filiere_description'];
 
-	$graduated = 'non';
-
+	$graduated = 0;
+	$abonment = $_POST['abonment'];
 	$annee_etude = $_POST['annee_etude'];
 	$status = $_POST['status'];
 	$etude_option = $_POST['etude_option'];
@@ -94,74 +94,104 @@
 
 	/*:::::::::::::::::::: FINANCE ::::::::::::::::::::*/
 
-	/*$verification_finance_licence = $dtb->query('SELECT * FROM t_2024_finance_detail_licence WHERE std_status = "'.$status.'" AND std_mention = "'.$mention.'" LIMIT 1');
+	$verification_finance_licence = $dtb->query('SELECT * FROM t_2024_finance_detail_licence WHERE std_status = "'.$status.'" AND std_mention = "'.$mention.'"');
 
-	$result_finance = $verification_finance_licence->fetch();
-
-		if($annee_etude == 1) {
-			$cout_fraix_generaux = $result_finance['frais_generaux'];
-		}else{
-			$cout_fraix_generaux = 0;
-		}
-
-		if($status == 'Interne'){
-			$cout_fondDepot_dortoir = $result_finance['fond_depot'];
-			$cout_logement = $result_finance['dortoir'] * $result_finance['nb_jours_semestre'];
-		}elseif($status == 'Bungalow'){
-			$cout_fondDepot_dortoir = 0;
-			$cout_logement = $result_finance['dortoir'] * $result_finance['nb_jours_semestre'];
-		}else{
-			$cout_fondDepot_dortoir = 0;
-			$cout_logement = 0;
-		}
+		$result_finance = $verification_finance_licence->fetch();
 
 
+	/*============== DETERMINATION OF DAYS NUMBER ==============*/
+	
+	if ($annee_etude == 1) {
+
+		$nbr_day = $result_finance['nb_jours_semestre'];
+
+		$frais_costume = $result_finance['frais_costume'];
+	
+	}elseif ($annee_etude == 2) {
+	
+		$nbr_day = $result_finance['nb_jours_semestre_L2'];
+
+		$frais_costume = 0;
+	
+	}elseif ($annee_etude == 3) {
+	
+		$nbr_day = $result_finance['nb_jours_semestre_L3'];
+		$frais_costume = 0;
+	}
+
+	/*============== FRAIS GENEREAUX ==============*/
+
+	$cout_fraix_generaux = $result_finance['frais_generaux'];
+
+	/*============== LOGMENT ==============*/
+
+	$cout_logement = $result_finance['dortoir'] * $nbr_day;
+
+
+	/*============== ABONEMENT CAF ==============*/
+
+	if($abonment == 1) {
+
+		$cout_abonment = $result_finance['cafeteria'] * $nbr_day;
+
+	}else{
 		
-		$cout_frais_graduation = 0;
-		$cout_totalCours = 0;
-		$cout_totalLab = 0;*/
+		$cout_abonment = 0;
 
-	/*$insertFinance = $dtb->prepare("INSERT INTO t_2024_etudiant_finace(
+	}
+
+
+	/*============== FOND DE DEPOT ==============*/
+
+	$fond_depot = $result_finance['fond_depot'];
+
+
+	/*============== FRAIS DE COSTUME ==============*/
+	
+	$frais_costume = $result_finance['frais_costume'];
+
+
+	$insertFinance = $dtb->prepare("INSERT INTO t_2024_etudiant_finace(
 		student_id,
+		session_id,
 		mention,
 		level,
 		status,
 		cout_logement,
 		cout_fraix_generaux,
 		cout_fondDepot_dortoir,
-		cout_frais_graduation,
-		cout_totalCours,
-		cout_totalLab,
+		cout_abonment,
+		cout_costume,
 		date_entry,
 		last_change_user_id
 	)VALUES(
 		:student_id,
+		:session_id,
 		:mention,
 		:level,
 		:status,
 		:cout_logement,
 		:cout_fraix_generaux,
 		:cout_fondDepot_dortoir,
-		:cout_frais_graduation,
-		:cout_totalCours,
-		:cout_totalLab,
+		:cout_abonment,
+		:cout_costume,
 		:date_entry,
 		:last_change_user_id
 	
 	)");$insertFinance->execute(array(
 		'student_id' => $student_id,
+		'session_id' => $session_id,
 		'mention' => $mention,
 		'level' => $annee_etude,
 		'status' => $status,
 		'cout_logement' => $cout_logement,
 		'cout_fraix_generaux' => $cout_fraix_generaux,
-		'cout_fondDepot_dortoir' => $cout_fondDepot_dortoir,
-		'cout_frais_graduation' => $cout_frais_graduation,
-		'cout_totalCours' => $cout_totalCours,
-		'cout_totalLab' => $cout_totalLab,
+		'cout_fondDepot_dortoir' => $fond_depot,
+		'cout_abonment' => $cout_abonment,
+		'cout_costume' => $frais_costume,
 		'date_entry' => $date_entry,
 		'last_change_user_id' => $last_change_user_id
-	));*/
+	));
 
 	/*:::::::::::::::::::: DIPLÔME PRECEDENT ::::::::::::::::::::*/
 
@@ -317,6 +347,7 @@
 		nb_enfant,
 		religion,
 		num_visa,
+		abonment,
 		last_change_user_id,
 		date_entry
 
@@ -360,6 +391,7 @@
 		:nb_enfant,
 		:religion,
 		:num_visa,
+		:abonment,
 		:last_change_user_id,
 		:date_entry
 
@@ -403,6 +435,7 @@
 		'nb_enfant' => $nb_enfant,
 		'religion' => $religion,
 		'num_visa' => $num_visa,
+		'abonment' => $abonment,
 		'last_change_user_id' => $last_change_user_id,
 		'date_entry' => $date_entry
 	));

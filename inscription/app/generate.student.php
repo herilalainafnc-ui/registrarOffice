@@ -10,6 +10,24 @@
 
 	$showStudent = $findStudent->fetch();
 
+	$idS = $showStudent['id'];
+
+	if ($showStudent['annee_etude'] < 3 AND $showStudent['annee_scolaire'] != $annee_scolaire) {
+
+		$annee_etude = $showStudent['annee_etude'] + 1;
+	
+	}else{
+	
+		$annee_etude = $showStudent['annee_etude'];
+	
+	}
+	
+	$updateStd = $dtb->prepare('UPDATE tbl_2024_etudiant SET annee_etude=:annee_etude, annee_scolaire=:annee_scolaire WHERE id=:id');
+	$updateStd->bindParam(':annee_etude',$annee_etude,PDO::PARAM_STR);
+	$updateStd->bindParam(':annee_scolaire',$annee_scolaire,PDO::PARAM_STR);
+	$updateStd->bindParam(':id',$idS,PDO::PARAM_INT);
+	$updateStd->execute();
+
 	
 	$findMention = $dtb->query('SELECT * FROM filiere WHERE filiere_description ="'.$showStudent['etude_envisage'].'"');
 	$showMention = $findMention->fetch();
@@ -20,21 +38,9 @@
 	$new_student = $showStudent['new_student'];
 	$level = $showStudent['annee_etude'];
 
-	$graduated = 0;
-	$caisse_verification = 0;
 	$data_completion = 1;
-	$data_verification = 0;
-	$cours_selected = 0;
-	$mode_payement = "";
-	$verification_signatures = 0;
-	$depot_list = 0;
-
-	$test_niveau = 0;
-	$remove = 0;
 	
 	$date_entry = date('Y-m-d');
-
-	$cout_logement = 0;
 	
 
 	$findSession = $dtb->query('SELECT * FROM t_2023_session WHERE session_name ="'.$semesterSession.'" AND session_year ="'.$annee_scolaire.'" LIMIT 1');
@@ -50,18 +56,9 @@
 		etude_mention,
 		status,
 		new_student,
-		graduated,
-		caisse_verification,
 		data_completion,
-		data_verification,
-		cours_selected,
-		mode_payement,
-		verification_signatures,
-		depot_list,
 		session_id,
 		nbr_semester,
-		test_niveau,
-		remove,
 		annee_scolaire,
 		date_entry
 	) VALUES (
@@ -69,18 +66,9 @@
 		:etude_mention,
 		:status,
 		:new_student,
-		:graduated,
-		:caisse_verification,
 		:data_completion,
-		:data_verification,
-		:cours_selected,
-		:mode_payement,
-		:verification_signatures,
-		:depot_list,
 		:session_id,
 		:nbr_semester,
-		:test_niveau,
-		:remove,
 		:annee_scolaire,
 		:date_entry
 	)');$creatLineStdToSession->execute(array(
@@ -88,18 +76,9 @@
 		'etude_mention' => $etude_mention,
 		'status' => $status,
 		'new_student' => $new_student,
-		'graduated' => $graduated,
-		'caisse_verification' => $caisse_verification,
 		'data_completion' => $data_completion,
-		'data_verification' => $data_verification,
-		'cours_selected' => $cours_selected,
-		'mode_payement' => $mode_payement,
-		'verification_signatures' => $verification_signatures,
-		'depot_list' => $depot_list,
 		'session_id' => $session_id,
 		'nbr_semester' => $nbr_semester,
-		'test_niveau' => $test_niveau,
-		'remove' => $remove,
 		'annee_scolaire' => $annee_scolaire,
 		'date_entry' => $date_entry
 	));
@@ -108,82 +87,85 @@
 
 	$result_finance = $verification_finance_licence->fetch();
 
-		if($nbr_semester == 1) {
-			$cout_fraix_generaux = $result_finance['frais_generaux'];
-		}elseif($nbr_semester == 2){
-			$cout_fraix_generaux = $result_finance['frais_generaux'] -20000;
+		$cout_fraix_generaux = $result_finance['frais_generaux'];		
+
+		if ($level == 1) {
+
+			$nbr_day = $result_finance['nb_jours_semestre'];
+		
+		}elseif ($level == 2) {
+		
+			$nbr_day = $result_finance['nb_jours_semestre_L2'];
+		
+		}elseif ($level == 3) {
+		
+			$nbr_day = $result_finance['nb_jours_semestre_L3'];
+		
 		}
 
 
-		if ($level == 3 AND $nbr_semester == 2) {
+		if ($graduated == 1) {
+			
 			$cout_frais_graduation = $result_finance['frais_graduation'];
+		
 		}else{
+		
 			$cout_frais_graduation = 0;
+		
 		}
 
+		$cout_fondDepot_dortoir = $result_finance['fond_depot'];
+		
+		$cout_logement = $result_finance['dortoir'] * $nbr_day;
 
-		if($status == 'Interne'){
-			$cout_fondDepot_dortoir = $result_finance['fond_depot'];
-			$cout_logement = $result_finance['dortoir'] * $result_finance['nb_jours_semestre'];
-		}elseif($status == 'Bungalow'){
-			$cout_fondDepot_dortoir = 0;
-			$cout_logement = $result_finance['dortoir'] * $result_finance['nb_jours_semestre'];
-		}else{
-			$cout_fondDepot_dortoir = 0;
-			$cout_logement = 0;
-		}
 	
+	$verifyExist = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE student_id = "'.$student_id.'" AND session_id = "'.$session_id.'"');
+
+	$resultVerify = $verifyExist->fetch();
+
+	if (empty($resultVerify)) {
+		
+		$creatLineStdToFinance = $dtb->prepare('INSERT INTO t_2024_etudiant_finace(
+			student_id,
+			session_id,
+			mention,
+			level,
+			status,
+			cout_logement,
+			cout_fraix_generaux,
+			cout_fondDepot_dortoir,
+			cout_frais_graduation,
+			remove,
+			date_entry
+		) VALUES (
+			:student_id,
+			:session_id,
+			:mention,
+			:level,
+			:status,
+			:cout_logement,
+			:cout_fraix_generaux,
+			:cout_fondDepot_dortoir,
+			:cout_frais_graduation,
+			:mode_payement,
+			:remove,
+			:date_entry
+		)');$creatLineStdToFinance->execute(array(
+			'student_id' => $student_id,
+			'session_id' => $session_id,
+			'mention' => $etude_mention,
+			'level' => $level,
+			'status' => $status,
+			'cout_logement' => $cout_logement,
+			'cout_fraix_generaux' => $cout_fraix_generaux,
+			'cout_fondDepot_dortoir' => $cout_fondDepot_dortoir,
+			'cout_frais_graduation' => $cout_frais_graduation,
+			'remove' => $remove,
+			'date_entry' => $date_entry
+		));
+
+	}
+
 	
-	$cout_totalCours = 0;
-	$cout_totalLab = 0;
-	$mode_payement = 0;
-
-
-	$creatLineStdToFinance = $dtb->prepare('INSERT INTO t_2024_etudiant_finace(
-		student_id,
-		session_id,
-		mention,
-		level,
-		status,
-		cout_logement,
-		cout_fraix_generaux,
-		cout_fondDepot_dortoir,
-		cout_frais_graduation,
-		cout_totalCours,
-		cout_totalLab,
-		mode_payement,
-		remove,
-		date_entry
-	) VALUES (
-		:student_id,
-		:session_id,
-		:mention,
-		:level,
-		:status,
-		:cout_logement,
-		:cout_fraix_generaux,
-		:cout_fondDepot_dortoir,
-		:cout_frais_graduation,
-		:cout_totalCours,
-		:cout_totalLab,
-		:mode_payement,
-		:remove,
-		:date_entry
-	)');$creatLineStdToFinance->execute(array(
-		'student_id' => $student_id,
-		'session_id' => $session_id,
-		'mention' => $etude_mention,
-		'level' => $level,
-		'status' => $status,
-		'cout_logement' => $cout_logement,
-		'cout_fraix_generaux' => $cout_fraix_generaux,
-		'cout_fondDepot_dortoir' => $cout_fondDepot_dortoir,
-		'cout_frais_graduation' => $cout_frais_graduation,
-		'cout_totalCours' => $cout_totalCours,
-		'cout_totalLab' => $cout_totalLab,
-		'mode_payement' => $mode_payement,
-		'remove' => $remove,
-		'date_entry' => $date_entry
-	));
 
  ?>

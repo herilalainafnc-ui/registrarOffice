@@ -15,7 +15,7 @@ $stdA = $searchStd->fetch();
 	<b class="text-2xl">Fiche d'inscription</b>
 </center>
 	
-	<div class="border border-black flex text-xs px-1 py-1">
+	<div class="flex text-xs px-1 py-1" style="border: 1px solid #8e9bb2;">
 		<div class="w-10/12" style="display: flex;">
 			<div class="text-right w-4/12">
 				<label>Matricule - </label><br>
@@ -45,7 +45,7 @@ $stdA = $searchStd->fetch();
 		<b class="text-lg">Liste des cours</b>
 	<div>
 		
-		<table class="tbl simpleTbl mb-2">
+		<table class="tbl mb-2">
 			<thead class="bg-slate-200">
 				<tr>
 					<th style="width: 100px">SIGLE</th>
@@ -121,23 +121,52 @@ if ($showCat['category'] == 0){
 	if (!empty($showFin['session_id']) OR $showFin['session_id'] != 0) {
  ?>
  		<b class="text-lg">Finance</b>
-		<table class="tbl simpleTbl mb-2">
+		<table class="tbl mb-2">
 			<thead class="bg-sky-200">
-				<tr>
+				<tr class="text-right">
 					<th>Frais Généraux</th>
-					<th>Frais de logement</th>
-					<th>Fond Dépôt Dortoir</th>
-					<th>Frais Graduation</th>
+					<?php if ($stdA['status'] == "Interne" OR $stdA['status'] == "Bungalow") { ?>
+						<th>Logement</th>
+						<th>Fond Dépôt</th>
+					<?php }?>
+
+					<?php if ($stdA['abonment'] == 1) { ?>
+						<th>Céféteria</th>
+					<?php }?>
+
+					<?php if ($stdA['etude_envisage'] == "Théologie" AND $stdA['annee_etude'] == 1) { ?>
+						<th>Frais Costume</th>
+					<?php }?>
+
+					<?php if ($stdA['graduated'] == 1) { ?>
+						<th>Frais Graduation</th>
+					<?php }?>
+
 					<th>Total Cours</th>
-					<th>Total Laboratoire</th>
+					<th>Total Lab</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr class="text-bold text-right">
 					<td><?=$showFin['cout_fraix_generaux']?> ar</td>
-					<td><?=$showFin['cout_logement']?> ar</td>
-					<td><?=$showFin['cout_fondDepot_dortoir']?> ar</td>
-					<td><?=$showFin['cout_frais_graduation']?> ar</td>
+
+					<?php if ($stdA['status'] == "Interne" OR $stdA['status'] == "Bungalow") { ?>
+						<td><?=$showFin['cout_logement']?> ar</td>
+						<td><?=$showFin['cout_fondDepot_dortoir']?> ar</td>
+					<?php }?>
+
+					<?php if ($stdA['abonment'] == 1) { ?>
+						<td><?=$showFin['cout_abonment']?> ar</td>
+					<?php }?>
+
+					<?php if ($stdA['etude_envisage'] == "Théologie" AND $stdA['annee_etude'] == 1) { ?>
+						<td><?=$showFin['cout_costume']?> ar</td>
+					<?php }?>
+
+					<?php if ($stdA['graduated'] == 1) { ?>
+						<td><?=$showFin['cout_frais_graduation']?> ar</td>
+					<?php } ?>
+
 					<td><?=$showFin['cout_totalCours']?> ar</td>
 					<td><?=$showFin['cout_totalLab']?> ar</td>
 				</tr>
@@ -148,11 +177,13 @@ if ($showCat['category'] == 0){
 			<b class="bg-orange-300 py-1 px-2"><?=$Montant = $showFin['cout_fraix_generaux'] + 
 							$showFin['cout_logement'] +
 							$showFin['cout_fondDepot_dortoir'] +
+							$showFin['cout_abonment'] +
+							$showFin['cout_costume'] +
 							$showFin['cout_frais_graduation'] +
 							$showFin['cout_totalCours'] +
 							$showFin['cout_totalLab']
-				?> ar</b></p>
-		<b class="text-lg">Mode de payement</b>
+				?> ar</b> <em>(À payer lors de l'inscription : <?=$showFin['cout_fraix_generaux']?> ar)</em>
+			</p>
 <?php 
 $findPayement = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE student_id="'.$student_id.'" AND session_id="'.$session_id.'"');
 
@@ -160,98 +191,107 @@ $showPayement = $findPayement->fetch();
 
 $modeP = $showPayement['mode_payement'];
 ?>
-
-	<table class="tbl simpleTbl mb-2 w-5/12">
+<div class="w-full gap-3 flex">
+<div class="w-5/12">
+	<b class="text-lg">Mode de payement</b>
+	<table class="tbl mb-2">
 			<thead>
 				<tr>
-					<th colspan="3" class="text-center text-bold">TYPE <?=$modeP?></th>
+					<th colspan="3" class="text-center text-bold"> <?=$Montant_sans_fraix_Generaux =
+							$Montant - $showFin['cout_fraix_generaux']
+				?>ar</th>
 				</tr>
+				<tr>
+					<th colspan="3" class="text-center text-bold">Payé en tranches de TYPE <?=$modeP?></th>
+				</tr>
+
 			</thead>
 			<tbody>
 				<?php if ($modeP == 'A') {  ?>
 					<tr>
 						<td>100 %</td>
 						<td class="text-right"><?=$Montant?> ar</td>
-						<td>Le jour d'inscription</td>
+						<td>Paiement à l'inscription</td>
 					</tr>
 				<?php }elseif ($modeP == 'B') {  ?>
 					<tr>
 						<td>50 %</td>
 						<td class="text-right"><?=($Montant*50) /100 ?> ar</td>
-						<td>Le jour d'inscription</td>
+						<td>Paiement à l'inscription</td>
 					</tr>
 					<tr>
 						<td>50 %</td>
 						<td class="text-right"><?=($Montant*50) /100 ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="00 janvier 2025"></td>
 					</tr>
 				<?php }elseif ($modeP == 'C') {  ?>
 					<tr>
 						<td>75 %</td>
 						<td class="text-right"><?=($Montant*75) /100 ?> ar</td>
-						<td>Le jour d'inscription</td>
+						<td>Paiement à l'inscription</td>
 					</tr>
 					<tr>
 						<td>25 %</td>
 						<td class="text-right"><?=($Montant*25) /100 ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="00 janvier 2025"></td>
 					</tr>
 				<?php }elseif ($modeP == 'D') {  ?>
 					<tr>
 						<td>40 %</td>
 						<td class="text-right"><?=($Montant*40) /100 ?> ar</td>
-						<td>Le jour d'inscription</td>
+						<td>Paiement à l'inscription</td>
 					</tr>
 					<tr>
 						<td>30 %</td>
 						<td class="text-right"><?=($Montant*30) /100 ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="00 janvier 2025"></td>
 					</tr>
 					<tr>
 						<td>30 %</td>
 						<td class="text-right"><?=($Montant*30) /100 ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="00 janvier 2025"></td>
 					</tr>
-				<?php }elseif ($modeP == 'D') {  ?>
+				<?php }elseif ($modeP == 'E') {  ?>
 					<tr>
 						<td>25 %</td>
 						<td class="text-right"><?=($Montant*25) /100 ?> ar</td>
-						<td>Le jour d'inscription</td>
-					</tr>
-					<tr>
-						<td>25 %</td>
-						<td class="text-right"><?=($Montant*25) /100 ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full"></td>
+						<td>Paiement à l'inscription</td>
 					</tr>
 					<tr>
 						<td>25 %</td>
 						<td class="text-right"><?=($Montant*25) /100 ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="00 janvier 2025"></td>
 					</tr>
 					<tr>
 						<td>25 %</td>
 						<td class="text-right"><?=($Montant*25) /100 ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="00 janvier 2025"></td>
+					</tr>
+					<tr>
+						<td>25 %</td>
+						<td class="text-right"><?=($Montant*25) /100 ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="00 janvier 2025"></td>
 					</tr>
 				<?php } ?>
 			</tbody>
 	</table>
-
+</div>
 <?php } } ?>
-	</div>
-<br>
-<b class="text-sm">WORK EDUCATION CHOISI : <input type="text" placeholder="____________________" class="h-4 p-0 border-0 text-xs"></b><br><br>
-	
-<b class="text-sm">ENGAGEMENT</b><br>
-Je sousigné(e) <?=strtoupper($stdA['student_nom'])." ".$stdA['student_prenom']?>
-<p class="text-sm">m'engage, durant mon séjour à l'Université Adventiste Zurcher, à maintenir en tout temps une conduite et attitude exemplaire, et en harmonie avec
+<div class="w-7/12">
+	<b class="text-sm">WORK EDUCATION CHOISI : <input type="text" placeholder="____________________________" class="h-4 p-0 border-0 text-xs"></b>
+	<b class="text-sm">ENGAGEMENT</b><br>
+
+<p class="text-[11px]" style="line-height: 13px;">Je sousigné(e) <?=strtoupper($stdA['student_nom'])." ".$stdA['student_prenom']?><br>m'engage, durant mon séjour à l'Université Adventiste Zurcher, à maintenir en tout temps une conduite et attitude exemplaire, et en harmonie avec
 la philosophie chrétienne de cette institution qui m'acceuille; à contribuer positivement à la vie de l'université et à vivre en tout temps en conformité
 avec ses principes et règlements. Le non-respect de cet engagement pourrait entrainer une sanction ou même un renvoi temporaire.</p>
+</div>
+</div>
+	</div>
+	
 
 
 <div>
-		<br><br>
-			<p class="text-sm">Sambaina, le <?php
+			<em class="text-sm mt-2">Sambaina, le <?php
 				 echo date('d')." ";
 				 $volana = date('m');
 				 if($volana == '01'){echo('Janvier ');}
@@ -267,11 +307,10 @@ avec ses principes et règlements. Le non-respect de cet engagement pourrait ent
 				 else if($volana == '11'){echo('Novembre ');}
 				 else if($volana == '12'){echo('Decembre ');}
 				 echo date('Y')
-				 ?></p>	
+				 ?></em>	
 		</div>
-		<br><br>
 		<p class="text-sm">Approuvée par :</p>
-		<table class="text-sm" style="width: 100%">
+		<table class="text-sm text-[10px]" style="width: 100%; page-break-inside: avoid;">
 			<tbody>
 				<tr>
 					<td></td>
@@ -280,32 +319,28 @@ avec ses principes et règlements. Le non-respect de cet engagement pourrait ent
 					<td></td>
 					<td></td>
 					<td></td>
-					<td></td>
+					<!-- <td></td> -->
 					<td></td>
 					<td></td>
 					<td style="height: 70px;"></td>
 				</tr>
-				<tr>
+				<tr style="font-size : 11px; line-height: 11px;">
 					<td style="border-top: 1px solid black; text-align: center;">Etudiant(e)</td>
 					<td style="width: 20px"></td>
-					<td style="border-top: 1px solid black; text-align: center;">Chef de département</td>
+					<td style="border-top: 1px solid black; text-align: center;">Chef de mention</td>
 					<td style="width: 20px"></td>
-					<td style="border-top: 1px solid black; text-align: center;">Vice-Recteur<br>financière</td>
+					<td style="border-top: 1px solid black; text-align: center;">Vice-Recteur<br>financière / Controleur</td>
 					<td style="width: 20px"></td>
-					<td style="border-top: 1px solid black; text-align: center;">Vice-Recteur<br>académique</td>
-					<td style="width: 20px"></td>
-					<td style="border-top: 1px solid black; text-align: center;">Vice-Recteur<br>aux affaire Estudiantine</td>
+					<!-- <td style="border-top: 1px solid black; text-align: center;">Vice-Recteur<br>académique</td>
+					<td style="width: 20px"></td> -->
+					<td style="border-top: 1px solid black; text-align: center;">Vice-Recteur<br>aux Affaire Estudiantine</td>
 					<td style="width: 20px"></td>
 					<td style="border-top: 1px solid black; text-align: center;">Registraire</td>
 				</tr>
 			</tbody>
-		</table><br>
-<div class="text-sm" style="border-top:1px solid black; width: 100%;">
-	<table class="tbl">
-		<tr>
-			<td><em>Université Adventiste Zurcher</em></td>
-		</tr>
-	</table>
+		</table>
+<div class="text-sm mt-1" style="border-top:1px solid black; width: 100%;">
+	<em>Université Adventiste Zurcher</em>
 </div>
 
 </div>

@@ -1,4 +1,4 @@
-<table style="width: 100%; color : black; border-bottom: 1px solid black;">
+<table style="width: 100%; color : black; border-bottom: 1px solid #8e9bb2;">
 	<tr>
 		<td style="width: 20%;"><img src="../file/UAZ Official Black Logo.jpg" style="height: 100px;"></td>
 		<td style="width: 60%; text-align: center;">

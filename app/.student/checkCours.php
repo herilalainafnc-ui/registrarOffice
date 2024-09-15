@@ -39,6 +39,13 @@
 					$yearlevel = $affiche['yearlevel'];
 					$teacher_id = $affiche['id_teacher'];
 
+					if ($lab != 0) {
+						$nLab = 1;
+					}else{
+						$nLab = 0;
+					}
+					
+
 			$insert = $dtb->prepare("INSERT INTO t_2023_notes(
 				id_cours,
 				Sigle,
@@ -133,7 +140,11 @@
 		/*===================== FIANCES =====================*/
 
 		$tCout += $cout;
-		$tCout_lab += $cout_lab;
+
+			if ($nLab <= 3) {
+				$tCout_lab += $cout_lab;
+			}
+		
 		}
 		
 		$tCout;

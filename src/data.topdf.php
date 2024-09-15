@@ -100,46 +100,6 @@ $date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
         </div>
     </div>
 </body>
-<style type="text/css">
-    .tbl{
-        font-size: 12px;
-        font-family: "arial",sans-serif;
-        border-collapse: collapse;
-    }
-    .sigle {
-        background-color: #f8e6da;
-    }
-    .tbl thead th {
-        background-color: #def3fc;
-        border: 1px solid #94a3b8;
-        color: #0c1465;
-        padding: 2px 5px 2px 5px;
-    }
-    .tbl tbody td{
-        border: 1px solid #94a3b8;
-        color: #0c1465;
-        padding: 2px 5px 2px 5px;
-    }
-    .tbl tfoot td{
-        border: 1px solid #94a3b8;
-        color: #0c1465;
-        padding: 2px 5px 2px 5px;
-    }
-    .contenu{
-        border: 1px solid #94a3b8;
-        color: #0c1465;
-        border-collapse: collapse;
-        font-size: 13px;
-    }
-    .contenu th,.contenu td{
-        border: 1px solid #94a3b8;
-        color: #0c1465;
-        text-align: center;
-    }
-    .contenu td{
-        height: 35px;
-    }
-</style>
 
 <!-- /////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -149,30 +109,31 @@ $date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
 
 <script type="text/javascript">
 
-var printConge = document.getElementById('printThisContent');
+    var printConge = document.getElementById('printThisContent');
 
-function printThisContent(){
+    function printThisContent(){
 
-    alert('Download PDF processing !');
+        alert('Download PDF processing !');
 
-    var opt = {
-        margin:     0.40,
-        filename:   '<?=$printName?> <?=$date?>.pdf',
-        image:      { type: 'jpeg', quality: 2 },
-        html2canvas:{ scale: 10 },
-        jsPDF:      { unit: 'in', format: 'a4', orientation: 'portrait' }
-    };
+        var opt = {
+            margin:     0.5,
+            filename:   '<?=$printName?> <?=$date?>.pdf',
+            image:      { type: 'jpeg', quality: 1 },
+            html2canvas:{ scale: 4, logging: true, useCORS: true },
+            jsPDF:      { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
 
-     // New Promise-based usage:
-     html2pdf().set(opt).from(printConge).save();
+         // New Promise-based usage:
+         html2pdf().set(opt).from(printConge).save();
 
-     // Old monolithic-style usage:
-     html2pdf(printConge, opt);
-    }
+         // Old monolithic-style usage:
+         html2pdf(printConge, opt);
 
-    // Ajouter le contenu HTML au champ caché et soumettre le formulaire
-    document.getElementById('btnToExcel').addEventListener('click', function() {
-    document.getElementById('htmlContent').value = document.getElementById('printThisContent').outerHTML;
-    document.getElementById('exportForm').submit();
-});
+        }
+
+        // Ajouter le contenu HTML au champ caché et soumettre le formulaire
+        document.getElementById('btnToExcel').addEventListener('click', function() {
+        document.getElementById('htmlContent').value = document.getElementById('printThisContent').outerHTML;
+        document.getElementById('exportForm').submit();
+    });
 </script>

@@ -39,7 +39,7 @@ $stdA = $searchStd->fetch();
 
 </center>
 
-<div class="border border-black flex text-xs px-2 py-1">
+<div class="flex text-xs px-2 py-1" style="border: 1px solid #8e9bb2;">
 	<div class="w-full flex">
 		<div class="text-right w-4/12">
 			<label>Matricule - </label><br>
@@ -82,7 +82,7 @@ $stdA = $searchStd->fetch();
 			
 		
  ?>
-		<table class="tbl simpleTbl mb-1">
+		<table class="tbl mb-1" style="page-break-inside: avoid;">
 			<thead>
 				<tr class="text-center bg-slate-500 text-white">
 					<th colspan="10">SEMESTRE <?=$s?></th>

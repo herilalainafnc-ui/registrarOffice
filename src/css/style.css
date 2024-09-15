@@ -91,3 +91,46 @@ select option{
 	border-radius: 2px;
 	color: black;
 }
+/*TABLE IMPRESSION*/
+
+   .tbl{
+        font-size: 12px;
+        font-family: "arial",sans-serif;
+        border-collapse: collapse;
+        border-spacing: 0;
+        border: 1px solid #8e9bb2;
+        width: 100%;
+    }
+    .sigle {
+        background-color: #f8e6da;
+    }
+    .tbl thead th {
+        background-color: #def3fc;    
+        color: #0c1465;
+        padding: 2px 5px 2px 5px;
+    }
+    .tbl tbody tr:nth-child(even) {
+        background-color: #dcfede;
+    }
+
+    .tbl tbody td{ 
+        color: #0c1465;
+        padding: 2px 5px 2px 5px;
+
+    }
+    .tbl tfoot th, .tbl tfoot td{ 
+        color: #0c1465;
+        padding: 2px 5px 2px 5px;
+    }
+    .contenu{    
+        color: #0c1465;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+    .contenu th,.contenu td{
+        color: #0c1465;
+        text-align: center;
+    }
+    .contenu td{
+        height: 35px;  
+    }

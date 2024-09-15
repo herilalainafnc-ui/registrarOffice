@@ -30,6 +30,7 @@
 				$show_session = $select_session->fetch();
 
 				echo '<p class="text-sm text-slate-400">'.$show_session['session_name'].'<br>'.$show_session['session_year'].'</p>';
+				echo '<p id="session_id" style="display:none">'.$show_session['session_id'].'</p>';
 
 			}
 		}elseif (date('m') < 7) {
@@ -44,6 +45,7 @@
 				$show_session = $select_session->fetch();
 
 				echo '<p class="text-sm text-slate-400">'.$show_session['session_name'].'<br>'.$show_session['session_year'].'</p>';
+				echo '<p id="session_id">'.$show_session['session_id'].'</p>';
 
 			}
 		}

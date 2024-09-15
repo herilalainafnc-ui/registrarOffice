@@ -1,5 +1,5 @@
 
-<form method="post" action="../app/.student/updateStd.php?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>" class="form-no-refrech">
+<form method="post" action="../app/.student/updateStd.php?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>&etude_envisage=<?=$etude_envisage?>" class="form-no-refrech" target="_blank">
 <div class="w-full grid gap-2 grid-cols-2 mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">
 
 	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all'>
@@ -66,6 +66,7 @@ while ($showR = $findRegion->fetch()) {
 				<label class="text-sm text-slate-400">Date de délivrance</label>
 				<p class="showPers">-- <?=$profil['cin_date_delivre']?></p><input class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="date" name="cin_date_delivre" value="<?=$profil['cin_date_delivre']?>"><br>
 
+				<input type="text" class="p-0 text-black h-5 text-sm border-0 w-11/12" name="session_id" value="" style="display:none">
 				
 			</div>
 		</div>
@@ -197,7 +198,7 @@ $showDiplome = $findDiplome->fetch();
 						echo " Master ".$profil['annee_etude']-3;
 					} ?>	
 				</p>
-				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="annee_etude">
+				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="annee_etude" id="annee_etude">
 					<option class="<?=$bg_one_color?>" value="1" <?php if($profil['annee_etude'] == 1){echo 'selected';}?>>Licence 1</option>
 					<option class="<?=$bg_one_color?>" value="2" <?php if($profil['annee_etude'] == 2){echo 'selected';}?>>Licence 2</option>
 					<option class="<?=$bg_one_color?>" value="3" <?php if($profil['annee_etude'] == 3){echo 'selected';}?>>Licence 3</option>
@@ -206,11 +207,11 @@ $showDiplome = $findDiplome->fetch();
 				</select>
 				<br>
 				<label class="text-sm text-slate-400">Matricule</label>
-				<p class=""><i class="bi-lock-fill"></i> <?=$profil['student_id']?></p><br>
+				<p><i class="bi-lock-fill"></i> <?=$profil['student_id']?></p><br>
 				
 				<label class="text-sm text-slate-400">Status</label>
 				<p class="showEtd">-- <?=$profil['status']?></p>
-				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="status">
+				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="status" id="status">
 					<option class="<?=$bg_one_color?>"></option>
 					<option class="<?=$bg_one_color?>" <?php if($profil['status'] == 'Externe'){echo 'selected';}?>>Externe</option>
 					<option class="<?=$bg_one_color?>" <?php if($profil['status'] == 'Interne'){echo 'selected';}?>>Interne</option>
@@ -265,7 +266,7 @@ $y = $y - 1;
 				<br>
 				<label class="text-sm text-slate-400">Gradué</label>
 				<p class="showEtd">-- <?php if($profil['graduated'] == "" OR $profil['graduated'] == 0){echo 'Non';}else{echo 'Oui';}?></p>
-				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="graduated">
+				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="graduated" id="graduated">
 					<option class="<?=$bg_one_color?>" <?php if($profil['graduated'] == 0){echo 'selected';}?> value="0">Non</option>
 					<option class="<?=$bg_one_color?>" <?php if($profil['graduated'] == 1){echo 'selected';}?> value="1">Oui</option>
 				</select>
@@ -358,7 +359,7 @@ $y = $y - 1;
 			</div>
 			<div class="w-4/12 text-right">
 				<div class="w-full flex gap-1 relative">
-					<input type="submit" class="submitAutr rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier">
+					<input id="firstAutr" type="submit" class="submitAutr rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier">
 					<a href="#" class="annulAutr rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
 				</div>
 				<a href="#" id="editAutr" class="text-right"><i class="bi-pencil-square"></i></a>
@@ -369,7 +370,7 @@ $y = $y - 1;
 			<div class="w-6/12">
 				<label class="text-sm text-slate-400">État civil</label>
 				<p class="showAutr">-- <?=$profil['situationf']?></p>
-				<select id="firstAutr" class="editAutr p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="">
+				<select id="firstAutr" class="editAutr p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="situationf">
 					<option class="<?=$bg_one_color?>" <?php if($profil['situationf'] == 'Célibataire'){echo 'selected';}?>>Célibataire</option>
 					<option class="<?=$bg_one_color?>" <?php if($profil['situationf'] == 'Marié'){echo 'selected';}?>>Marié</option>
 				</select>
@@ -384,9 +385,16 @@ $y = $y - 1;
 				<p class="showAutr">-- <?=$profil['nom_conjoint']?></p><input class="editAutr p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="nom_conjoint" value="<?=$profil['nom_conjoint']?>"><br>
 				<label class="text-sm text-slate-400">Réligion</label>
 				<p class="showAutr">-- <?=$profil['religion']?></p>
-				<select id="firstAutr" class="editAutr p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="religion">
+				<select class="editAutr p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="religion">
 					<option class="<?=$bg_one_color?>" <?php if($profil['religion'] == 'Adventiste' OR $profil['religion'] == 'Adventiste du Septieme-jour'){echo 'selected';}?>>Adventiste</option>
 					<option class="<?=$bg_one_color?>" <?php if($profil['religion'] != 'Adventiste' AND $profil['religion'] != 'Adventiste du Septieme-jour'){echo 'selected';}?>>non Adventiste</option>
+				</select><br>
+				<label class="text-sm text-slate-400">Abonné au CAF</label>
+				<p class="showAutr">-- <?php if ($profil['abonment'] == 1) { echo "Oui"; }else{ echo "Non"; }?></p>
+				
+				<select class="editAutr p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="abonment" id="abonment">
+					<option class="<?=$bg_one_color?>" <?php if($profil['abonment'] == 1){ echo 'selected'; }?> value="1">Oui</option>
+					<option class="<?=$bg_one_color?>" <?php if($profil['abonment'] == 0 OR $profil['abonment'] == ''){ echo 'selected'; }?> value="0">Non</option>
 				</select><br>
 			</div>
 		</div>
@@ -404,14 +412,17 @@ $y = $y - 1;
 	$(document).ready(function(){
 
 		$('.form-no-refrech').on('submit',function (e) {
+			
 			e.preventDefault();
 
 			var url = '../app/.student/updateStd.php?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>';
 			
+			var session_id = $('input[name="session_id"]').val();
+			
 			var data = $(this).serialize();
-
+			
 			$.post(url,data,function(response){
-				
+
 				$('.submitPers').css({'display':'none'});
 				$('.submitContact').css({'display':'none'});
 				$('.submitEtd').css({'display':'none'});
@@ -433,21 +444,32 @@ $y = $y - 1;
 				$('#editSpons').css({'display':'block'});
 				$('#editAutr').css({'display':'block'});
 				
-				/*
-				$('.editPers').css({'display':'none'});
-				$('.showPers').css({'display':'block'});
-				$('.editContact').css({'display':'none'});
-				$('.showContact').css({'display':'block'});
-				$('.editEtd').css({'display':'none'});
-				$('.showEtd').css({'display':'block'});
-				$('.editParent').css({'display':'none'});
-				$('.showParent').css({'display':'block'});
-				$('.editSpons').css({'display':'none'});
-				$('.showSpons').css({'display':'block'});
-				$('.editAutr').css({'display':'none'});
-				$('.showAutr').css({'display':'block'});
-				*/
 			});
+
+			if (session_id != "") {
+					
+					var status = $('#status').val();
+					var etude_envisage = '<?=$etude_envisage?>';
+					var student_id = '<?=$student_id?>';
+					var annee_etude = $('#annee_etude').val();
+					var abonment = $('#abonment').val();
+					var graduated = $('#graduated').val();
+
+					var financeUrl = '../app/.student/updateFinance.php?status=' + status +
+                         '&etude_envisage=' + etude_envisage + 
+                         '&student_id=' + student_id + 
+                         '&session_id=' + session_id + 
+                         '&annee_etude=' + annee_etude + 
+                         '&abonment=' + abonment + 
+                         '&graduated=' + graduated;
+
+			 
+			        $.get(financeUrl, function(response) {
+			            console.log("Finance update successful!");
+			        });
+
+			}
+
 		});
 		
 		$('#editPers').click(function(){

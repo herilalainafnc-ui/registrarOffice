@@ -232,10 +232,10 @@ while ($showSignMention = $findSignMention->fetch()) {
 										<label class="text-sm text-slate-400">Année universitaire</label>
 										
 										<select class="inscInput h-6 text-sm w-full requierd-10 mb-3" name="annee_scolaire">
-											<option class="<?=$bg_seven_color?>"></option>
+											
 						<?php
 						$y = date('Y');
-						for ($i=0; $i <= 8; $i++) { 
+						for ($i=0; $i <= 7; $i++) { 
 							
 							$as = $y." - ".($y+1);
 							?>
@@ -390,7 +390,11 @@ while ($showSignMention = $findSignMention->fetch()) {
 										<input class="inscInput h-6 text-sm w-full" type="text" name="num_visa" placeholder="--">
 									</div>
 									<div class="w-6/12">
-										
+										<label class="text-sm text-slate-400">Abonné au CAF</label>
+										<select id="firstAutr" class="inscInput h-6 text-sm w-full" name="abonment">
+											<option class="<?=$bg_seven_color?>" value="0">Non</option>
+											<option class="<?=$bg_seven_color?>" value="1">Oui</option>
+										</select>
 									</div>
 								</div>
 							</div>
