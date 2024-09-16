@@ -86,12 +86,12 @@ if ($etude_envisage == "Théologie") {
 if(!empty($cours_table_selective)){
  ?>
 		<tr>	
-			<th style="width: 20px">Nb</th>
-			<th style="width: 90px">SIGLE</th>
-			<th>Cours Séléctive - Semestre 1</th>
-			<th style="width: 30px">Crd</th>
-			<th style="width: 20px">Ch</th>
-			<th style="width: 50px">Final</th>
+			<th class="border-r border-b" style="width: 20px">Nb</th>
+			<th class="border-r border-b" style="width: 90px">SIGLE</th>
+			<th class="border-r border-b">Cours Séléctive - Semestre 1</th>
+			<th class="border-r border-b" style="width: 30px">Crd</th>
+			<th class="border-r border-b" style="width: 20px">Ch</th>
+			<th class="border-r border-b" style="width: 50px">Final</th>
 		</tr>
 <?php 
 }
@@ -106,11 +106,11 @@ if(!empty($cours_table_selective)){
 ?>
 		<tr>
 			
-			<td><?=$n_selective;?></td>
-			<td class="sigle"><?php echo $sigle = $cours_table_selective['Sigle'];?></td>
-			<td><?=$cours_table_selective['title'];?></td>
-			<td><?=$cours_table_selective['nb_crd'];?></td>
-			<td>
+			<td class="border-r border-b"><?=$n_selective;?></td>
+			<td class="sigle border-r border-b"><?php echo $sigle = $cours_table_selective['Sigle'];?></td>
+			<td class="border-r border-b"><?=$cours_table_selective['title'];?></td>
+			<td class="border-r border-b"><?=$cours_table_selective['nb_crd'];?></td>
+			<td class="border-r border-b">
 <?php 
 	$notes_selective = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id = "'.$student_id.'" AND Sigle = "'.$sigle.'" AND ajout = 1 OR remove = 0 LIMIT 1');
 	$nt_selective = $notes_selective->fetch();
@@ -125,7 +125,7 @@ if(!empty($cours_table_selective)){
 
 ?>
 			</td>
-			<td>
+			<td class="border-r border-b">
 <?php	
 	if (empty($nt_selective)) {
 		$searchcours = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id = "'.$student_id.'" AND title_cours LIKE "%'.$cours_table_selective['title'].'%" AND (ajout = 1)');
@@ -155,12 +155,12 @@ if(!empty($cours_table_selective)){
 if(!empty($cours_table_selective)){
  ?>		
 		<tr>		
-			<td></td>
-			<td></td>
-			<td></td>
-			<td><?=$tcredit_selective?></td>
-			<td></td>
-			<td></td>
+			<td class="border-r border-b"></td>
+			<td class="border-r border-b"></td>
+			<td class="border-r border-b"></td>
+			<td class="border-r border-b"><?=$tcredit_selective?></td>
+			<td class="border-r border-b"></td>
+			<td class="border-r border-b"></td>
 		</tr>
 <?php 
 }
@@ -180,13 +180,13 @@ for ($y=1; $y <= 3; $y++) {
 <table class="tbl w-full">
 	<thead>
 		<tr style="page-break-inside: avoid;">
-			<th style="width: 70px">Prérequis</th>
-			<th style="width: 20px">Nb</th>
-			<th style="width: 90px">SIGLE</th>
-			<th>Année <?=$y;?> - Semestre <?=$i;?></th>
-			<th style="width: 30px">Crd</th>
-			<th style="width: 20px">Ch</th>
-			<th style="width: 50px">Final</th>
+			<th class="border-r border-b" style="width: 70px">Prérequis</th>
+			<th class="border-r border-b" style="width: 20px">Nb</th>
+			<th class="border-r border-b" style="width: 90px">SIGLE</th>
+			<th class="border-r border-b">Année <?=$y;?> - Semestre <?=$i;?></th>
+			<th  class="border-r border-b"style="width: 30px">Crd</th>
+			<th class="border-r border-b" style="width: 20px">Ch</th>
+			<th class="border-r border-b" style="width: 50px">Final</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -198,12 +198,12 @@ for ($y=1; $y <= 3; $y++) {
 ?>
 	
 		<tr style="page-break-inside: avoid;">
-			<td><em>-</em></td>
-			<td><?=$n;?></td>
-			<td class="sigle"><b><?php echo $sigle = $cours_table['Sigle'];?></b></td>
-			<td><?=$cours_table['title'];?></td>
-			<td><?=$cours_table['nb_crd'];?></td>
-			<td>
+			<td class="border-r border-b"><em>-</em></td>
+			<td class="border-r border-b"><?=$n;?></td>
+			<td class="sigle border-r border-b"><b><?php echo $sigle = $cours_table['Sigle'];?></b></td>
+			<td class="border-r border-b"><?=$cours_table['title'];?></td>
+			<td class="border-r border-b"><?=$cours_table['nb_crd'];?></td>
+			<td class="border-r border-b">
 <?php 
 	$notes = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id = "'.$student_id.'" AND Sigle = "'.$sigle.'" AND (ajout = 1) LIMIT 1');
 	$nt = $notes->fetch();
@@ -218,7 +218,7 @@ for ($y=1; $y <= 3; $y++) {
 
 ?>
 			</td>
-			<td>
+			<td class="border-r border-b">
 <?php	
 	if (empty($nt)) {
 		echo "";

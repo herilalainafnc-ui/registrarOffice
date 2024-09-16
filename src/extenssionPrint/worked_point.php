@@ -46,52 +46,52 @@ $stdA = $searchStd->fetch();
 
 <div style="width: 100%; font-family: arial; font-size: 13px;">
 
-<table style="width: 100%" class="contenu">
+<table style="width: 100%" class="tbl contenu">
 	<thead>
 		<tr>
-			<th>Date</th>
-			<th colspan="2">Dimanche</th>
-			<th colspan="2">Lundi</th>
-			<th colspan="2">Mardi</th>
-			<th colspan="2">Mercredi</th>
-			<th colspan="2">Jeudi</th>
-			<th colspan="2">Vendredi</th>
+			<th class="border-r border-b">Date</th>
+			<th colspan="2" class="border-r border-b">Dimanche</th>
+			<th colspan="2" class="border-r border-b">Lundi</th>
+			<th colspan="2" class="border-r border-b">Mardi</th>
+			<th colspan="2" class="border-r border-b">Mercredi</th>
+			<th colspan="2" class="border-r border-b">Jeudi</th>
+			<th colspan="2" class="border-b">Vendredi</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr>
-			<th></th>
-			<th>Durée</th>
-			<th>Sign</th>
-			<th>Durée</th>
-			<th>Sign</th>
-			<th>Durée</th>
-			<th>Sign</th>
-			<th>Durée</th>
-			<th>Sign</th>
-			<th>Durée</th>
-			<th>Sign</th>
-			<th>Durée</th>
-			<th>Sign</th>
+			<th class="border-r border-b"></th>
+			<th class="border-r border-b">Durée</th>
+			<th class="border-r border-b">Sign</th>
+			<th class="border-r border-b">Durée</th>
+			<th class="border-r border-b">Sign</th>
+			<th class="border-r border-b">Durée</th>
+			<th class="border-r border-b">Sign</th>
+			<th class="border-r border-b">Durée</th>
+			<th class="border-r border-b">Sign</th>
+			<th class="border-r border-b">Durée</th>
+			<th class="border-r border-b">Sign</th>
+			<th class="border-r border-b">Durée</th>
+			<th class="border-b">Sign</th>
 		</tr>
 	</tbody>
 	<tbody>
 		<?php for ($i=0; $i <15 ; $i++) { 
 		 ?>
 		<tr>
-			<td>___/___/____</td>
-			<td>____hr</td>
-			<td></td>
-			<td>____hr</td>
-			<td></td>
-			<td>____hr</td>
-			<td></td>
-			<td>____hr</td>
-			<td></td>
-			<td>____hr</td>
-			<td></td>
-			<td>____hr</td>
-			<td></td>
+			<td class="border-r border-b">___/___/____</td>
+			<td class="border-r border-b">____hr</td>
+			<td class="border-r border-b"></td>
+			<td class="border-r border-b">____hr</td>
+			<td class="border-r border-b"></td>
+			<td class="border-r border-b">____hr</td>
+			<td class="border-r border-b"></td>
+			<td class="border-r border-b">____hr</td>
+			<td class="border-r border-b"></td>
+			<td class="border-r border-b">____hr</td>
+			<td class="border-r border-b"></td>
+			<td class="border-r border-b">____hr</td>
+			<td class="border-b"></td>
 
 		</tr>
 		<?php 

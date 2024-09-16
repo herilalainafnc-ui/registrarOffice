@@ -105,7 +105,8 @@
 require ('../../data/backdb.php');
 
 // Assurez-vous d'utiliser une transaction si nécessaire
-$dtb->beginTransaction();
+
+/*$dtb->beginTransaction();
 
 $studentQuery = $dtb->query('SELECT * FROM tbl_2024_etudiant');
 
@@ -114,6 +115,7 @@ while ($std = $studentQuery->fetch()) {
     $etude_envisage = $std['etude_envisage'];
     
     // Préparer la recherche de la filière
+
     $find_etd_opt = $dtb->prepare('SELECT filiere_sigle FROM filiere WHERE filiere_description = :etude_envisage LIMIT 1');
     $find_etd_opt->execute(['etude_envisage' => $etude_envisage]);
     $show_etd_opt = $find_etd_opt->fetch();
@@ -126,6 +128,7 @@ while ($std = $studentQuery->fetch()) {
     $date_entry = $std['date_entry'];
 
     // Vérifiez si l'enregistrement existe déjà
+
     $checkExistence = $dtb->prepare('
         SELECT COUNT(*) FROM t_2024_inscription_session 
         WHERE student_id = :student_id 
@@ -152,7 +155,7 @@ while ($std = $studentQuery->fetch()) {
                 :caisse_verification, :data_completion, :cours_selected, :impression_verification,
                 :signatures, :depot_list, :session_id, :nbr_semester, :test_niveau, :annee_scolaire, :date_entry
             )'
-        );
+        );*/
        /* $insert_inscription_session->execute([
             'student_id' => $student_id,
             'etude_mention' => $etude_mention,
@@ -170,12 +173,12 @@ while ($std = $studentQuery->fetch()) {
             'test_niveau' => 1,
             'annee_scolaire' => $annee_scolaire,
             'date_entry' => $date_entry
-        ]);*/
+        ]);
     }
-}
+}*/
 
 // Commit transaction
-$dtb->commit();
+// $dtb->commit();
 
 
 
@@ -295,30 +298,30 @@ $dtb->commit();
 // 	}
 
 	
-// 		$cours = $dtb->query("SELECT * FROM t_2023_cours ORDER BY id");
+ 		$cours = $dtb->query("SELECT * FROM t_2023_cours ORDER BY id");
 
-// 		while($showCous = $cours->fetch()) {
-// 			$id = $showCous['id'];
-//			$nb_crd = $showCous['nb_crd'];
-// 			$lab = $showCous['lab'];
-// 			$student_id = $showCous['student_id'];
+ 		while($showCous = $cours->fetch()) {
+ 			$id = $showCous['id'];
+			$nb_crd = $showCous['nb_crd'];
+ 			$lab = $showCous['lab'];
+ 			//$student_id = $showCous['student_id'];
 
-//			if($lab == "0" OR $lab == "") {
-// 				$cLab = 0;
-// 			}else{
-// 				$cLab = 30000;
-// 			}
+			if($lab == "0" OR $lab == "") {
+ 				$cLab = 0;
+ 			}else{
+				$cLab = 35000;
+			}
 
-// 			$cCrd = 19000;
+ 			$cCrd = 19000;
 
-// 			$cout = $cCrd * $nb_crd;
+ 			$cout = $cCrd * $nb_crd;
 
-// 			$updateCout = $dtb->prepare("UPDATE t_2023_cours SET cout=:cout,cout_lab=:cout_lab WHERE id=:id");
+ 			$updateCout = $dtb->prepare("UPDATE t_2023_cours SET cout=:cout,cout_lab=:cout_lab WHERE id=:id");
 
-// 			$updateCout->bindParam(':cout',$cout,PDO::PARAM_STR);
-//			$updateCout->bindParam(':cout_lab',$cLab,PDO::PARAM_STR);
-// 			$updateCout->bindParam(':id',$id,PDO::PARAM_INT);
-// 			$updateCout->execute();
+ 			$updateCout->bindParam(':cout',$cout,PDO::PARAM_STR);
+			$updateCout->bindParam(':cout_lab',$cLab,PDO::PARAM_STR);
+ 			$updateCout->bindParam(':id',$id,PDO::PARAM_INT);
+ 			$updateCout->execute();
 			
 //			$insert_Finance = $dtb->prepare("INSERT INTO t_2024_cours_finance(
 //				student_id,
@@ -350,7 +353,7 @@ $dtb->commit();
 //				'last_change_user_id' => $user_id_entry
 //			));
 
-// 		}
+ 		}
 
 
 

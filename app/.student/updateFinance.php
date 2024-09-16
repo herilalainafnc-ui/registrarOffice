@@ -9,6 +9,13 @@ require '../../data/backdb.php';
 	echo "<br>".$annee_etude = $_GET['annee_etude'];
 	echo "<br>".$abonment = $_GET['abonment'];
 	echo "<br>".$graduated = $_GET['graduated'];
+	echo "<br>".$new_student = $_GET['new_student'];
+
+	$verifySession = $dtb->query('SELECT * FROM t_2023_session WHERE session_id = "'.$session_id.'"');
+
+	$showSession = $verifySession->fetch();
+
+	$semester = $showSession['session_semester'];
 
 	$findMention = $dtb->query('SELECT * FROM filiere WHERE filiere_description = "'.$etude_envisage.'"');
 	
@@ -68,7 +75,17 @@ require '../../data/backdb.php';
 
 	/*============== FOND DE DEPOT ==============*/
 
-	echo "<br>". $fond_depot = $result_finance['fond_depot'];
+	if ($new_student == 1 AND $status == "Interne") {
+		
+		$fond_depot = $result_finance['fond_depot'];	
+	
+	}else{
+	
+		$fond_depot = 0;	
+	
+	}
+
+	
 
 
 	/*============== FRAIS DE GRADUATION ==============*/
@@ -85,9 +102,28 @@ require '../../data/backdb.php';
 
 
 	/*============== FRAIS DE COSTUME ==============*/
-	
-	echo "<br>". $frais_costume = $result_finance['frais_costume'];
 
+	if ($semester == 1 AND $new_student == 1) {
+
+		$frais_costume = $result_finance['frais_costume'];
+
+	}else{
+
+		$frais_costume = 0;
+
+	}
+	
+	/*================= VOYAGE D'ETUDE ===============*/
+	
+	if ($semester == 1) {
+
+		echo "<br>". $frais_voyage = $result_finance['frais_voyage'];
+
+	}else{
+
+		$frais_voyage = 0;
+
+	}
 
 $financement = $dtb->prepare("UPDATE t_2024_etudiant_finace SET 
 	mention=:mention,
@@ -99,6 +135,7 @@ $financement = $dtb->prepare("UPDATE t_2024_etudiant_finace SET
 	cout_abonment=:cout_abonment,
 	cout_frais_graduation=:cout_frais_graduation,
 	cout_costume=:cout_costume,
+	cout_voyage=:cout_voyage,
 	last_change_datetime=:last_change_datetime
 	
 	WHERE student_id=:student_id AND session_id=:session_id");
@@ -112,6 +149,7 @@ $financement = $dtb->prepare("UPDATE t_2024_etudiant_finace SET
 	$financement->bindParam(':cout_abonment',$cout_abonment,PDO::PARAM_STR);
 	$financement->bindParam(':cout_frais_graduation',$cout_frais_graduation,PDO::PARAM_STR);
 	$financement->bindParam(':cout_costume',$frais_costume,PDO::PARAM_STR);
+	$financement->bindParam('cout_voyage',$frais_voyage,PDO::PARAM_STR);
 	$financement->bindParam(':last_change_datetime',$last_change_datetime,PDO::PARAM_STR);
 	$financement->bindParam(':student_id',$student_id,PDO::PARAM_STR);
 	$financement->bindParam(':session_id',$session_id,PDO::PARAM_INT);

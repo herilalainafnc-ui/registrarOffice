@@ -19,7 +19,9 @@
 		
 		$tCout = 0;
 		$tCout_lab = 0;
-		
+		$n_lab = 0;
+		$somm_lab = 0;
+
 		foreach($_POST['checklist'] as $i){
 			
 			$grade = 0;
@@ -100,6 +102,15 @@
 					'date_entry' => $date_entry
 			));
 
+			if ($lab != 0) {						
+					
+				$n_lab =+ $n_lab + 1;
+				
+				if ($n_lab <= 2) {
+					$somm_lab =+ $somm_lab + $lab;
+				}
+
+			}
 
 			$insert_Finance = $dtb->prepare("INSERT INTO t_2024_cours_finance(
 				student_id,
@@ -132,18 +143,12 @@
 				'cours_title' => $title_cours,
 				'cours_credit' => $credit,
 				'cours_cout' => $cout,
-				'lab_cout' => $cout_lab,
+				'lab_cout' => $somm_lab,
 				'date_entry' => $date_entry,
 				'last_change_user_id' => $user_id_entry
 			));
 
 		/*===================== FIANCES =====================*/
-
-		$tCout += $cout;
-
-			if ($nLab <= 3) {
-				$tCout_lab += $cout_lab;
-			}
 		
 		}
 		

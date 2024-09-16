@@ -110,7 +110,7 @@ $stdA = $searchStd->fetch();
 		
  ?>
 
-		<table class="tbl simpleTbl mb-1" style="page-break-inside: avoid;">
+		<table class="tbl mb-1" style="page-break-inside: avoid;">
 			<thead>
 				<tr class="text-center bg-slate-500 text-white">
 					<th colspan="10">SEMESTRE <?=$s?></th>
@@ -322,7 +322,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 				<!--  -->
 				<tr>
 					<th colspan="4" class="text-right">Moyenne Générale</th>
-					<th class="bg-slate-400"><?php if($nbr != 0){echo round(($moyenGenSem = $tnotecredit/$tcredit),6);}else{echo 0;$moyenGenSem =0;}?></th>
+					<th class="bg-cyan-700 text-white"><?php if($nbr != 0){echo round(($moyenGenSem = $tnotecredit/$tcredit),6);}else{echo 0;$moyenGenSem =0;}?></th>
 				</tr>
 
 			</tfoot>
@@ -347,20 +347,20 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 <!-- CUMULATIVE -->
 <div>
 	<br>
-	<table class="tbl simpleTbl mb-1 w-full">
+	<table class="tbl mb-1 w-full">
 		<tbody>
-			<tr>
+			<tr class="border-r border-b">
 				<th colspan="2" class="bg-slate-200 text-center"> MOYENNES CUMULATIVES</th>
 			</tr>
-			<tr>
+			<tr class="border-r border-b">
 				<td class=" w-8/12 text-right">Note de Work Education cumulative</td>
 				<td class=" w-2/12 text-bold"><?=round(($cumulWorkNote*20)/((($a-1)*2)*20),3);?></td>
 			</tr>
-			<tr>
+			<tr class="border-r border-b">
 				<td class=" w-8/12 text-right">Nemarque académique cumulative</td>
 				<td class=" w-2/12 text-bold"><?=round(($cumulremarkAcad*20)/((($a-1)*2)*20),3);?></td>
 			</tr>
-			<tr>
+			<tr class="border-r border-b">
 				<td class=" w-8/12 text-right">Note de participation à l'exercice de chapelle et à la semaine de prière cumulative</td>
 				<td class=" w-2/12 text-bold"><?=round(($cumulChapel*20)/((($a-1)*2)*20),3);?></td>
 			</tr>

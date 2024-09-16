@@ -222,40 +222,26 @@ require '../../data/backdb.php';
 		}else{
 			
 			$insertDiplome = $dtb->prepare('INSERT INTO t_2024_diplome_preced(
+				student_id,
 				diplome_name,
 				date_obtent,
 				user_id,
 				date_entry
 			)VALUES(
+				:student_id,
 				:diplome_name,
 				:date_obtent,
 				:user_id,
 				:date_entry
 			)');$insertDiplome->execute(array(
-				'diplome_name'  => $student_id,
+				'student_id' => $student_id,
+				'diplome_name'  => $diplome_preced,
 				'date_obtent' => $date_obtent_diplome_preced,
 				'user_id' => $last_change_user_id,
 				'date_entry' => $last_change_datetime
 			));
 		}
 	}
-
-/*:::::::::::::::::::: FINANCE ::::::::::::::::::::*/
-
-/*if ($_POST['session_id'] != "" OR $_POST['session_id'] != 0) {
-
-	$session_id = $_POST['session_id'];
-
-	echo '<script type="text/javascript">
-            
-            window.location.href = "updateFinance.php?status='.$status.'&etude_envisage='.$etude_envisage.'&student_id='.$student_id.'&session_id='.$session_id.'&annee_etude='.$annee_etude.'&abonment='.$abonment.'&graduated='.$graduated.';
-            
-          </script>';
-
-}
-*/
-
-/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
 
  header('location:../../src/student.php?id='.$id.'&page=information');
 

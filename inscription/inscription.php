@@ -175,8 +175,8 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 
 							</div>
 
-							<div class="absolute bottom-0 p-2 w-11/12 m-2 text-center">
-								<div class="gap-2 grid grid-cols-2 text-white">
+							<div class="absolute bottom-0 w-11/12 m-2 text-center">
+								<div class="gap-2 grid grid-cols-2 text-white bg-slate-600">
 									<a href="#" id="downStage" class="px-5 py-2 bg-slate-400 rounded-md toolInactive">Retour</a>
 									<a href="#" id="upStage" data-stage="1" class="px-5 py-2 bg-cyan-700 rounded-md
 <?php 
@@ -215,7 +215,7 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 									<div class="w-5/12 m-auto mt-4 p-3 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-lg border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all">
 										<a class="text-white">Assurez-vous de déterminer la session à laquelle cet étudiant s'inscrira.</a>
 
-					<form method="post" action="./app/generate.student.php?student_id=<?=$student_id?>" class="session-no-refrech">
+					<form method="post" action="./app/generate.student.php?student_id=<?=$student_id?>&graduated=<?=$graduated?>" class="session-no-refrech">
 
 										<select name="semesterSession" class="w-full bg-slate-800 rounded-lg my-2">
 											<option <?php if (date('m') >= 7) { echo "selected"; } ?>>Premier semestre</option>

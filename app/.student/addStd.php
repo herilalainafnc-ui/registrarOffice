@@ -142,14 +142,31 @@
 
 
 	/*============== FOND DE DEPOT ==============*/
+	if ($semester == 1 AND $annee_etude == 1) {
 
-	$fond_depot = $result_finance['fond_depot'];
+		$fond_depot = $result_finance['fond_depot'];
+
+	}else{
+
+		$fond_depot = 0;
+
+	}
+	
 
 
 	/*============== FRAIS DE COSTUME ==============*/
 	
 	$frais_costume = $result_finance['frais_costume'];
 
+	if ($semester == 1) {
+
+		$frais_voyage = $result_finance['frais_voyage'];
+
+	}else{
+
+		$frais_voyage = 0;
+		
+	}
 
 	$insertFinance = $dtb->prepare("INSERT INTO t_2024_etudiant_finace(
 		student_id,
@@ -162,6 +179,7 @@
 		cout_fondDepot_dortoir,
 		cout_abonment,
 		cout_costume,
+		cout_voyage,
 		date_entry,
 		last_change_user_id
 	)VALUES(
@@ -175,6 +193,7 @@
 		:cout_fondDepot_dortoir,
 		:cout_abonment,
 		:cout_costume,
+		:cout_voyage,
 		:date_entry,
 		:last_change_user_id
 	
@@ -189,6 +208,7 @@
 		'cout_fondDepot_dortoir' => $fond_depot,
 		'cout_abonment' => $cout_abonment,
 		'cout_costume' => $frais_costume,
+		'cout_voyage' => $frais_voyage,
 		'date_entry' => $date_entry,
 		'last_change_user_id' => $last_change_user_id
 	));

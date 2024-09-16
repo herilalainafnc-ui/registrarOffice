@@ -5,6 +5,14 @@
 	$semesterSession = $_POST['semesterSession'];
 	$annee_scolaire = $_POST['annee_scolaire'];
 	$student_id = $_GET['student_id'];
+	$graduated = $_GET['graduated'];
+
+	if ($graduated == "") {
+		$graduated = 0;
+	}
+
+
+	$remove = 0;
 
 	$findStudent = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'" LIMIT 1');
 
@@ -35,6 +43,7 @@
 	$etude_mention = $showMention['filiere_sigle'];
 
 	$status = $showStudent['status'];
+
 	$new_student = $showStudent['new_student'];
 	$level = $showStudent['annee_etude'];
 
@@ -87,43 +96,42 @@
 
 	$result_finance = $verification_finance_licence->fetch();
 
-		$cout_fraix_generaux = $result_finance['frais_generaux'];		
+		echo "<br>Frais généraux = ".$cout_fraix_generaux = floatval($result_finance['frais_generaux']);		
 
 		if ($level == 1) {
 
-			$nbr_day = $result_finance['nb_jours_semestre'];
+			$nbr_day = intval($result_finance['nb_jours_semestre']);
 		
 		}elseif ($level == 2) {
 		
-			$nbr_day = $result_finance['nb_jours_semestre_L2'];
+			$nbr_day = intval($result_finance['nb_jours_semestre_L2']);
 		
 		}elseif ($level == 3) {
 		
-			$nbr_day = $result_finance['nb_jours_semestre_L3'];
+			$nbr_day = intval($result_finance['nb_jours_semestre_L3']);
 		
 		}
 
 
 		if ($graduated == 1) {
 			
-			$cout_frais_graduation = $result_finance['frais_graduation'];
+			 echo "<br>Frais graduation = ".$cout_frais_graduation = floatval($result_finance['frais_graduation']);
 		
 		}else{
 		
-			$cout_frais_graduation = 0;
+			 echo "<br>Frais graduation = ".$cout_frais_graduation = 0;
 		
 		}
 
-		$cout_fondDepot_dortoir = $result_finance['fond_depot'];
-		
-		$cout_logement = $result_finance['dortoir'] * $nbr_day;
+		$cout_voyage = $result_finance['frais_voyage'];
 
-	
-	$verifyExist = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE student_id = "'.$student_id.'" AND session_id = "'.$session_id.'"');
-
-	$resultVerify = $verifyExist->fetch();
-
-	if (empty($resultVerify)) {
+		if ($new_student == 1 AND $status == "Interne") {
+			echo "<br>Dortoir = ".$cout_fondDepot_dortoir = floatval($result_finance['fond_depot']);	
+		}else{
+			echo "<br>Dortoir = ".$cout_fondDepot_dortoir = 0;
+		}
+			
+		echo "<br>Log = ".$cout_logement = floatval($result_finance['dortoir']) * $nbr_day;
 		
 		$creatLineStdToFinance = $dtb->prepare('INSERT INTO t_2024_etudiant_finace(
 			student_id,
@@ -135,7 +143,7 @@
 			cout_fraix_generaux,
 			cout_fondDepot_dortoir,
 			cout_frais_graduation,
-			remove,
+			cout_voyage,
 			date_entry
 		) VALUES (
 			:student_id,
@@ -147,10 +155,10 @@
 			:cout_fraix_generaux,
 			:cout_fondDepot_dortoir,
 			:cout_frais_graduation,
-			:mode_payement,
-			:remove,
+			:cout_voyage,
 			:date_entry
-		)');$creatLineStdToFinance->execute(array(
+		)');
+		$creatLineStdToFinance->execute(array(
 			'student_id' => $student_id,
 			'session_id' => $session_id,
 			'mention' => $etude_mention,
@@ -160,12 +168,10 @@
 			'cout_fraix_generaux' => $cout_fraix_generaux,
 			'cout_fondDepot_dortoir' => $cout_fondDepot_dortoir,
 			'cout_frais_graduation' => $cout_frais_graduation,
-			'remove' => $remove,
+			'cout_voyage' => $cout_voyage,
 			'date_entry' => $date_entry
 		));
 
-	}
 
-	
-
+	/*}*/
  ?>

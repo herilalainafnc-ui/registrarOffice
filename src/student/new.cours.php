@@ -82,8 +82,10 @@
  	
  	if($level==1) {
  		$init = $level;
- 	}elseif($level>=2 AND $level<=3) {
+ 	}elseif($level==2) {
  		$init = $level-1;
+ 	}elseif($level==3) {
+ 		$init = $level-2;
  	}elseif($level==4) {
  		$init = $level;
  	}elseif($level==5) {
@@ -161,18 +163,39 @@
 	$validExisting = $verifyExisting->fetch();
 	 ?>
 				<tr 
-<?php if (empty($validExisting)) { ?>				
+<?php if (empty($validExisting)) { ?>	
+
 				id="cours<?=$a.$s.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black"
-<?php }else{ ?>
+
+<?php }elseif(!empty($validExisting) AND ($validExisting['grade'] >= 10 OR $validExisting['grade'] == 0)) { ?>
+
 				class="bg-slate-700"
+
+<?php }elseif(!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 10){ ?>
+
+				id="cours<?=$a.$s.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black bg-slate-700"
+
 <?php } ?>>
 					<td class="p-0 text-center" style="height: 15px;">
 
-<?php if (empty($validExisting)) { ?>		
+
+
+
+<?php if (empty($validExisting)) { ?>	
+
 						<input id="chk<?=$a.$s.$nbr;?>" type="checkbox" name="checklist[]" value="<?=$note_id?>" style="width: 100%; height: 100%;margin: none; border: none;">
-<?php }else{ ?>						
-						<i class="bi-x-lg text-red-300"></i>			
-<?php } ?>			
+
+<?php }elseif(!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 10){ ?>
+
+						<input id="chk<?=$a.$s.$nbr;?>" type="checkbox" name="checklist[]" value="<?=$note_id?>" style="width: 100%; height: 100%;margin: none; border: none;">	
+
+<?php }elseif(!empty($validExisting) AND ($validExisting['grade'] >= 10 OR $validExisting['grade'] == 0)){ ?>	
+
+						<i class="bi-x-lg text-red-300"></i>	
+
+<?php } ?>		
+					
+
 					</td>
 					<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><?=$crs['Sigle']?></td>
 					<td><?php
@@ -181,8 +204,18 @@
 							}else{
 								echo $crs['title'];
 							} 
-if (!empty($validExisting)) {
-	echo " . <em class='text-green-400'>Déjà ajouté... Note = <b>".$validExisting['grade']."</b></em>";
+if (!empty($validExisting) AND $validExisting['grade'] >= 10) {
+	
+	echo " . <em class='text-green-400'>Déjà ajouté... Avec un note = <b>".$validExisting['grade']."</b></em>";
+
+}elseif (!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 10) {
+	
+	echo " . <em class='text-red-500'>Déjà ajouté... Avec un note = <b>".$validExisting['grade'].", doit être repêché.</b></em>";
+
+}elseif (!empty($validExisting) AND $validExisting['grade'] == 0){
+
+	echo " . <em class='text-orange-400'>Récemment ajouté.</b></em>";
+
 }
 
 					?>
@@ -255,9 +288,9 @@ $tcredit+= $credit + $crs['nb_crd'];
 						
 						<b>Session :</b>
 						<select name="semesterSession" class="h-[22px] m-1 py-0 text-black text-sm" id="scolarSs<?=$a.$s;?>">
-							<option <?php if ($s == 1) {echo "selected";} ?>>Premier semestre</option>
+							<option <?php if ($s == 1) {echo "selected";} ?> selected>Premier semestre</option>
 							<option>Semestre d'été</option>
-							<option <?php if ($s == 2) {echo "selected";} ?>>Deuxième semestre</option>
+							<option <?php/* if ($s == 2) {echo "selected";} */?>>Deuxième semestre</option>
 							<option>Semestre d'hiver</option>
 						</select>
 
@@ -370,7 +403,7 @@ $tcredit+= $credit + $crs['nb_crd'];
 			$.post(url,data,function(response){
 				
 				alert("Cours bien enregistré! Vous pouvez continué !!");
-				$(".submiting").attr('class','submiting px-2 text-center py-0 m-1 text-slate-400 bg-slate-700 toolInactive');
+				//$(".submiting").attr('class','submiting px-2 text-center py-0 m-1 text-slate-400 bg-slate-700 toolInactive');
 				
 			});
 

@@ -258,7 +258,7 @@ $y = $y - 1;
 				</select>
 				<br>
 				<label class="text-sm text-slate-400">Ancien étudiant</label>
-				<p class="showEtd">-- <?php if($profil['new_student'] == 1){echo 'Non';}else{echo 'Oui';}?></p>
+				<p class="showEtd">-- <?php $new_student = $profil['new_student']; if($profil['new_student'] == 1){echo 'Non';}else{echo 'Oui';}?></p>
 				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="new_student">
 					<option class="<?=$bg_one_color?>" <?php if($profil['new_student'] == 1){echo 'selected';}?> value="1">Non</option>
 					<option class="<?=$bg_one_color?>" <?php if($profil['new_student'] == 0){echo 'selected';}?> value="0">Oui</option>
@@ -454,6 +454,7 @@ $y = $y - 1;
 					var annee_etude = $('#annee_etude').val();
 					var abonment = $('#abonment').val();
 					var graduated = $('#graduated').val();
+					var new_student = '<?=$new_student?>';
 
 					var financeUrl = '../app/.student/updateFinance.php?status=' + status +
                          '&etude_envisage=' + etude_envisage + 
@@ -461,7 +462,8 @@ $y = $y - 1;
                          '&session_id=' + session_id + 
                          '&annee_etude=' + annee_etude + 
                          '&abonment=' + abonment + 
-                         '&graduated=' + graduated;
+                         '&graduated=' + graduated+
+                         'new_student='+new_student;
 
 			 
 			        $.get(financeUrl, function(response) {

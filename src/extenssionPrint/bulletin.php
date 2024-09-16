@@ -6,13 +6,14 @@ $yes = 1;
 $initA = 1;
 $initS = 1;
 $printName = $student_id."-BULLETIN";
+
  
 if ($level > 3) {
-
+	$stage = "Master";
 	$initA = 4;
 
 }elseif($level <= 3) {
-	
+	$stage = "Licence";
 	if($level == "all"){
 		$level = $_GET['std_niveau'];
 	}elseif($level == 2){
@@ -69,7 +70,24 @@ $stdA = $searchStd->fetch();
 		?>
 			<div>
 		<?php 
-	echo "<div> <b>NIVEAU L".$a." 2023 - 2024</b>";
+	echo "<div> <b>NIVEAU ".$stage." ";
+	
+	if($a<=3) {
+			echo $a;
+			$nbrA = $a+1;
+		}else{
+			echo ($a-3);
+			$nbrA = $a-2;
+		}
+		
+		if ($semester == 1) {
+			$sem = 1;
+		}elseif($semester == 2) {
+			$initS = 2;
+			$sem = 2;
+		}
+
+	echo "</b>";
 		
 		if ($semester == 1) {
 			$sem = 1;

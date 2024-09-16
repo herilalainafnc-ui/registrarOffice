@@ -28,7 +28,7 @@ if ($profil['category'] == 0){
 	echo "Général";
 }elseif ($profil['category'] == 1) {
 	echo "Majeur";
-}elseif ($profil['category'] == -1 OR $crs['cours_category'] == 2) {
+}elseif ($profil['category'] == -1 OR $profil['category'] == 2) {
 	echo "Selective";
 }elseif ($profil['category'] == 3) {
 	echo "Additionnel";
