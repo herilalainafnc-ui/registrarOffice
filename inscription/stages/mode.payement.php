@@ -53,6 +53,7 @@
 						<th style="width: 60px">CATÉGORIE</th>
 						<th style="width: 60px">COÛT</th>
 						<th style="width: 60px">LAB</th>
+						<th></th>
 					</tr>	
 				</thead>
 				<tbody>
@@ -67,7 +68,8 @@
 	while($showCF = $findCoursFinance->fetch()) {
 		$session_id = $showCF['session_id'];
  ?>
-				<tr>
+				<tr class="hover:bg-slate-200 border">
+				<form>
 					<td><?=$showCF['cours_sigle']?></td>
 					<td><?=$showCF['cours_title']?></td>
 					<td><?=$showCF['cours_credit']?></td>
@@ -108,6 +110,8 @@ if ($showCat['category'] == 0){
 
 					}
 					echo ' ar';?></td>
+					<td class="bg-red-500"><!-- <a id="retireCours" href="./app/rerait.cours.php?cours_id=<?=$showCF['cours_id']?>" onclick="event.preventDefault();" class="text-white"><i class="bi-x-lg"></i></a> --></td>
+				</form>
 				</tr>	
 <?php
 	$nbr++;

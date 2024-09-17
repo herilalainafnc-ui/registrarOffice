@@ -42,7 +42,12 @@
 	
 	$etude_mention = $showMention['filiere_sigle'];
 
-	$status = $showStudent['status'];
+	
+	if ($showStudent['status'] == '') {
+		$status = 'Externe';
+	}else{
+		$status = $showStudent['status'];	
+	}
 
 	$new_student = $showStudent['new_student'];
 	$level = $showStudent['annee_etude'];

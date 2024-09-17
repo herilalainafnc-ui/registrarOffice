@@ -34,44 +34,43 @@ require '../../data/backdb.php';
 	
 	if ($annee_etude == 1) {
 
-		echo "<br>". $nbr_day = $result_finance['nb_jours_semestre'];
+		$nbr_day = $result_finance['nb_jours_semestre'];
 
-		echo "<br>". $frais_costume = $result_finance['frais_costume'];
+		$frais_costume = $result_finance['frais_costume'];
 	
 	}elseif ($annee_etude == 2) {
 	
-		echo "<br>". $nbr_day = $result_finance['nb_jours_semestre_L2'];
+		$nbr_day = $result_finance['nb_jours_semestre_L2'];
 
-		echo "<br>". $frais_costume = 0;
+		$frais_costume = 0;
 	
 	}elseif ($annee_etude == 3) {
 	
-		echo "<br>". $nbr_day = $result_finance['nb_jours_semestre_L3'];
+		$nbr_day = $result_finance['nb_jours_semestre_L3'];
 		
-		echo "<br>". $frais_costume = 0;
+		$frais_costume = 0;
 	}
 
 	/*============== FRAIS GENEREAUX ==============*/
 
-	echo "<br>". $cout_fraix_generaux = $result_finance['frais_generaux'];
+	$cout_fraix_generaux = $result_finance['frais_generaux'];
 
 	/*============== LOGMENT ==============*/
 
-	echo "<br>Dortoir = ". $cout_logement = $result_finance['dortoir'] * $nbr_day;
+	$cout_logement = $result_finance['dortoir'] * $nbr_day;
 
 
 	/*============== ABONEMENT CAF ==============*/
 
 	if($abonment == 1) {
 
-		echo "<br>Caf = ". $cout_abonment = $result_finance['cafeteria'] * $nbr_day;
+		$cout_abonment = $result_finance['cafeteria'] * $nbr_day;
 
 	}else{
 		
-		echo "<br>". $cout_abonment = 0;
+		$cout_abonment = 0;
 
 	}
-
 
 	/*============== FOND DE DEPOT ==============*/
 
@@ -81,11 +80,9 @@ require '../../data/backdb.php';
 	
 	}else{
 	
-		$fond_depot = 0;	
+		$fond_depot = 0;
 	
 	}
-
-	
 
 
 	/*============== FRAIS DE GRADUATION ==============*/

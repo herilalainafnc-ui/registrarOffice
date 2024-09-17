@@ -124,6 +124,7 @@ while ($showTeach = $findTeach->fetch()) {
 				<label class="text-sm text-slate-400">Crédit</label>
 				<p class="showContact">-- <?=$profil['nb_crd']?> Crédits</p>
 				<select class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="nb_crd">
+					<option class="<?=$bg_one_color?>" value="1" <?php if($profil['nb_crd'] == 1){echo 'selected';}?>>1 Crédits</option>
 					<option class="<?=$bg_one_color?>" value="2" <?php if($profil['nb_crd'] == 2){echo 'selected';}?>>2 Crédits</option>
 					<option class="<?=$bg_one_color?>" value="3" <?php if($profil['nb_crd'] == 3){echo 'selected';}?>>3 Crédits</option>
 					<option class="<?=$bg_one_color?>" value="4" <?php if($profil['nb_crd'] == 4){echo 'selected';}?>>4 Crédits</option>

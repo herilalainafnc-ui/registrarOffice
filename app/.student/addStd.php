@@ -142,7 +142,7 @@
 
 
 	/*============== FOND DE DEPOT ==============*/
-	if ($semester == 1 AND $annee_etude == 1) {
+	if ($annee_etude == 1 AND $new_student == 1) {
 
 		$fond_depot = $result_finance['fond_depot'];
 

@@ -258,6 +258,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 											<select class="inscInput h-6 text-sm w-full mb-3" name="serie_bacc">
 												<option class="<?=$bg_seven_color?>">A1</option>
 												<option class="<?=$bg_seven_color?>">A2</option>
+												<option class="<?=$bg_seven_color?>">BTP</option>
 												<option class="<?=$bg_seven_color?>">C</option>
 												<option class="<?=$bg_seven_color?>">D</option>
 												<option class="<?=$bg_seven_color?>">Electronique</option>
@@ -267,6 +268,9 @@ while ($showSignMention = $findSignMention->fetch()) {
 												<option class="<?=$bg_seven_color?>">L</option>
 												<option class="<?=$bg_seven_color?>">S</option>
 												<option class="<?=$bg_seven_color?>">OSE</option>
+												<option class="<?=$bg_seven_color?>">Technique Ouvrage Bois</option>
+												<option class="<?=$bg_seven_color?>">Technique Ouvrage Métalique</option>
+												<option class="<?=$bg_seven_color?>">Technique Maintenance Automobile</option>
 											</select>
 										</div>
 										
@@ -380,7 +384,15 @@ while ($showSignMention = $findSignMention->fetch()) {
 										<label class="text-sm text-slate-400">Réligion</label>
 										<select id="firstAutr" class="inscInput h-6 text-sm w-full" name="religion">
 											<option class="<?=$bg_seven_color?>">Adventiste</option>
-											<option class="<?=$bg_seven_color?>">non Adventiste</option>
+											<option class="<?=$bg_seven_color?>">FLM</option>
+											<option class="<?=$bg_seven_color?>">Apokalypsy</option>
+											<option class="<?=$bg_seven_color?>">Catholique</option>
+											<option class="<?=$bg_seven_color?>">FJKM</option>
+											<option class="<?=$bg_seven_color?>">Lutherien</option>
+											<option class="<?=$bg_seven_color?>">Musulman</option>
+											<option class="<?=$bg_seven_color?>">Shyn</option>
+											<option class="<?=$bg_seven_color?>">Jesosy Mamonjy</option>
+											<option class="<?=$bg_seven_color?>">Autre...</option>
 										</select>
 									</div>
 								</div>

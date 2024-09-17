@@ -1,8 +1,46 @@
-
 <?php 
-	/*::::::::::::::::::::::: SESSION GENERATE ::::::::::::::::::::::*/
 
-		$aSs = date('Y');
+	require('../../data/backdb.php');
+	require('../init/head.php');
+
+	$id = $_POST['id'];
+
+	$retrouve = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE id ='".$id."' LIMIT 1");
+
+if($retrouve->rowCount() > 0) {
+$profil = $retrouve->fetch();
+$student_id = $profil['student_id'];
+$student_nom = $profil['student_nom'];
+$student_prenom = $profil['student_prenom'];
+$level = $profil['annee_etude'];
+$annee_scolaire = $profil['annee_scolaire'];
+$etude_envisage = $profil['etude_envisage'];
+$etude_option = $profil['etude_option'];
+$student_tel = $profil['student_tel'];
+$image_student = $profil['image_student'];
+$lookup_code = $profil['lookup_code'];
+$status = $profil['status'];
+$date_entry = $profil['date_entry'];
+$yes = 1;
+
+
+	$searchMention = $dtb->query('SELECT * FROM filiere WHERE filiere_description = "'.$etude_envisage.'"');
+	$showMention=$searchMention->fetch();
+	$etude_envisage_ang = $showMention['filiere_description_ang'];
+
+
+		$searchParcours = $dtb->query('SELECT * FROM filiere_parcours WHERE description = "'.$etude_option.'"');
+		$showParcours=$searchParcours->fetch();
+		if(!empty($showParcours)){
+			$etude_option_ang = $showParcours['description_ang'];	
+		}else{
+		$etude_option_ang = '';
+		}
+ }
+
+
+
+ 		$aSs = date('Y');
 		$constaSs = $aSs." - ".($aSs+1);
 		$selected = 0;
 
@@ -185,7 +223,7 @@
 
 						<input id="chk<?=$a.$s.$nbr;?>" type="checkbox" name="checklist[]" value="<?=$note_id?>" style="width: 100%; height: 100%;margin: none; border: none;">
 
-<?php }elseif(!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 12){ ?>
+<?php }elseif(!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 10){ ?>
 
 						<input id="chk<?=$a.$s.$nbr;?>" type="checkbox" name="checklist[]" value="<?=$note_id?>" style="width: 100%; height: 100%;margin: none; border: none;">	
 
@@ -214,7 +252,7 @@ if (!empty($validExisting) AND $validExisting['grade'] >= 10) {
 
 }elseif (!empty($validExisting) AND $validExisting['grade'] == 0){
 
-	echo " . <em class='text-orange-400'>Ajouté à la date de ".$validExisting['date_entry']."</b></em>";
+	echo " . <em class='text-orange-400'>Ajouté à la date ".$crs['date_entry'].".</b></em>";
 
 }
 
@@ -289,9 +327,9 @@ $tcredit+= $credit + $crs['nb_crd'];
 						<b>Session :</b>
 						<select name="semesterSession" class="h-[22px] m-1 py-0 text-black text-sm" id="scolarSs<?=$a.$s;?>">
 							<option <?php if ($s == 1) {echo "selected";} ?> selected>Premier semestre</option>
-							<!-- <option>Semestre d'été</option>
+							<option>Semestre d'été</option>
 							<option <?php/* if ($s == 2) {echo "selected";} */?>>Deuxième semestre</option>
-							<option>Semestre d'hiver</option> -->
+							<option>Semestre d'hiver</option>
 						</select>
 
 						<b>Année du cours :</b>

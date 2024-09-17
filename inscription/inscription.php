@@ -3,7 +3,7 @@
 <head>
 	<?php require('../init/head.php');?>
 	<link rel="stylesheet" type="text/css" href="../src/css/style.css">
-	<title>Inscrition</title>
+	<title>Inscription</title>
 </head>
 <body>
 	<!-- TOP BAR --><?php require('../init/topbar.php');?>
@@ -178,7 +178,7 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 							<div class="absolute bottom-0 w-11/12 m-2 text-center">
 								<div class="gap-2 grid grid-cols-2 text-white bg-slate-600">
 									<a href="#" id="downStage" class="px-5 py-2 bg-slate-400 rounded-md toolInactive">Retour</a>
-									<a href="#" id="upStage" data-stage="1" class="px-5 py-2 bg-cyan-700 rounded-md
+									<a href="#" id="upStage" data-stage="1" class="px-5 py-2 rounded-md
 <?php 
 
 	$findStudent_Session = $dtb->query('SELECT * FROM t_2024_inscription_session WHERE student_id="'.$student_id.'" ORDER BY id DESC');
@@ -192,11 +192,15 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 
 	if (date('m') >= 7) {
 		if ($showStudent_Session['annee_scolaire'] != $aSem) {
-		echo "toolInactive";
+			echo "bg-slate-700 toolInactive";
+		}else{
+			echo "bg-cyan-700";
 		}
 	}elseif (date('m') < 7) {
 		if ($showStudent_Session['annee_scolaire'] != $aSem_) {
-		echo "toolInactive";
+		echo "bg-slate-700 toolInactive";
+		}else{
+			echo "bg-cyan-700";
 		}
 	}
 	
@@ -209,7 +213,7 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 
 						<div id="contentMain" class="my-3 px-2 sm:w-8/12 xl:w-9/12 border-2 border-slate-700 rounded-lg text-sm text-white" style="height:calc(100vh - 230px);">
 
-							<div id="contentInformation" class="stage_0">
+							<div id="contentGenerateStudet" class="stage_0">
 								<div class="w-full text-center pt-20">
 									<a class="text-[30px] text-slate-600">Cela est indispensable.</a>
 									<div class="w-5/12 m-auto mt-4 p-3 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-lg border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all">
@@ -516,6 +520,18 @@ if (date('m') >= 7) {
 
 				$.post(url,function(response){});
 
+				var id = '<?=$id?>';
+				
+				/*$.ajax({
+					url:"./stages/new.cours.php",
+					method:"POST",
+					data:{id:id},
+
+					success:function(data){
+						$("#contentNewcours").html(data);
+					}
+				});*/
+
             }else if (stage == 4 ) {
 				
 				$('.stage_0').css({'display':'none'});
@@ -550,6 +566,10 @@ if (date('m') >= 7) {
 						$('.stage_3').css({'display':'block'});
 						$("#contentModepayement").html(data);
 					}
+				});
+
+				$('#downStage').click(function(){
+					$('#upStage').attr('class','px-5 py-2 bg-cyan-700 rounded-md');
 				});
 
             }else if (stage == 5 ) {
