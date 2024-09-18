@@ -3,6 +3,7 @@
 	require('../../data/backdb.php');
 
 	$student_id = $_POST['student_id'];
+	//$session_id = $_POST['session_id'];
 	
 	$recupsdt = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id ="'.$student_id.'" AND remove != 1 limit 1');
 
@@ -69,7 +70,7 @@
 		$session_id = $showCF['session_id'];
  ?>
 				<tr class="hover:bg-slate-200 border">
-				<form>
+				<form action="">
 					<td><?=$showCF['cours_sigle']?></td>
 					<td><?=$showCF['cours_title']?></td>
 					<td><?=$showCF['cours_credit']?></td>

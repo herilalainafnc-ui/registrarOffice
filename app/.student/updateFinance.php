@@ -11,6 +11,9 @@ require '../../data/backdb.php';
 	echo "<br>".$graduated = $_GET['graduated'];
 	echo "<br>".$new_student = $_GET['new_student'];
 
+
+
+
 	$verifySession = $dtb->query('SELECT * FROM t_2023_session WHERE session_id = "'.$session_id.'"');
 
 	$showSession = $verifySession->fetch();
@@ -35,25 +38,29 @@ require '../../data/backdb.php';
 	if ($annee_etude == 1) {
 
 		$nbr_day = $result_finance['nb_jours_semestre'];
-
-		$frais_costume = $result_finance['frais_costume'];
 	
 	}elseif ($annee_etude == 2) {
 	
 		$nbr_day = $result_finance['nb_jours_semestre_L2'];
-
-		$frais_costume = 0;
 	
 	}elseif ($annee_etude == 3) {
 	
 		$nbr_day = $result_finance['nb_jours_semestre_L3'];
-		
-		$frais_costume = 0;
+	
 	}
 
 	/*============== FRAIS GENEREAUX ==============*/
 
-	$cout_fraix_generaux = $result_finance['frais_generaux'];
+	if($annee_etude == 0 AND $etude_mention == "NURS") {
+	
+		$cout_fraix_generaux = 210000;
+	
+	}else{
+	
+		$cout_fraix_generaux = $result_finance['frais_generaux'];
+	
+	}
+	
 
 	/*============== LOGMENT ==============*/
 
@@ -72,18 +79,6 @@ require '../../data/backdb.php';
 
 	}
 
-	/*============== FOND DE DEPOT ==============*/
-
-	if ($new_student == 1 AND $status == "Interne") {
-		
-		$fond_depot = $result_finance['fond_depot'];	
-	
-	}else{
-	
-		$fond_depot = 0;
-	
-	}
-
 
 	/*============== FRAIS DE GRADUATION ==============*/
 
@@ -100,7 +95,7 @@ require '../../data/backdb.php';
 
 	/*============== FRAIS DE COSTUME ==============*/
 
-	if ($semester == 1 AND $new_student == 1) {
+	if ($annee_etude == 1 AND $new_student == 1) {
 
 		$frais_costume = $result_finance['frais_costume'];
 
@@ -109,6 +104,19 @@ require '../../data/backdb.php';
 		$frais_costume = 0;
 
 	}
+
+	/*============== FOND DE DEPOT ==============*/
+
+	if ($annee_etude == 1 AND $status == "Interne") {
+		
+		$fond_depot = $result_finance['fond_depot'];	
+	
+	}else{
+	
+		$fond_depot = 0;
+	
+	}
+
 	
 	/*================= VOYAGE D'ETUDE ===============*/
 	

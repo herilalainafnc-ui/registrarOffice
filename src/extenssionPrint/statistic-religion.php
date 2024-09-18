@@ -11,9 +11,9 @@ for ($i=0; $i < 1 ; $i++) {
 
  ?>
 <b>Statistique par réligion - Année universitaire <?=$yearScoolNow?></b>
-	<table class="classicTbl">
+	<table class="tbl" style="page-break-inside: avoid;">
 		<thead>
-			<tr>
+			<tr style="page-break-inside: avoid;">
 				<th style="width: 30%">Mention</th>
 				<th style="width: 10%">Adventiste</th>
 				<th style="width: 10%">Non Adventiste</th>
@@ -49,7 +49,7 @@ for ($i=0; $i < 1 ; $i++) {
 
 	
  ?>
-			<tr>
+			<tr style="page-break-inside: avoid;">
 				<td><?=$filiere?></td>
 				<td><?=$nbadvt?></td>
 				<td><?=$nbNonAdvt?></td>
@@ -80,7 +80,7 @@ for ($i=0; $i < 1 ; $i++) {
 ?>
 		</tbody>
 		<thead>
-			<tr>
+			<tr style="page-break-inside: avoid;">
 				<th>Total</th>
 				<th><?=$tnbadvt?></th>
 				<th><?=$tnbNonAdvt?></th>

@@ -52,8 +52,8 @@ $stdA = $searchStd->fetch();
 					<th style="">TITRE DU COURS</th>
 					<th style="width: 60px">CREDITS</th>
 					<th style="width: 80px">CATÉGORIE</th>
-					<th style="width: 80px">COÛT</th>
-					<th style="width: 80px">LAB</th>
+					<th style="width: 80px; text-align: right; padding-right: 6px;">COÛT</th>
+					<th style="width: 80px; text-align: right; padding-right: 6px;">LAB</th>
 				</tr>	
 			</thead>
 			<tbody>

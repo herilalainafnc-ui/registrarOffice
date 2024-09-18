@@ -15,18 +15,27 @@ $tLevel3 = 0;
 for ($i=0; $i < 1 ; $i++) {
 
  ?>
-<b>Statistique par sexe - Année universitaire <?=$yearScoolNow?></b>
+<b>Statistique des Internats - Année universitaire <?=$yearScoolNow?></b>
 	<table class="tbl" style="page-break-inside: avoid;">
 		<thead>
 			<tr style="page-break-inside: avoid;">
 				<th style="width: 18%">Mention</th>
-				<th style="width: 10%">Masculin</th>
-				<th style="width: 10%">Feminin</th>
-				<th style="width: 4%">L1</th>
-				<th style="width: 4%">L2</th>
-				<th style="width: 4%">L3</th>
-				<th style="width: 10%">Total</th>
+				<th style="width: 8%" colspan="2">Interne</th>
+				<th style="width: 8%" colspan="2">Bungalow</th>
+				<th style="width: 8%" colspan="2">Externe</th>
+				<th style="width: 4%">Total</th>
 			</tr>
+			<tr style="page-break-inside: avoid;">
+				<th></th>
+				<th>H</th>
+				<th>F</th>
+				<th>H</th>
+				<th>F</th>
+				<th>H</th>
+				<th>F</th>
+				<th></th>
+			</tr>
+			
 		</thead>
 		<tbody>
 <?php
@@ -41,21 +50,26 @@ for ($i=0; $i < 1 ; $i++) {
 	$sex2 = 1;
 	
 	
-		$adventist = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire = "'.$yearScoolNow.'" AND etude_envisage="'.$filiere.'" AND (sex="'.$sex1.'" OR sex="'.$sex2.'")');
+		$interne = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE status = "Interne" AND etude_envisage="'.$filiere.'" AND (sex="'.$sex1.'" OR sex="'.$sex2.'")');
 		
-		$nbadvt = 0;
-		while($advt = $adventist->fetch()){
-			$nbadvt++;
+		$nbInterne = 0;
+		while($int = $interne->fetch()){
+			$nbInterne++;
 		}
 
-		$nonAdventist = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire = "'.$yearScoolNow.'" AND etude_envisage="'.$filiere.'" AND sex!="'.$sex1.'" AND sex!="'.$sex2.'"');
+		$bungalow = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE status = "Bungalow" AND etude_envisage="'.$filiere.'" AND sex!="'.$sex1.'" AND sex!="'.$sex2.'"');
 		
-		$nbNonAdvt = 0;
-		while($nonAdvt = $nonAdventist->fetch()){
-			$nbNonAdvt++;
+		$nbBung = 0;
+		while($bung = $bungalow->fetch()){
+			$nbNBung++;
 		}
 
-		$niveau = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire = "'.$yearScoolNow.'" AND etude_envisage="'.$filiere.'"');
+		$externe = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE status = "Externe" AND etude_envisage="'.$filiere.'" AND sex!="'.$sex1.'" AND sex!="'.$sex2.'"');
+		
+		$nbBung = 0;
+		while($bung = $externe->fetch()){
+			$nbNBung++;
+		}
 		
 		$nbLevel1 = 0;
 		$nbLevel2 = 0;
@@ -98,6 +112,7 @@ for ($i=0; $i < 1 ; $i++) {
 				<td><?=$ttLevel1?></td>
 				<td><?=$ttLevel2?></td>
 				<td><?=$ttLevel3?></td>
+				<td><?=$ttLevel3?></td>
 				<td><?=$horizontal = $nbadvt+$nbNonAdvt?></td>
 			</tr>
 <?php
@@ -135,6 +150,7 @@ for ($i=0; $i < 1 ; $i++) {
 				<th><?=$tnbNonAdvt?></th>
 				<th><?=$tLevel1?></th>
 				<th><?=$tLevel2?></th>
+				<th><?=$tLevel3?></th>
 				<th><?=$tLevel3?></th>
 				<th><?=$thorizontal?></th>
 			</tr>

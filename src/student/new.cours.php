@@ -80,7 +80,7 @@
 		$eE = 'DROI';
 	}
  	
- 	if($level==1) {
+	if($level<=1) {
  		$init = $level;
  	}elseif($level==2) {
  		$init = $level-1;
@@ -121,6 +121,7 @@
 					<th class="w-5"></th>
 					<th class="w-20">SIGLE</th>
 					<th class="w-">TITRE DU COURS</th>
+					<th class="w-[320px]">Observation</th>
 					<th class="w-20">CREDITS</th>
 					<th class="w-20">Categorie</th>
 				</tr>	
@@ -185,7 +186,7 @@
 
 						<input id="chk<?=$a.$s.$nbr;?>" type="checkbox" name="checklist[]" value="<?=$note_id?>" style="width: 100%; height: 100%;margin: none; border: none;">
 
-<?php }elseif(!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 12){ ?>
+<?php }elseif(!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 10){ ?>
 
 						<input id="chk<?=$a.$s.$nbr;?>" type="checkbox" name="checklist[]" value="<?=$note_id?>" style="width: 100%; height: 100%;margin: none; border: none;">	
 
@@ -203,8 +204,10 @@
 								echo $crs['title_english'];
 							}else{
 								echo $crs['title'];
-							} 
-if (!empty($validExisting) AND $validExisting['grade'] >= 10) {
+							}
+					?>
+					</td>
+					<td><?php if (!empty($validExisting) AND $validExisting['grade'] >= 10) {
 	
 	echo " . <em class='text-green-400'>Déjà ajouté... Avec un note = <b>".$validExisting['grade']."</b></em>";
 
@@ -216,10 +219,7 @@ if (!empty($validExisting) AND $validExisting['grade'] >= 10) {
 
 	echo " . <em class='text-orange-400'>Ajouté à la date de ".$validExisting['date_entry']."</b></em>";
 
-}
-
-					?>
-					</td>
+} ?></td>
 					<td><?=$crs['nb_crd']?></td>
 					<td><?php 
 if ($crs['category'] == 0){
@@ -278,6 +278,7 @@ $tcredit+= $credit + $crs['nb_crd'];
 				<tr>
 					<th colspan="2"></th>
 					<th><?=$nbr?> cours</th>
+					<th></th>
 					<th><?php if(($nbr-1)<1){echo 0;}else{echo $tcredit;}?></th>
 					<th></th>
 				</tr>

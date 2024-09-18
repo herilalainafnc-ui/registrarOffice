@@ -131,11 +131,13 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 								
 								<b class="text-1xl"><?=$profil['student_id'] ?></b>
 								<p><?php
-	if ($profil['annee_etude']<=3) {
-		echo "Licence ".$profil['annee_etude'];
-	}else{
-		echo "Master ".$profil['annee_etude']-3;
-	}
+if($profil['annee_etude'] == 0) {
+	echo "Remise à niveau";
+}elseif ($profil['annee_etude']>0 AND $profil['annee_etude']<=3) {
+	echo "Licence ".$profil['annee_etude'];
+}else{
+	echo "Master ".$profil['annee_etude']-3;
+}
 								?></p>
 								<p><a href="https://mail.google.com/mail/u/0/#inbox?compose=<?=$profil['student_email']?>" target="_blank"><?=$profil['student_email']?></a></p>
 							</div>
@@ -145,8 +147,15 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 						<div class="w-full py-2 text-sm  text-white">
 								<b><?=strtoupper($profil['student_nom']) ?> <?=$profil['student_prenom'] ?></b><br>
 								<em><?=$profil['etude_envisage']." - ".$profil['etude_option'] ?></em><br>
-								<b>A.U <?=$profil['annee_scolaire']?></b>
-								<a></a><br>
+								<b>A.U <?=$profil['annee_scolaire']?></b><br>
+								<p class="text-[11px] text-green-600" style="line-height: 12px;">Modifié par <?php 
+								if (!empty($profil['last_change_user_id'])) {
+									$user_modif_id  = $profil['last_change_user_id'];
+									$findUser = $dtb->query('SELECT * FROM compt_utilisateur WHERE id = "'.$user_modif_id.'"');
+$showUser = $findUser->fetch();
+echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];
+								}
+								 ?></p>
 						</div><hr>
 						<div class="w-full text-md">
 
@@ -516,7 +525,7 @@ if (date('m') >= 7) {
 
 				$('#stageMark_2').attr('class','text-xs p-1');
 				
-				var url = './app/generate.stage.php?student_id=<?=$student_id?>&stage=3';
+				var url = './app/generate.stage.php?student_id=<?=$student_id?>$session_id='+session_id+'&stage=3';
 
 				$.post(url,function(response){});
 

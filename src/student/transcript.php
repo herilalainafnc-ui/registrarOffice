@@ -25,6 +25,8 @@
 		$init = 4;
 	}elseif($level <= 3) {
 		$init = 1;
+	}elseif($level == 0) {
+		$init = -1;
 	}
 
 	for ($a=$init; $a <= $level; $a++) { 
