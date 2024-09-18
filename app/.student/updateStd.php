@@ -19,9 +19,9 @@ require '../../data/backdb.php';
 	$lieuNaissance = $_POST['lieuNaissance'];
 	$num_cin = $_POST['num_cin'];
 	
-	$cin_datedelivre = $_POST['cin_date_delivre'];
+	echo $cin_datedelivre = $_POST['cin_date_delivre'];
 	
-	if ($cin_datedelivre == "0000-00-00") {
+	if (!empty($cin_datedelivre)) {
 
 		$cin_date_delivre = "0000-00-00";
 

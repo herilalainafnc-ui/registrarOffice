@@ -192,13 +192,16 @@ $showDiplome = $findDiplome->fetch();
 				<label class="text-sm text-slate-400">Mention</label>
 				<p class=""><i class="bi-lock-fill"></i> <?=$etude_envisage?></p><br>
 				<label class="text-sm text-slate-400">Niveau</label>
-				<p class="showEtd">--<?php if ($profil['annee_etude']<=3) {
-						echo " Licence ".$profil['annee_etude'];
-					}else{
-						echo " Master ".$profil['annee_etude']-3;
-					} ?>	
+				<p class="showEtd">--<?php if ($profil['annee_etude']==0) {
+										echo "Remise à niveau";
+									}elseif($profil['annee_etude'] > 0 AND $profil['annee_etude'] < 4) {
+										echo "Licence ".$profil['annee_etude'];
+									}else{
+										echo "Master ".($profil['annee_etude']-3);
+									} ?>	
 				</p>
 				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="annee_etude" id="annee_etude">
+					<option class="<?=$bg_one_color?>" value="0" <?php if($profil['annee_etude'] == 0){echo 'selected';}?>>Remise à niveau</option>
 					<option class="<?=$bg_one_color?>" value="1" <?php if($profil['annee_etude'] == 1){echo 'selected';}?>>Licence 1</option>
 					<option class="<?=$bg_one_color?>" value="2" <?php if($profil['annee_etude'] == 2){echo 'selected';}?>>Licence 2</option>
 					<option class="<?=$bg_one_color?>" value="3" <?php if($profil['annee_etude'] == 3){echo 'selected';}?>>Licence 3</option>
@@ -413,7 +416,7 @@ $y = $y - 1;
 
 		$('.form-no-refrech').on('submit',function (e) {
 			
-			e.preventDefault();
+			//e.preventDefault();
 
 			var url = '../app/.student/updateStd.php?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>';
 			
@@ -463,7 +466,7 @@ $y = $y - 1;
                          '&annee_etude=' + annee_etude + 
                          '&abonment=' + abonment + 
                          '&graduated=' + graduated+
-                         'new_student='+new_student;
+                         'new_student='+ new_student;
 
 			 
 			        $.get(financeUrl, function(response) {

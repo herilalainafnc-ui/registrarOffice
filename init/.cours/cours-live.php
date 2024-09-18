@@ -59,7 +59,9 @@ if ($cours_list['category'] == 0){
 }
 								?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php
-										if($cours_list['yearlevel']<=3) {
+										if ($cours_list['yearlevel']==0) {
+											echo "Remise à niveau";
+										}elseif($cours_list['yearlevel']>0 AND $cours_list['yearlevel']<=3) {
 											echo "Licence ".$cours_list['yearlevel'];
 										}else{
 											echo "Master ".($cours_list['yearlevel']-3);

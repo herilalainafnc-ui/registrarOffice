@@ -390,7 +390,7 @@ if (date('m') >= 7) {
 			var data = $(this).serialize();
 
 			$.post(url,data,function(response){
-				alert("Session bien enregistrée.");
+				//alert("Session bien enregistrée.");
 				$('#upStage').attr('class','px-5 py-2 bg-cyan-700 rounded-md');
 				$('#submitSession').attr('class','my-2 px-5 py-2 bg-cyan-700 rounded-md toolInactive');
 				

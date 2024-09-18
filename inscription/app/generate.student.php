@@ -131,9 +131,13 @@
 		$cout_voyage = $result_finance['frais_voyage'];
 
 		if ($new_student == 1 AND $status == "Interne") {
-			echo "<br>Dortoir = ".$cout_fondDepot_dortoir = floatval($result_finance['fond_depot']);	
+
+			echo "<br>Dortoir = ".$cout_fondDepot_dortoir = $result_finance['fond_depot'];	
+
 		}else{
+
 			echo "<br>Dortoir = ".$cout_fondDepot_dortoir = 0;
+			
 		}
 			
 		echo "<br>Log = ".$cout_logement = floatval($result_finance['dortoir']) * $nbr_day;
@@ -177,6 +181,4 @@
 			'date_entry' => $date_entry
 		));
 
-
-	/*}*/
  ?>

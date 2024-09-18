@@ -145,7 +145,7 @@ if ($showCat['category'] == 0){
 	if (!empty($showFin['session_id']) OR $showFin['session_id'] != 0) {
  ?>
  		<b class="text-lg">Finance</b>
-		<table class="tbl mb-2">
+		<table class="tbl mb-2" style="width:100%">
 			<thead class="bg-sky-200">
 				<tr class="text-right">
 					<th>Frais Généraux</th>

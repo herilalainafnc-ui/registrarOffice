@@ -190,7 +190,8 @@ while ($showSignMention = $findSignMention->fetch()) {
 										<label class="text-sm text-slate-400">Niveau</label>
 										
 										<select class="inscInput h-6 text-sm w-full mb-3" name="annee_etude" id="annee_etude">
-											<option class="<?=$bg_seven_color?>" value="1">Licence 1</option>
+											<option class="<?=$bg_seven_color?>" value="0">Remise à niveau</option>
+											<option class="<?=$bg_seven_color?>" value="1" selected>Licence 1</option>
 											<option class="<?=$bg_seven_color?>" value="2">Licence 2</option>
 											<option class="<?=$bg_seven_color?>" value="3">Licence 3</option>
 											<option class="<?=$bg_seven_color?>" value="4">Master 1</option>

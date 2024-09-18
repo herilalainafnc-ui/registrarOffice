@@ -108,11 +108,13 @@ while ($showTeach = $findTeach->fetch()) {
 		<div class="w-full flex">
 			<div class="w-6/12">
 				<label class="text-sm text-slate-400">Niveau</label>
-				<p class="showContact">--<?php if ($profil['yearlevel']<=3) {
-						echo " Licence ".$profil['yearlevel'];
-					}else{
-						echo " Master ".$profil['yearlevel']-3;
-					} ?></p>
+				<p class="showContact">--<?php if ($profil['yearlevel']==0) {
+											echo "Remise à niveau";
+										}elseif($profil['yearlevel']>0 AND $profil['yearlevel']<=3) {
+											echo "Licence ".$profil['yearlevel'];
+										}else{
+											echo "Master ".($profil['yearlevel']-3);
+										} ?></p>
 				<select class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="yearlevel">
 					<option class="<?=$bg_one_color?>" value="1" <?php if($profil['yearlevel'] == 1){echo 'selected';}?>>Licence 1</option>
 					<option class="<?=$bg_one_color?>" value="2" <?php if($profil['yearlevel'] == 2){echo 'selected';}?>>Licence 2</option>

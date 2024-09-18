@@ -32,6 +32,7 @@
 				<div class="w-2/12">
 					<label>Crédit</label><br>
  					<select class="input w-full" type="number" name="nb_credit">
+ 						<option>1</option>
  						<option>2</option>
  						<option>3</option>
  						<option>4</option>
@@ -91,7 +92,8 @@ while($ct = $cat->fetch()){
 				<div class="w-2/12">
 					<label>Niveau du cours</label><br>
  					<select class="input w-full" type="number" name="yearlevel">
- 						<option value="1">Licence 1</option>
+ 						<option value="0">Remise à niveau</option>
+ 						<option value="1" selected>Licence 1</option>
  						<option value="2">Licence 2</option>
  						<option value="3">Licence 3</option>
  						<option value="4">Master 1</option>

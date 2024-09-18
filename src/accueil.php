@@ -57,7 +57,9 @@
 									<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['etude_option']?></div></a></td>
 									<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['annee_scolaire']?></div></a></td>
 									<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?php
-										if($sdt_list['annee_etude']<=3) {
+										if ($sdt_list['annee_etude']==0) {
+											echo "Remise à niveau";
+										}elseif($sdt_list['annee_etude'] > 0 AND $sdt_list['annee_etude'] < 4) {
 											echo "Licence ".$sdt_list['annee_etude'];
 										}else{
 											echo "Master ".($sdt_list['annee_etude']-3);

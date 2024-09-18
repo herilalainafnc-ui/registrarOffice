@@ -34,7 +34,7 @@
 
 
  ?>
-<div class="flex gap-2 w-full">
+<div class="flex gap-2 w-full overflow-auto" style="max-height: calc(100vh - 246px);">
 	
 	<div class="w-7/12 p-2">
 		
