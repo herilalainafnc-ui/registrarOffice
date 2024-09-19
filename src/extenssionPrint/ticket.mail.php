@@ -14,7 +14,7 @@
 	while ($afficher = $student->fetch()){
 ?>
 	
-	<div class="w-full border-1 border-black">
+	<div class="w-full border-1 border-black" style="page-break-inside: avoid;">
 		
 		<div class="px-2 h-[80px]">
 			<b> <?=$afficher['student_id']?></b><br>

@@ -35,9 +35,11 @@ $stdA = $searchStd->fetch();
 				<b><?php 
 if ($stdA['annee_etude'] == 0) {
 	echo ('Remise à niveau');
-}else{
-	echo "L".$stdA['annee_etude'];
-}
+}elseif($stdA['annee_etude'] > 0 AND $stdA['annee_etude'] <= 3){
+	echo "Licence ".$stdA['annee_etude'];
+}/*elseif($stdA['annee_etude'] > 3){
+	echo "Licence ".$stdA['annee_etude'];
+}*/
 
 				 ?></b><br>
 				<b><?=$stdA['student_email']?></b>

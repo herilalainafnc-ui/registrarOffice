@@ -52,7 +52,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 		<a href="#" id="exportListCSV" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
-} ?>">
+} ?> toolInactive">
 				<center>
 				<i class="bi-envelope-at text-2xl"></i><br>
 						Tamplate mail CSV
@@ -79,7 +79,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
-} ?>">
+} ?> toolInactive">
 				<center>
 				<i class="bi-person-lines-fill text-2xl"></i><br>
 						Worked Lists
@@ -288,7 +288,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
-} ?>">
+} ?> toolInactive">
 				<center>
 				<i class="bi-highlighter text-2xl"></i><br>
 						Election SA
@@ -299,7 +299,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
-} ?>">
+} ?> toolInactive">
 				<center>
 				<i class="bi-download text-2xl"></i><br>
 						Photos en masse

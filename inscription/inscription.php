@@ -37,7 +37,7 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 		}
 		
 
-		$recupsdt = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id LIKE "%'.$search.'%"  AND remove != 1 limit 1');
+		$recupsdt = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE (student_id LIKE "%'.$search.'%" OR student_nom LIKE "%'.$search.'%" OR student_prenom LIKE "%'.$search.'%") AND remove != 1 limit 1');
 
 ?>
 
@@ -401,7 +401,7 @@ if (date('m') >= 7) {
 			$.post(url,data,function(response){
 
 				$('#upStage').attr('class','px-5 py-2 bg-cyan-700 rounded-md');
-				$('#submitSession').attr('class','my-2 px-5 py-2 bg-slate-700 rounded-md toolInactive');
+				$('#submitSession').attr('class','my-2 px-5 py-2 bg-slate-800 rounded-md toolInactive');
 				
 				var	student_id = '<?=$student_id?>';
 

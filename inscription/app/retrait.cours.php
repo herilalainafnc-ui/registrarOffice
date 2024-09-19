@@ -16,7 +16,7 @@
 	$retraitFinance->execute();
 
 
-	$retraitCours = $dtb->prepare('DELETE FROM t_2023_notes WHERE cours_id =:cours_id AND student_id=:student_id AND session_id=:session_id');
+	$retraitCours = $dtb->prepare('DELETE FROM t_2023_notes WHERE id_cours =:cours_id AND student_id=:student_id AND session_id=:session_id');
 	$retraitCours->bindValue(':cours_id',$cours_id,PDO::PARAM_INT);
 	$retraitCours->bindValue(':student_id',$student_id,PDO::PARAM_STR);
 	$retraitCours->bindValue(':session_id',$session_id,PDO::PARAM_INT);

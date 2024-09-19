@@ -52,7 +52,7 @@
 									<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"
 									><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['student_id']?></div></a></td>
 									<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=strtoupper($sdt_list['student_nom'])?>
-									<?php if($sdt_list['new_student'] == 1){ echo "&nbsp;&nbsp;&nbsp;<span class='badge rounded-pill bg-slate-900 border-1 border-slate-500 text-slate-400 pb-1'>Nouveau</span>";} ?>
+									<?php if($sdt_list['new_student'] == 1){ echo "&nbsp;&nbsp;&nbsp;<span class='badge rounded-pill bg-slate-900 border-1 border-slate-700 text-slate-400 pb-1 mt-0 shadow-lg shadow-indigo-500/40'>Nouveau</span>";} ?>
 									</div></a></td>
 									<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['student_prenom']?></div></a></td>
 									<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['etude_envisage']?></div></a></td>
