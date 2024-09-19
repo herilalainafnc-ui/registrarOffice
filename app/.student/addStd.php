@@ -168,7 +168,7 @@
 		
 	}
 
-	$insertFinance = $dtb->prepare("INSERT INTO t_2024_etudiant_finace(
+/*	$insertFinance = $dtb->prepare("INSERT INTO t_2024_etudiant_finace(
 		student_id,
 		session_id,
 		mention,
@@ -211,7 +211,7 @@
 		'cout_voyage' => $frais_voyage,
 		'date_entry' => $date_entry,
 		'last_change_user_id' => $last_change_user_id
-	));
+	));*/
 
 	/*:::::::::::::::::::: DIPLÔME PRECEDENT ::::::::::::::::::::*/
 

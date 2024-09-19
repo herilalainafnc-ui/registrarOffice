@@ -23,10 +23,11 @@
 	if ($showStudent['annee_etude'] < 3 AND $showStudent['annee_scolaire'] != $annee_scolaire) {
 
 		$annee_etude = $showStudent['annee_etude'] + 1;
+		$new_student = 0;
 	
-	}else{
-	
-		$annee_etude = $showStudent['annee_etude'];
+	}elseif($showStudent['annee_scolaire'] == $annee_scolaire){
+		$new_student = $showStudent['new_student'];
+		$annee_etude = 1;
 	
 	}
 	
@@ -49,7 +50,7 @@
 		$status = $showStudent['status'];	
 	}
 
-	$new_student = $showStudent['new_student'];
+	
 	$level = $showStudent['annee_etude'];
 
 	$data_completion = 1;

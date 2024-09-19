@@ -52,7 +52,7 @@ require ('../../data/backdb.php');
 		$vCout_lab = $showCFromNote['cout_lab'];
 
 
-	$findCoutFromFinance = $dtb->query("SELECT * FROM t_2024_etudiant_finace WHERE student_id='".$student_id."'");
+	/*$findCoutFromFinance = $dtb->query("SELECT * FROM t_2024_etudiant_finace WHERE student_id='".$student_id."'");
 	$showCFromFinance = $findCoutFromFinance->fetch();
 	
 		$fCout = $showCFromFinance['cout_totalCours'];
@@ -65,7 +65,7 @@ require ('../../data/backdb.php');
 		$updateReste->bindParam(':cout_totalCours',$restCout,PDO::PARAM_STR);
 		$updateReste->bindParam(':cout_totalLab',$restCoutLab,PDO::PARAM_STR);
 		$updateReste->bindParam(':student_id',$student_id,PDO::PARAM_STR);
-		$updateReste->execute();
+		$updateReste->execute();*/
 
 
 

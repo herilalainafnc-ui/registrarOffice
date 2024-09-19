@@ -262,10 +262,12 @@ $y = $y - 1;
 				<br>
 				<label class="text-sm text-slate-400">Ancien étudiant</label>
 				<p class="showEtd">-- <?php $new_student = $profil['new_student']; if($profil['new_student'] == 1){echo 'Non';}else{echo 'Oui';}?></p>
-				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="new_student">
+				
+				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="new_student" id="new_student">
 					<option class="<?=$bg_one_color?>" <?php if($profil['new_student'] == 1){echo 'selected';}?> value="1">Non</option>
 					<option class="<?=$bg_one_color?>" <?php if($profil['new_student'] == 0){echo 'selected';}?> value="0">Oui</option>
 				</select>
+				
 				<br>
 				<label class="text-sm text-slate-400">Gradué</label>
 				<p class="showEtd">-- <?php if($profil['graduated'] == "" OR $profil['graduated'] == 0){echo 'Non';}else{echo 'Oui';}?></p>
@@ -416,7 +418,7 @@ $y = $y - 1;
 
 		$('.form-no-refrech').on('submit',function (e) {
 			
-			//e.preventDefault();
+			e.preventDefault();
 
 			var url = '../app/.student/updateStd.php?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>';
 			
@@ -458,6 +460,7 @@ $y = $y - 1;
 					var abonment = $('#abonment').val();
 					var graduated = $('#graduated').val();
 					var new_student = '<?=$new_student?>';
+					
 
 					var financeUrl = '../app/.student/updateFinance.php?status=' + status +
                          '&etude_envisage=' + etude_envisage + 
@@ -470,7 +473,7 @@ $y = $y - 1;
 
 			 
 			        $.get(financeUrl, function(response) {
-			            console.log("Finance update successful!");
+			            alert("Finance update successful!");
 			        });
 
 			}

@@ -3,6 +3,7 @@
 	require('../../data/backdb.php');
 
 	$student_id = $_POST['student_id'];
+	//$session_id = $_POST['session_id'];
 	
 	$recupsdt = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id ="'.$student_id.'" AND remove != 1 limit 1');
 
@@ -68,9 +69,9 @@
 	while($showCF = $findCoursFinance->fetch()) {
 		$session_id = $showCF['session_id'];
  ?>
-				<!-- <form action="../app/retrait.cours.php?cours_id=<?=$showCF['cours_id']?>&student_id=<?=$student_id?>&session_id=<?=$session_id?>" method="post" class="coursInsert<?=$nbr?>"> -->
-				<tr class="hover:bg-slate-200 border">
-				
+
+				<tr class="hover:bg-slate-200 border" id="coursSupprime<?=$nbr?>">
+
 					<td><?=$showCF['cours_sigle']?></td>
 					<td><?=$showCF['cours_title']?></td>
 					<td><?=$showCF['cours_credit']?></td>
@@ -102,29 +103,67 @@ if ($showCat['category'] == 0){
 
 							echo $showCat['cout_lab'];
 							$somm_lab =+ $somm_lab + $showCat['cout_lab'];
+							echo "<a id='cout_lab' style='display:none'>".$showCat['cout_lab']."</a>";
 					
 						}else{
 						
 							echo "<a style='text-decoration: line-through; color: orange;'>".$showCat['cout_lab']."</a>";
-						
+							echo "<a id='cout_lab' style='display:none'>0</a>";
 						}
 
 					}
 					echo ' ar';?></td>
 					<td class="bg-red-500 text-center">
-						<a id="coursInsert<?=$nbr?>" href="./app/retrait.cours.php?cours_id=<?=$showCF['cours_id']?>&student_id=<?=$student_id?>&session_id=<?=$session_id?>" class="text-white w-full text-center" title="Retirer" onclick="preventDefault();"><i class="bi-x-lg"></i></a>
+						<a id="coursInsert<?=$nbr?>" href="#" class="text-white w-full text-center" title="Retirer" onclick="preventDefault();"><i class="bi-x-lg"></i></a>
 						
-						<!-- <button type="submit" class="text-white w-full text-center"><i class="bi-x-lg"></i></button> -->
 					
 					</td>
 				<script type="text/javascript">
-					document.getElementById("coursInsert<?=$nbr?>").addEventListener("click", function(events) {
-					  	events.preventDefault();
-						alert('Suppression du cours :'+<?=$showCF['cours_title']?>);
+					$(document).ready(function(){
+						$('#coursInsert<?=$nbr?>').click(function(){
+							
+							var cours_id = '<?=$showCF['cours_id']?>';
+							var student_id = '<?=$student_id?>';
+							var session_id = '<?=$session_id?>';
+							var coutCours = '<?=$showCF['cours_cout']?>';
+							var coutLab = $('#cout_lab').text();
+
+							var delUrl = "app/retrait.cours.php?cours_id="+cours_id+
+							"&student_id="+student_id+
+							"&session_id="+session_id+
+							"&cours_cout="+coutCours+
+							"&lab_cout="+coutLab;
+
+							$.get(delUrl, function(response) {
+					        	
+					        	$('#coursSupprime<?=$nbr?>').css({'display':'none'});
+					        	
+					        	var coutCours = '<?=$showCF['cours_cout']?>';
+
+					        	var totalCours = $('#totalCours').text();
+					        	var montant = $('#montant').text();
+								var tranchable = $('#tranchable').text();
+					        	
+					        	var restTotal = parseInt(totalCours) - parseInt(coutCours);
+					        	var restMontant = parseInt(montant) - parseInt(coutCours);
+					        	var restTranchable = parseInt(tranchable) - parseInt(coutCours);
+					        	
+					        	$('#totalCours').text(restTotal);
+					        	$('#montant').text(restMontant);
+					        	$('#tranchable').text(restTranchable);
+
+					        	$('.paie100').text(restTranchable);
+					        	$('.paie50').text((restTranchable*50)/100);
+					        	$('.paie40').text((restTranchable*40)/100);
+					        	$('.paie30').text((restTranchable*30)/100);
+					        	$('.paie25').text((restTranchable*25)/100);
+					        });
+
+						});
 					});
+
 				</script>
-				</tr>
-				<!-- </form> -->	
+				</tr>	
 <?php
 	$nbr++;
 	$tCredit =+ $tCredit + $showCF['cours_credit'];
@@ -206,14 +245,14 @@ if ($showCat['category'] == 0){
 						<td><?=$showFin['cout_frais_graduation']?> ar</td>
 					<?php } ?>
 					<td><?=$showFin['cout_voyage']?> ar</td>
-					<td><?=$tCout?> ar</td>
+					<td><a id="totalCours"><?=$tCout?></a> ar</td>
 					<td><?=$somm_lab?> ar</td>
 				</tr>
 			</tbody>
 		</table>
 
 		<p class="text-xs mb-2">Montant : 
-			<b class="bg-orange-300 py-1 px-2"><?=$Montant = $showFin['cout_fraix_generaux'] + 
+			<b class="bg-orange-300 py-1 px-2"><a id="montant"><?=$Montant = $showFin['cout_fraix_generaux'] + 
 							$showFin['cout_logement'] +
 							$showFin['cout_fondDepot_dortoir'] +
 							$showFin['cout_abonment'] +
@@ -222,10 +261,10 @@ if ($showCat['category'] == 0){
 							$showFin['cout_voyage'] +
 							$tCout +
 							$somm_lab
-				?> ar</b> <em>(À payer lors de l'inscription : <?=$pay_inscription = $showFin['cout_fraix_generaux'] + $showFin['cout_fondDepot_dortoir']?> ar)</em>
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tranchable : <b class="bg-blue-300 py-1 px-2"><?=$Montant_sans_fraix_Generaux =
+				?></a> ar</b> <em>(À payer lors de l'inscription : <?=$pay_inscription = $showFin['cout_fraix_generaux'] + $showFin['cout_fondDepot_dortoir']?> ar)</em>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tranchable : <b class="bg-blue-300 py-1 px-2"><a id="tranchable"><?=$Montant_sans_fraix_Generaux =
 							$Montant - ($showFin['cout_fraix_generaux'] + $showFin['cout_fondDepot_dortoir'])
-				?> ar</b>
+				?></a> ar</b>
 			</p>
 
 <?php } } ?>
@@ -253,7 +292,7 @@ if ($showCat['category'] == 0){
 					<a class="text-slate-300">Payement à 100 %</a>	
 				</div>
 				<div class="w-4/12 text-right px-2">
-					<a class="text-slate-300"><?= $Montant_sans_fraix_Generaux?> ar</a>
+					<a class="text-slate-300 paie100"><?= $Montant_sans_fraix_Generaux?></a> ar
 				</div>
 				
 			</label><hr class="border-1 border-slate-900">
@@ -267,8 +306,8 @@ if ($showCat['category'] == 0){
 					<a class="text-slate-300">Tranché par 50% - 50%</a>	
 				</div>
 				<div class="w-4/12 text-right px-2">
-					<a class="text-slate-300"><?=($Montant_sans_fraix_Generaux*50) /100 ?> ar</a><br>
-					<a class="text-slate-300"><?=($Montant_sans_fraix_Generaux*50) /100 ?> ar</a>
+					<a class="text-slate-300 paie50"><?=($Montant_sans_fraix_Generaux*50) /100 ?></a> ar<br>
+					<a class="text-slate-300 paie50"><?=($Montant_sans_fraix_Generaux*50) /100 ?></a> ar
 				</div>
 				
 			</label><hr class="border-1 border-slate-900">
@@ -282,8 +321,8 @@ if ($showCat['category'] == 0){
 					<a class="text-slate-300">Tranché par 75% - 25%</a>	
 				</div>
 				<div class="w-4/12 text-right px-2">
-					<a class="text-slate-300"><?=($Montant_sans_fraix_Generaux*75) /100 ?> ar</a><br>
-					<a class="text-slate-300"><?=($Montant_sans_fraix_Generaux*25) /100 ?> ar</a>
+					<a class="text-slate-300 paie75"><?=($Montant_sans_fraix_Generaux*75) /100 ?></a> ar<br>
+					<a class="text-slate-300 paie25"><?=($Montant_sans_fraix_Generaux*25) /100 ?></a> ar
 				</div>
 				
 			</label><hr class="border-1 border-slate-900">
@@ -297,9 +336,9 @@ if ($showCat['category'] == 0){
 					<a class="text-slate-300">Tranché par 40% - 30% - 30%</a>	
 				</div>
 				<div class="w-4/12 text-right px-2">
-					<a class="text-slate-300"><?=($Montant_sans_fraix_Generaux*40) /100 ?> ar</a><br>
-					<a class="text-slate-300"><?=($Montant_sans_fraix_Generaux*30) /100 ?> ar</a><br>
-					<a class="text-slate-300"><?=($Montant_sans_fraix_Generaux*30) /100 ?> ar</a>
+					<a class="text-slate-300 paie40"><?=($Montant_sans_fraix_Generaux*40) /100 ?></a> ar<br>
+					<a class="text-slate-300 paie30"><?=($Montant_sans_fraix_Generaux*30) /100 ?></a> ar<br>
+					<a class="text-slate-300 paie30"><?=($Montant_sans_fraix_Generaux*30) /100 ?></a> ar
 				</div>
 				
 			</label><hr class="border-1 border-slate-900">
@@ -313,10 +352,10 @@ if ($showCat['category'] == 0){
 					<a class="text-slate-300">Tranché par 25% - 25% - 25% - 25%</a>	
 				</div>
 				<div class="w-4/12 text-right px-2">
-					<a class="text-slate-300"><?=($Montant_sans_fraix_Generaux*25) /100 ?> ar</a><br>
-					<a class="text-slate-300"><?=($Montant_sans_fraix_Generaux*25) /100 ?> ar</a><br>
-					<a class="text-slate-300"><?=($Montant_sans_fraix_Generaux*25) /100 ?> ar</a><br>
-					<a class="text-slate-300"><?=($Montant_sans_fraix_Generaux*25) /100 ?> ar</a>
+					<a class="text-slate-300 paie25"><?=($Montant_sans_fraix_Generaux*25) /100 ?></a> ar<br>
+					<a class="text-slate-300 paie25"><?=($Montant_sans_fraix_Generaux*25) /100 ?></a> ar<br>
+					<a class="text-slate-300 paie25"><?=($Montant_sans_fraix_Generaux*25) /100 ?></a> ar<br>
+					<a class="text-slate-300 paie25"><?=($Montant_sans_fraix_Generaux*25) /100 ?></a> ar
 				</div>
 				
 			</label><hr class="border-1 border-slate-900">

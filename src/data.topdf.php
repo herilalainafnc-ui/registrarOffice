@@ -52,7 +52,11 @@ $date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
         }
         
         if($ptype == "Statistique") {
+            echo "<br>";
+            require ('./extenssionPrint/statistic-internat.php');
+            echo "<br>";
             require ('./extenssionPrint/statistic-sexe.php');
+            echo "<br>";
             require ('./extenssionPrint/statistic-religion.php');
             
         }elseif($ptype == "Badge"){

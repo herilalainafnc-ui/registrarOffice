@@ -59,7 +59,7 @@ if(empty($_POST['cours'])){
  	?>
  	<div>
  		<table class="tbl simpleTbl mb-0">
- 			<tr class="<?php if(!empty($_POST['cours'])){ echo"bg-slate-200"; } ?>">
+ 			<tr class="<?php if(!empty($_POST['cours'])){ echo"bg-slate-200"; } ?>" style="page-break-inside: avoid;">
  				<td class="w-[40px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$n?></td>
  				<td class="w-[50px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><b><?=$student_id = $affiche['student_id']?></b></td>
  				<td class="w-[300px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$affiche['student_nom']." ".$affiche['student_prenom']?></td>
@@ -84,7 +84,7 @@ if(empty($_POST['cours'])){
 		<div style="margin-top: 5px;margin-bottom: 10px;">
 	 		<table class="tbl simpleTbl mb-1">
 		 		<thead class="bg-slate-800 text-white">
-		 			<tr>
+		 			<tr style="page-break-inside: avoid;">
 		 				<td class='w-[100px]'>Sigle</td>
 		 				<td class='w-[400px]'>Titre du cours</td>
 		 				<td class='w-20'>Crédit</td>
@@ -126,7 +126,7 @@ if(empty($_POST['cours'])){
 		 				$tnotes = 0;
 		 				while($affcours = $cours->fetch()){
 					?>
-					<tr>
+					<tr style="page-break-inside: avoid;">
 
 						<td><?=$affcours['Sigle']?></td>
 						<td><?=$affcours['title_cours']?></td>
@@ -152,7 +152,7 @@ if(empty($_POST['cours'])){
 		 			 ?>
 		 		</tbody>
 		 		<tfoot>
-		 			<tr>
+		 			<tr style="page-break-inside: avoid;">
 		 				<td></td>
 		 				<td></td>
 		 				<td><b><?php
@@ -174,7 +174,7 @@ if(empty($_POST['cours'])){
 	<div>
 		<table class="tbl simpleTbl mb-1">
 			<thead class="bg-slate-200">
-				<tr>
+				<tr style="page-break-inside: avoid;">
 					<th class="border-1 w-[40px]"><b><?=$nombresS = ($n-1);?></b></th>
 					<th class="border-1 w-[50px]"></th>
 					<th class="border-1 w-[300px]"></th>
