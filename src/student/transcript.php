@@ -158,7 +158,7 @@ if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 							 ?></td>
 					<!-- <td><?=$session_id?></td> -->
 					<td><div class="relative">
-						<a href="#" id="coursPush<?=$a.$s.$nbr?>" data-bs-toggle="dropdown" aria-expanded="false" title="Historique de solde"><span class="bi-three-dots-vertical"></span></a>
+						<a href="#" id="coursPush<?=$a.$s.$nbr?>" data-bs-toggle="dropdown" aria-expanded="false" title="Options"><span class="bi-three-dots-vertical"></span></a>
 
 							<ul class="dropdown-menu absolute border <?=$bg_six_color?> text-black p-0 rounded-0 text-xs">
 

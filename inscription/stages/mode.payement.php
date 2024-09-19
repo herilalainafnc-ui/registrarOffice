@@ -44,7 +44,7 @@
 			<b>Liste des cours</b>
 
 			
-			<table class="tbl mb-2 text-[10px]">
+			<table class="tbl mb-2 text-[10px]" style="width: 100%">
 				<thead class="bg-slate-200">
 					<tr>
 						<th style="width: 70px">SIGLE</th>
@@ -68,8 +68,9 @@
 	while($showCF = $findCoursFinance->fetch()) {
 		$session_id = $showCF['session_id'];
  ?>
+				<!-- <form action="../app/retrait.cours.php?cours_id=<?=$showCF['cours_id']?>&student_id=<?=$student_id?>&session_id=<?=$session_id?>" method="post" class="coursInsert<?=$nbr?>"> -->
 				<tr class="hover:bg-slate-200 border">
-				<form>
+				
 					<td><?=$showCF['cours_sigle']?></td>
 					<td><?=$showCF['cours_title']?></td>
 					<td><?=$showCF['cours_credit']?></td>
@@ -110,9 +111,20 @@ if ($showCat['category'] == 0){
 
 					}
 					echo ' ar';?></td>
-					<td class="bg-red-500"><!-- <a id="retireCours" href="./app/rerait.cours.php?cours_id=<?=$showCF['cours_id']?>" onclick="event.preventDefault();" class="text-white"><i class="bi-x-lg"></i></a> --></td>
-				</form>
-				</tr>	
+					<td class="bg-red-500 text-center">
+						<a id="coursInsert<?=$nbr?>" href="./app/retrait.cours.php?cours_id=<?=$showCF['cours_id']?>&student_id=<?=$student_id?>&session_id=<?=$session_id?>" class="text-white w-full text-center" title="Retirer" onclick="preventDefault();"><i class="bi-x-lg"></i></a>
+						
+						<!-- <button type="submit" class="text-white w-full text-center"><i class="bi-x-lg"></i></button> -->
+					
+					</td>
+				<script type="text/javascript">
+					document.getElementById("coursInsert<?=$nbr?>").addEventListener("click", function(events) {
+					  	events.preventDefault();
+						alert('Suppression du cours :'+<?=$showCF['cours_title']?>);
+					});
+				</script>
+				</tr>
+				<!-- </form> -->	
 <?php
 	$nbr++;
 	$tCredit =+ $tCredit + $showCF['cours_credit'];
@@ -141,7 +153,7 @@ if ($showCat['category'] == 0){
  ?>
 
  			<b class="text-xs">Finance</b>
-		<table class="tbl mb-2 text-xs">
+		<table class="tbl mb-2 text-xs" style="width: 100%">
 			<thead class="bg-slate-200">
 				<tr>
 					<th>Frais Généraux</th>

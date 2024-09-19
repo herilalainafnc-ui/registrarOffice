@@ -392,7 +392,7 @@ if (date('m') >= 7) {
 			$.post(url,data,function(response){
 				//alert("Session bien enregistrée.");
 				$('#upStage').attr('class','px-5 py-2 bg-cyan-700 rounded-md');
-				$('#submitSession').attr('class','my-2 px-5 py-2 bg-cyan-700 rounded-md toolInactive');
+				$('#submitSession').attr('class','my-2 px-5 py-2 bg-slate-700 rounded-md toolInactive');
 				
 				var	student_id = '<?=$student_id?>';
 
@@ -422,7 +422,7 @@ if (date('m') >= 7) {
 
 		});
 
-		var	student_id = '<?=$student_id?>';
+/*		var	student_id = '<?=$student_id?>';
 
 		$.ajax({
 				url:"./stages/top.stages.php",
@@ -444,7 +444,7 @@ if (date('m') >= 7) {
 					
 					$("#session").html(data);
 				}
-			});
+			});*/
 
 
         function updateContent() {
@@ -636,7 +636,7 @@ if (date('m') >= 7) {
             
         }
         
-        //updateContent();
+        updateContent();
 
 		$('#upStage').on('click', function(event) {
             event.preventDefault(); // Empêche le comportement par défaut du lien
