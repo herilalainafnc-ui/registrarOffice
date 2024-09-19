@@ -54,7 +54,7 @@
 						<th style="width: 60px">CATÉGORIE</th>
 						<th style="width: 60px">COÛT</th>
 						<th style="width: 60px">LAB</th>
-						<th></th>
+						<th style="width: 20px"></th>
 					</tr>	
 				</thead>
 				<tbody>

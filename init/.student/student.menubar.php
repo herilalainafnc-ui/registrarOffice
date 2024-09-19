@@ -80,7 +80,9 @@ if($profil['annee_etude'] == 0) {
 								$user_modif_id  = $profil['last_change_user_id'];
 $findUser = $dtb->query('SELECT * FROM compt_utilisateur WHERE id = "'.$user_modif_id.'"');
 $showUser = $findUser->fetch();
-echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];
+if (!empty($showUser)) {
+	echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];	
+}
 								 ?></p>
 						</div><hr>
 						<div class="w-full text-md">

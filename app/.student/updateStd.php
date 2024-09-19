@@ -85,7 +85,7 @@ require '../../data/backdb.php';
 		sponsor_adresse=:sponsor_adresse,
 		sponsor_tel=:sponsor_tel,
 		annee_scolaire=:annee_scolaire,
-		last_change_user_id=:last_change_user_id,
+		/*last_change_user_id=:last_change_user_id,*/
 		last_change_datetime=:last_change_datetime,
 		status=:status,
 		graduated=:graduated,
@@ -125,7 +125,7 @@ require '../../data/backdb.php';
 	$updateStudent->bindParam(':sponsor_adresse',$sponsor_adresse,PDO::PARAM_STR);
 	$updateStudent->bindParam(':sponsor_tel',$sponsor_tel,PDO::PARAM_STR);
 	$updateStudent->bindParam(':annee_scolaire',$annee_scolaire,PDO::PARAM_STR);
-	$updateStudent->bindParam(':last_change_user_id',$last_change_user_id,PDO::PARAM_INT);
+	/*$updateStudent->bindParam(':last_change_user_id',$last_change_user_id,PDO::PARAM_INT);*/
 	$updateStudent->bindParam(':last_change_datetime',$last_change_datetime,PDO::PARAM_STR);
 	$updateStudent->bindParam(':status',$status,PDO::PARAM_STR);
 	$updateStudent->bindParam(':graduated',$graduated,PDO::PARAM_STR);

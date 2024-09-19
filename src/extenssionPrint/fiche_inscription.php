@@ -32,7 +32,14 @@ $stdA = $searchStd->fetch();
 				<b><?=strtoupper($stdA['student_nom'])." ".$stdA['student_prenom']?></b><br>
 				<b><?=$stdA['etude_envisage']?></b><br>
 				<b><?=$stdA['etude_option']?></b><br>
-				<b>L<?=$stdA['annee_etude']?></b><br>
+				<b><?php 
+if ($stdA['annee_etude'] == 0) {
+	echo ('Remise à niveau');
+}else{
+	echo "L".$stdA['annee_etude'];
+}
+
+				 ?></b><br>
 				<b><?=$stdA['student_email']?></b>
 				<b>/ <?=$stdA['student_tel']?></b><br>
 				<b><?=$stdA['student_adresse']?></b>
@@ -242,7 +249,7 @@ $modeP = $showPayement['mode_payement'];
 			<thead>
 				<tr>
 					<th colspan="3" class="text-center text-bold"> <?=$Montant_sans_fraix_Generaux =
-							$Montant - $pay_inscription?>ar</th>
+							$Montant - $pay_inscription?> ar</th>
 				</tr>
 				<tr>
 					<th colspan="3" class="text-center text-bold">Payé en tranches de TYPE <?=$modeP?></th>

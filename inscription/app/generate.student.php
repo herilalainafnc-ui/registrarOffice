@@ -26,7 +26,8 @@
 		$new_student = 0;
 	
 	}elseif($showStudent['annee_scolaire'] == $annee_scolaire){
-		$new_student = $showStudent['new_student'];
+		
+		$new_student = 1;
 		$annee_etude = 1;
 	
 	}

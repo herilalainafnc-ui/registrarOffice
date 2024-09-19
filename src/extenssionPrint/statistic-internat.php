@@ -66,8 +66,8 @@ for ($i=0; $i < 1 ; $i++) {
 
 		$externe = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE status = "Externe" AND etude_envisage="'.$filiere.'" AND sex!="'.$sex1.'" AND sex!="'.$sex2.'"');
 		
-		$nbBung = 0;
-		while($bung = $externe->fetch()){
+		$nExt = 0;
+		while($ext = $externe->fetch()){
 			$nbNBung++;
 		}
 		
