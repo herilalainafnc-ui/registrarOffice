@@ -75,7 +75,7 @@ if($profil['annee_etude'] == 0) {
 						<div class="w-full py-2 text-sm">
 								<b><?=strtoupper($profil['student_nom']) ?> <?=$profil['student_prenom'] ?></b><br>
 								<em><?=$profil['etude_envisage']." - ".$profil['etude_option'] ?></em><br>
-								<b>A.U <?=$profil['annee_scolaire']?></b><br>
+								<b>Année <?=$profil['annee_scolaire']?></b><br>
 								<p class="text-[11px] text-green-600" style="line-height: 12px;">Modifié par <?php 
 								$user_modif_id  = $profil['last_change_user_id'];
 $findUser = $dtb->query('SELECT * FROM compt_utilisateur WHERE id = "'.$user_modif_id.'"');

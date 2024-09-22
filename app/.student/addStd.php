@@ -20,7 +20,17 @@
 	$pays_origine = $_POST['pays_origine'];
 	$student_region = $_POST['student_region'];
 	$student_adresse = $_POST['student_adresse'];
-	$student_id = $_POST['student_id'];
+	
+
+	$init_id = $_POST['student_id'];
+
+	$verifyID = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id ="'.$init_id.'"');
+	$showID = $verifyID->fetch();
+	if (!empty($showId)) {
+		$student_id = $init_id + 1;
+	}else{
+		$student_id = $init_id;
+	}
 
 	$mention = $_POST['etude_envisage'];
 	$findMention = $dtb->query('SELECT * FROM filiere WHERE filiere_sigle ="'.$mention.'"');
@@ -168,51 +178,6 @@
 		
 	}
 
-/*	$insertFinance = $dtb->prepare("INSERT INTO t_2024_etudiant_finace(
-		student_id,
-		session_id,
-		mention,
-		level,
-		status,
-		cout_logement,
-		cout_fraix_generaux,
-		cout_fondDepot_dortoir,
-		cout_abonment,
-		cout_costume,
-		cout_voyage,
-		date_entry,
-		last_change_user_id
-	)VALUES(
-		:student_id,
-		:session_id,
-		:mention,
-		:level,
-		:status,
-		:cout_logement,
-		:cout_fraix_generaux,
-		:cout_fondDepot_dortoir,
-		:cout_abonment,
-		:cout_costume,
-		:cout_voyage,
-		:date_entry,
-		:last_change_user_id
-	
-	)");$insertFinance->execute(array(
-		'student_id' => $student_id,
-		'session_id' => $session_id,
-		'mention' => $mention,
-		'level' => $annee_etude,
-		'status' => $status,
-		'cout_logement' => $cout_logement,
-		'cout_fraix_generaux' => $cout_fraix_generaux,
-		'cout_fondDepot_dortoir' => $fond_depot,
-		'cout_abonment' => $cout_abonment,
-		'cout_costume' => $frais_costume,
-		'cout_voyage' => $frais_voyage,
-		'date_entry' => $date_entry,
-		'last_change_user_id' => $last_change_user_id
-	));*/
-
 	/*:::::::::::::::::::: DIPLÔME PRECEDENT ::::::::::::::::::::*/
 
 	if($annee_etude <= 3 ) {
@@ -268,63 +233,6 @@
 	
 	}
 
-	/*:::::::::::::::::::: INSCRIPTION ::::::::::::::::::::*/
-
-	/*$inscriptionStd = $dtb->prepare('INSERT INTO t_2024_inscription_session(
-		student_id,
-		etude_mention,
-		status,
-		new_student,
-		graduated,
-		caisse_verification,
-		data_completion,
-		cours_selected,
-		impression_verification,
-		signatures,
-		depot_list,
-		session_id,
-		nbr_semester,
-		test_niveau,
-		annee_scolaire,
-		date_entry
-
-	)VALUES(
-		:student_id,
-		:etude_mention,
-		:status,
-		:new_student,
-		:graduated,
-		:caisse_verification,
-		:data_completion,
-		:cours_selected,
-		:impression_verification,
-		:signatures,
-		:depot_list,
-		:session_id,
-		:nbr_semester,
-		:test_niveau,
-		:annee_scolaire,
-		:date_entry
-
-	)');$inscriptionStd->execute(array(
-		'student_id' => $student_id,
-		'etude_mention' => $mention,
-		'status' => $status,
-		'new_student' => $new_student,
-		'graduated' => $graduated,
-		'caisse_verification' => 0,
-		'data_completion' => 1,
-		'cours_selected' => 0,
-		'impression_verification' => 0,
-		'signatures' => 0,
-		'depot_list' => '',
-		'session_id' => $session_id,
-		'nbr_semester' => $semester,
-		'test_niveau' => 0,
-		'annee_scolaire' => $annee_scolaire,
-		'date_entry' => $date_entry
-	));*/
-	
 	/*:::::::::::::::::::: INFORMATION ::::::::::::::::::::*/
 
 	$insertStd = $dtb->prepare('INSERT INTO tbl_2024_etudiant(

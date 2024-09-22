@@ -364,6 +364,47 @@
 
 	</div>
 
+<!-- FOR STATISTIC -->
+	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifStatistic" style="backdrop-filter: blur(3px);">
+
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+			<form method="post" action="./data.topdf.php?ptype=Statistique" target="_blank">
+			<div class="p-2 text-black">
+				<b>Exporter la statistique générale.</b>
+			</div>
+			<div class="p-2">
+				<div class="flex mb-3">
+				    	<div class="w-3/12 text-right pr-2">
+					      	<label for="yearStatistic">Année</label>
+					    </div>
+					    <div class="w-9/12">
+					    	<select name="yearStatistic" id="yearStatistic" class="input w-full">
+								<option></option>
+								<?php
+								$y = date('Y');
+								for ($i=0; $i <= 8; $i++) { 
+									
+									$as = $y." - ".($y+1);
+								?>
+								<option><?=$as?></option>
+								<?php
+								$y = $y - 1;
+								}
+								 ?>
+							</select>
+					    </div>
+				</div>
+			</div>
+			<div class="p-3">
+				<center>
+				<a href="#" id="cancelnotifStatistic" class="bg-slate-400 p-2 rounded-md">Annuler</a>
+				<input id="btnStatistic" type="submit" class="bg-slate-400 p-2 rounded-md mx-1 toolInactive" value="Afficher">
+				</center>
+			</div>
+			</form>
+		</div>
+
+	</div>
 
 <!-- FOR TICKET MAIL -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifTicketMail" style="backdrop-filter: blur(3px);">
@@ -620,6 +661,28 @@
 		});
 		$('#cancelnotifTicketMail').click(function(){
 			$('#notifTicketMail').css({'display':'none'});
+		});
+
+		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
+		
+		
+		$('#exportStatistic').click(function(){
+			$('#notifStatistic').css({'display':'block'});
+		});
+		$('#yearStatistic').on('change',function(){
+			
+			if($(this).val()!='') {
+			
+				$('#btnStatistic').attr('class','bg-cyan-800 p-2 rounded-md text-white mx-1');
+			
+			}else{
+			
+				$('#btnStatistic').attr('class','<?=$bg_five_color?> p-2 rounded-md mx-1 toolInactive');
+			}
+
+		});
+		$('#cancelnotifStatistic').click(function(){
+			$('#notifStatistic').css({'display':'none'});
 		});
 
 		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	

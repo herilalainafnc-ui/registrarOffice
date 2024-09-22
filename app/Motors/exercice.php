@@ -1,7 +1,43 @@
 <?php 
-/*	require ('../../data/backdb.php');
+	
+	require ('../../data/backdb.php');
 
-	$student = $dtb->query('SELECT * FROM tbl_2024_etudiant');
+// MODIFICATION DE TOUT LES INSCRIT DE LA DATE 2024-09 EN NEW_STUDENT
+
+// $date_entry = "2024-09-";
+
+// $findNew = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE date_entry LIKE "%'.$date_entry.'%"');
+
+// $nbr = 1;
+// while ($showNew = $findNew->fetch()) {
+// 	echo "<br>".$nbr."	".$showNew['new_student'];
+	
+// 	$student_id = $showNew['student_id'];
+	
+// 	$changeToNewStd = $dtb->prepare('UPDATE tbl_2024_etudiant SET new_student = 1,annee_scolaire = "2024 - 2025" WHERE student_id =:student_id');
+	
+// 	$changeToNewStd->bindParam(':student_id',$student_id,PDO::PARAM_STR);
+// 	$changeToNewStd->execute();
+
+// $nbr++;
+
+// }
+
+
+
+// COPY THIS IN THE SQL EDITOR FROM YOUR TABLE ON THE LOCALHOST SERVER
+// DELETE FROM t_2024_etudiant_finace
+// WHERE id NOT IN (
+//     SELECT * FROM (
+//         SELECT MIN(id)
+//         FROM t_2024_etudiant_finace
+//         GROUP BY student_id, session_id
+//     ) AS temp
+// );
+
+
+
+/*	$student = $dtb->query('SELECT * FROM tbl_2024_etudiant');
 	
 	while($std = $student->fetch()) {
 		
@@ -102,7 +138,6 @@
 		));
 	} */
 
-require ('../../data/backdb.php');
 
 // Assurez-vous d'utiliser une transaction si nécessaire
 
@@ -298,30 +333,30 @@ while ($std = $studentQuery->fetch()) {
 // 	}
 
 	
- 		$cours = $dtb->query("SELECT * FROM t_2023_cours ORDER BY id");
+ 		// $cours = $dtb->query("SELECT * FROM t_2023_cours ORDER BY id");
 
- 		while($showCous = $cours->fetch()) {
- 			$id = $showCous['id'];
-			$nb_crd = $showCous['nb_crd'];
- 			$lab = $showCous['lab'];
- 			//$student_id = $showCous['student_id'];
+ 		// while($showCous = $cours->fetch()) {
+ 		// 	$id = $showCous['id'];
+		// 	$nb_crd = $showCous['nb_crd'];
+ 		// 	$lab = $showCous['lab'];
+ 		// 	//$student_id = $showCous['student_id'];
 
-			if($lab == "0" OR $lab == "") {
- 				$cLab = 0;
- 			}else{
-				$cLab = 35000;
-			}
+		// 	if($lab == "0" OR $lab == "") {
+ 		// 		$cLab = 0;
+ 		// 	}else{
+		// 		$cLab = 35000;
+		// 	}
 
- 			$cCrd = 19000;
+ 		// 	$cCrd = 19000;
 
- 			$cout = $cCrd * $nb_crd;
+ 		// 	$cout = $cCrd * $nb_crd;
 
- 			$updateCout = $dtb->prepare("UPDATE t_2023_cours SET cout=:cout,cout_lab=:cout_lab WHERE id=:id");
+ 		// 	$updateCout = $dtb->prepare("UPDATE t_2023_cours SET cout=:cout,cout_lab=:cout_lab WHERE id=:id");
 
- 			$updateCout->bindParam(':cout',$cout,PDO::PARAM_STR);
-			$updateCout->bindParam(':cout_lab',$cLab,PDO::PARAM_STR);
- 			$updateCout->bindParam(':id',$id,PDO::PARAM_INT);
- 			$updateCout->execute();
+ 		// 	$updateCout->bindParam(':cout',$cout,PDO::PARAM_STR);
+		// 	$updateCout->bindParam(':cout_lab',$cLab,PDO::PARAM_STR);
+ 		// 	$updateCout->bindParam(':id',$id,PDO::PARAM_INT);
+ 		// 	$updateCout->execute();
 			
 //			$insert_Finance = $dtb->prepare("INSERT INTO t_2024_cours_finance(
 //				student_id,
@@ -353,7 +388,7 @@ while ($std = $studentQuery->fetch()) {
 //				'last_change_user_id' => $user_id_entry
 //			));
 
- 		}
+// 		}
 
 
 
@@ -372,5 +407,5 @@ while ($std = $studentQuery->fetch()) {
 
 
 //	header('location:./end.php');
-header('location : ../../src/accueil.php');
+//	header('location : ../../src/accueil.php');
 ?>

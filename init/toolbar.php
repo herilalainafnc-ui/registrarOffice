@@ -16,7 +16,7 @@ if($page == "accueil.php" OR $page == "student.php" OR $page=="inscription.php")
 				</center>
 			
 		</a>
-		<a target="_blank" href="./data.topdf.php?ptype=Statistique" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
+		<a id="exportStatistic" href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
 				<center>
 				<i class="bi-list-columns text-2xl"></i><br>
 						Statistique

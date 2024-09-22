@@ -1,5 +1,113 @@
 <?php 
 $yearNow = date('Y');
+
+$yearScoolNow = $_POST['yearStatistic'];
+
+ ?>
+<div class="">
+
+<b>Statistique par Religion </b><em class="text-xs">- Année <?=$yearScoolNow?></em>
+	<table class="tbl" style="page-break-inside: avoid;">
+		<thead>
+			<tr style="page-break-inside: avoid;">
+				<th style="width: 18%">Mention</th>
+				<th style="width: 8%" colspan="2">Adventiste</th>
+				<th style="width: 8%" colspan="2">Non Adventiste</th>
+				<th style="width: 4%">Total</th>
+			</tr>
+			<tr style="page-break-inside: avoid;">
+				<th></th>
+				<th style="color: orange;">H</th>
+				<th style="color: orange;">F</th>
+				<th style="color: orange;">H</th>
+				<th style="color: orange;">F</th>
+				<th></th>
+			</tr>
+			
+		</thead>
+		<tbody>
+			<?php
+
+ $mentio = $dtb->query('SELECT * FROM filiere WHERE filiere_sigle !="CPRE"');
+
+ // Requête SQL pour récupérer les données groupées
+$adventiste_H = 0;
+$adventiste_F = 0;
+$nonAdventiste_H = 0;
+$nonAdventiste_F = 0;
+$thorizontal = 0;
+
+	while($mt = $mentio->fetch()){
+		
+		$mention = $mt['filiere_description'];
+
+$result = $dtb->query('SELECT *,
+           SUM(CASE WHEN religion = "Adventiste" AND sex = 1 THEN 1 ELSE 0 END) AS Adventiste_H,
+           SUM(CASE WHEN religion = "Adventiste" AND sex = 0 THEN 1 ELSE 0 END) AS Adventiste_F,
+           SUM(CASE WHEN religion != "Adventiste" AND sex = 1 THEN 1 ELSE 0 END) AS NonAdventiste_H,
+           SUM(CASE WHEN religion != "Adventiste" AND sex = 0 THEN 1 ELSE 0 END) AS NonAdventiste_F
+       
+    FROM tbl_2024_etudiant WHERE etude_envisage = "'.$mention.'" AND annee_scolaire = "'.$yearScoolNow.'" ORDER BY etude_envisage');
+
+
+           $row = $result->fetch();
+
+            	echo "<tr>";   
+	   				echo "<td>" . $mention . "</td>"; 
+	                echo "<td>" . $row['Adventiste_H'] . "</td>";
+	                echo "<td>" . $row['Adventiste_F'] . "</td>";
+	                echo "<td>" . $row['NonAdventiste_H'] . "</td>";
+	                echo "<td>" . $row['NonAdventiste_F'] . "</td>";
+	 				echo "<td>".$sommeHoriz = 
+	 				$row['Adventiste_H']+
+					$row['Adventiste_F']+
+					$row['NonAdventiste_H']+
+					$row['NonAdventiste_F']
+	 				."</td>";
+    			echo "</tr>";
+    		
+
+$adventiste_H =+ $adventiste_H + $row['Adventiste_H'];
+$adventiste_F =+ $adventiste_F + $row['Adventiste_F'];
+$nonAdventiste_H =+ $nonAdventiste_H + $row['NonAdventiste_H'];
+$nonAdventiste_F =+ $nonAdventiste_F + $row['NonAdventiste_F'];
+$thorizontal =+ $thorizontal +  $sommeHoriz;      
+	}
+        ?>
+		</tbody>
+		<thead>
+			<tr style="page-break-inside: avoid;">
+				<th style="color: orange;">Sous total</th>
+				<th style="color: orange;"><?=$adventiste_H?></th>
+				<th style="color: orange;"><?=$adventiste_F?></th>
+				<th style="color: orange;"><?=$nonAdventiste_H?></th>
+				<th style="color: orange;"><?=$nonAdventiste_F?></th>
+				<th></th>
+			</tr>
+			<tr style="page-break-inside: avoid;">
+				<th>Total</th>
+				<th colspan="2"><?=$adventiste_H+$adventiste_F?></th>
+				<th colspan="2"><?=$nonAdventiste_H+$nonAdventiste_F?></th>
+				<th><?=$thorizontal?></th>
+			</tr>
+		</thead>
+	</table>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <?php 
+$yearNow = date('Y');
 $yearScoolNow = ($yearNow-1)." - ".$yearNow;
 $printName = "STATISTIQUE";
 
@@ -93,4 +201,4 @@ for ($i=0; $i < 1 ; $i++) {
 	$yearScoolNow = ($yearNow-1)." - ".$yearNow;
 }
 ?>
-</div>
+</div> -->

@@ -52,6 +52,9 @@ $date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
         }
         
         if($ptype == "Statistique") {
+            $printName = "STATISTIQUE";
+            echo "<br>";
+            require ('./extenssionPrint/statistic-general.php');
             echo "<br>";
             require ('./extenssionPrint/statistic-internat.php');
             echo "<br>";

@@ -209,15 +209,15 @@
 					</td>
 					<td><?php if (!empty($validExisting) AND $validExisting['grade'] >= 10) {
 	
-	echo " . <em class='text-green-400'>Déjà ajouté... Avec un note = <b>".$validExisting['grade']."</b></em>";
+	echo "<em class='text-green-400'>Déjà ajouté. <b>".$validExisting['grade']."</b> de moyenne</em>";
 
 }elseif (!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 10) {
 	
-	echo " . <em class='text-red-500'>Déjà ajouté... Avec un note = <b>".$validExisting['grade'].", doit être repêché.</b></em>";
+	echo "<em class='text-red-500'>Déjà ajouté. <b>".$validExisting['grade']."</b> de moyenne, en état d'echec.</em>";
 
 }elseif (!empty($validExisting) AND $validExisting['grade'] == 0){
 
-	echo " . <em class='text-orange-400'>Ajouté à la date de ".$validExisting['date_entry']."</b></em>";
+	echo "<em class='text-orange-400'>Ajouté à la date de ".$validExisting['date_entry']."</b></em>";
 
 } ?></td>
 					<td><?=$crs['nb_crd']?></td>
