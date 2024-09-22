@@ -43,7 +43,7 @@ if(($rg_user['privilege'] == 'administrator') OR ($rg_user['privilege_2'] == 'ad
 											<i class="bi-image text-4xl text-black"></i>
 										</div>
 									</label>
-									<input type="file" name="photos" id="image_user" class="hidden">
+									<input type="file" accept=".jpg, .png" name="photos" id="image_user" class="hidden">
 								</div>
 
 								<div class="w-full mb-2">

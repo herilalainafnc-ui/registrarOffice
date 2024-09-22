@@ -119,7 +119,7 @@ if(isset($_GET['page']) and $_GET['page'] == "newCours") {
 									<div class="rounded-md <?=$bg_six_color?> h-20 text-center relative active hover:<?=$bg_three_color?> hover:text-white">
 										<label for="teacher_image" class="text-lg mt-4"><i class="bi-image"></i></label>
 										<p id="imgNoteTeacher">Choisir une image sur votre PC</p>
-										<input type="file" name="teacher_image" id="teacher_image" class="w-full h-20 absolute z-40 top-0 left-0" style="opacity: 0;">
+										<input type="file" accept=".jpg, .png" name="teacher_image" id="teacher_image" class="w-full h-20 absolute z-40 top-0 left-0" style="opacity: 0;">
 									</div>
 									
 

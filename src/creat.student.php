@@ -150,7 +150,7 @@
 												<i class="bi-image text-4xl text-black"></i>
 											</div>
 										</label>
-										<input type="file" name="image_student" id="student_images" class="hidden">
+										<input type="file" accept=".jpg, .png" name="image_student" id="student_images" class="hidden">
 										
 									</div>
 								</div>

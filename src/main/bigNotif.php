@@ -227,7 +227,7 @@ while($tch = $teach->fetch()){
 				<i class="bi-image text-4xl text-white"></i>
 			</div>
 		</label>
-		<input type="file" name="teacher_image" id="teacher_image" class="hidden">
+		<input type="file" accept=".jpg, .png" name="teacher_image" id="teacher_image" class="hidden">
 		
 	</div>
 
