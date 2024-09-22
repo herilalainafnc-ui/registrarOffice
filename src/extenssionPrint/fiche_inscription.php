@@ -57,12 +57,12 @@ if ($stdA['annee_etude'] == 0) {
 		<table class="tbl mb-2">
 			<thead class="bg-slate-200">
 				<tr>
-					<th style="width: 100px">SIGLE</th>
-					<th style="">TITRE DU COURS</th>
-					<th style="width: 60px">CREDITS</th>
-					<th style="width: 80px">CATÉGORIE</th>
-					<th style="width: 80px; text-align: right; padding-right: 6px;">COÛT</th>
-					<th style="width: 80px; text-align: right; padding-right: 6px;">LAB</th>
+					<th style="width: 100px">Sigle</th>
+					<th style="">Titre du cours</th>
+					<th style="width: 60px">crédits</th>
+					<th style="width: 80px">Catégorie</th>
+					<th style="width: 80px; text-align: right; padding-right: 6px;">coût</th>
+					<th style="width: 80px; text-align: right; padding-right: 6px;">Labo</th>
 				</tr>	
 			</thead>
 			<tbody>

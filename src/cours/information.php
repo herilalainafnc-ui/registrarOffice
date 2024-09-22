@@ -1,6 +1,6 @@
 
 <form method="post" action="../app/.cours/updateCours.php?id=<?=$id?>&rg_id=<?=$rg_id?>" class="form-no-refrech">
-<div class="w-full grid gap-2 grid-cols-2">
+<div class="w-full grid gap-2 sm:grid-cols-1 lg:grid-cols-2">
 
 	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 		<div class="w-full flex mb-4">

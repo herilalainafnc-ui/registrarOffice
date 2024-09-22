@@ -1,6 +1,6 @@
 <div class="w-full h-23 <?=$txt_one_color?> py-1 flex shadow-md">
 <!-- BRANCHE D'OUTILS 1 -->	
-	<div class="w-2/12 border-r flex px-1">
+	<div class="sm:w-3/12 lg:w-2/12 lg:border-r flex px-1">
 		
 		<a href="#" id="<?php 
 if($page == "accueil.php" OR $page == "student.php" OR $page=="inscription.php") {
@@ -36,7 +36,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 	</div>
 
 <!-- BRANCHE D'OUTILS 2 -->	
-	<div class="w-2/12 border-r flex px-1">
+	<div class="sm:w-3/12 lg:w-2/12 lg:border-r flex px-1">
 
 		<a href="#" id="exportMesupres" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
@@ -74,7 +74,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 	</div>
 
 <!-- BRANCHE D'OUTILS 3 -->		
-	<div class="w-2/12 border-r flex px-1">
+	<div class="sm:w-3/12 lg:w-2/12 lg:border-r flex px-1">
 		
 		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
@@ -109,7 +109,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 	</div>
 
 <!-- BRANCHE D'OUTILS 4 -->		
-	<div class="w-2/12 border-r flex px-1">
+	<div class="sm:w-3/12 lg:w-2/12 lg:border-r flex px-1">
 		
 		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "student.php" OR $page == "cours.php" OR $page == "prof.php" OR $page == "inscription.php") {
@@ -283,7 +283,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 	</div>
 
 <!-- BRANCHE D'OUTILS 5 -->		
-	<div class="w-2/12 border-r flex px-1">
+	<div class="sm:w-3/12 lg:w-2/12 lg:border-r flex px-1">
 		
 		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
@@ -311,8 +311,8 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 	</div>
 
 <!-- BRANCHE D'OUTILS 6 -->		
-	<div class="w-2/12 flex px-1">
-		<a href="./settings.php" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
+	<div class="hidden block w-2/12 lg:flex px-1">
+		<a href="./settings.php" class="text-xs lg:w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
 				<center>
 				<i class="bi-gear-fill text-2xl"></i><br>
 						Paramètres

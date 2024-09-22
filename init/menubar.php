@@ -1,5 +1,5 @@
 
-<div class="xl:w-2/12 lg:w-3/12 bg-slate-700" style="height: calc(100vh - 48px);">
+<div class="xl:w-2/12 lg:w-3/12 bg-slate-700 hidden lg:block" style="height: calc(100vh - 48px);">
 
 	<ul class="text-slate-100 text-bold my-3 mx-2">
 		
@@ -83,7 +83,7 @@ if($page == "settings.php") {
 				<span class="icon">
 					<ion-icon class="bi-door-open-fill"></ion-icon>
 				</span>
-				<span class="title"><b>Déconnecter</b></span>
+				<span class="title">Déconnecter</span>
 			
 		</li></a>
 

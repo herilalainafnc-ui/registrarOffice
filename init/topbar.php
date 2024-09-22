@@ -7,12 +7,6 @@
 
 
 	if($infinit_pseudo !='' && $infinit_password !=''){
-		/*$rg_utilisateur = $dtb->query("SELECT * FROM rg_user WHERE user_pseudo='".$infinit_pseudo."' AND user_password='".$infinit_password."' limit 1");
-		$rg_user = $rg_utilisateur->fetch();
-		$rg_name = $rg_user['user_name'];
-		$rg_last_name = $rg_user['user_last_name'];
-		$rg_userId = $rg_user['id'];
-		$rg_photos = $rg_user['user_photos'];*/
 
 		$rg_utilisateur = $dtb->query("SELECT * FROM compt_utilisateur WHERE pseudo='".$infinit_pseudo."' AND password='".$infinit_password."' limit 1");
 		$rg_user = $rg_utilisateur->fetch();
@@ -34,35 +28,35 @@
 
 <div class="flex w-full h-12 shadow-sm p-1 <?=$bg_one_color?> <?=$txt_one_color?>">
 	
-		<div class="w-2/12 px-2 mt-2">
-			<a href="../src/" class="flex">
-				<img src="../file/logo-coldbloud.png" class="w-6 h-6 mx-3 mx-2">
-				<b> Infinit Registrar</b>
-			</a>
-		</div>
+	<div class="sm:w-3/12 lg:w-2/12 px-2 mt-2">
+		<a href="../src/" class="flex">
+			<img src="../file/logo-coldbloud.png" class="w-6 h-6 mx-3 mx-2">
+			<b> Infinit Registrar</b>
+		</a>
+	</div>
 	
-	<div class="w-7/12 mt-1">
+	<div class="sm:w-5/12 lg:w-7/12 mt-1">
 		
 		<div class="search w-full hidden text-right">
 			<?php 
 			if($page == "accueil.php" OR $page == "student.php") {
 			 ?>
 			<form method="post" action="accueil.php">
-					<input id="std-search" type="text" name="search" placeholder="Search student..." class="h-8 px-2 text-sm border <?=$bg_two_color?> w-4/12">
+					<input id="std-search" type="text" name="search" placeholder="Search student..." class="h-8 px-2 text-sm border <?=$bg_two_color?> sm:w-full lg:w-4/12">
 				<button type="submit" style="display: none" onclick="surligne();"></button>
 			</form>
 			<?php 
 			}elseif($page == "accueil.cours.php" OR $page == "cours.php") {
 			?>
 			<form method="post" action="accueil.cours.php">
-					<input id="cours-search" type="text" name="search" placeholder="Search course..." class="h-8 px-2 text-sm border <?=$bg_two_color?> w-4/12">
+					<input id="cours-search" type="text" name="search" placeholder="Search course..." class="h-8 px-2 text-sm border <?=$bg_two_color?> sm:w-full lg:w-4/12">
 				<button type="submit" style="display: none" onclick="surligne();"></button>
 			</form>
 			<?php 
 			}elseif($page == "accueil.prof.php" OR $page == "prof.php") {
 			?>
 			<form method="post" action="accueil.cours.php">
-					<input id="prof-search" type="text" name="search" placeholder="Search teacher..." class="h-8 px-2 text-sm border <?=$bg_two_color?> w-4/12">
+					<input id="prof-search" type="text" name="search" placeholder="Search teacher..." class="h-8 px-2 text-sm border <?=$bg_two_color?> sm:w-full lg:w-4/12">
 				<button type="submit" style="display: none" onclick="surligne();"></button>
 			</form>
 			<?php 
@@ -71,7 +65,7 @@
 		</div>
 
 	</div>
-	<div class="w-3/12 flex text-right">
+	<div class="sm:w-4/12 lg:w-3/12 flex text-right">
 		<div class="w-4/12">
 			
 		</div>

@@ -1,4 +1,4 @@
-<div class="my-1 px-2 mx-0.5 lg:w-4/12 xl:w-3/12 bg-slate-300 overflow-auto" style="height:calc(100vh - 160px);">
+<div class="my-1 px-2 mx-0.5 sm:w-4/12 lg:w-4/12 xl:w-3/12 bg-slate-300 overflow-auto" style="height:calc(100vh - 160px);">
 						
 						<div class="flex my-2 relative">
 							<div class="w-full text-left">

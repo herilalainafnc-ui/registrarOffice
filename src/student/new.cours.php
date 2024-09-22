@@ -119,11 +119,11 @@
 			<thead class="<?=$bg_one_color?> text-white">
 				<tr>
 					<th class="w-5"></th>
-					<th class="w-20">SIGLE</th>
-					<th class="w-">TITRE DU COURS</th>
-					<th class="w-[320px]">Observation</th>
-					<th class="w-20">CREDITS</th>
-					<th class="w-20">Categorie</th>
+					<th class="w-20">Sigle</th>
+					<th class="">Titre du cours</th>
+					<th class="sm:w-2/12 lg:w-3/12">Observations</th>
+					<th class="w-20">Crédits</th>
+					<th class="w-20">Catégorie</th>
 				</tr>	
 			</thead>
 			<tbody class="<?=$bg_four_color?>">

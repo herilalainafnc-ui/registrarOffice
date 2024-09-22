@@ -147,7 +147,7 @@ if($profil['annee_etude'] == 0) {
 						<div class="w-full py-2 text-sm  text-white">
 								<b><?=strtoupper($profil['student_nom']) ?> <?=$profil['student_prenom'] ?></b><br>
 								<em><?=$profil['etude_envisage']." - ".$profil['etude_option'] ?></em><br>
-								<b>A.U <?=$profil['annee_scolaire']?></b><br>
+								<b>Année <?=$profil['annee_scolaire']?></b><br>
 								<p class="text-[11px] text-green-600" style="line-height: 12px;">Modifié par <?php 
 								if (!empty($profil['last_change_user_id'])) {
 									$user_modif_id  = $profil['last_change_user_id'];
@@ -186,7 +186,7 @@ echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];
 
 							<div class="absolute bottom-0 w-11/12 m-2 text-center">
 								<div class="gap-2 grid grid-cols-2 text-white bg-slate-600">
-									<a href="#" id="downStage" class="px-5 py-2 bg-slate-400 rounded-md toolInactive">Retour</a>
+									<a href="#" id="downStage" class="px-5 py-2 bg-slate-700 rounded-md toolInactive">Retour</a>
 									<a href="#" id="upStage" data-stage="1" class="px-5 py-2 rounded-md
 <?php 
 

@@ -24,7 +24,7 @@ $preced = $soustract - 1;
 						<td class="w-20">Niveau</td>
 						<td class="w-20">Semestre</td>
 						<td class="w-20">Notes/20</td>
-						<td class="w-4">Etat</td>
+						<td class="w-4">État</td>
 						<td class="w-4"><span class="bi-trash3-fill"></span></td>
 					</tr>
 				</thead>

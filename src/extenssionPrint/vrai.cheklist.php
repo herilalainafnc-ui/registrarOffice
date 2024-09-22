@@ -87,7 +87,7 @@ if(!empty($cours_table_selective)){
  ?>
 		<tr>	
 			<th class="border-r border-b" style="width: 20px">Nb</th>
-			<th class="border-r border-b" style="width: 90px">SIGLE</th>
+			<th class="border-r border-b" style="width: 90px">Sigle</th>
 			<th class="border-r border-b">Cours Séléctive - Semestre 1</th>
 			<th class="border-r border-b" style="width: 30px">Crd</th>
 			<th class="border-r border-b" style="width: 20px">Ch</th>
@@ -182,7 +182,7 @@ for ($y=1; $y <= 3; $y++) {
 		<tr style="page-break-inside: avoid;">
 			<th class="border-r border-b" style="width: 70px">Prérequis</th>
 			<th class="border-r border-b" style="width: 20px">Nb</th>
-			<th class="border-r border-b" style="width: 90px">SIGLE</th>
+			<th class="border-r border-b" style="width: 90px">Sigle</th>
 			<th class="border-r border-b">Année <?=$y;?> - Semestre <?=$i;?></th>
 			<th  class="border-r border-b"style="width: 30px">Crd</th>
 			<th class="border-r border-b" style="width: 20px">Ch</th>

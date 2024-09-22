@@ -1,4 +1,4 @@
-<div class="w-2/12 flex px-1">
+<div class="sm:w-4/12 lg:w-2/12 flex px-1">
 		
 		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?>" data-bs-toggle="dropdown" aria-expanded="false">
 				<center>
@@ -39,7 +39,7 @@
 
 				</ul>
 	</div>
-	<div class="w-2/12 flex px-1">
+	<div class="sm:w-4/12 lg:w-2/12 flex px-1">
 		<a href="?id=<?=$id?>&page=newStd" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?>">
 				<center>
 				<i class="bi-person-add text-2xl text-cyan-500"></i><br>

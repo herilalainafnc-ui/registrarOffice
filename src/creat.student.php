@@ -4,7 +4,7 @@
 	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
 	<title>Ajout étudiant</title>
 </head>
-<body class="<?=$bg_three_color?> text-sm">
+<body class="<?=$bg_three_color?> sm:text-xs lg:text-sm">
 	<div class="h-screen w-full <?=$bg_three_color?>">
 		
 		<!-- TOP BAR --><?php require('../init/topbar.php');?>
@@ -13,19 +13,19 @@
 			
 			<!-- BARRE DE MENU --><?php require('../init/menubar.php');?>
 
-			<div class="w-10/12">
+			<div class="sm:w-full lg:w-10/12">
 			<!-- BARRE D'OUTILS --><?php require('../init/toolbar.php');?>
 
 <form id="form-inscription" enctype="multipart/form-data">
 			
 				<div class="<?=$bg_one_color?> w-all mx-1 px-2 py-1 text-slate-100 flex">
-					<div class="w-2/12">
+					<div class="sm:w-3/12 lg:w-2/12">
 						<p><b>Inscription</b></p>	
 					</div>	
-					<div class="w-8/12">
+					<div class="sm:w-6/12 lg:w-8/12">
 						<p><em class="text-red-500" id="alert"></em></p>
 					</div>
-					<div class="w-2/12 text-right">
+					<div class="sm:w-3/12 lg:w-2/12 text-right">
 						<button class="px-5 py-0 bg-cyan-700 rounded-md" id="btn-inscription" type="button">Enregistrer</button>
 					</div>
 				</div>

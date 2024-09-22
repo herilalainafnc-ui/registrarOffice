@@ -1,8 +1,8 @@
 <?php 
 	require ('../../data/backdb.php');
 
-	$student_nom = $_POST['student_nom'];
-	$student_prenom = $_POST['student_prenom'];
+	$student_nom = trim($_POST['student_nom']);
+	$student_prenom = trim($_POST['student_prenom']);
 	$dateNaissance = $_POST['dateNaissance'];
 	$lieuNaissance = $_POST['lieuNaissance'];
 	$num_cin = $_POST['num_cin'];
@@ -16,7 +16,7 @@
 	$sex = $_POST['sex'];
 	$nationalite = $_POST['nationalite'];
 	$student_tel = $_POST['student_tel'];
-	$student_email = $_POST['student_email'];
+	$student_email = str_replace(' ', '', $_POST['student_email']);
 	$pays_origine = $_POST['pays_origine'];
 	$student_region = $_POST['student_region'];
 	$student_adresse = $_POST['student_adresse'];

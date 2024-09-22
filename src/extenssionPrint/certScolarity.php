@@ -18,7 +18,7 @@ $stdA = $searchStd->fetch();
 
 <div>
 	<br><center>
-		<b class="text-2xl">CERTIFICAT DE SCOLARITE</b>
+		<b class="text-2xl">CÉRTIFICAT DE SCOLARITÉ</b>
 	</center><br><br>
 	<div style="text-align: justify;font-size: 14px">
 		<p style="text-indent: 40px;">Je, soussignée, Registraire de l’Université Adventiste Zurcher, certifie que :</p><br>

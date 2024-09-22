@@ -57,13 +57,13 @@
 			</thead>
 			<thead class="<?=$bg_one_color?> <?=$txt_one_color?>">
 				<tr>
-					<th class="w-20">SIGLE</th>
-					<th class="w-">TITRE DU COURS</th>
-					<th class="w-20">CREDITS</th>
-					<th class="w-20">Categorie</th>
+					<th class="w-20">Sigle</th>
+					<th class="w-">Titre du cours</th>
+					<th class="w-20">Crédits</th>
+					<th class="w-20">Catégorie</th>
 					<th class="w-20">Notes/20</th>
 					<th class="w-20">Crd * Not</th>
-					<th class="w-4">Etat</th>
+					<th class="w-4">État</th>
 					<!-- <th class="w-4">ID</th> -->
 					<th class="w-4"></th>
 				</tr>	

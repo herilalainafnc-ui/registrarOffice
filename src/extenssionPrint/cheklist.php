@@ -85,10 +85,10 @@ for ($y=1; $y <= 3; $y++) {
 	<thead>
 		<tr style="background: #d7f0fb;">
 			<th style="width: 20px">Nb</th>
-			<th style="width: 70px">SIGLE</th>
+			<th style="width: 70px">Sigle</th>
 			<th>Cours - Année <?=$y;?> | Semestre <?=$i;?></th>
 			<th style="width: 40px">Cr</th>
-			<th style="width: 40px">Categ</th>
+			<th style="width: 40px">Catég</th>
 			<th style="width: 40px">Notes</th>
 			<th style="width: 40px">Cr*Notes</th>
 		</tr>

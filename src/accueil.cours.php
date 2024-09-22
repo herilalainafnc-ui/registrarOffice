@@ -4,7 +4,7 @@
 	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
 	<title>Cours</title>
 </head>
-<body class="<?=$bg_three_color?> text-sm">
+<body class="<?=$bg_three_color?> sm:text-xs lg:text-sm">
 	<div class="h-screen w-full <?=$bg_three_color?>">
 		
 		<!-- TOP BAR --><?php require('../init/topbar.php');?>
@@ -13,7 +13,7 @@
 			
 			<!-- BARRE DE MENU --><?php require('../init/menubar.php');?>
 
-			<div class="w-10/12">
+			<div class="sm:w-full lg:w-10/12">
 			<!-- BARRE D'OUTILS --><?php require('../init/toolbar.php');?>
 			
 				<div class="w-full px-0.5 flex" style="height: calc(100vh - 152px);">
@@ -51,7 +51,7 @@
 	$cours_nb = 1;
 	while ($cours_list = $recupcours->fetch()) {
  ?>								
-								<tr id="cours_<?=$cours_nb?>" class="hover:<?=$bg_six_color?> hover:text-slate-800">	
+								<tr id="cours_<?=$cours_nb?>" class="hover:bg-slate-600 hover:text-slate-800">	
 									<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['Sigle']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['title']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['dep_desc']?></div></a></td>

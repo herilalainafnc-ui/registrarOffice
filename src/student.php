@@ -4,7 +4,7 @@
 	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
 	<title>Student</title>
 </head>
-<body class="<?=$bg_three_color?> text-sm">
+<body class="<?=$bg_three_color?> sm:text-xs lg:text-sm">
 	<div class="h-screen w-full <?=$bg_three_color?>">
 		
 		<!-- TOP BAR --><?php require('../init/topbar.php');?>
@@ -13,7 +13,7 @@
 			
 			<!-- BARRE DE MENU --><?php require('../init/menubar.php');?>
 
-			<div class="w-10/12">
+			<div class="sm:w-full lg:w-10/12">
 			<!-- BARRE D'OUTILS --><?php require('../init/toolbar.php');?>
 				
 				<div class="w-full px-0.5" style="height: calc(100vh - 157px);">
@@ -57,10 +57,10 @@ $yes = 1;
  ?>					
 					
 
-						<div class="my-1 mx-0.5 lg:w-9/12 xl:w-9/12 xxl:w-7/12 <?=$bg_one_color?> <?=$txt_one_color?>" style="max-height: calc(100vh - 160px);">
+						<div class="my-1 mx-0.5 sm:w-10/12 lg:w-9/12 xxl:w-7/12 <?=$bg_one_color?> <?=$txt_one_color?>" style="max-height: calc(100vh - 160px);">
 							<div class="h-[70px] p-2 flex">
-								<div class="w-4/12 px-1">
-									<b class="text-lg mt-3"><?php 
+								<div class="sm:w-2/12 lg:w-4/12 px-1">
+									<a class="sm:text-xs lg:text-lg mt-3"><?php 
 
 									if (isset($_GET['page']) AND !empty($_GET['page'])) {
 									$sdt_page = $_GET['page'];
@@ -95,7 +95,7 @@ $yes = 1;
 									}
 								}
 
-									 ?></b>
+									 ?></a>
 								</div>
 								<!-- STUDENT TOOLBAR --><?php require ('../init/.student/student.toolbar.php');?>
 								<!-- NOTIFICATION MANAGER --><?php require('./student/notificationStd.php');?>

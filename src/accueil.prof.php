@@ -4,7 +4,7 @@
 	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
 	<title>Enseignants</title>
 </head>
-<body class="<?=$bg_three_color?> text-sm">
+<body class="<?=$bg_three_color?> sm:text-xs lg:text-sm">
 	<div class="h-screen w-full <?=$bg_three_color?>">
 		
 		<!-- TOP BAR --><?php require('../init/topbar.php');?>
@@ -13,7 +13,7 @@
 			
 			<!-- BARRE DE MENU --><?php require('../init/menubar.php');?>
 
-			<div class="w-10/12">
+			<div class="sm:w-full lg:w-10/12">
 			<!-- BARRE D'OUTILS --><?php require('../init/toolbar.php');?>
 			
 				<div class="w-full px-0.5 flex" style="height: calc(100vh - 152px);">
@@ -48,7 +48,7 @@
 	$prof_nb = 1;
 	while ($prof_list = $recupprof->fetch()) {
  ?>								
-								<tr id="prof_<?=$prof_nb?>" class="hover:<?=$bg_six_color?> hover:text-slate-800">	
+								<tr id="prof_<?=$prof_nb?>" class="hover:bg-slate-600 hover:text-slate-800">	
 									<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><a href="./prof.php?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=$prof_list['teacher_id']?></div></a></td>
 									<td><a href="./prof.php?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=strtoupper($prof_list['name'])?></div></a></td>
 									<td><a href="./prof.php?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=$prof_list['lastName']?></div></a></td>

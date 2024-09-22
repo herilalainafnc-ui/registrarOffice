@@ -34,7 +34,7 @@
 	$cours_nb = 1;
 	while ($cours_list = $recupcours->fetch()) {
  ?>								
-								<tr id="cours_<?=$cours_nb?>" class="hover:bg-slate-300 hover:bg-slate-600 text-slate-100">	
+								<tr id="cours_<?=$cours_nb?>" class="hover:bg-slate-600 text-slate-100">	
 									<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['Sigle']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['title']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['dep_desc']?></div></a></td>

@@ -91,13 +91,13 @@
 						</thead>
 						<thead class="bg-slate-200">
 							<tr>
-								<th style="width: 100px">SIGLE</th>
-								<th style="width: 400px">TITRE DU COURS</th>
-								<th style="width: 50px">CREDITS</th>
-								<th style="width: 50px">Categorie</th>
+								<th style="width: 100px">Sigle</th>
+								<th style="width: 400px">Titre du cours</th>
+								<th style="width: 50px">Crédits</th>
+								<th style="width: 50px">Catégorie</th>
 								<th style="width: 50px">Notes/20</th>
 								<th style="width: 50px">Crd*Not</th>
-								<th style="width: 30px">Etat</th>
+								<th style="width: 30px">État</th>
 							</tr>
 						</thead>	
 					<?php

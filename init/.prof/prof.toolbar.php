@@ -1,4 +1,4 @@
-<div class="w-2/12 flex px-1">
+<div class="sm:w-4/12 lg:w-2/12 flex px-1">
 		
 		<a href="#" class="text-xs w-6/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information' or $_GET['page'] == 'diplome') or empty($_GET['page'])) {
 																								echo "toolInactive";
@@ -45,7 +45,7 @@
 
 				</ul>
 	</div>
-	<div class="w-2/12 flex px-1">
+	<div class="sm:w-4/12 lg:w-2/12 flex px-1">
 		<a href="?id=<?=$id?>&page=newCours" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
 				<center>
 				<i class="bi-folder-plus text-2xl text-cyan-500"></i><br>

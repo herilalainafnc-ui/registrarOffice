@@ -1,4 +1,4 @@
-<div class="w-10/12 h-6 <?=$bg_four_color?> mt-1 py-0.5 px-2 absolute bottom-0 flex">
+<div class="sm:w-full lg:w-10/12 h-6 <?=$bg_four_color?> mt-1 py-0.5 px-2 absolute bottom-0 flex">
 	<div class="w-3/12 px-4 <?php
 	if ($page == "accueil.php" OR $page =="student.php") {echo 'compterStd';}
 	elseif ($page == "accueil.cours.php" OR $page =="cours.php") {echo 'compterCours';}
