@@ -1,3 +1,47 @@
+<!-- FOR STUDENT LIST -->
+	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifListStdInThisCours" style="backdrop-filter: blur(3px);">
+
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+		
+			<div class="p-2 text-black">
+				<b>Exporter la liste des étudiants dans ce cours.</b>
+			</div>
+			<div class="p-2">
+				<div class="flex mb-3">
+				    	<div class="w-3/12 text-right pr-2 text-black">
+					      	<label for="yearListStdInThisCours">Année</label>
+					    </div>
+					    <div class="w-9/12">
+					    	<select name="yearListStdInThisCours" id="yearListStdInThisCours" class="input w-full">
+								<option></option>
+								<?php
+								$y = date('Y');
+								for ($i=0; $i <= 8; $i++) { 
+									
+									$as = $y." - ".($y+1);
+								?>
+								<option><?=$as?></option>
+								<?php
+								$y = $y - 1;
+								}
+								 ?>
+							</select>
+					    </div>
+				</div>
+			</div>
+			<div class="p-3">
+				<center>
+				<a href="#" id="cancelnotifListStdInThisCours" class="bg-slate-400 p-2 rounded-md">Annuler</a>
+				<a href="#" id="btnListStdInThisCours" target="_blank" class="bg-slate-400 p-2 rounded-md mx-1 toolInactive">Afficher</a>
+				
+				</center>
+			</div>
+	
+		</div>
+
+	</div>
+
+
 <!-- FOR SUPPRESSION Cours -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifCours-suppr" style="backdrop-filter: blur(3px);">
 
@@ -28,6 +72,24 @@
 
 <script>
 	$(document).ready(function(){
+		
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
+		$('#exportListStdInThisCours').click(function(){
+			$('#notifListStdInThisCours').css({'display':'block'});
+		});
+
+		$('#yearListStdInThisCours').on('change',function() {
+			var yearForCours = $(this).val();
+			
+			$('#btnListStdInThisCours').attr('class','bg-cyan-700 p-2 rounded-md mx-1');
+			$('#btnListStdInThisCours').attr('href','./data.topdf.php?cours_id=<?=$id?>&yearForCours='+yearForCours+'&ptype=ListStdInThisCours');
+
+		});
+
+		$('#cancelnotifListStdInThisCours').click(function(){
+			$('#notifListStdInThisCours').css({'display':'none'});
+		});
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
 		$('#cours-suppr').click(function(){

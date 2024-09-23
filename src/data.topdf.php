@@ -92,6 +92,8 @@ $date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
             require ('./extenssionPrint/worked.Slip.php');
         }elseif($ptype == "Fiche_inscription"){
             require ('./extenssionPrint/fiche_inscription.php');
+        }elseif($ptype == "ListStdInThisCours"){
+            require ('./extenssionPrint/listStdInThisCours.php');
         }
 
 
