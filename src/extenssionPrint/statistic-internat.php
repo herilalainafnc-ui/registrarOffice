@@ -77,7 +77,7 @@ $bungalow_H =+ $bungalow_H + $row['Bungalow_H'];
 $bungalow_F =+ $bungalow_F + $row['Bungalow_F'];
 $externe_H =+ $externe_H + $row['Externe_H'];
 $externe_F =+ $externe_F + $row['Externe_F'];
-$thorizontal =+ $thorizontal +  $sommeHoriz;      
+$thorizontal =+ intval($thorizontal) + intval($sommeHoriz);      
 	}
         ?>
 		</tbody>

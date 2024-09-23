@@ -48,13 +48,13 @@
 			<table class="tbl mb-2 text-[10px]" style="width: 100%">
 				<thead class="bg-slate-200">
 					<tr>
-						<th style="width: 70px">SIGLE</th>
-						<th style="">TITRE DU COURS</th>
-						<th style="width: 40px">CREDITS</th>
-						<th style="width: 60px">CATÉGORIE</th>
-						<th style="width: 60px">COÛT</th>
-						<th style="width: 60px">LAB</th>
-						<th style="width: 20px"></th>
+						<th style="width: 70px">Sigle</th>
+						<th style="">Titre du cours</th>
+						<th style="width: 40px">Crédits</th>
+						<th style="width: 60px">Catégorie</th>
+						<th style="width: 60px">Coût</th>
+						<th style="width: 60px">Labo</th>
+						<th style="width: 20px; background: #ed4343; color: white;"><i class="bi-trash-fill"></i></th>
 					</tr>	
 				</thead>
 				<tbody>
@@ -127,6 +127,8 @@ if ($showCat['category'] == 0){
 							var session_id = '<?=$session_id?>';
 							var coutCours = '<?=$showCF['cours_cout']?>';
 							var coutLab = $('#cout_lab').text();
+							var nbr = '<?=$nbr?>';
+							var credit = '<?=$showCF['cours_credit']?>';
 
 							var delUrl = "app/retrait.cours.php?cours_id="+cours_id+
 							"&student_id="+student_id+
@@ -143,14 +145,24 @@ if ($showCat['category'] == 0){
 					        	var totalCours = $('#totalCours').text();
 					        	var montant = $('#montant').text();
 								var tranchable = $('#tranchable').text();
+
+								var tCredit = $('#tCredit').text();
+								var nbCours = $('#nbCours').text();
 					        	
 					        	var restTotal = parseInt(totalCours) - parseInt(coutCours);
 					        	var restMontant = parseInt(montant) - parseInt(coutCours);
 					        	var restTranchable = parseInt(tranchable) - parseInt(coutCours);
 					        	
+					        	var restCredit = parseInt(tCredit) - parseInt(credit);
+					        	var restnbCours = parseInt(nbCours) - 1;
+					        	
 					        	$('#totalCours').text(restTotal);
 					        	$('#montant').text(restMontant);
 					        	$('#tranchable').text(restTranchable);
+
+					        	$('#tCredit').text(restCredit);
+					        	$('#nbCours').text(restnbCours);
+
 
 					        	$('.paie100').text(restTranchable);
 					        	$('.paie50').text((restTranchable*50)/100);
@@ -174,8 +186,8 @@ if ($showCat['category'] == 0){
 				</tbody>
 				<tfoot>
 					<tr class="bg-slate-200">
-						<th colspan="2"><?=$nbr?> cours</th>
-						<th><?=$tCredit?></th>
+						<th colspan="2"><a id="nbCours"><?=$nbr?></a> cours</th>
+						<th id="tCredit"><?=$tCredit?></th>
 					</tr>
 				</tfoot>
 			</table>

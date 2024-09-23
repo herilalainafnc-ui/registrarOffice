@@ -6,13 +6,13 @@ $yearScoolNow = $_POST['yearStatistic'];
  ?>
 <div class="">
 
-<b>Statistique par Religion </b><em class="text-xs">- Année <?=$yearScoolNow?></em>
+<b>Statistique d'abonnement </b><em class="text-xs">- Année <?=$yearScoolNow?></em>
 	<table class="tbl" style="page-break-inside: avoid;">
 		<thead>
 			<tr style="page-break-inside: avoid;">
 				<th style="width: 18%">Mention</th>
-				<th style="width: 8%" colspan="2">Adventiste</th>
-				<th style="width: 8%" colspan="2">Non Adventiste</th>
+				<th style="width: 8%" colspan="2">Abonné</th>
+				<th style="width: 8%" colspan="2">Non Abonné</th>
 				<th style="width: 4%">Total</th>
 			</tr>
 			<tr style="page-break-inside: avoid;">
@@ -31,10 +31,10 @@ $yearScoolNow = $_POST['yearStatistic'];
  $mentio = $dtb->query('SELECT * FROM filiere WHERE filiere_sigle !="CPRE"');
 
  // Requête SQL pour récupérer les données groupées
-$adventiste_H = 0;
-$adventiste_F = 0;
-$nonAdventiste_H = 0;
-$nonAdventiste_F = 0;
+$abonnee_H = 0;
+$abonnee_F = 0;
+$nonAbonnee_H = 0;
+$nonAbonnee_F = 0;
 $thorizontal = 0;
 
 	while($mt = $mentio->fetch()){
@@ -42,10 +42,10 @@ $thorizontal = 0;
 		$mention = $mt['filiere_description'];
 
 $result = $dtb->query('SELECT *,
-           SUM(CASE WHEN religion = "Adventiste" AND sex = 1 THEN 1 ELSE 0 END) AS Adventiste_H,
-           SUM(CASE WHEN religion = "Adventiste" AND sex = 0 THEN 1 ELSE 0 END) AS Adventiste_F,
-           SUM(CASE WHEN religion != "Adventiste" AND sex = 1 THEN 1 ELSE 0 END) AS NonAdventiste_H,
-           SUM(CASE WHEN religion != "Adventiste" AND sex = 0 THEN 1 ELSE 0 END) AS NonAdventiste_F
+           SUM(CASE WHEN abonment = 1 AND sex = 1 THEN 1 ELSE 0 END) AS Abonnee_H,
+           SUM(CASE WHEN abonment = 1 AND sex = 0 THEN 1 ELSE 0 END) AS Abonnee_F,
+           SUM(CASE WHEN abonment = 0 AND sex = 1 THEN 1 ELSE 0 END) AS NonAbonnee_H,
+           SUM(CASE WHEN abonment = 0 AND sex = 0 THEN 1 ELSE 0 END) AS NonAbonnee_F
        
     FROM tbl_2024_etudiant WHERE etude_envisage = "'.$mention.'" AND annee_scolaire = "'.$yearScoolNow.'" ORDER BY etude_envisage');
 
@@ -54,23 +54,23 @@ $result = $dtb->query('SELECT *,
 
             	echo "<tr>";   
 	   				echo "<td>" . $mention . "</td>"; 
-	                echo "<td>" . $row['Adventiste_H'] . "</td>";
-	                echo "<td>" . $row['Adventiste_F'] . "</td>";
-	                echo "<td>" . $row['NonAdventiste_H'] . "</td>";
-	                echo "<td>" . $row['NonAdventiste_F'] . "</td>";
+	                echo "<td>" . $row['Abonnee_H'] . "</td>";
+	                echo "<td>" . $row['Abonnee_F'] . "</td>";
+	                echo "<td>" . $row['NonAbonnee_H'] . "</td>";
+	                echo "<td>" . $row['NonAbonnee_F'] . "</td>";
 	 				echo "<td>".$sommeHoriz = 
-	 				$row['Adventiste_H']+
-					$row['Adventiste_F']+
-					$row['NonAdventiste_H']+
-					$row['NonAdventiste_F']
+	 				$row['Abonnee_H']+
+					$row['Abonnee_F']+
+					$row['NonAbonnee_H']+
+					$row['NonAbonnee_F']
 	 				."</td>";
     			echo "</tr>";
     		
 
-$adventiste_H =+ $adventiste_H + $row['Adventiste_H'];
-$adventiste_F =+ $adventiste_F + $row['Adventiste_F'];
-$nonAdventiste_H =+ $nonAdventiste_H + $row['NonAdventiste_H'];
-$nonAdventiste_F =+ $nonAdventiste_F + $row['NonAdventiste_F'];
+$abonnee_H =+ $abonnee_H + $row['Abonnee_H'];
+$abonnee_F =+ $abonnee_F + $row['Abonnee_F'];
+$nonAbonnee_H =+ $nonAbonnee_H + $row['NonAbonnee_H'];
+$nonAbonnee_F =+ $nonAbonnee_F + $row['NonAbonnee_F'];
 $thorizontal =+ intval($thorizontal) +  intval($sommeHoriz);      
 	}
         ?>
@@ -78,16 +78,16 @@ $thorizontal =+ intval($thorizontal) +  intval($sommeHoriz);
 		<thead>
 			<tr style="page-break-inside: avoid;">
 				<th style="color: orange;">Sous total</th>
-				<th style="color: orange;"><?=$adventiste_H?></th>
-				<th style="color: orange;"><?=$adventiste_F?></th>
-				<th style="color: orange;"><?=$nonAdventiste_H?></th>
-				<th style="color: orange;"><?=$nonAdventiste_F?></th>
+				<th style="color: orange;"><?=$abonnee_H?></th>
+				<th style="color: orange;"><?=$abonnee_F?></th>
+				<th style="color: orange;"><?=$nonAbonnee_H?></th>
+				<th style="color: orange;"><?=$nonAbonnee_F?></th>
 				<th></th>
 			</tr>
 			<tr style="page-break-inside: avoid;">
 				<th>Total</th>
-				<th colspan="2"><?=$adventiste_H+$adventiste_F?></th>
-				<th colspan="2"><?=$nonAdventiste_H+$nonAdventiste_F?></th>
+				<th colspan="2"><?=$abonnee_H+$abonnee_F?></th>
+				<th colspan="2"><?=$nonAbonnee_H+$nonAbonnee_F?></th>
 				<th><?=$thorizontal?></th>
 			</tr>
 		</thead>

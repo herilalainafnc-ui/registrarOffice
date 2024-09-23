@@ -30,6 +30,10 @@
 		$new_student = 1;
 		$annee_etude = 1;
 	
+	}elseif($showStudent['annee_etude'] == 3 OR ($showStudent['annee_etude'] == 1 AND $showStudent['new_student'] == 1 )) {
+
+		$annee_etude = $showStudent['annee_etude'];
+
 	}
 	
 	$updateStd = $dtb->prepare('UPDATE tbl_2024_etudiant SET annee_etude=:annee_etude, annee_scolaire=:annee_scolaire WHERE id=:id');
@@ -103,30 +107,33 @@
 
 	$result_finance = $verification_finance_licence->fetch();
 
-		echo "<br>Frais généraux = ".$cout_fraix_generaux = floatval($result_finance['frais_generaux']);		
+		$cout_fraix_generaux = floatval($result_finance['frais_generaux']);		
 
 		if ($level == 1) {
 
 			$nbr_day = intval($result_finance['nb_jours_semestre']);
+			$cout_costume = $result_finance['frais_costume'];
 		
 		}elseif ($level == 2) {
 		
 			$nbr_day = intval($result_finance['nb_jours_semestre_L2']);
+			$cout_costume = 0;
 		
 		}elseif ($level == 3) {
 		
 			$nbr_day = intval($result_finance['nb_jours_semestre_L3']);
+			$cout_costume = 0;
 		
 		}
 
 
 		if ($graduated == 1) {
 			
-			 echo "<br>Frais graduation = ".$cout_frais_graduation = floatval($result_finance['frais_graduation']);
+			 $cout_frais_graduation = floatval($result_finance['frais_graduation']);
 		
 		}else{
 		
-			 echo "<br>Frais graduation = ".$cout_frais_graduation = 0;
+			 $cout_frais_graduation = 0;
 		
 		}
 
@@ -134,15 +141,16 @@
 
 		if ($new_student == 1 AND $status == "Interne") {
 
-			echo "<br>Dortoir = ".$cout_fondDepot_dortoir = $result_finance['fond_depot'];	
+			$cout_fondDepot_dortoir = $result_finance['fond_depot'];	
 
 		}else{
 
-			echo "<br>Dortoir = ".$cout_fondDepot_dortoir = 0;
+			$cout_fondDepot_dortoir = 0;
 			
 		}
-			
-		echo "<br>Log = ".$cout_logement = floatval($result_finance['dortoir']) * $nbr_day;
+		
+
+		$cout_logement = floatval($result_finance['dortoir']) * $nbr_day;
 		
 		$creatLineStdToFinance = $dtb->prepare('INSERT INTO t_2024_etudiant_finace(
 			student_id,
@@ -154,6 +162,7 @@
 			cout_fraix_generaux,
 			cout_fondDepot_dortoir,
 			cout_frais_graduation,
+			cout_costume,
 			cout_voyage,
 			date_entry
 		) VALUES (
@@ -166,6 +175,7 @@
 			:cout_fraix_generaux,
 			:cout_fondDepot_dortoir,
 			:cout_frais_graduation,
+			:cout_costume,
 			:cout_voyage,
 			:date_entry
 		)');
@@ -179,6 +189,7 @@
 			'cout_fraix_generaux' => $cout_fraix_generaux,
 			'cout_fondDepot_dortoir' => $cout_fondDepot_dortoir,
 			'cout_frais_graduation' => $cout_frais_graduation,
+			'cout_costume' => $cout_costume,
 			'cout_voyage' => $cout_voyage,
 			'date_entry' => $date_entry
 		));

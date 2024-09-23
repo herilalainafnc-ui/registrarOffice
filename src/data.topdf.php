@@ -58,6 +58,8 @@ $date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
             echo "<br>";
             require ('./extenssionPrint/statistic-internat.php');
             echo "<br>";
+            require ('./extenssionPrint/statistic-abonment.php');
+            echo "<br>";
             require ('./extenssionPrint/statistic-sexe.php');
             echo "<br>";
             require ('./extenssionPrint/statistic-religion.php');

@@ -113,8 +113,8 @@ $master1_N =+ $master1_N + $row['Master1_N'];
 $master1_A =+ $master1_A + $row['Master1_A'];
 $master2_N =+ $master2_N + $row['Master2_N'];
 $master2_A =+ $master2_A + $row['Master2_A'];
-$thorizontal_N =+ $thorizontal_N + $sommeHoriz_N;
-$thorizontal_A =+ $thorizontal_A + $sommeHoriz_A;
+$thorizontal_N =+ intval($thorizontal_N) + intval($sommeHoriz_N);
+$thorizontal_A =+ intval($thorizontal_A) + intval($sommeHoriz_A);
    
 	}
         ?>
