@@ -1,6 +1,5 @@
 <?php 
 require('../data/session.php');
-/*require('../data/connectdb.php');*/
 require('../data/backdb.php');
 require('../init/head.noTem.php');
 $ptype = $_GET['ptype'];

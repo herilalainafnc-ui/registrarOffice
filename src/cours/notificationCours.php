@@ -12,7 +12,7 @@
 					      	<label for="yearListStdInThisCours">Année</label>
 					    </div>
 					    <div class="w-9/12">
-					    	<select name="yearListStdInThisCours" id="yearListStdInThisCours" class="input w-full">
+					    	<select name="yearListStdInThisCours" id="yearListStdInThisCours" class="input w-full text-black">
 								<option></option>
 								<?php
 								$y = date('Y');

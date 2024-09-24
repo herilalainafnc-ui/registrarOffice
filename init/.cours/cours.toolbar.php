@@ -64,7 +64,7 @@
 		
 				<center>
 				<i class="bi-filetype-pdf text-2xl text-blue-400"></i><br>
-				<?php if (isset($_GET['page']) and ($_GET['page'] == 'notes')) {echo "Remise de notes";}else{echo "Exporter";}?>
+				<?php if (isset($_GET['page']) and ($_GET['page'] == 'notes')) {echo "Remise de notes";}else{echo "Liste d'étudiants";}?>
 				</center>
 			
 		</a>
