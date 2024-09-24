@@ -1,8 +1,8 @@
-<div class="sm:w-4/12 lg:w-2/12 flex px-1">
+<div class="sm:w-4/12 lg:w-8/12 flex px-1">
 		
 		<a href="#" class="text-xs w-6/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information' or $_GET['page'] == 'diplome') or empty($_GET['page'])) {
 																								echo "toolInactive";
-																							}?>" data-bs-toggle="dropdown" aria-expanded="false">
+																							}?> toolInactive" data-bs-toggle="dropdown" aria-expanded="false">
 				<center>
 				<i class="bi-sort-alpha-up-alt text-2xl"></i><br>
 						Trier par
@@ -21,7 +21,7 @@
 
 		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information' or $_GET['page'] == 'diplome') or empty($_GET['page'])) {
 																								echo "toolInactive";
-																							}?>">
+																							}?> toolInactive">
 				<center>
 				<i class="bi-funnel text-2xl"></i><br>
 						Filter
@@ -30,7 +30,7 @@
 		</a>
 		<a href="#" class="text-xs w-6/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {
 																								echo "toolInactive";
-																							}?>" data-bs-toggle="dropdown" aria-expanded="false">
+																							}?> toolInactive" data-bs-toggle="dropdown" aria-expanded="false">
 				<center>
 				<i class="bi-flag text-2xl"></i><br>
 						Langues
@@ -44,9 +44,8 @@
 					</a></li>
 
 				</ul>
-	</div>
-	<div class="sm:w-4/12 lg:w-2/12 flex px-1">
-		<a href="?id=<?=$id?>&page=newCours" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
+
+		<a href="?id=<?=$id?>&page=newCours" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 toolInactive">
 				<center>
 				<i class="bi-folder-plus text-2xl text-cyan-500"></i><br>
 						Ajout cours
@@ -55,7 +54,7 @@
 		</a>
 		
 		
-		<a href="?id=<?=$id;?>&page=courssupprim" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
+		<a href="?id=<?=$id;?>&page=courssupprim" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 toolInactive">
 				<center>
 				<i class="bi-trash2 text-2xl text-red-500"></i><br>
 						Cours supprimé

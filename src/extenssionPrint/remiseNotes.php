@@ -68,7 +68,7 @@ if ($showCours['category'] == 0){
  <table class="tbl">
  	<thead>
  		<tr>
- 			<th class="py-1 border-l border-slate-400">No</th>
+ 			<th class="py-1 border-l border-slate-400 w-[40px]">No</th>
  			<th class="py-1 border-l border-slate-400 w-[80px]">Matricule</th>
  			<th class="py-1 border-l border-slate-400">Noms</th>
  			<th class="py-1 border-l border-slate-400 w-[80px]">Niveau</th>

@@ -1,6 +1,6 @@
-<div class="sm:w-4/12 lg:w-3/12 flex px-1">
+<div class="sm:w-8/12 lg:w-8/12 flex px-1">
 		
-		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?>" data-bs-toggle="dropdown" aria-expanded="false">
+		<a href="#" class="text-xs w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?> toolInactive" data-bs-toggle="dropdown" aria-expanded="false">
 				<center>
 				<i class="bi-sort-alpha-up-alt text-2xl"></i><br>
 						Trier par
@@ -17,14 +17,14 @@
 
 				</ul>
 
-		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?>">
+		<a href="#" class="text-xs w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?> toolInactive">
 				<center>
 				<i class="bi-funnel text-2xl"></i><br>
 						Filter
 				</center>
 			
 		</a>
-		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?>" data-bs-toggle="dropdown" aria-expanded="false">
+		<a href="#" class="text-xs w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?> toolInactive" data-bs-toggle="dropdown" aria-expanded="false">
 				<center>
 				<i class="bi-flag text-2xl"></i><br>
 						Langues
@@ -38,9 +38,8 @@
 					</a></li>
 
 				</ul>
-	</div>
-	<div class="sm:w-4/12 lg:w-3/12 flex px-1">
-		<a href="?id=<?=$id?>&page=newStd" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?>">
+
+		<a href="?id=<?=$id?>&page=newStd" class="text-xs w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?> toolInactive">
 				<center>
 				<i class="bi-person-add text-2xl text-cyan-500"></i><br>
 						Ajout étudiant
@@ -49,7 +48,7 @@
 		</a>
 		
 		
-		<a href="?id=<?=$id;?>&page=stdsupprim" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?>">
+		<a href="?id=<?=$id;?>&page=stdsupprim" class="text-xs w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?> toolInactive">
 				<center>
 				<i class="bi-trash2 text-2xl text-red-500"></i><br>
 						Etudiant supprimé
@@ -60,7 +59,7 @@
 							elseif(!empty($_GET['page']) AND $_GET['page'] == 'etudiants'){echo 'exportListStdInThisCours';}
 						?>" 
 
-			class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?>">
+			class="text-xs w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {echo "toolInactive";}?>">
 		
 				<center>
 				<i class="bi-filetype-pdf text-2xl text-blue-400"></i><br>

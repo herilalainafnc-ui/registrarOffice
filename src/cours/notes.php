@@ -1,3 +1,4 @@
+<div class=" mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">
 <?php 
 $year = date('Y')+1;
 for ($i=0; $i < 4 ; $i++) { 
@@ -59,7 +60,15 @@ if($apotr){
 					<td class="c<?=$nbr.$i;?>">L<?=$apotr['annee_etude']?></td>
 					<td class="c<?=$nbr.$i;?>"><?=$cours_table['semester']?></td>
 						<td class="<?=$bg_six_color?> text-slate-800 px-0">
-							<input class="insimple text-sm bg-transparent px-2 g<?=$nbr.$i;?>" type="text" name="note" value="<?=$cours_table['grade'];?>" min="0" max="20">
+<?php 
+if ($privilege == "registrar" OR $privilege == "administrator") {
+ ?>
+<input class="insimple text-sm bg-transparent px-2 g<?=$nbr.$i;?>" type="text" name="note" value="<?=$cours_table['grade'];?>" min="0" max="20">
+<?php 
+}else{
+	echo "<a class='px-2'>".$cours_table['grade']."</a>";
+}
+ ?>
 						</td>
 						<td class='stp<?=$nbr.$i;?> <?php 
 if ($cours_table['grade'] == -2 OR $cours_table['grade'] >= 10) {
@@ -172,4 +181,4 @@ if (($nbr-1)<=1) {
 <?php 
 	}
  ?>
-		
+</div>

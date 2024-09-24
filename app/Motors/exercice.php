@@ -3,12 +3,18 @@
 	require ('../../data/backdb.php');
 
 
-// MODIFICATION DE TOUT LES INSCRIT DE LA DATE 2024-09 EN NEW_STUDENT
+// MODIFICATION DE TOUT LES INSCRIT DE LA DATE 2024-09 EN NEW_STUDENT		
+/*
 
-		// UPDATE tbl_2024_etudiant
-		// SET new_student = 1
-		// WHERE date_entry LIKE '2024-09-%' AND (new_student = '' OR new_student = 0);
+		UPDATE tbl_2024_etudiant
+		SET new_student = 1
+		WHERE date_entry LIKE '2024-09-%' AND (new_student = '' OR new_student = 0);
 
+		UPDATE tbl_2024_etudiant
+		SET new_student = 0
+		WHERE date_entry NOT LIKE '2024-09-%';
+
+*/
 
 // $date_entry = "2024-09-";
 
@@ -31,15 +37,28 @@
 
 
 // Suppression des doublants
-		// COPY THIS IN THE SQL EDITOR FROM YOUR TABLE ON THE LOCALHOST SERVER
-		// DELETE FROM t_2024_etudiant_finace
-		// WHERE id NOT IN (
-		//     SELECT * FROM (
-		//         SELECT MIN(id)
-		//         FROM t_2024_etudiant_finace
-		//         GROUP BY student_id, session_id
-		//     ) AS temp
-		// );
+		
+//COPY THIS IN THE SQL EDITOR FROM YOUR TABLE ON THE LOCALHOST SERVER
+/*	
+	DELETE FROM t_2024_etudiant_finace
+		WHERE id NOT IN (
+		    SELECT * FROM (
+		        SELECT MIN(id)
+		        FROM t_2024_etudiant_finace
+		        GROUP BY student_id, session_id
+		    ) AS temp
+		);
+	
+	DELETE FROM t_2024_inscription_session
+		WHERE id NOT IN (
+		    SELECT * FROM (
+		        SELECT MIN(id)
+		        FROM t_2024_inscription_session
+		        GROUP BY student_id, session_id
+		    ) AS temp
+		);
+*/
+
 
 // Suppression des espaces dans l'adresse mail
 		// UPDATE `tbl_2024_etudiant` SET `student_email` = REPLACE(`student_email`, ' ', '');

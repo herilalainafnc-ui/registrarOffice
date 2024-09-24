@@ -20,7 +20,12 @@ if(!empty($showTeach)) {
 						<div class="w-full py-2 text-sm">
                             <div class="w-9/12 text-left">
                                 
-                                <p>Niveau L<?=$profil['yearlevel']?> | Semestre <?=$profil['semester']?></p>
+                                <p><?php 
+            if($profil['yearlevel'] <=3 ){
+				echo "Licence ".$profil['yearlevel'];
+			}elseif ($profil['yearlevel'] > 3){
+				echo "Master ".($profil['yearlevel'] - 3);
+			}	?> | Semestre <?=$profil['semester']?></p>
                                 
                                 <p>Crédit : <b><?=$profil['nb_crd']?></b></p>
 								<p>Catégorie : <b><?php 

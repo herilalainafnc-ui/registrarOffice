@@ -1,5 +1,5 @@
 <div class="bottom-0 w-full text-xs mt-10">
-	<div class="text-sm" style="page-break-inside: avoid;">
+	<div class="text-xs" style="page-break-inside: avoid;">
 		<p>Sambaina, <?php
 					 echo date('d')." ";
 					 $volana = date('m');
@@ -20,12 +20,12 @@
 
 		<br><br><br>
 
-		<em>La registraire - Mme. Daniella MALALANIRINA</em>
+		<em>La registraire : Madame Daniella MALALANIRINA</em>
 
 	</div>
 	<div class="border-t border-black flex" style="page-break-inside: avoid;">
 		<div class="w-4/12">Université Adventiste Zurcher</div>
-		<div class="w-4/12 text-center">--<?=$date?>--</div>
+		<div class="w-4/12 text-center">[ <?=$date?> ]</div>
 		<div class="w-4/12"></div>
 	</div>
 </div>

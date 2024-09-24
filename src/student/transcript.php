@@ -126,7 +126,18 @@ if ($crs['cours_category'] == 0){
 	echo "-";
 }
 						 ?></td>
-					<td class="<?=$bg_six_color?> <?=$txt_three_color?> px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="nb_crd<?=$s.$nbr;?>" value="<?php if($crs['grade']==-2){echo "Ok";}else{echo $crs['grade'];}?>"></td>
+					<td class="<?=$bg_six_color?> <?=$txt_three_color?> px-0">
+
+<?php 
+if ($privilege == "registrar" OR $privilege == "administrator") {
+ ?>
+<input class="insimple text-sm bg-transparent px-2" type="text" name="nb_crd<?=$s.$nbr;?>" value="<?php if($crs['grade']==-2){echo "Ok";}else{echo $crs['grade'];}?>">
+<?php 
+}else{
+	echo "<a class='px-2'>".$crs['grade']."</a>";
+}
+ ?>
+</td>
 					<td><?php if($crs['grade']==-2){echo "";}else{echo $notecredi = $crs['credit'] * $crs['grade'];}?></td>
 					
 					<td class="<?php 
@@ -277,17 +288,49 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 
 				<tr class="<?=$bg_four_color?> text-right">
 					<td colspan="4">Note de Work Education</td>
-					<td class="<?=$bg_six_color?> <?=$txt_three_color?> px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_work_educ" value="<?=$grade_work_educ?>"></td>
+					<td class="<?=$bg_six_color?> <?=$txt_three_color?> px-0 text-left">
+<?php 
+if ($privilege == "registrar" OR $privilege == "administrator") {
+ ?>
+ <input class="insimple text-sm bg-transparent px-2" type="text" name="grade_work_educ" value="<?=$grade_work_educ?>">
+<?php 
+}else{
+	echo "<a class='px-2'>".$grade_work_educ."</a>";
+}
+ ?>
+					</td>
 				</tr>
 
 				<tr class="<?=$bg_four_color?> text-right">
 					<td colspan="4">Remarque académique</td>
-					<td class="<?=$bg_six_color?> <?=$txt_three_color?> px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_remark_acad" value="<?=$grade_remark_acad?>"></td>
+					<td class="<?=$bg_six_color?> <?=$txt_three_color?> px-0 text-left">
+
+<?php 
+if ($privilege == "registrar" OR $privilege == "administrator") {
+ ?>
+<input class="insimple text-sm bg-transparent px-2" type="text" name="grade_remark_acad" value="<?=$grade_remark_acad?>">
+<?php 
+}else{
+	echo "<a class='px-2'>".$grade_remark_acad."</a>";
+}
+ ?>
+					</td>
 				</tr>
 
 				<tr class="<?=$bg_four_color?> text-right">
 					<td colspan="4">Note de participation à l'exercice de chapelle et à la semaine de prière</td>
-					<td class="<?=$bg_six_color?> <?=$txt_three_color?> px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_chapel_part" value="<?=$grade_chapel_part?>"></td>
+					<td class="<?=$bg_six_color?> <?=$txt_three_color?> px-0 text-left">
+
+<?php 
+if ($privilege == "registrar" OR $privilege == "administrator") {
+ ?>
+<input class="insimple text-sm bg-transparent px-2" type="text" name="grade_chapel_part" value="<?=$grade_chapel_part?>">
+<?php 
+}else{
+	echo "<a class='px-2'>".$grade_chapel_part."</a>";
+}
+ ?>
+					</td>
 				</tr>
 
 				<button type="submit" class="hidden"></button>

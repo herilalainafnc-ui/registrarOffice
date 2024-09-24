@@ -16,8 +16,9 @@
 		$rg_last_name = $rg_user['prenom'];
 		$rg_userId = $rg_user['id'];
 		$rg_photos = $rg_user['photos'];
+		$privilege = $rg_user['privilege'];
 
-		if ($page != 'inscription.php' AND $rg_user['privilege'] == 'visitor') {
+		if ($page != 'inscription.php' AND $privilege == 'visitor') {
 			header('location:../inscription/inscription.php');
 		}
 

@@ -1,3 +1,4 @@
+<div class=" mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">
 <?php 
 $year = date('Y')+1;
 for ($i=0; $i < 4 ; $i++) { 
@@ -6,7 +7,7 @@ $soustract = $year - $i;
 $preced = $soustract - 1;	
 ?>
 
-<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all overflow-auto'>
 <div class="text-center bg-gradient-to-r from-cyan-500">
 	<b>Etudiants en année <?php echo $scolaire = $preced." - ".$soustract; ?>.</b>
 </div>
@@ -139,4 +140,4 @@ if (($nbr-1)<=1) {
 <?php 
 	}
  ?>
-		
+</div>

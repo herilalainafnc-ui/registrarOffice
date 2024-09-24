@@ -36,8 +36,8 @@ $yes = 1;
  ?>					
 					
 
-						<div class="my-1 p-2 mx-0.5 sm:w-10/12 lg:w-9/12 xxl:w-7/12 <?=$bg_one_color?> text-white overflow-auto" style="max-height: calc(100vh - 160px);">
-							<div class="h-20 flex pb-2">
+						<div class="my-1 p-2 mx-0.5 sm:w-10/12 lg:w-9/12 xxl:w-7/12 <?=$bg_one_color?> text-white" style="max-height: calc(100vh - 160px);">
+							<div class="h-[65px] flex p-1">
 								<div class="w-4/12 px-1">
 									<a class="sm:text-xs lg:text-lg mt-3"><?php 
 
@@ -69,6 +69,7 @@ $yes = 1;
 									 ?></a>
 								</div>
 								<!-- STUDENT TOOLBAR --><?php require ('../init/.cours/cours.toolbar.php');?>
+
 								<!-- NOTIFICATION MANAGER --><?php require('./cours/notificationCours.php');?>
 							</div>
 							<?php 

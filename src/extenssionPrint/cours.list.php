@@ -22,16 +22,16 @@ while($affm = $mention->fetch()){ ?>
 
 	<b style="font-size: 17px;">Mention <?=$title = $affm['filiere_description']?></b>
 
-<table class="tbl simpleTbl">
+<table class="tbl">
 	<thead class="bg-slate-200">
  			<tr>
- 				<td class="w-[30px] border-1" style="border-bottom: 0px;">No</td>
- 				<td class="w-[80px] border-1" style="border-bottom: 0px;">Sigle</td>
- 				<td class="w-[300px] border-1" style="border-bottom: 0px;">Cours</td>
- 				<td class="w-[160px] border-1" style="border-bottom: 0px;">Crédit</td>
- 				<td class="w-[50px] border-1" style="border-bottom: 0px;">Niveau</td>
- 				<td class="w- border-1" style="border-bottom: 0px;">Semestre</td>
- 				<td class="w- border-1" style="border-bottom: 0px;">Catégorie</td>
+ 				<td class="w-[30px]" style="border-bottom: 0px;">No</td>
+ 				<td class="w-[80px]" style="border-bottom: 0px;">Sigle</td>
+ 				<td class="w-[300px]" style="border-bottom: 0px;">Cours</td>
+ 				<td class="w-[160px]" style="border-bottom: 0px;">Crédit</td>
+ 				<td class="w-[50px]" style="border-bottom: 0px;">Niveau</td>
+ 				<td class="w-" style="border-bottom: 0px;">Semestre</td>
+ 				<td class="w-" style="border-bottom: 0px;">Catégorie</td>
  			</tr>
  	</thead>
  	<tbody>
@@ -110,13 +110,7 @@ if ($affiche['category'] == 0){
  	</tbody>
 	<thead class="bg-slate-200">
 		<tr>
-			<th class="border-1 w-[30px]"><b><?=$nombresS = ($n-1);?></b></th>
-			<th class="border-1 w-[80px]"></th>
-			<th class="border-1 w-[300px]"></th>
-			<th class="border-1 w-[160px]"></th>
-			<th class="border-1 w-[50px]"></th>
-			<th class="border-1 w-"></th>
-			<th class="border-1 w-"></th>
+			<th colspan="7"><b><?=$nombresS = ($n-1);?></b></th>
 		</tr>
 	</thead>
 </table>
@@ -133,12 +127,8 @@ if ($affiche['category'] == 0){
 		<table class="tbl simpleTbl mb-1">
 			<thead class="bg-slate-200">
 				<tr>
-					<th class="border-1 w-[30px]"><b><?=$nombre?></b></th>
-					<th class="border-1 w-[80px]"></th>
-					<th class="border-1 w-[300px]"><b>TOUT LES COURS</b></th>
-					<th class="border-1 w-[160px]"></th>
-					<th class="border-1 w-[50px]"></th>
-					<th class="border-1 w-"></th>
+					<th class="border-1 w-[30px]" colspan="2"><b><?=$nombre?></b></th>
+					<th class="border-1 w-[300px]" colspan="4"><b>TOUT LES COURS</b></th>
 				</tr>
 			</thead>
 		</table>
