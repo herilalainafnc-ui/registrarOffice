@@ -194,6 +194,8 @@ echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];
 
 	$showStudent_Session = $findStudent_Session->fetch();
 
+	$session_id = $showStudent_Session['session_id'];
+
 	$y = date('Y');
 
 	$aSem = $y." - ".($y+1);
@@ -324,7 +326,7 @@ if (date('m') >= 7) {
 									&etude_envisage=<?=$etude_envisage?>
 									&level=<?=$level?>
 									&student_tel=<?=$student_tel?>
-									&image_student=<?=$image_student?>" id="ficheInscription" 
+									&image_student=<?=$image_student?>&session_id=<?=$session_id?>" id="ficheInscription" 
 
 										class="text-[40px] leading-tight active:bg-cyan-700 p-1">
 										<div class="w-5/12 m-auto p-3 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-lg border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all">
@@ -524,8 +526,10 @@ if (date('m') >= 7) {
 				$('#intFicheinscription').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
 
 				$('#stageMark_2').attr('class','text-xs p-1');
+
+				var session_id = $("#session_id").text();
 				
-				var url = './app/generate.stage.php?student_id=<?=$student_id?>$session_id='+session_id+'&stage=3';
+				var url = './app/generate.stage.php?student_id=<?=$student_id?>&session_id='+session_id+'&stage=3';
 
 				$.post(url,function(response){});
 
@@ -565,11 +569,12 @@ if (date('m') >= 7) {
             
 
             	var student_id = '<?=$student_id?>';
+            	var session_id = $("#session_id").text();
             	
             	$.ajax({
 					url:"./stages/mode.payement.php",
 					method:"POST",
-					data:{student_id:student_id},
+					data:{student_id:student_id,session_id:session_id},
 
 					success:function(data){
 						$('.stage_3').css({'display':'block'});
@@ -648,7 +653,8 @@ if (date('m') >= 7) {
         //updateContent();
 
 		$('#upStage').on('click', function(event) {
-            event.preventDefault(); // Empêche le comportement par défaut du lien
+
+            event.preventDefault(); 
 
             //var student_id = $(this).data('student_id');
             var stage = $(this).data('stage');

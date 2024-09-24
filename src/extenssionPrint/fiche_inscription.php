@@ -1,6 +1,8 @@
 <?php 
 
 $student_id = $_GET['student_id'];
+$session_id = $_GET['session_id'];
+
 $now = date('Y-m-d');
 $printName = $student_id."-FICHE INSCRIPTION";
 
@@ -67,7 +69,7 @@ if ($stdA['annee_etude'] == 0) {
 			</thead>
 			<tbody>
 <?php 
-	$findCoursFinance = $dtb->query('SELECT * FROM t_2024_cours_finance WHERE student_id="'.$student_id.'" AND remove != 1');
+	$findCoursFinance = $dtb->query('SELECT * FROM t_2024_cours_finance WHERE student_id="'.$student_id.'" AND session_id="'.$session_id.'" AND remove != 1');
 	$nbr = 0;
 	$tCredit = 0;
 	$tCout = 0;

@@ -3,7 +3,7 @@
 	require('../../data/backdb.php');
 
 	$student_id = $_POST['student_id'];
-	//$session_id = $_POST['session_id'];
+	$session_id = $_POST['session_id'];
 	
 	$recupsdt = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id ="'.$student_id.'" AND remove != 1 limit 1');
 
@@ -26,7 +26,7 @@
 
 
 
-	$findCoursFinance = $dtb->query('SELECT * FROM t_2024_cours_finance WHERE student_id="'.$student_id.'" AND remove != 1');
+	$findCoursFinance = $dtb->query('SELECT * FROM t_2024_cours_finance WHERE student_id="'.$student_id.'" AND session_id="'.$session_id.'" AND remove != 1');
 		$nbr = 0;
 		$tCredit = 0;
 		$tCout = 0;
@@ -42,7 +42,7 @@
 		<div class="mx-4 my-2"><i class="bi-file-text-fill text-green-300 text-[30px]"></i><b> Cours ajouté.</b></div>
 
 		<div class="bg-white w-full p-2 text-black text-xs rounded-md">
-			<b>Liste des cours</b>
+			<b>Liste des cours </b><a class="text-xs"> -  Session ID = <?=$session_id?></a>
 
 			
 			<table class="tbl mb-2 text-[10px]" style="width: 100%">
@@ -59,13 +59,15 @@
 				</thead>
 				<tbody>
 <?php 
-	$findCoursFinance = $dtb->query('SELECT * FROM t_2024_cours_finance WHERE student_id="'.$student_id.'" AND remove != 1');
+	$findCoursFinance = $dtb->query('SELECT * FROM t_2024_cours_finance WHERE student_id="'.$student_id.'" AND session_id="'.$session_id.'" AND remove != 1');
+	
 	$nbr = 0;
 	$tCredit = 0;
 	$tCout = 0;
 	$tLab = 0;
 	$n_lab = 0;
 	$somm_lab = 0;
+	
 	while($showCF = $findCoursFinance->fetch()) {
 		$session_id = $showCF['session_id'];
  ?>
@@ -75,7 +77,8 @@
 					<td><?=$showCF['cours_sigle']?></td>
 					<td><?=$showCF['cours_title']?></td>
 					<td><?=$showCF['cours_credit']?></td>
-					<td><?php 
+					<td><?php
+
 $findCat = $dtb->query('SELECT * FROM t_2023_cours WHERE id = "'.$showCF['cours_id'].'"');
 $showCat = $findCat->fetch();
 if ($showCat['category'] == 0){
@@ -304,7 +307,7 @@ if ($showCat['category'] == 0){
 					<a class="text-slate-300">Payement à 100 %</a>	
 				</div>
 				<div class="w-4/12 text-right px-2">
-					<a class="text-slate-300 paie100"><?= $Montant_sans_fraix_Generaux?></a> ar
+					<a class="text-[10px] text-slate-300 paie100"><?= $Montant_sans_fraix_Generaux?></a> ar
 				</div>
 				
 			</label><hr class="border-1 border-slate-900">
@@ -318,8 +321,8 @@ if ($showCat['category'] == 0){
 					<a class="text-slate-300">Tranché par 50% - 50%</a>	
 				</div>
 				<div class="w-4/12 text-right px-2">
-					<a class="text-slate-300 paie50"><?=($Montant_sans_fraix_Generaux*50) /100 ?></a> ar<br>
-					<a class="text-slate-300 paie50"><?=($Montant_sans_fraix_Generaux*50) /100 ?></a> ar
+					<a class="text-[10px] text-slate-300 paie50"><?=($Montant_sans_fraix_Generaux*50) /100 ?></a> ar<br>
+					<a class="text-[10px] text-slate-300 paie50"><?=($Montant_sans_fraix_Generaux*50) /100 ?></a> ar
 				</div>
 				
 			</label><hr class="border-1 border-slate-900">
@@ -333,8 +336,8 @@ if ($showCat['category'] == 0){
 					<a class="text-slate-300">Tranché par 75% - 25%</a>	
 				</div>
 				<div class="w-4/12 text-right px-2">
-					<a class="text-slate-300 paie75"><?=($Montant_sans_fraix_Generaux*75) /100 ?></a> ar<br>
-					<a class="text-slate-300 paie25"><?=($Montant_sans_fraix_Generaux*25) /100 ?></a> ar
+					<a class="text-[10px] text-slate-300 paie75"><?=($Montant_sans_fraix_Generaux*75) /100 ?></a> ar<br>
+					<a class="text-[10px] text-slate-300 paie25"><?=($Montant_sans_fraix_Generaux*25) /100 ?></a> ar
 				</div>
 				
 			</label><hr class="border-1 border-slate-900">
@@ -348,9 +351,9 @@ if ($showCat['category'] == 0){
 					<a class="text-slate-300">Tranché par 40% - 30% - 30%</a>	
 				</div>
 				<div class="w-4/12 text-right px-2">
-					<a class="text-slate-300 paie40"><?=($Montant_sans_fraix_Generaux*40) /100 ?></a> ar<br>
-					<a class="text-slate-300 paie30"><?=($Montant_sans_fraix_Generaux*30) /100 ?></a> ar<br>
-					<a class="text-slate-300 paie30"><?=($Montant_sans_fraix_Generaux*30) /100 ?></a> ar
+					<a class="text-[10px] text-slate-300 paie40"><?=($Montant_sans_fraix_Generaux*40) /100 ?></a> ar<br>
+					<a class="text-[10px] text-slate-300 paie30"><?=($Montant_sans_fraix_Generaux*30) /100 ?></a> ar<br>
+					<a class="text-[10px] text-slate-300 paie30"><?=($Montant_sans_fraix_Generaux*30) /100 ?></a> ar
 				</div>
 				
 			</label><hr class="border-1 border-slate-900">
@@ -364,10 +367,10 @@ if ($showCat['category'] == 0){
 					<a class="text-slate-300">Tranché par 25% - 25% - 25% - 25%</a>	
 				</div>
 				<div class="w-4/12 text-right px-2">
-					<a class="text-slate-300 paie25"><?=($Montant_sans_fraix_Generaux*25) /100 ?></a> ar<br>
-					<a class="text-slate-300 paie25"><?=($Montant_sans_fraix_Generaux*25) /100 ?></a> ar<br>
-					<a class="text-slate-300 paie25"><?=($Montant_sans_fraix_Generaux*25) /100 ?></a> ar<br>
-					<a class="text-slate-300 paie25"><?=($Montant_sans_fraix_Generaux*25) /100 ?></a> ar
+					<a class="text-[10px] text-slate-300 paie25"><?=($Montant_sans_fraix_Generaux*25) /100 ?></a> ar<br>
+					<a class="text-[10px] text-slate-300 paie25"><?=($Montant_sans_fraix_Generaux*25) /100 ?></a> ar<br>
+					<a class="text-[10px] text-slate-300 paie25"><?=($Montant_sans_fraix_Generaux*25) /100 ?></a> ar<br>
+					<a class="text-[10px] text-slate-300 paie25"><?=($Montant_sans_fraix_Generaux*25) /100 ?></a> ar
 				</div>
 				
 			</label><hr class="border-1 border-slate-900">

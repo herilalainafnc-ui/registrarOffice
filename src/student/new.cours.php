@@ -81,15 +81,30 @@
 	}
  	
 	if($level<=1) {
+
  		$init = $level;
+
  	}elseif($level==2) {
- 		$init = $level-1;
+
+ 		if($etude_envisage == "Théologie") {
+ 			$init = 1;
+ 			$level = 3;
+ 		}else{
+ 			$init = $level-1;
+ 		}
+
  	}elseif($level==3) {
+
  		$init = $level-2;
+
  	}elseif($level==4) {
+
  		$init = $level;
+
  	}elseif($level==5) {
+
  		$init = $level-1;
+
  	}
 
 	for ($a=$init; $a <= $level; $a++) {
@@ -209,15 +224,15 @@
 					</td>
 					<td><?php if (!empty($validExisting) AND $validExisting['grade'] >= 10) {
 	
-	echo "<em class='text-green-400'>Déjà ajouté. <b>".$validExisting['grade']."</b> de moyenne</em>";
+	echo "<em class='text-green-400'><b>".$validExisting['grade']."</b> de moyenne</em>";
 
 }elseif (!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 10) {
 	
-	echo "<em class='text-red-500'>Déjà ajouté. <b>".$validExisting['grade']."</b> de moyenne, en état d'echec.</em>";
+	echo "<em class='text-red-500'><b>".$validExisting['grade']."</b> de moyenne, en état d'echec.</em>";
 
 }elseif (!empty($validExisting) AND $validExisting['grade'] == 0){
 
-	echo "<em class='text-orange-400'>Ajouté à la date de ".$validExisting['date_entry']."</b></em>";
+	echo "<em class='text-orange-400'>Ajouté à la date de ".substr($validExisting['date_entry'], 0, 10)."</b></em>";
 
 } ?></td>
 					<td><?=$crs['nb_crd']?></td>
