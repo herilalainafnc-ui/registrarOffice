@@ -1,18 +1,16 @@
 <?php 
 
 	$cours_id = $_GET['cours_id'];
-	$yearForCours = $_GET['yearForCours'];
+	$yearRemiseNotes = $_GET['yearRemiseNotes'];
 
 	$findCours = $dtb->query('SELECT * FROM t_2023_cours WHERE id = "'.$cours_id.'"');
 
 	$showCours = $findCours->fetch();
 
-	
-
-
  ?>
+
 <div class="text-xs text-center my-2" style="border: 1px solid #8e9bb2;">
-	<p class="text-[17px] bg-blue-200 h-[20px]">Titre du cours - [ <b><?=$showCours['title']?></b> ]</p>
+	<p class="text-[17px] bg-blue-200 h-[20px]">Remise de notes du cours - [ <b><?=$showCours['title']?></b> ]</p>
 	<div class="w-full p-2" style="display: flex;">
 
 		<div class="text-right w-3/12">
@@ -46,7 +44,7 @@ if ($showCours['category'] == 0){
 	
 	echo $showTeacher['name']." ".$showTeacher['lastName'];
 			?></b><br>
-			<b><?=$yearForCours?></b><br>		
+			<b><?=$yearRemiseNotes?></b><br>		
 		</div>
 		<div class="text-right w-3/12">
 			<label>Crédit - </label><br>
@@ -70,24 +68,25 @@ if ($showCours['category'] == 0){
  <table class="tbl">
  	<thead>
  		<tr>
- 			<th>No</th>
- 			<th>Matricule</th>
- 			<th>Noms</th>
- 			<th>Niveau</th>
- 			<th>Téléphone</th>
- 			<th>Email</th>
+ 			<th class="py-1 border-l border-slate-400">No</th>
+ 			<th class="py-1 border-l border-slate-400 w-[80px]">Matricule</th>
+ 			<th class="py-1 border-l border-slate-400">Noms</th>
+ 			<th class="py-1 border-l border-slate-400 w-[80px]">Niveau</th>
+ 			<th class="py-1 border-l border-slate-400 w-[80px]">Examen<br>Mi sem__%</th>
+ 			<th class="py-1 border-l border-slate-400 w-[80px]">Examen<br>Final__%</th>
+ 			<th class="py-1 border-l border-slate-400 w-[80px]">Notes<br>Final/20</th>
  		</tr>
  	</thead>
  	<tbody>
  <?php 
- $findStdInCours = $dtb->query('SELECT * FROM t_2023_notes WHERE id_cours = "'.$cours_id.'" AND annee_scolaire = "'.$yearForCours.'" ORDER BY student_id');
+ $findStdInCours = $dtb->query('SELECT * FROM t_2023_notes WHERE id_cours = "'.$cours_id.'" AND annee_scolaire = "'.$yearRemiseNotes.'" ORDER BY student_id');
  $nbr = 1;
  while($showStdInCours = $findStdInCours->fetch()) {
   ?>
  		<tr class="text-[11px]" style="page-break-inside: avoid;">
- 			<td class="py-1"><?=$nbr?></td>
- 			<td class="py-1"><?=$showStdInCours['student_id']?></td>
- 			<td class="py-1"><?php
+ 			<td class="py-1 border-l border-t border-slate-400"><?=$nbr?></td>
+ 			<td class="py-1 border-l border-t border-slate-400"><?=$showStdInCours['student_id']?></td>
+ 			<td class="py-1 border-l border-t border-slate-400"><?php
 
 $jer = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE student_id='".$showStdInCours['student_id']."'");
 $apotr = $jer->fetch();
@@ -101,14 +100,15 @@ if($apotr){
 	echo "<em style='color:red'>Etudiant non inscrit dans la base!!</em>";
 }
 					?></td>
- 			<td class="py-1"><?php if($apotr['annee_etude'] <=3 ){
+ 			<td class="py-1 border-l border-t border-slate-400"><?php if($apotr['annee_etude'] <=3 ){
 				echo "Licence ".$apotr['annee_etude'];
 			}elseif ($apotr['annee_etude'] > 3){
 				echo "Master ".($apotr['annee_etude'] - 3);
 			}
 				?></td>
- 			<td class="py-1"><?=$apotr['student_tel']?></td>
- 			<td class="py-1"><?=$apotr['student_email']?></td>
+ 			<td class="py-1 border-l border-t border-slate-400"></td>
+ 			<td class="py-1 border-l border-t border-slate-400"></td>
+ 			<td class="py-1 border-l border-t border-slate-400 text-bold text-center" style="color: red"><?php if ($showStdInCours['grade'] != 0) { echo $showStdInCours['grade'];	}?></td>
  		</tr>
  <?php
  $nbr++;
@@ -118,3 +118,14 @@ if($apotr){
  </table>
 
  <b><?php if ($nbr > 2) { echo ($nbr-1)." étudiants"; }else{ echo ($nbr-1)." étudiant"; } ?></b>
+
+
+ <div class="flex w-full text-right">
+ 	<div class="w-9/12">
+ 		
+ 	</div>
+ 	<div class="w-3/12 pb-16 border-b border-slate-600">
+ 		<p class="text-xs">Signature est Noms de l'enseignant(e).</p>
+
+ 	</div>
+ </div>

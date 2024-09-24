@@ -1,3 +1,46 @@
+<!-- FOR REMISE NOTE -->
+	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifRemiseNotes" style="backdrop-filter: blur(3px);">
+
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+		
+			<div class="p-2 text-black">
+				<b>Exporter la remise des notes.</b>
+			</div>
+			<div class="p-2">
+				<div class="flex mb-3">
+				    	<div class="w-3/12 text-right pr-2 text-black">
+					      	<label for="yearRemiseNotes">Année</label>
+					    </div>
+					    <div class="w-9/12">
+					    	<select name="yearRemiseNotes" id="yearRemiseNotes" class="input w-full text-black">
+								<option></option>
+								<?php
+								$y = date('Y');
+								for ($i=0; $i <= 8; $i++) { 
+									
+									$as = $y." - ".($y+1);
+								?>
+								<option><?=$as?></option>
+								<?php
+								$y = $y - 1;
+								}
+								 ?>
+							</select>
+					    </div>
+				</div>
+			</div>
+			<div class="p-3">
+				<center>
+				<a href="#" id="cancelnotifRemiseNotes" class="bg-slate-400 p-2 rounded-md">Annuler</a>
+				<a href="#" id="btnRemiseNotes" target="_blank" class="bg-slate-400 p-2 rounded-md mx-1 toolInactive">Afficher</a>
+				
+				</center>
+			</div>
+	
+		</div>
+
+	</div>
+
 <!-- FOR STUDENT LIST -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifListStdInThisCours" style="backdrop-filter: blur(3px);">
 
@@ -72,6 +115,24 @@
 
 <script>
 	$(document).ready(function(){
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
+		$('#exportRemiseNotes').click(function(){
+			$('#notifRemiseNotes').css({'display':'block'});
+		});
+
+		$('#yearRemiseNotes').on('change',function() {
+			var yearRemiseNotes = $(this).val();
+			
+			$('#btnRemiseNotes').attr('class','bg-cyan-700 p-2 rounded-md mx-1');
+			$('#btnRemiseNotes').attr('href','./data.topdf.php?cours_id=<?=$id?>&yearRemiseNotes='+yearRemiseNotes+'&ptype=RemiseNotes');
+
+		});
+
+		$('#cancelnotifRemiseNotes').click(function(){
+			$('#notifRemiseNotes').css({'display':'none'});
+		});
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 		
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
 		$('#exportListStdInThisCours').click(function(){

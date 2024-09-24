@@ -3,8 +3,8 @@ require('../data/session.php');
 require('../data/backdb.php');
 require('../init/head.noTem.php');
 $ptype = $_GET['ptype'];
-$h = (date('H')+3);
-$date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
+$h = (date('H')+1);
+$date = 'h_'.date($h.'-i-s').' date_'.date('d-m-Y');
 ?>
 <title>Exportation</title>
 
@@ -93,6 +93,8 @@ $date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
             require ('./extenssionPrint/fiche_inscription.php');
         }elseif($ptype == "ListStdInThisCours"){
             require ('./extenssionPrint/listStdInThisCours.php');
+        }elseif($ptype == "RemiseNotes"){
+            require ('./extenssionPrint/remiseNotes.php');
         }
 
 

@@ -1,9 +1,10 @@
 <?php 
+	
 	require ('../../data/backdb.php');
 	
 	$id = $_GET['id'];
 	$idcours = $_GET['idcours'];
-	$grade = $_POST['note'];
+	$grade =  str_replace(',', '.', $_POST['note']);
 	$date_entry = date('Y-m-d');
 
 	$year = $_GET['year'];

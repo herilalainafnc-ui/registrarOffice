@@ -25,7 +25,7 @@
 	</div>
 	<div class="border-t border-black flex" style="page-break-inside: avoid;">
 		<div class="w-4/12">Université Adventiste Zurcher</div>
-		<div class="w-4/12 text-center">--<?=$ptype?>--</div>
+		<div class="w-4/12 text-center">--<?=$date?>--</div>
 		<div class="w-4/12"></div>
 	</div>
 </div>
