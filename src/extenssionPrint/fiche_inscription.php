@@ -61,7 +61,7 @@ if ($stdA['annee_etude'] == 0) {
 				<tr>
 					<th style="width: 100px">Sigle</th>
 					<th style="">Titre du cours</th>
-					<th style="width: 60px">crédits</th>
+					<th style="width: 60px">Crédits</th>
 					<th style="width: 80px">Catégorie</th>
 					<th style="width: 80px; text-align: right; padding-right: 6px;">coût</th>
 					<th style="width: 80px; text-align: right; padding-right: 6px;">Labo</th>
