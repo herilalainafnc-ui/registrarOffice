@@ -8,7 +8,7 @@
 	$showCours = $findCours->fetch();
 
 	
-
+	$printName = "STD-IN_".$showCours['title'];
 
  ?>
 <div class="text-xs text-center my-2" style="border: 1px solid #8e9bb2;">
@@ -70,12 +70,12 @@ if ($showCours['category'] == 0){
  <table class="tbl">
  	<thead>
  		<tr>
- 			<th>No</th>
- 			<th>Matricule</th>
- 			<th>Noms</th>
- 			<th>Niveau</th>
- 			<th>Téléphone</th>
- 			<th>Email</th>
+ 			<th class="w-[30px]">No</th>
+ 			<th class="w-[80px]">Matricule</th>
+ 			<th class="w-[30px]">Noms</th>
+ 			<th class="w-[80px]">Niveau</th>
+ 			<th class="w-[100px]">Téléphone</th>
+ 			<th class="w-[30px]">Email</th>
  		</tr>
  	</thead>
  	<tbody>

@@ -7,6 +7,7 @@
 
 	$showCours = $findCours->fetch();
 
+	$printName = "NOTES-STD-IN_".$showCours['title'];
  ?>
 
 <div class="text-xs text-center my-2" style="border: 1px solid #8e9bb2;">

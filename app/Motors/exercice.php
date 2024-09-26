@@ -2,6 +2,36 @@
 	
 	require ('../../data/backdb.php');
 
+// RETABLISEMENT OF LEVEL AND YEAR
+
+	$findSession = $dtb->query('SELECT * FROM t_2024_inscription_session WHERE session_id = 482');
+	
+	while($showSession = $findSession->fetch()) {
+
+		$student_id = $showSession['student_id'];
+		$annee_scolaire = $showSession['annee_scolaire'];
+
+		$modify = $dtb->prepare('UPDATE tbl_2024_etudiant SET annee_scolaire = "'.$annee_scolaire.'" WHERE student_id = "'.$student_id.'"');
+		$modify->execute();
+
+	}
+
+
+// GENERATION PASSWORD
+
+
+/*	$a = rand(100000,999999);
+	
+	$y = date('Y');
+
+	$password = $a."Std".$y;
+
+	$updatePassword = $dtb->prepare('UPDATE tbl_2024_etudiant SET password = "'.$password.'" WHERE password = ""');
+	$updatePassword->execute();
+*/
+
+
+
 
 // MODIFICATION DE TOUT LES INSCRIT DE LA DATE 2024-09 EN NEW_STUDENT		
 /*
@@ -416,21 +446,6 @@ while ($std = $studentQuery->fetch()) {
 //			));
 
 // 		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //	header('location:./end.php');

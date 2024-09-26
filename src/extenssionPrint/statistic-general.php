@@ -4,7 +4,7 @@ $yearNow = date('Y');
 $yearScoolNow = $_POST['yearStatistic'];
 
  ?>
-<div class="">
+<div class="" style="page-break-inside: avoid;">
 
 <b>Statistique générale </b><em class="text-xs">- Année <?=$yearScoolNow?></em>
 	<table class="tbl" style="page-break-inside: avoid;">

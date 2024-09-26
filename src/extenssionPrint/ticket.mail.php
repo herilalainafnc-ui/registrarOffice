@@ -2,6 +2,7 @@
 <?php 
 	$yearTicket = $_POST['yearTicket'];
 	$types = $_POST['types'];
+	$level = $_POST['level'];
 
 	$printName = "TICKET_EMAIL_ETUDIANT";
 	if ($types == "TOUT") {
@@ -16,7 +17,7 @@
 	
 	<div class="w-full border-1 border-black" style="page-break-inside: avoid;">
 		
-		<div class="px-2 h-[80px]">
+		<div class="px-2 h-[76.5px]">
 			<b> <?=$afficher['student_id']?></b><br>
 			<b class="text-sm"> <?=strtoupper($afficher['student_nom'])." ".$afficher['student_prenom']?></b><br>
 			<p class="text-xs"><?=$afficher['etude_envisage']." - ".$afficher['etude_option']?></p>

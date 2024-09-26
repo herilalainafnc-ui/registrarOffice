@@ -44,7 +44,7 @@ $date = 'h_'.date($h.'-i-s').' date_'.date('d-m-Y');
         
     <?php
 
-        if($ptype != "Badge" AND $ptype != "Abonnement Caf" AND $ptype !="ticketMail" AND $ptype !="workedSlip") { 
+        if($ptype != "worked" AND $ptype != "Badge" AND $ptype != "Abonnement Caf" AND $ptype !="ticketMail" AND $ptype !="workedSlip") { 
         
             require('../init/.forPrint/top.forPrint.php'); 
         
@@ -62,43 +62,82 @@ $date = 'h_'.date($h.'-i-s').' date_'.date('d-m-Y');
             require ('./extenssionPrint/statistic-sexe.php');
             echo "<br>";
             require ('./extenssionPrint/statistic-religion.php');
+
+            $scale = 4;
+            $quality = 4;
             
         }elseif($ptype == "Badge"){
             require ('./extenssionPrint/badge.php');
+            $scale = 4;
+            $quality = 4;
         }elseif($ptype == "Bulletin"){
             require ('./extenssionPrint/bulletin.php');
+            $scale = 4;
+            $quality = 4;
         }elseif($ptype == "Transcript"){
             require ('./extenssionPrint/transcript.php');
+            $scale = 4;
+            $quality = 4;
         }elseif($ptype == "Diplôme"){
             require ('./extenssionPrint/diplome.php');
+            $scale = 4;
+            $quality = 4;
         }elseif($ptype == "Checklist"){
             require ('./extenssionPrint/vrai.cheklist.php');
+            $scale = 4;
+            $quality = 4;
         }elseif($ptype == "Certificat de scolarité"){
             require ('./extenssionPrint/certScolarity.php');
+            $scale = 4;
+            $quality = 4;
         }elseif($ptype == "Abonnement Caf"){
             require ('./extenssionPrint/abonnement.caf.php');
+            $scale = 4;
+            $quality = 4;
         }elseif($ptype == "TranscriptSS"){
             require ('./extenssionPrint/transcriptSS.php');
+            $scale = 4;
+            $quality = 4;
         }elseif($ptype == "Worked_point"){
             require ('./extenssionPrint/worked_point.php');
+            $scale = 4;
+            $quality = 4;
         }elseif($ptype == "listeStd"){
             require ('./extenssionPrint/std.list.php');
+            $scale = 4;
+            $quality = 4;
         }elseif($ptype == "listeCours"){
             require ('./extenssionPrint/cours.list.php');
+            $scale = 4;
+            $quality = 4;
         }elseif($ptype == "ticketMail"){
             require ('./extenssionPrint/ticket.mail.php');
+            $scale = 4;
+            $quality = 4;
         }elseif($ptype == "workedSlip"){
             require ('./extenssionPrint/worked.Slip.php');
+            $scale = 4;
+            $quality = 4;
+        }elseif($ptype == "worked"){
+            require ('./extenssionPrint/worked.php');
+            $scale = 1;
+            $quality = 1;
         }elseif($ptype == "Fiche_inscription"){
             require ('./extenssionPrint/fiche_inscription.php');
+            $scale = 4;
+            $quality = 4;
         }elseif($ptype == "ListStdInThisCours"){
             require ('./extenssionPrint/listStdInThisCours.php');
+            $scale = 4;
+            $quality = 4;
         }elseif($ptype == "RemiseNotes"){
             require ('./extenssionPrint/remiseNotes.php');
+            $scale = 4;
+            $quality = 4;
         }
 
 
-        if($ptype != "Badge" AND $ptype != "Fiche_inscription" AND $ptype != "Abonnement Caf" AND $ptype != "Worked_point" AND $ptype !="ticketMail" AND $ptype !="workedSlip") {
+        if($ptype != "worked" AND $ptype != "Badge" AND $ptype != "Fiche_inscription" AND $ptype != "Abonnement Caf" AND $ptype != "Worked_point" AND $ptype !="ticketMail" AND $ptype !="workedSlip") {
         
             require('../init/.forPrint/foot.forPrint.php');
 
@@ -122,16 +161,22 @@ $date = 'h_'.date($h.'-i-s').' date_'.date('d-m-Y');
 <script type="text/javascript">
 
     var printConge = document.getElementById('printThisContent');
+   
 
     function printThisContent(){
 
-        alert('Download PDF processing !');
+        var scl = parseFloat('<?=$scale?>');
+        var qlt = parseFloat('<?=$quality?>');
+
+        alert('Download PDF processing ! quality '+qlt+', scale '+scl);
+
+        
 
         var opt = {
             margin:     0.5,
             filename:   '<?=$printName?> <?=$date?>.pdf',
-            image:      { type: 'jpeg', quality: 1 },
-            html2canvas:{ scale: 4, logging: true, useCORS: true },
+            image:      { type: 'jpeg', quality: qlt },
+            html2canvas:{ scale: scl, logging: true, useCORS: true },
             jsPDF:      { unit: 'in', format: 'a4', orientation: 'portrait' }
         };
 

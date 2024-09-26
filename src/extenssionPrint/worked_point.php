@@ -27,7 +27,13 @@ $stdA = $searchStd->fetch();
 			<b><?=strtoupper($stdA['student_nom'])." ".$stdA['student_prenom']?></b><br>
 			<b><?=$stdA['etude_envisage']?></b><br>
 			
-			<b>L<?=$stdA['annee_etude']?></b><br>
+			<b><?php 
+	if($stdA['annee_etude'] <=3 ){
+		echo "Licence ".$stdA['annee_etude'];
+	}elseif ($stdA['annee_etude'] > 3){
+		echo "Master ".($stdA['annee_etude'] - 3);
+	}
+?></b><br>
 			<b><?=$stdA['student_email']?></b>
 			<b>/ <?=$stdA['student_tel']?></b><br>
 			<b><input type="text" placeholder="_____________________________" class="h-4 p-0 border-0 text-xs"></b><br>

@@ -305,9 +305,9 @@ $tcredit+= $credit + $crs['nb_crd'];
 						<b>Session :</b>
 						<select name="semesterSession" class="h-[22px] m-1 py-0 text-black text-sm" id="scolarSs<?=$a.$s;?>">
 							<option <?php if ($s == 1) {echo "selected";} ?> selected>Premier semestre</option>
-							<option>Semestre d'été</option>
+						<!-- 	<option>Semestre d'été</option>
 							<option <?php if ($s == 2) {echo "selected";} ?>>Deuxième semestre</option>
-							<option>Semestre d'hiver</option>
+							<option>Semestre d'hiver</option> -->
 						</select>
 
 						<b>Année du cours :</b>

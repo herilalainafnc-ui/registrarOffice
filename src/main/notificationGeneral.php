@@ -364,6 +364,75 @@
 
 	</div>
 
+
+<!-- MAIL CSV -->
+
+	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifListCSV" style="backdrop-filter: blur(3px);">
+
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+			
+			<form method="post" action="./genPDF/gen.mail_csv.php" target="_blank">
+			<div class="p-2 text-black">
+				<b>Exporter les adresses mail (CSV).</b>
+			</div>
+			<div class="p-2">
+				<div class="w-all">
+					<div class="flex mb-3">
+						<div class="w-3/12 text-right pr-2">
+					      	<label for="types">Mention</label>
+					    </div>
+					    <div class="w-9/12">
+			    			<select id="types" name="types" class="input w-full">
+			      				<option value="TOUT">Tout</option>
+		<?php 
+					$voir = $dtb->query("SELECT * FROM filiere");
+					while ($affiche = $voir->fetch()) {?>
+										
+								<option value="<?=$affiche['filiere_description'];?>"><?=$affiche['filiere_description'];?></option>
+
+		<?php	
+			}
+		 ?>	
+			      			</select>	
+					    </div>
+				    </div>
+
+				    <div class="flex mb-3">
+				    	<div class="w-3/12 text-right pr-2">
+					      	<label for="yearListCSV">Année</label>
+					    </div>
+					    <div class="w-9/12">
+					    	<select name="yearListCSV" id="yearListCSV" class="input w-full">
+								<option></option>
+								<?php
+								$y = date('Y');
+								for ($i=0; $i <= 8; $i++) { 
+									
+									$as = $y." - ".($y+1);
+								?>
+								<option><?=$as?></option>
+								<?php
+								$y = $y - 1;
+								}
+								 ?>
+							</select>
+					    </div>
+				    </div>
+					
+				</div>
+			</div>
+			<div class="p-3">
+				<center>
+				<a href="#" id="cancelnotifListCSV" class="bg-slate-400 p-2 rounded-md">Annuler</a>
+				<input id="btnListCSV" type="submit" class="bg-slate-400 p-2 rounded-md mx-1 toolInactive" value="Afficher">
+				</center>
+			</div>
+			</form>
+
+		</div>
+
+	</div>
+
 <!-- FOR STATISTIC -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifStatistic" style="backdrop-filter: blur(3px);">
 
@@ -431,6 +500,22 @@
 		<?php	
 			}
 		 ?>	
+			      			</select>
+					    </div>
+					    
+				</div>
+				<div class="flex mb-3">
+					<div class="w-3/12 text-right pr-2">
+					      	<label for="level">Niveau</label>
+					    </div>
+					    <div class="w-9/12">
+			      			<select id="level" name="level" class="input w-full">
+			      				<option value="TOUT">Tout</option>
+								<option value="1">Licence 1</option>
+								<option value="2">Licence 2</option>
+								<option value="3">Licence 3</option>
+								<option value="4">Master 1</option>
+								<option value="5">Master 2</option>
 			      			</select>	
 					    </div>
 				</div>
@@ -473,7 +558,7 @@
 		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 			<form method="post" action="./data.topdf.php?ptype=workedSlip" target="_blank">
 			<div class="p-2 text-black">
-				<b>Exporter le Ticket par Email.</b>
+				<b>Exporter les (worked slip).</b>
 			</div>
 			<div class="p-2">
 				<div class="flex mb-3">
@@ -500,8 +585,7 @@
 					      	<label for="yearTicket">Année</label>
 					    </div>
 					    <div class="w-9/12">
-					    	<select name="yearworkedSlip" id="yearworkedSlip" class="input w-full">
-								<option></option>
+					    	<select name="yearworkedSlip" class="input w-full">
 								<?php
 								$y = date('Y');
 								for ($i=0; $i <= 8; $i++) { 
@@ -522,7 +606,7 @@
 				      	<label for="yearTicket">Début d'éxamen</label>
 				    </div>
 				    <div class="w-9/12">
-				    	<input type="date" name="date_begin" class="input w-full">
+				    	<input id="yearworkedSlip" type="date" name="date_begin" class="input w-full">
 				    </div>
 				</div>
 				<div class="flex mb-3">
@@ -545,6 +629,79 @@
 
 	</div>
 
+<!-- FOR WORKED -->
+	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifworked" style="backdrop-filter: blur(3px);">
+
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+			<form method="post" action="./data.topdf.php?ptype=worked" target="_blank">
+			<div class="p-2 text-black">
+				<b>Exporter la liste (worked) de manière groupée.</b>
+			</div>
+			<div class="p-2">
+				<div class="flex mb-3">
+						<div class="w-3/12 text-right pr-2">
+					      	<label for="types">Mention</label>
+					    </div>
+					    <div class="w-9/12">
+			    			<select id="types" name="types" class="input w-full">
+			      				<option value="TOUT">Tout</option>
+		<?php 
+					$voir = $dtb->query("SELECT * FROM filiere");
+					while ($affiche = $voir->fetch()) {?>
+										
+								<option><?=$affiche['filiere_description'];?></option>
+
+		<?php	
+			}
+		 ?>	
+			      			</select>	
+					    </div>
+				</div>
+				<div class="flex mb-3">
+						<div class="w-3/12 text-right pr-2">
+					      	<label for="niveau">Niveau</label>
+					    </div>
+					    <div class="w-9/12">
+			    			<select id="niveau" name="niveau" class="input w-full">
+			    				<option value="1">Licence 1</option>
+			    				<option value="2">Licence 2</option>
+			    				<option value="3">Licence 3</option>
+			    				<option value="4">Master 1</option>
+			    				<option value="5">Master 2</option>
+			      			</select>	
+					    </div>
+				</div>
+				<div class="flex mb-3">
+				    	<div class="w-3/12 text-right pr-2">
+					      	<label for="yearTicket">Année</label>
+					    </div>
+					    <div class="w-9/12">
+					    	<select name="yearworked" id="yearworked" class="input w-full">
+								<?php
+								$y = date('Y');
+								for ($i=0; $i <= 8; $i++) { 
+									
+									$as = $y." - ".($y+1);
+								?>
+								<option><?=$as?></option>
+								<?php
+								$y = $y - 1;
+								}
+								 ?>
+							</select>
+					    </div>
+				</div>
+			</div>
+			<div class="p-3">
+				<center>
+				<a href="#" id="cancelnotifworked" class="bg-slate-400 p-2 rounded-md">Annuler</a>
+				<input id="btnworked" type="submit" class="bg-cyan-800 p-2 rounded-md mx-1 text-white" value="Afficher">
+				</center>
+			</div>
+			</form>
+		</div>
+
+	</div>
 
 <!-- LOG OUT -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifLogOut" style="backdrop-filter: blur(3px);">
@@ -620,7 +777,28 @@
 		});
 
 
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
+		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
+		
+		$('#exportListCSV').click(function(){
+			$('#notifListCSV').css({'display':'block'});
+		});
+		$('#yearListCSV').on('change',function(){
+			
+			if($(this).val()!='') {
+			
+				$('#btnListCSV').attr('class','bg-cyan-800 p-2 rounded-md text-white mx-1');
+			
+			}else{
+			
+				$('#btnListCSV').attr('class','<?=$bg_five_color?> p-2 rounded-md mx-1 toolInactive');
+			}
+
+		});
+		$('#cancelnotifListCSV').click(function(){
+			$('#notifListCSV').css({'display':'none'});
+		});
+
+		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
 		
 		$('#exportMesupres').click(function(){
 			$('#notifMesupres').css({'display':'block'});
@@ -715,6 +893,15 @@
 		});
 		$('#cancelnotifworkedSlip').click(function(){
 			$('#notifworkedSlip').css({'display':'none'});
+		});
+		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+		$('#worked').click(function(){
+			$('#notifworked').css({'display':'block'});
+		});
+	
+		$('#cancelnotifworked').click(function(){
+			$('#notifworked').css({'display':'none'});
 		});
 		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
 	});

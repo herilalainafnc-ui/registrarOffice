@@ -10,7 +10,8 @@
 	if ($_POST['nb_crd'.$nbr] == "ok" OR $_POST['nb_crd'.$nbr] == "Ok" OR  $_POST['nb_crd'.$nbr] == "OK") {
 		$note = -2;	
 	}else{
-		$note = $_POST['nb_crd'.$nbr];	
+		$note = $_POST['nb_crd'.$nbr];
+		//str_replace(',', '.', $_POST['note']);
 	}
 	
 	$last_change_user_id = $_GET['user_id'];

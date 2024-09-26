@@ -52,7 +52,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 		<a href="#" id="exportListCSV" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
-} ?> toolInactive">
+} ?>">
 				<center>
 				<i class="bi-envelope-at text-2xl"></i><br>
 						Tamplate mail CSV
@@ -76,13 +76,13 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 <!-- BRANCHE D'OUTILS 3 -->		
 	<div class="sm:w-3/12 lg:w-2/12 lg:border-r flex px-1">
 		
-		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
+		<a href="#" id="worked" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
-} ?> toolInactive">
+} ?>">
 				<center>
 				<i class="bi-person-lines-fill text-2xl"></i><br>
-						Worked Lists
+						Worked
 				</center>
 			
 		</a>
