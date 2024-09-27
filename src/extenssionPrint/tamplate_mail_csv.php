@@ -4,84 +4,92 @@
 	$yearListCSV = $_POST['yearListCSV'];
 
 ?>
+<table>
+	<thead>
+		<tr>
+			<th>
+			First Name [Required],
+			Last Name [Required],
+			Email Address [Required],
+			Password [Required],
+			Password Hash Function [UPLOAD ONLY],
+			Org Unit Path [Required],
+			New Primary Email [UPLOAD ONLY],
+			Recovery Email,
+			Home Secondary Email,
+			Work Secondary Email,
+			Recovery Phone [MUST BE IN THE E.164 FORMAT],
+			Work Phone,
+			Home Phone,
+			Mobile Phone,
+			Work Address,
+			Home Address,
+			Employee ID,
+			Employee Type,
+			Employee Title,
+			Manager Email,
+			Department,
+			Cost Center,
+			Building ID,
+			Floor Name,
+			Floor Section,
+			Change Password at Next Sign-In,
+			New Status [UPLOAD ONLY],
+			Advanced Protection Program enrollment
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+	<?php 
+		if ($types == 'TOUT') {
 
-<p>
-First Name [Required],
-Last Name [Required],
-Email Address [Required],
-Password [Required],
-Password Hash Function [UPLOAD ONLY],
-Org Unit Path [Required],
-New Primary Email [UPLOAD ONLY],
-Recovery Email,
-Home Secondary Email,
-Work Secondary Email,
-Recovery Phone [MUST BE IN THE E.164 FORMAT],
-Work Phone,
-Home Phone,
-Mobile Phone,
-Work Address,
-Home Address,
-Employee ID,
-Employee Type,
-Employee Title,
-Manager Email,
-Department,
-Cost Center,
-Building ID,
-Floor Name,
-Floor Section,
-Change Password at Next Sign-In,
-New Status [UPLOAD ONLY],
-Advanced Protection Program enrollment
-</p>
+			$student = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire = "'.$yearListCSV.'" AND new_student = 1 ORDER BY annee_etude');	
 
-<?php 
-	if ($types == 'TOUT') {
+		}else{
 
-		$student = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire = "'.$yearListCSV.'" AND new_student = 1 ORDER BY annee_etude');	
+			$student = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire = "'.$yearListCSV.'" AND etude_envisage = "'.$types.'" AND new_student = 1 ORDER BY annee_etude');	
+		}
+		
 
-	}else{
-
-		$student = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire = "'.$yearListCSV.'" AND etude_envisage = "'.$types.'" AND new_student = 1 ORDER BY annee_etude');	
-	}
-	
-
-	while ($afficher = $student->fetch()){
- ?>
-<p>
-	<?= $afficher['student_nom']?>,
-	<?= $afficher['student_prenom']?>,
-	<?= $afficher['student_email']?>,
-	<?= $afficher['password']?>,
-	,
-	/,
-	,
-	,
-	,
-	,
-	<?= $afficher['student_tel']?>,
-	,
-	,
-	<?= $afficher['student_tel']?>,
-	Adventist Univerity Zurcher,
-	<?= $afficher['status']?>,
-	<?= $student_id = $afficher['student_id']?>,
-	Student,
-	Student,
-	<?= $afficher['etude_envisage']?>,
-	<?= $afficher['etude_option']?>,
-	,
-	,
-	,
-	,
-	False,
-	,
-	False
-</p>
-<?php
-	}
- ?>
+		while ($afficher = $student->fetch()){
+	 ?>
+		<tr>
+			<td>
+				<?= $afficher['student_nom']?>,
+				<?= $afficher['student_prenom']?>,
+				<?= $afficher['student_email']?>,
+				<?= $afficher['password']?>,
+				,
+				/,
+				,
+				,
+				,
+				,
+				<?= $afficher['student_tel']?>,
+				,
+				,
+				<?= $afficher['student_tel']?>,
+				Adventist Univerity Zurcher,
+				<?= $afficher['status']?>,
+				<?= $student_id = $afficher['student_id']?>,
+				Student,
+				Student,
+				<?= $afficher['etude_envisage']?>,
+				<?= $afficher['etude_option']?>,
+				,
+				,
+				,
+				,
+				False,
+				,
+				False
+			</td>
+		</tr>
+	<?php
+		}
+	 ?>
+	 </tbody>
+</table>
 
 <!-- <table class="tbl">
 	<thead>
