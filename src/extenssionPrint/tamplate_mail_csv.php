@@ -5,7 +5,85 @@
 
 ?>
 
-<table class="tbl">
+<p>
+First Name [Required],
+Last Name [Required],
+Email Address [Required],
+Password [Required],
+Password Hash Function [UPLOAD ONLY],
+Org Unit Path [Required],
+New Primary Email [UPLOAD ONLY],
+Recovery Email,
+Home Secondary Email,
+Work Secondary Email,
+Recovery Phone [MUST BE IN THE E.164 FORMAT],
+Work Phone,
+Home Phone,
+Mobile Phone,
+Work Address,
+Home Address,
+Employee ID,
+Employee Type,
+Employee Title,
+Manager Email,
+Department,
+Cost Center,
+Building ID,
+Floor Name,
+Floor Section,
+Change Password at Next Sign-In,
+New Status [UPLOAD ONLY],
+Advanced Protection Program enrollment
+</p>
+
+<?php 
+	if ($types == 'TOUT') {
+
+		$student = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire = "'.$yearListCSV.'" AND new_student = 1 ORDER BY annee_etude');	
+
+	}else{
+
+		$student = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire = "'.$yearListCSV.'" AND etude_envisage = "'.$types.'" AND new_student = 1 ORDER BY annee_etude');	
+	}
+	
+
+	while ($afficher = $student->fetch()){
+ ?>
+<p>
+	<?= $afficher['student_nom']?>,
+	<?= $afficher['student_prenom']?>,
+	<?= $afficher['student_email']?>,
+	<?= $afficher['password']?>,
+	,
+	/,
+	,
+	,
+	,
+	,
+	<?= $afficher['student_tel']?>,
+	,
+	,
+	<?= $afficher['student_tel']?>,
+	Adventist Univerity Zurcher,
+	<?= $afficher['status']?>,
+	<?= $student_id = $afficher['student_id']?>,
+	Student,
+	Student,
+	<?= $afficher['etude_envisage']?>,
+	<?= $afficher['etude_option']?>,
+	,
+	,
+	,
+	,
+	False,
+	,
+	False
+</p>
+<?php
+	}
+ ?>
+
+<!-- <table class="tbl">
 	<thead>
 		<tr>
 			<th>First Name [Required]</th>
@@ -89,9 +167,9 @@
  ?>
 	</tbody>
 
-</table>
+</table> -->
 
-<style type="text/css">
+<!-- <style type="text/css">
 	.tbl{
 		border-collapse: collapse;
 		text-align: center;
@@ -100,4 +178,4 @@
 	.tbl th, td{
 		border: 1px solid grey;
 	}
-</style>
+</style> -->
