@@ -306,6 +306,17 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 				</center>
 			
 		</a>
+
+		<a href="#" id="badgeGr" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
+if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
+	echo "toolInactive";
+} ?>">
+				<center>
+				<i class="bi-person-badge-fill text-2xl"></i><br>
+						Badge
+				</center>
+			
+		</a>
 		
 
 	</div>

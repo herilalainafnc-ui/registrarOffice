@@ -1,5 +1,5 @@
 <?php require ('../data/backdb.php');
-	
+	require('../init/.forPrint/top.forPrint.php');	
 	$printName = "LISTE_ETUDIANT_FOP";
 	$types = $_POST['types'];
 
@@ -144,4 +144,4 @@ if($af['sex'] == 1 OR $af['sex'] == "Masculin") {
 <?php 
 }
  ?>	
-</div>
+</div><?php require('../init/.forPrint/foot.forPrint.php'); ?>

@@ -1,3 +1,4 @@
+<?php require('../init/.forPrint/top.forPrint.php');  ?>
 <center>
 	<b class="text-2xl">Liste de cours</b>
 </center>
@@ -132,4 +133,4 @@ if ($affiche['category'] == 0){
 				</tr>
 			</thead>
 		</table>
-</div>
+</div><?php require('../init/.forPrint/foot.forPrint.php'); ?>

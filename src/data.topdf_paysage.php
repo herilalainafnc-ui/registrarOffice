@@ -35,7 +35,7 @@
 
 		<div id="printThisContent" class="b-black relative" style="min-height: 800px; width: 100%;">
 				
-			<?php if($ptype != "Badge" AND $ptype != "Abonnement Caf") { require('../init/.forPrint/top.forPrint.php'); }
+			<?php
 				
 				if($ptype == "foplist") {
 					require ('./extenssionPrint/fop.list.php');
@@ -43,12 +43,7 @@
 					require ('./extenssionPrint/mesupres.php');
 				}
 
-			if($ptype != "Badge" AND $ptype != "Abonnement Caf" AND $ptype != "Worked_point" AND $ptype != "foplist") {
-			
-				require('../init/.forPrint/foot.forPrint.php');
-
-			}
-		?>
+			?>
 
 		</div>
 
@@ -153,37 +148,3 @@ function printThisContent(){
 ?>
 
 <!-- /////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
-<style type="text/css">
-	table tr,table td{
-		border-collapse: collapse;
-	}
-	.tbl{
-		border-collapse: collapse;
-		font-size: 11px;
-	}
-	.tbl thead tr th{
-		border: 1px solid #9d9d9d;
-		padding-left: 4px;
-		padding-right: 4px;
-		height: 10px;
-	}
-	.tbl tbody tr td{
-		border: 1px solid #9d9d9d;
-		padding-left: 4px;
-		padding-right: 4px;
-		height: 10px;
-	}
-	.tbl tfoot tr th{
-		border: 1px solid #9d9d9d;
-		padding-left: 4px;
-		padding-right: 4px;
-		height: 10px;
-	}
-	.tbl tfoot tr td{
-		border: 1px solid #9d9d9d;
-		padding-left: 4px;
-		padding-right: 4px;
-		height: 10px;
-	}
-</style>

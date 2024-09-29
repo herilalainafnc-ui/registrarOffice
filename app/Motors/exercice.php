@@ -1,20 +1,57 @@
+<meta charset="utf-8">
 <?php 
 	
 	require ('../../data/backdb.php');
 
+// HASH PASSWORD FOR USER
+
+	$motDePasse = 'Herilalaina2804$$';
+	$saltFixe = 'fixing_password'; // Exemple d'un salt fixe (à ajuster)
+
+	// Hachage avec bcrypt et un salt fixe
+
+	$hashedPassword = hash('sha256',$motDePasse . $saltFixe);
+
+	echo "Mot de passe haché : " . $hashedPassword;
+
+// Sélectionner tous les utilisateurs
+	$sql = "SELECT id, password FROM compt_utilisateur";
+	$stmt = $dtb->query($sql);
+	$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+	// Hasher et mettre à jour chaque mot de passe
+	foreach ($users as $user) {
+	    // Hasher le mot de passe avec bcrypt
+	    
+	    $salt = 'fixing_password'; // Vous pouvez définir un salt fixe si vous le souhaitez
+		//echo '<br>' . $hashedPassword = crypt($user['password'], $salt);
+		echo '<br>' . $hashedPassword = hash('sha256', $user['password'] . $salt);
+	    // $hashedPassword = password_hash($user['password'], PASSWORD_BCRYPT);
+
+	    // Mettre à jour le mot de passe dans la base de données
+	    $updateSql = "UPDATE compt_utilisateur SET password = :hashedPassword WHERE id = :id";
+	    $updateStmt = $dtb->prepare($updateSql);
+	    $updateStmt->execute([
+	        ':hashedPassword' => $hashedPassword,
+	        ':id' => $user['id']
+	    ]);
+	}
+
+	echo "<br>Tous les mots de passe ont été hashés avec succès !";
+
 // RETABLISEMENT OF LEVEL AND YEAR
 
-	$findSession = $dtb->query('SELECT * FROM t_2024_inscription_session WHERE session_id = 482');
+	// $findSession = $dtb->query('SELECT * FROM t_2024_inscription_session WHERE session_id = 482');
 	
-	while($showSession = $findSession->fetch()) {
+	// while($showSession = $findSession->fetch()) {
 
-		$student_id = $showSession['student_id'];
-		$annee_scolaire = $showSession['annee_scolaire'];
+	// 	$student_id = $showSession['student_id'];
+	// 	$annee_scolaire = $showSession['annee_scolaire'];
 
-		$modify = $dtb->prepare('UPDATE tbl_2024_etudiant SET annee_scolaire = "'.$annee_scolaire.'" WHERE student_id = "'.$student_id.'"');
-		$modify->execute();
+	// 	$modify = $dtb->prepare('UPDATE tbl_2024_etudiant SET annee_scolaire = "'.$annee_scolaire.'" WHERE student_id = "'.$student_id.'"');
+	// 	$modify->execute();
 
-	}
+	// }
 
 
 // GENERATION PASSWORD

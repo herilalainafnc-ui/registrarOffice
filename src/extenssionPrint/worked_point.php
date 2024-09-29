@@ -1,4 +1,5 @@
 <?php
+require('../init/.forPrint/top.forPrint.php'); 
 $student_id = $_GET['student_id'];
 $level = $_GET['level'];
 

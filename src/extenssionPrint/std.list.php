@@ -1,3 +1,4 @@
+<?php require('../init/.forPrint/top.forPrint.php'); ?>
 <center>
 	<b class="text-2xl">Liste d'étudiant</b>
 </center>
@@ -207,4 +208,4 @@ if(empty($_POST['cours'])){
 				</tr>
 			</thead>
 		</table>
-</div>
+</div><?php require('../init/.forPrint/foot.forPrint.php'); ?>

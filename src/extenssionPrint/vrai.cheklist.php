@@ -1,4 +1,5 @@
 <?php
+require('../init/.forPrint/top.forPrint.php');
 $id = $_GET['id'];
 $student_id = $_GET['student_id'];
 $student_nom = $_GET['student_nom'];
@@ -255,4 +256,4 @@ for ($y=1; $y <= 3; $y++) {
 	}
 }
  ?>
-</div>
+</div><?php require('../init/.forPrint/foot.forPrint.php'); ?>

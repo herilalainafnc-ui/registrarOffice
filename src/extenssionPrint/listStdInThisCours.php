@@ -1,5 +1,6 @@
 <?php 
-
+	require('../init/.forPrint/top.forPrint.php');
+	
 	$cours_id = $_GET['cours_id'];
 	$yearForCours = $_GET['yearForCours'];
 
@@ -118,3 +119,4 @@ if($apotr){
  </table>
 
  <b><?php if ($nbr > 2) { echo ($nbr-1)." étudiants"; }else{ echo ($nbr-1)." étudiant"; } ?></b>
+ <?php require('../init/.forPrint/foot.forPrint.php'); ?>

@@ -106,7 +106,7 @@ $cours = $dtb->query("SELECT * FROM t_2023_notes WHERE student_id ='".$student_i
 		$annee_scolaire = $crs['annee_scolaire'];
 		$id_cours = $crs['id_cours'];
 	 ?>
-<form method="post" action="../app/.student/updatenote.php?id=<?=$id;?>&nbr=<?=$s.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$a.$s?>&user_id=<?=$rg_id?>">			
+<form method="post" action="../app/.student/updatenote.php?id=<?=$id;?>&nbr=<?=$s.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$a.$s?>&user_id=<?=$rg_id?>" class="form-no-refrech<?=$nbr.$a.$s?>">			
 				<tr id="note<?=$s.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black ">
 					<td class="bg-gradient-to-r from-orange-800 to-orange-400 text-white"><?=$crs['Sigle']?></td>
 					<td><?=$crs['title_cours']?></td>
@@ -131,7 +131,7 @@ if ($crs['cours_category'] == 0){
 <?php 
 if ($privilege == "registrar" OR $privilege == "administrator") {
  ?>
-<input class="insimple text-sm bg-transparent px-2" type="text" name="nb_crd<?=$s.$nbr;?>" value="<?php if($crs['grade']==-2){echo "Ok";}else{echo $crs['grade'];}?>">
+<input class="insimple text-sm bg-transparent px-2 g<?=$nbr.$a.$s?>" type="text" name="nb_crd<?=$s.$nbr;?>" value="<?php if($crs['grade']==-2){echo "Ok";}else{echo $crs['grade'];}?>">
 <?php 
 }else{
 	echo "<a class='px-2'>".$crs['grade']."</a>";
@@ -140,7 +140,7 @@ if ($privilege == "registrar" OR $privilege == "administrator") {
 </td>
 					<td><?php if($crs['grade']==-2){echo "";}else{echo $notecredi = $crs['credit'] * $crs['grade'];}?></td>
 					
-					<td class="<?php 
+					<td id="stp<?=$nbr.$a.$s?>" class="<?php 
 if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 	echo "bg-green-500";
 
@@ -150,7 +150,7 @@ if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 	echo "bg-none";
 }
 
-					 ?> text-center <?=$txt_three_color?>" title="<?php 
+					 ?> text-center text-black" title="<?php 
 if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 	echo "Succès";
 }elseif ($crs['grade'] < 10 and $crs['grade'] > 0){
@@ -171,7 +171,7 @@ if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 							 ?></td>
 					<!-- <td><?=$session_id?></td> -->
 					<td><div class="relative">
-						<a href="#" id="coursPush<?=$a.$s.$nbr?>" data-bs-toggle="dropdown" aria-expanded="false" title="Options"><span class="bi-three-dots-vertical"></span></a>
+						<a href="#" id="coursPush<?=$nbr.$a.$s?>" data-bs-toggle="dropdown" aria-expanded="false" title="Options"><span class="bi-three-dots-vertical"></span></a>
 
 							<ul class="dropdown-menu absolute border <?=$bg_six_color?> text-black p-0 rounded-0 text-xs">
 
@@ -196,6 +196,48 @@ if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 
  ?>
 				</tr>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$('.form-no-refrech<?=$nbr.$a.$s?>').on('submit',function(e){
+					e.preventDefault();
+					
+					var url = '../app/.student/updatenote.php?id=<?=$id;?>&nbr=<?=$s.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$a.$s?>&user_id=<?=$rg_id?>';
+
+					var data = $(this).serialize();
+
+					$.post(url,data,function(response){
+							
+							$('.g<?=$nbr.$a.$s?>').css({
+								'border':'none',
+								'border-radius':'0px',
+								'background':'none'
+							})
+							$('.g<?=$nbr.$a.$s?>').blur();
+							
+							
+							if($('.g<?=$nbr.$a.$s?>').val() == 0){
+
+								$('#stp<?=$nbr.$a.$s?>').attr('class','bg-none text-center text-black');
+								$('#stp<?=$nbr.$a.$s?>').text('');
+
+							}else if($('.g<?=$nbr.$a.$s?>').val() < 10){
+
+								$('#stp<?=$nbr.$a.$s?>').attr('class','bg-red-500 text-center text-black');
+								$('#stp<?=$nbr.$a.$s?>').text('E');
+
+							}else if($('.g<?=$nbr.$a.$s?>').val() >= 10){
+
+								$('#stp<?=$nbr.$a.$s?>').attr('class','bg-green-500 text-center text-black');
+								$('#stp<?=$nbr.$a.$s?>').text('S');
+
+							}
+							
+					})
+
+				})
+			})
+
+		</script>
 </form>
 
 	<?php

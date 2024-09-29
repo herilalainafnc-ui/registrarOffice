@@ -1,4 +1,5 @@
 <?php 
+require('../init/.forPrint/top.forPrint.php'); 
 $id = $_GET['id'];
 $student_id = $_GET['student_id'];
 $student_nom = $_GET['student_nom'];
@@ -20,7 +21,7 @@ $stdA = $searchStd->fetch();
 	<br><center>
 		<b class="text-2xl">CÉRTIFICAT DE SCOLARITÉ</b>
 	</center><br><br>
-	<div style="text-align: justify;font-size: 14px">
+	<div style="text-align: justify;" class="text-xs">
 		<p style="text-indent: 40px;">Je, soussignée, Registraire de l’Université Adventiste Zurcher, certifie que :</p><br>
 		<em>Nom et prénoms : </em><b><em><?=strtoupper($stdA['student_nom'])." ".$stdA['student_prenom']?></em></b><br>
 		<em>Date de naissance : </em><b><em><?=$stdA['dateNaissance']?></em></b><br>
@@ -33,3 +34,4 @@ $stdA = $searchStd->fetch();
 		<p style="text-indent: 40px;">Ce certificat lui est délivré pour valoir et servir ce que de droit.</p>
 	</div><br>
 </div>
+<?php require('../init/.forPrint/foot.forPrint.php'); ?>
