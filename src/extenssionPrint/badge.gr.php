@@ -39,8 +39,8 @@ $nbr = 1;
 
 	?>
 
-<div style="page-break-inside: avoid;" class="my-[1px]">
-	<div class="border p-3" style="page-break-inside: avoid; height: 335px; background-image : url('../file/fond-badge.jpg');background-position: center; background-size: cover; font-family: corbel, sans-serif; position: relative; font-family: 'arial';">
+<div style="page-break-inside: avoid;" class="m-[3px]">
+	<div class="border p-3" style="page-break-inside: avoid; height: 313px; background-image : url('../file/fond-badge.jpg');background-position: center; background-size: cover; font-family: corbel, sans-serif; position: relative; font-family: 'arial';">
 
 		<img src="../file/UAZ Official.png" style="height: 35px; position: absolute;">
 		<center style='page-break-inside: avoid;'>
@@ -64,10 +64,13 @@ $nbr = 1;
 
 		<center>
 			<b style="font-size: 12px; color: #07325a; line-height: 12px;"><?=strtoupper($stdA['student_nom'])?><br><?=$stdA['student_prenom']?></b><br>
-			<b style="font-size: 10px"><em><?=$stdA['status']?>
-			<?php if ($stdA['abonment'] == 1) { echo ', abonnée';} ?></em></b>
-			<br>
-			<b style="font-size: 14px; color: #07325a;"><?=$stdA['student_id']?></b>
+			
+			<b style="font-size: 12px; position: absolute; transform: rotate(-90deg);text-align: left; left:152px; bottom: 182px; width: 100px;">
+			
+				<?php if ($stdA['abonment'] == 1) { echo $stdA['status'].' & Abonné';}else{ echo $stdA['status'];} ?>
+				
+			</b>
+			<b style="font-size: 20px; color: #07325a;"><?=$stdA['student_id']?></b>
 			<div style="color: white; background:#0054a5; border-radius: 3px; width: 80%; font-size: 12px"><b><?=$stdA['etude_envisage']?></b></div>
 		
 				 	<div style="width: 100%;height: 60px; position: absolute; left: 0px;bottom: 0px; overflow : auto; overflow: hidden;">

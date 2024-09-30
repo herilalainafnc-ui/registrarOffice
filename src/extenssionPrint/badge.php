@@ -11,6 +11,7 @@ $student_tel = $_GET['student_tel'];
 $image_student = $_GET['image_student'];
 $lookup_code = $_GET['lookup_code'];
 $status = $_GET['status'];
+$abonment = $_GET['abonment'];
 $date_entry = $_GET['date_entry'];
 $year_entry = substr($date_entry, 0, 4);
 
@@ -43,7 +44,10 @@ if(strlen($image_student)> 7){
 ?>
 <center>
 	<b style="font-size: 35px; color: #07325a;"><?=strtoupper($student_nom)?><br><?=$student_prenom?></b><br>
-	<b style="font-size: 20px"><?=$status?></b>
+	<b style="font-size: 20px"><?=?></b>
+	<b style="font-size: 20px; position: absolute; transform: rotate(-90deg);text-align: left; left:152px; bottom: 182px; width: 100px;">
+		<?php if ($abonment == 1) { echo $status.' & Abonné';}else{ echo $status;} ?>	
+	</b>
 	<br><br>
 	<b style="font-size: 50px; color: #07325a;"><?=$student_id?></b>
 	<div style="color: white; background:#0054a5; border-radius: 10px; width: 70%; font-size: 25px"><b><?=$etude_envisage?></b></div>

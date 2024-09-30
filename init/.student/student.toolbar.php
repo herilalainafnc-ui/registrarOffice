@@ -74,6 +74,7 @@
 		&image_student=<?=$image_student?>
 		&lookup_code=<?=$lookup_code?>
 		&status=<?=$status?>
+		&abonment=<?=$abonment?>
 		&date_entry=<?=$date_entry?>" class="text-[11px] leading-tight sm:w-2/12 lg:w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
 				<center>
 				<i class="bi-person-badge-fill text-2xl"></i><br>

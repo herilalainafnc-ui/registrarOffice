@@ -46,7 +46,7 @@ $date = 'h_'.date($h.'-i-s').' date_'.date('d-m-Y');
             
 <!-- ::::::::::::::::::::::::::::: CONTENTS PRINT ::::::::::::::::::::::::::::::::: -->            
 
-    <div id="printThisContent" style="min-height: 1020px; width: 100%; position: relative;">
+    <div id="printThisContent" style="height: 1020px; width: 100%; position: relative;">
         
     <?php
         

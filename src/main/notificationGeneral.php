@@ -748,7 +748,7 @@
 					    </div>
 					    <div class="w-9/12">
 			    			<select id="types" name="types" class="input w-full">
-			      				<option value="TOUT">Tout</option>
+			      				<!-- <option value="TOUT">Tout</option> -->
 		<?php 
 					$voir = $dtb->query("SELECT * FROM filiere");
 					while ($affiche = $voir->fetch()) {?>

@@ -36,6 +36,7 @@ $student_tel = $profil['student_tel'];
 $image_student = $profil['image_student'];
 $lookup_code = $profil['lookup_code'];
 $status = $profil['status'];
+$abonment = $profil['abonment'];
 $date_entry = $profil['date_entry'];
 $yes = 1;
 
