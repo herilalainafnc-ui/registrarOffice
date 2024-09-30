@@ -1,13 +1,29 @@
-<?php require('../init/.forPrint/top.forPrint.php'); $exportation = $_POST['exportation'];?>
+<?php 
+	
+	require('../init/.forPrint/top.forPrint.php');
+	$exportation = $_POST['exportation'];
+	
+?>
 <center>
-	<b class="text-2xl">Liste d'étudiant <?php 
+	<b class="">Liste des <?php if (!empty($_POST['new_student'])) { echo "nouveaux";}?> étudiants <?php 
 	if($exportation == "internat"){
+	
 		echo "internes";
+	
 	}elseif($exportation == "abnment"){
+	
 		echo "abonnée";	
+	
 	}
 
+echo " en ".$_POST['anneescolaire'];
 
+	if (!empty($_POST['cours'])) {
+		echo " avec ces cours";
+		if (!empty($_POST['notes'])) {
+			echo ' et les notes';
+		}
+	}
 	 ?></b>
 </center>
 
@@ -28,34 +44,34 @@ if(isset($_POST['types']) AND ($_POST['types']!= 'TOUT')){
 }
 
 $nbrs = 1;
-
+$nombre = 0;
 while($affm = $mention->fetch()){ ?>
 
-	<b style="font-size: 17px;">Mention <?=$title = $affm['filiere_description']?></b>
+	<b class="text-sm">Mention <?=$title = $affm['filiere_description']?></b><br>
 
 <?php 
 if(empty($_POST['cours'])){
  ?>
  
 
-<table class="tbl simpleTbl mb-0">
+<table class="tbl mb-0">
 	<thead class="bg-slate-200">
  			<tr>
- 				<td class="border-1" style="border-bottom: 0px; width: 40px">No</td>
- 				<td class="border-1" style="border-bottom: 0px; width: 50px">ID</td>
- 				<td class="border-1" style="border-bottom: 0px; width: 300px">Nom et prénom</td>
+ 				<td class="w-[40px] border-x px-1">No</td>
+ 				<td class="w-[50px] border-r px-1">ID</td>
+ 				<td class="w-[300px] border-r px-1">Nom et prénom</td>
  				<!-- <td class="w-[160px] border-1" style="border-bottom: 0px;">Mention</td> -->
- 				<td class="border-1" style="border-bottom: 0px; width: 60px">Niveau</td>
+ 				<td class="border-r w-[70px] px-1">Niveau</td>
  				<!-- <td class="w- border-1" style="border-bottom: 0px;">Contact</td> -->
  				<?php 
 				if ($exportation == "abnment" OR $exportation == "internat") {
 					?>
-				<td class="border-1" style="border-bottom: 0px; width: 80px">Sexe</td>
-				<td class="border-1" style="border-bottom: 0px; width: 80px">Résidence</td>
+				<td class="w-[80px] border-r px-1">Sexe</td>
+				<td class="w-[80px] border-r px-1">Résidence</td>
 					<?php 
 				}else{
  				 ?>
- 				<td class="border-1" style="border-bottom: 0px;">Email</td>
+ 				<td class="border-r px-1 text-right">Adresse Email</td>
  				 <?php 
 				}
 				?>
@@ -67,33 +83,86 @@ if(empty($_POST['cours'])){
 }else{ echo "";}
 		$anneescolaire = $_POST['anneescolaire'];
 			if ($exportation == "general") {
-				$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude < 4 ORDER BY annee_etude ASC, student_id ASC");
+				
+				if (!empty($_POST['new_student'])) {
+					$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude < 4 AND new_student = 1 ORDER BY annee_etude ASC, student_id ASC");
+				}else{
+					$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude < 4 ORDER BY annee_etude ASC, student_id ASC");
+				}
+			
 			}elseif($exportation == "internat"){
-				$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude < 4 AND status = 'Interne' ORDER BY annee_etude ASC, student_id ASC");
+				
+				if (!empty($_POST['new_student'])) {
+					$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude < 4 AND status = 'Interne' AND new_student = 1 ORDER BY annee_etude ASC, student_id ASC");
+				}else{
+					$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude < 4 AND status = 'Interne' ORDER BY annee_etude ASC, student_id ASC");
+				}
+				
+
 			}elseif($exportation == "abnment"){
-				$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude < 4 AND abonment = 1 ORDER BY annee_etude ASC, student_id ASC");
+				
+				if (!empty($_POST['new_student'])) {
+					$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude < 4 AND abonment = 1 AND new_student = 1 ORDER BY annee_etude ASC, student_id ASC");
+				}else{
+					$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude < 4 AND abonment = 1 ORDER BY annee_etude ASC, student_id ASC");
+				}
+				
+
 			}
 		
 
 		if(!empty($_POST['master'])){
 			if ($exportation == "general") {
-				$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' ORDER BY annee_etude, etude_option, student_id");
+				
+				if (!empty($_POST['new_student'])) {
+					$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND new_student = 1 ORDER BY annee_etude, etude_option, student_id");
+				}else{
+					$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' ORDER BY annee_etude, etude_option, student_id");
+				}
+				
+
 			}elseif($exportation == "internat"){
-				$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND status = 'Interne' ORDER BY annee_etude, etude_option, student_id");
+				
+				if (!empty($_POST['new_student'])) {
+					$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND status = 'Interne' AND new_student = 1 ORDER BY annee_etude, etude_option, student_id");
+				}else{
+					$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND status = 'Interne' ORDER BY annee_etude, etude_option, student_id");
+				}
+				
+
 			}elseif($exportation == "abnment"){
-				$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND abonment = 1 ORDER BY annee_etude, etude_option, student_id");
+				if (!empty($_POST['new_student'])) {
+					$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND abonment = 1 AND new_student = 1 ORDER BY annee_etude, etude_option, student_id");
+				}else{
+					$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND abonment = 1 ORDER BY annee_etude, etude_option, student_id");
+				}
+				
+
 			}
 		
 		
 		}
 		
 		if($_POST['annee_etude']<>"tout"){
+
 			$annee_etude = $_POST['annee_etude'];
+
 			if ($exportation == "general") {
+if (!empty($_POST['new_student'])) {
+}else{
+}
 				$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude= '".$annee_etude."' ORDER BY annee_etude, etude_option, student_id");
+
 			}elseif($exportation == "internat"){
+if (!empty($_POST['new_student'])) {
+}else{
+}
 				$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude= '".$annee_etude."' AND status = 'Interne' ORDER BY annee_etude, etude_option, student_id");
+
 			}elseif($exportation == "abnment"){
+if (!empty($_POST['new_student'])) {
+}else{
+}
 				$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude= '".$annee_etude."' AND abonment = 1 ORDER BY annee_etude, etude_option, student_id");
 			}
 			
@@ -101,37 +170,48 @@ if(empty($_POST['cours'])){
 		}
 	
 	$n = 1;
+	$tn = 0;
 	while($affiche = $etudiant->fetch()){
  	?>
  	<div>
- 		<table class="tbl simpleTbl mb-0">
- 			<tr class="<?php if(!empty($_POST['cours'])){ echo"bg-slate-200"; } ?>" style="page-break-inside: avoid;">
- 				<td class="w-[40px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$n?></td>
- 				<td class="w-[50px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><b><?=$student_id = $affiche['student_id']?></b></td>
- 				<td class="w-[300px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$affiche['student_nom']." ".$affiche['student_prenom']?></td>
+ 		<table class="tbl mb-0">
+ 			
+ 			<tr class="<?php if(!empty($_POST['cours'])){ echo"bg-slate-400"; } ?>" style="page-break-inside: avoid;">
+
+ 				<td class="w-[40px] border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><b><?=$n?></b></td>
+ 				
+ 				<td class="w-[50px] border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><b><?=$student_id = $affiche['student_id']?></b></td>
+ 				
+ 				<td class="w-[300px] border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?=$affiche['student_nom']." ".$affiche['student_prenom']?></td>
+ 				
  				<!-- <td class="w-[160px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$affiche['etude_option']?></td> -->
- 				<td class="w-[60px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?php
+ 				
+ 				<td class="w-[70px] border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?php
 				if($affiche['annee_etude']<=3) {
-					echo "L ".$affiche['annee_etude'];
+					echo "Licence ".$affiche['annee_etude'];
 				}else{
-					echo "M ".($affiche['annee_etude']-3);
+					echo "Master ".($affiche['annee_etude']-3);
 				} ?></td>
+ 				
  				<!-- <td class="w-" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$affiche['student_tel']?></td> -->
  				<?php 
 				if ($exportation == "abnment" OR $exportation == "internat") {
 					?>
-				<td class="border-1" style="border-bottom: 0px; width: 80px"><?php if ($affiche['sex'] == 1){ echo "Masculin";}else{ echo "Feminin";}?></td>
-				<td class="border-1" style="border-bottom: 0px; width: 80px"><?=$affiche['status']?></td>
+				
+				<td class="border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>" style="border-bottom: 0px; width: 80px"><?php if ($affiche['sex'] == 1){ echo "Masculin";}else{ echo "Feminin";}?></td>
+				
+				<td class="border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>" style="border-bottom: 0px; width: 80px"><?=$affiche['status']?></td>
 					<?php 
 				}else{
  				 ?>
- 				<td class="w-" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>; text-align: right;"><?=$affiche['student_email']?></td>
+ 				
+ 				<td class="text-right <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?=$affiche['student_email']?></td>
  				 <?php 
 				}
 				?>
- 				
- 				
+ 	
  			</tr>
+
  		</table>
  	</div>
 	
@@ -139,29 +219,33 @@ if(empty($_POST['cours'])){
 		$semestre = $_POST['semestre'];
 		if(!empty($_POST['cours'])){
 	?>
-		<div style="margin-top: 5px;margin-bottom: 10px;">
-	 		<table class="tbl simpleTbl mb-1">
-		 		<thead class="bg-slate-800 text-white">
+		<div class="mb-2">
+	 		<table class="tbl mb-1">
+		 		<thead class="bg-orange-200">
 		 			<tr style="page-break-inside: avoid;">
-		 				<td class='w-[100px]'>Sigle</td>
-		 				<td class='w-[400px]'>Titre du cours</td>
-		 				<td class='w-20'>Crédit</td>
+		 				
+		 				<td class='w-[100px] px-1'><b>Sigle</b></td>
+		 				
+		 				<td class='w-[400px] px-1'><b>Titre du cours</b></td>
+		 				
+		 				<td class='w-20 px-1'><b>Crédit</b></td>
+		 				
 		 				<?php 
 		 				if(!empty($_POST['notes'])){
-		 					echo "<td class='w-16'>Notes/20</td>";
+		 					echo "<td class='w-16 px-1'><b>Notes/20</b></td>";
 		 				}else{echo '';}
 
 		 				if(!empty($_POST['signature'])){
-		 					echo "<td class=''>Signature</td>";
+		 					echo "<td class=' px-1'><b>Signature</b></td>";
 		 				}
 		 				if (!empty($_POST['remarque'])) {
-		 					echo "<td class='w-[120px]'>Remarque</td>";
+		 					echo "<td class='w-[120px] px-1'><b>Remarque</b></td>";
 		 				}
 		 				 ?>
 		 				
 		 			</tr>
 		 		</thead>
-		 		<tbody class="bg-slate-100">
+		 		<tbody>
 		 			<?php
 		 			$annee_scolaire = $_POST['anneescolaire'];
 		 	if($_POST['annee_etude']!='tout' AND $_POST['semestre']!='tout'){	
@@ -228,40 +312,19 @@ if(empty($_POST['cours'])){
 	<?php
 		}
 		$n++;
-	}?>
-	<div>
-		<table class="tbl simpleTbl mb-1">
-			<thead class="bg-slate-200">
-				<tr style="page-break-inside: avoid;">
-					<th class="border-1 w-[40px]"><b><?=$nombresS = ($n-1);?></b></th>
-					<th class="border-1 w-[50px]"></th>
-					<th class="border-1 w-[300px]"></th>
-					<th class="border-1 w-[60px]"></th>
-					<!-- <th class="border-1 w-[50px]"></th> -->
-					<th class="border-1 w-"></th>
-				</tr>
-			</thead>
-		</table>
- 	</div>
-<?php
-							$nombre = 0;
-							$cd[$nbrs] = $nombresS;
-							foreach ($cd as $valeur){
-								$nombre += $valeur;
-							}
+		
+	}
+			$tn = $n-1;
+			$nombre= $nombre +$tn;	
 	$nbrs++;
 }
 ?>
 <div class="mt-4">
-		<table class="tbl simpleTbl mb-1">
+		<table class="tbl mb-1">
 			<thead class="bg-slate-200">
 				<tr>
-					<th class="border-1 w-[40px]"><b><?=$nombre?></b></th>
-					<th class="border-1 w-[50px]"></th>
-					<th class="border-1 w-[300px]"><b>TOUT LES ETUDIANTS</b></th>
-					<th class="border-1 w-[60px]"></th>
-					<!-- <th class="border-1 w-[50px]"></th> -->
-					<th class="border-1 w-"></th>
+					<th><b><?=$nombre?></b></th>
+					<th colspan="4"><b>Total de tout les étudiants</b></th>
 				</tr>
 			</thead>
 		</table>

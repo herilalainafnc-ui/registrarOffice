@@ -3,7 +3,7 @@
 <!-- FOR LIST STUDENT -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifListStd" style="backdrop-filter: blur(3px);">
 		
-		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl text-xs">
 			<div class="p-2 text-black">
 				<b>Exporter la liste d'étudiant.</b>
 			</div>
@@ -16,9 +16,9 @@
 				      		</div>
 				      		<div class="w-9/12">
 				      			<select id="types" name="exportation" class="input w-full">
-				      				<option value="general">Liste générale</option>
-				      				<option value="internat">Liste d'internat</option>
-				      				<option value="abnment">Liste d'abonement</option>
+				      				<option value="general">Liste d'étudiant générale</option>
+				      				<option value="internat">Liste d'étudiant interne</option>
+				      				<option value="abnment">Liste d'étudiant abonnée</option>
 
 				      			</select>	
 				      		</div>
@@ -29,7 +29,7 @@
 				      		</div>
 				      		<div class="w-9/12">
 				      			<input id="signature" type="checkbox" name="new_student">
-				      			<label for="signature"> Nouveau étudent seulement.</label>
+				      			<label for="signature"> Les nouveaux seulement.</label>
 				      		</div>
 				      	</div>
 				      	<hr>
