@@ -33,7 +33,10 @@
 			if (isset($_POST['infinit_pseudo']) and isset($_POST['infinit_password'])) {
 				
 				$infinit_pseudo = $_POST['infinit_pseudo'];
-				$infinit_password = $_POST['infinit_password'];
+
+				$salt = 'fixing_password';
+				//$infinit_password = $_POST['infinit_password'];
+				$infinit_password = hash('sha256', $_POST['infinit_password']. $salt);
 
 				if (isset($_POST['infinit_souvenir']) and !empty($_POST['infinit_souvenir'])) {
 					setcookie('infinit_pseudo',$user_pseudo,time()+20,null,null,false,true);

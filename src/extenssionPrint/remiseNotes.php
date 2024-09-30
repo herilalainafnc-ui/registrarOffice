@@ -1,5 +1,5 @@
 <?php 
-
+	require('../init/.forPrint/top.forPrint.php'); 
 	$cours_id = $_GET['cours_id'];
 	$yearRemiseNotes = $_GET['yearRemiseNotes'];
 
@@ -129,4 +129,4 @@ if($apotr){
  		<p class="text-xs">Signature est Noms de l'enseignant(e).</p>
 
  	</div>
- </div>
+ </div><?php require('../init/.forPrint/foot.forPrint.php'); ?>

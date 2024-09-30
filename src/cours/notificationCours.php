@@ -75,7 +75,8 @@
 			<div class="p-3">
 				<center>
 				<a href="#" id="cancelnotifListStdInThisCours" class="bg-slate-400 p-2 rounded-md">Annuler</a>
-				<a href="#" id="btnListStdInThisCours" target="_blank" class="bg-slate-400 p-2 rounded-md mx-1 toolInactive">Afficher</a>
+				<a href="#" id="btnListStdInThisCoursGenPDF" target="_blank" class="bg-slate-400 p-2 rounded-md ml-1 toolInactive"><span class="bi-download"></span><i class="text-[10px]"> (Texte)</i>.Pdf</a>
+				<a href="#" id="btnListStdInThisCours" target="_blank" class="bg-slate-400 p-2 rounded-md ml-1 toolInactive">Afficher</a>
 				
 				</center>
 			</div>
@@ -142,9 +143,11 @@
 		$('#yearListStdInThisCours').on('change',function() {
 			var yearForCours = $(this).val();
 			
-			$('#btnListStdInThisCours').attr('class','bg-cyan-700 p-2 rounded-md mx-1');
+			$('#btnListStdInThisCours').attr('class','bg-cyan-700 p-2 rounded-md ml-1');
 			$('#btnListStdInThisCours').attr('href','./data.topdf.php?cours_id=<?=$id?>&yearForCours='+yearForCours+'&ptype=ListStdInThisCours');
 
+			$('#btnListStdInThisCoursGenPDF').attr('class','bg-red-700 p-2 rounded-md ml-1');
+			$('#btnListStdInThisCoursGenPDF').attr('href','./gen.pdf.php?cours_id=<?=$id?>&yearForCours='+yearForCours+'&ptype=ListStdInThisCours');
 		});
 
 		$('#cancelnotifListStdInThisCours').click(function(){

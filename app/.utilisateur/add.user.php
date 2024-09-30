@@ -3,7 +3,11 @@ require ('../../data/backdb.php');
 	$nom = $_POST['nom'];
 	$prenom = $_POST['prenom'];
 	$pseudo = $_POST['pseudo'];
-	$password = $_POST['password'];
+	$raw_password = $_POST['password'];
+
+	 // Hacher le mot de passe avec password_hash() (Bcrypt par défaut)
+    $password = password_hash($raw_password, PASSWORD_BCRYPT);
+
 	$confirmPass = $_POST['confirmpass'];
 	$photos = $_FILES['photos']['name'];
 	$photos_tmp = $_FILES['photos']['tmp_name'];

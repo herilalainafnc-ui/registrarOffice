@@ -2,19 +2,83 @@
 	
 	require ('../../data/backdb.php');
 
+// HASH PASSWORD FOR USER
+	
+	$stmt = $dtb->query('SELECT * FROM compt_utilisateur');
+	
+	$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+	$salt = 'fixing_password';
+
+	foreach ($users as $user) {
+		$id = $user['id'];
+		$nom = $user['nom'];
+		$prenom = $user['prenom'];
+		$post = $user['post'];
+		$pseudo = $user['pseudo'];
+		$hashedPassword = hash('sha256', $user['password'] . $salt);
+		$privilege = $user['privilege'];
+		$photos = $user['photos'];
+		$etat = $user['etat'];
+		$theme = $user['theme'];
+
+		
+
+		echo '<br>'. $user['prenom'] . " : " . $hashedPassword;
+
+	    $creatStmt = $dtb->prepare("INSERT INTO compt_user (
+			id,
+			nom,
+			prenom,
+			post,
+			pseudo,
+			password,
+			privilege,
+			photos,
+			etat,
+			theme
+	    )VALUES(
+	    	:id,
+			:nom,
+			:prenom,
+			:post,
+			:pseudo,
+			:password,
+			:privilege,
+			:photos,
+			:etat,
+			:theme
+
+	    )");$creatStmt->execute(array(
+	    	'id' => $id,
+			'nom' => $nom,
+			'prenom' => $prenom,
+			'post' => $post,
+			'pseudo' => $pseudo,
+			'password' => $hashedPassword,
+			'privilege' => $privilege,
+			'photos' => $photos,
+			'etat' => $etat,
+			'theme' => $theme
+
+	    ));
+
+	} 
+	exit();
+
 // RETABLISEMENT OF LEVEL AND YEAR
 
-	$findSession = $dtb->query('SELECT * FROM t_2024_inscription_session WHERE session_id = 482');
+	// $findSession = $dtb->query('SELECT * FROM t_2024_inscription_session WHERE session_id = 482');
 	
-	while($showSession = $findSession->fetch()) {
+	// while($showSession = $findSession->fetch()) {
 
-		$student_id = $showSession['student_id'];
-		$annee_scolaire = $showSession['annee_scolaire'];
+	// 	$student_id = $showSession['student_id'];
+	// 	$annee_scolaire = $showSession['annee_scolaire'];
 
-		$modify = $dtb->prepare('UPDATE tbl_2024_etudiant SET annee_scolaire = "'.$annee_scolaire.'" WHERE student_id = "'.$student_id.'"');
-		$modify->execute();
+	// 	$modify = $dtb->prepare('UPDATE tbl_2024_etudiant SET annee_scolaire = "'.$annee_scolaire.'" WHERE student_id = "'.$student_id.'"');
+	// 	$modify->execute();
 
-	}
+	// }
 
 
 // GENERATION PASSWORD

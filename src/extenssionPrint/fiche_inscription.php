@@ -1,5 +1,5 @@
 <?php 
-
+require('../init/.forPrint/top.forPrint.php'); 
 $student_id = $_GET['student_id'];
 $session_id = $_GET['session_id'];
 

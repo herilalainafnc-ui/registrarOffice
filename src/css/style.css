@@ -92,6 +92,10 @@ select option{
 	border-radius: 2px;
 	color: black;
 }
+
+.flex{
+	display: flex;
+}
 /*TABLE IMPRESSION*/
 
    .tbl{

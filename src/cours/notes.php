@@ -40,7 +40,7 @@ while ($cours_table = $cors->fetch()) {
 $idcours = $cours_table['id'];
  ?>
 
-<form method="post" action="../app/.cours/completnotes.php?id=<?=$id?>&idcours=<?=$idcours?>&year=<?=$preced.$soustract;?>&sigle=<?=$cours_table['Sigle']?>" class="form-no-refrech">
+<form method="post" action="../app/.cours/completnotes.php?id=<?=$id?>&idcours=<?=$idcours?>&year=<?=$preced.$soustract;?>&sigle=<?=$cours_table['Sigle']?>" class="form-no-refrech<?=$nbr.$soustract?>">
 					<tr id="<?=$cours_table['Sigle'].$preced.$soustract?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black">
 						<td class="bg-gradient-to-r from-orange-800 to-orange-400"><?=$cours_table['student_id']?></td>
 						<td class="c<?=$nbr.$i;?>"><?php
@@ -57,20 +57,20 @@ if($apotr){
 	echo "<em style='color:red'>Etudiant non inscrit dans la base!!</em>";
 }
 					?></td>
-					<td class="c<?=$nbr.$i;?>">L<?=$apotr['annee_etude']?></td>
-					<td class="c<?=$nbr.$i;?>"><?=$cours_table['semester']?></td>
-						<td class="<?=$bg_six_color?> text-slate-800 px-0">
+					<td class="c<?=$nbr.$soustract;?>">L<?=$apotr['annee_etude']?></td>
+					<td class="c<?=$nbr.$soustract;?>"><?=$cours_table['semester']?></td>
+					<td class="<?=$bg_six_color?> text-slate-800 px-0">
 <?php 
 if ($privilege == "registrar" OR $privilege == "administrator") {
  ?>
-<input class="insimple text-sm bg-transparent px-2 g<?=$nbr.$i;?>" type="text" name="note" value="<?=$cours_table['grade'];?>" min="0" max="20">
+<input class="insimple text-sm bg-transparent px-2 g<?=$nbr.$soustract;?>" type="text" name="note" value="<?=$cours_table['grade'];?>" min="0" max="20">
 <?php 
 }else{
 	echo "<a class='px-2'>".$cours_table['grade']."</a>";
 }
  ?>
-						</td>
-						<td class='stp<?=$nbr.$i;?> <?php 
+					</td>
+					<td class='stp<?=$nbr.$soustract;?> <?php 
 if ($cours_table['grade'] == -2 OR $cours_table['grade'] >= 10) {
 	echo "bg-green-500";
 
@@ -97,8 +97,8 @@ if ($cours_table['grade'] == -2 OR $cours_table['grade'] >= 10) {
 		echo "S";
 	}
 							 ?>
-						</td>
-						<td>
+					</td>
+					<td>
 							<div class="nav-item dropstart" style="list-style: none">
 								<a href="#" class="btn nav-link" type="button" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="bi-three-dots-vertical"></span></a>
 								<ul class="dropdown-menu">
@@ -111,40 +111,41 @@ if ($cours_table['grade'] == -2 OR $cours_table['grade'] >= 10) {
 		<button type="submit" style="display: none;"></button>
 		<script type="text/javascript">
 			$(document).ready(function(){
-				$('.form-no-refrech').on('submit',function(e){
-					//e.preventDefault();
-					var url = 'actions/completnotes.php';
+				$('.form-no-refrech<?=$nbr.$soustract?>').on('submit',function(e){
+					e.preventDefault();
+					
+					var url = '../app/.cours/completnotes.php?id=<?=$id?>&idcours=<?=$idcours?>&year=<?=$preced.$soustract;?>&sigle=<?=$cours_table['Sigle']?>';
 					var data = $(this).serialize();
 
 					$.post(url,data,function(response){
 							
-							$('.g<?=$nbr.$i?>').css({
+							$('.g<?=$nbr.$soustract?>').css({
 								'border':'none',
 								'border-radius':'0px',
 								'background':'none'
 							})
-							$('.g<?=$nbr.$i?>').blur();
+							$('.g<?=$nbr.$soustract?>').blur();
 							
 							
-							if($('.g<?=$nbr.$i;?>').val() == 0){
-								$('.stp<?=$nbr.$i;?>').css({
+							if($('.g<?=$nbr.$soustract;?>').val() == 0){
+								$('.stp<?=$nbr.$soustract;?>').css({
 									'background' : 'none',
 								})
-								$('.stp<?=$nbr.$i;?>').innerHTML('');
+								$('.stp<?=$nbr.$soustract;?>').text('');
 
-							}else if($('.g<?=$nbr.$i;?>').val() < 10){
-								$('.stp<?=$nbr.$i;?>').css({
+							}else if($('.g<?=$nbr.$soustract;?>').val() < 10){
+								$('.stp<?=$nbr.$soustract;?>').css({
 									'background' : '#ff0000',
 									'color' : 'white',
 								})
-								$('.stp<?=$nbr.$i;?>').innerHTML('E');
+								$('.stp<?=$nbr.$soustract;?>').text('E');
 
-							}else if($('.g<?=$nbr.$i;?>').val()>=10){
-								$('.stp<?=$nbr.$i;?>').css({
+							}else if($('.g<?=$nbr.$soustract;?>').val()>=10){
+								$('.stp<?=$nbr.$soustract;?>').css({
 									'background' : '#15dd2a',
 									'color' : 'white',
 								})
-								$('.stp<?=$nbr.$i;?>').innerHTML('S');
+								$('.stp<?=$nbr.$soustract;?>').text('S');
 
 							}
 							

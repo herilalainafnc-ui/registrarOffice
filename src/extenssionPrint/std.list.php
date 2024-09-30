@@ -1,13 +1,24 @@
+<?php require('../init/.forPrint/top.forPrint.php'); $exportation = $_POST['exportation'];?>
 <center>
-	<b class="text-2xl">Liste d'étudiant</b>
+	<b class="text-2xl">Liste d'étudiant <?php 
+	if($exportation == "internat"){
+		echo "internes";
+	}elseif($exportation == "abnment"){
+		echo "abonnée";	
+	}
+
+
+	 ?></b>
 </center>
 
 <?php
 	$printName = "LISTE_ETUDIANT";
+	
 
 if(isset($_POST['types']) AND ($_POST['types']!= 'TOUT')){
 
 	$types = $_POST['types'];
+	
 	$mention = $dtb->query("SELECT * FROM filiere WHERE filiere_sigle = '".$types."'ORDER BY filiere_id");
 
 }elseif(isset($_POST['types']) AND ($_POST['types']== 'TOUT')){
@@ -36,22 +47,57 @@ if(empty($_POST['cours'])){
  				<!-- <td class="w-[160px] border-1" style="border-bottom: 0px;">Mention</td> -->
  				<td class="border-1" style="border-bottom: 0px; width: 60px">Niveau</td>
  				<!-- <td class="w- border-1" style="border-bottom: 0px;">Contact</td> -->
+ 				<?php 
+				if ($exportation == "abnment" OR $exportation == "internat") {
+					?>
+				<td class="border-1" style="border-bottom: 0px; width: 80px">Sexe</td>
+				<td class="border-1" style="border-bottom: 0px; width: 80px">Résidence</td>
+					<?php 
+				}else{
+ 				 ?>
  				<td class="border-1" style="border-bottom: 0px;">Email</td>
+ 				 <?php 
+				}
+				?>
+ 				
  			</tr>
  	</thead>
 </table>
 	<?php
 }else{ echo "";}
 		$anneescolaire = $_POST['anneescolaire'];
+			if ($exportation == "general") {
+				$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude < 4 ORDER BY annee_etude ASC, student_id ASC");
+			}elseif($exportation == "internat"){
+				$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude < 4 AND status = 'Interne' ORDER BY annee_etude ASC, student_id ASC");
+			}elseif($exportation == "abnment"){
+				$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude < 4 AND abonment = 1 ORDER BY annee_etude ASC, student_id ASC");
+			}
 		
-		$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude < 4 ORDER BY annee_etude ASC, student_id ASC");
+
 		if(!empty($_POST['master'])){
-			$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' ORDER BY annee_etude, etude_option, student_id");
+			if ($exportation == "general") {
+				$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' ORDER BY annee_etude, etude_option, student_id");
+			}elseif($exportation == "internat"){
+				$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND status = 'Interne' ORDER BY annee_etude, etude_option, student_id");
+			}elseif($exportation == "abnment"){
+				$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND abonment = 1 ORDER BY annee_etude, etude_option, student_id");
+			}
+		
+		
 		}
 		
 		if($_POST['annee_etude']<>"tout"){
 			$annee_etude = $_POST['annee_etude'];
-			$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude= '".$annee_etude."' ORDER BY annee_etude, etude_option, student_id");
+			if ($exportation == "general") {
+				$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude= '".$annee_etude."' ORDER BY annee_etude, etude_option, student_id");
+			}elseif($exportation == "internat"){
+				$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude= '".$annee_etude."' AND status = 'Interne' ORDER BY annee_etude, etude_option, student_id");
+			}elseif($exportation == "abnment"){
+				$etudiant = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE annee_scolaire='".$anneescolaire."' AND etude_envisage = '".$title."' AND annee_etude= '".$annee_etude."' AND abonment = 1 ORDER BY annee_etude, etude_option, student_id");
+			}
+			
+
 		}
 	
 	$n = 1;
@@ -71,7 +117,19 @@ if(empty($_POST['cours'])){
 					echo "M ".($affiche['annee_etude']-3);
 				} ?></td>
  				<!-- <td class="w-" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$affiche['student_tel']?></td> -->
+ 				<?php 
+				if ($exportation == "abnment" OR $exportation == "internat") {
+					?>
+				<td class="border-1" style="border-bottom: 0px; width: 80px"><?php if ($affiche['sex'] == 1){ echo "Masculin";}else{ echo "Feminin";}?></td>
+				<td class="border-1" style="border-bottom: 0px; width: 80px"><?=$affiche['status']?></td>
+					<?php 
+				}else{
+ 				 ?>
  				<td class="w-" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>; text-align: right;"><?=$affiche['student_email']?></td>
+ 				 <?php 
+				}
+				?>
+ 				
  				
  			</tr>
  		</table>
@@ -207,4 +265,4 @@ if(empty($_POST['cours'])){
 				</tr>
 			</thead>
 		</table>
-</div>
+</div><?php require('../init/.forPrint/foot.forPrint.php'); ?>

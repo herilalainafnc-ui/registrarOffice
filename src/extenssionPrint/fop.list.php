@@ -1,5 +1,5 @@
 <?php require ('../data/backdb.php');
-	
+	require('../init/.forPrint/top.forPrint.php'); 
 	$printName = "LISTE_ETUDIANT_FOP";
 	$types = $_POST['types'];
 
@@ -113,4 +113,4 @@ echo $dmn['domaine_signe'];
 <?php 
 }
  ?>	
-</div>
+</div><?php require('../init/.forPrint/foot.forPrint.php'); ?>

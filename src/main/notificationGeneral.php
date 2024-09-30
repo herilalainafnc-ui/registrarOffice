@@ -9,6 +9,31 @@
 			</div>
 			<form method="post" action="./data.topdf.php?ptype=listeStd" target="_blank">
 			<div class="p-2">
+					<b class="toolInactive">Types d'exoprtation.</b>
+				      	<div class="flex mb-3">
+				      		<div class="w-3/12 text-right pr-2">
+				      			<label for="types">Types</label>
+				      		</div>
+				      		<div class="w-9/12">
+				      			<select id="types" name="exportation" class="input w-full">
+				      				<option value="general">Liste générale</option>
+				      				<option value="internat">Liste d'internat</option>
+				      				<option value="abnment">Liste d'abonement</option>
+
+				      			</select>	
+				      		</div>
+				      	</div>
+				      	<div class="flex mb-3">
+				      		<div class="w-3/12 text-right pr-2">
+				      			
+				      		</div>
+				      		<div class="w-9/12">
+				      			<input id="signature" type="checkbox" name="new_student">
+				      			<label for="signature"> Nouveau étudent seulement.</label>
+				      		</div>
+				      	</div>
+				      	<hr>
+
 	      			<b class="toolInactive">Listes.</b>
 				      	<div class="flex mb-3">
 				      		<div class="w-3/12 text-right pr-2">
@@ -120,23 +145,16 @@
 				      	<b class="toolInactive">Colonne.</b>
 				      	
 				      	<div class="flex mb-3">
-				      		<div class="w-3/12 text-right pr-2">
-				      			
-				      		</div>
-				      		<div class="w-9/12">
+				      		
+				      		<div class="w-6/12 p-2">
 				      			<input id="signature" type="checkbox" name="signature">
 				      			<label for="signature">Colonne de signature.</label>	
-				      		</div>	
-				      	</div>
-
-				      	<div class="flex mb-3">
-				      		<div class="w-3/12 text-right pr-2">
-				      			
 				      		</div>
-				      		<div class="w-9/12">
+				      		<div class="w-6/12 p-2">
 				      			<input id="remarque" type="checkbox" name="remarque">
 				      			<label for="remarque">Colonne de remarque.</label>	
 				      		</div>	
+
 				      	</div>
 				
 			</div>
@@ -415,6 +433,18 @@
 								$y = $y - 1;
 								}
 								 ?>
+							</select>
+					    </div>
+				    </div>
+
+				     <div class="flex mb-3">
+				    	<div class="w-3/12 text-right pr-2">
+					      	<label for="typesCSV">Types de donnée</label>
+					    </div>
+					    <div class="w-9/12">
+					    	<select name="typesCSV" id="typesCSV" class="input w-full">
+								<option value="csv">CSV (séparé par de virgule)</option>
+								<option value="table">Table</option>
 							</select>
 					    </div>
 				    </div>
@@ -703,6 +733,83 @@
 
 	</div>
 
+<!-- FOR BADGE EN GROUPE -->
+	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifBadgeGr" style="backdrop-filter: blur(3px);">
+
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+			<form method="post" action="./data.topdf.php?ptype=BadgeGr" target="_blank">
+			<div class="p-2 text-black">
+				<b>Exporter les badges en groupe.</b>
+			</div>
+			<div class="p-2">
+				<div class="flex mb-3">
+						<div class="w-3/12 text-right pr-2">
+					      	<label for="types">Mention</label>
+					    </div>
+					    <div class="w-9/12">
+			    			<select id="types" name="types" class="input w-full">
+			      				<option value="TOUT">Tout</option>
+		<?php 
+					$voir = $dtb->query("SELECT * FROM filiere");
+					while ($affiche = $voir->fetch()) {?>
+										
+								<option <?php if ($affiche['filiere_description'] == "Théologie") {
+									echo "selected";
+								} ?>><?=$affiche['filiere_description'];?></option>
+
+		<?php	
+			}
+		 ?>	
+			      			</select>	
+					    </div>
+				</div>
+				<div class="flex mb-3">
+						<div class="w-3/12 text-right pr-2">
+					      	<label for="niveau">Niveau</label>
+					    </div>
+					    <div class="w-9/12">
+			    			<select id="niveau" name="niveau" class="input w-full">
+			    				<option value="TOUT">Tout</option>
+			    				<option value="1">Licence 1</option>
+			    				<option value="2">Licence 2</option>
+			    				<option value="3">Licence 3</option>
+			    				<option value="4">Master 1</option>
+			    				<option value="5">Master 2</option>
+			      			</select>	
+					    </div>
+				</div>
+				<div class="flex mb-3">
+				    	<div class="w-3/12 text-right pr-2">
+					      	<label for="yearTicket">Année</label>
+					    </div>
+					    <div class="w-9/12">
+					    	<select name="yearBadgeGr" id="yearBadgeGr" class="input w-full">
+								<?php
+								$y = date('Y');
+								for ($i=0; $i <= 8; $i++) { 
+									
+									$as = $y." - ".($y+1);
+								?>
+								<option><?=$as?></option>
+								<?php
+								$y = $y - 1;
+								}
+								 ?>
+							</select>
+					    </div>
+				</div>
+			</div>
+			<div class="p-3">
+				<center>
+				<a href="#" id="cancelnotifBadgeGr" class="bg-slate-400 p-2 rounded-md">Annuler</a>
+				<input id="btnBadgeGr" type="submit" class="bg-cyan-800 p-2 rounded-md mx-1 text-white" value="Afficher">
+				</center>
+			</div>
+			</form>
+		</div>
+
+	</div>
+
 <!-- LOG OUT -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifLogOut" style="backdrop-filter: blur(3px);">
 
@@ -902,6 +1009,15 @@
 	
 		$('#cancelnotifworked').click(function(){
 			$('#notifworked').css({'display':'none'});
+		});
+		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
+
+		$('#badgeGr').click(function(){
+			$('#notifBadgeGr').css({'display':'block'});
+		});
+	
+		$('#cancelnotifBadgeGr').click(function(){
+			$('#notifBadgeGr').css({'display':'none'});
 		});
 		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
 	});

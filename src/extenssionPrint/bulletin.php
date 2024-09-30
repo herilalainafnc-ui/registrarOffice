@@ -1,4 +1,5 @@
-<?php 
+<?php
+require('../init/.forPrint/top.forPrint.php');  
 $level = $_GET['level'];
 $semester = $_GET['semester'];
 $student_id = $_GET['student_id'];
@@ -331,3 +332,4 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 ?>
 </div>
 
+<?php require('../init/.forPrint/foot.forPrint.php'); ?>

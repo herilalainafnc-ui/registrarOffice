@@ -1,4 +1,5 @@
 <?php
+require('../init/.forPrint/top.forPrint.php');
 $id = $_GET['id'];
 $student_id = $_GET['student_id'];
 $student_nom = $_GET['student_nom'];
@@ -79,7 +80,7 @@ if ($etude_envisage == "Théologie") {
 	$courseselective = $dtb->query("SELECT * FROM t_2023_cours WHERE dep_desc='".$dep_desc."' AND yearlevel = 1 AND semester = 1 AND (parcours = '".$parcours."' OR parcours = '".$tout."') AND category = 2 AND remove != 1  ORDER BY title");
 	$cours_table_selective = $courseselective->fetch()
 ?>
-<table class="tbl w-full">
+<!-- <table class="tbl w-full">
 
 	<thead>
 <?php 
@@ -167,7 +168,7 @@ if(!empty($cours_table_selective)){
  ?>
 	</tfoot>
 </table><br>
-
+ -->
 
 
 <?php
@@ -255,4 +256,4 @@ for ($y=1; $y <= 3; $y++) {
 	}
 }
  ?>
-</div>
+</div><?php require('../init/.forPrint/foot.forPrint.php'); ?>
