@@ -40,7 +40,6 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 				<center>
 				<i class="bi-currency-dollar text-2xl"></i><br>
 						Finance
-						des étudiants
 				</center>
 			
 		</a>

@@ -619,9 +619,10 @@
 					    </div>
 					    <div class="w-9/12">
 					    	<select name="semestreFinance" id="semestreFinance" class="input w-full">
-								<option></option>
 								<option value="1">Premier Semestre</option>
+								<option value="3">Semestre d'été</option>
 								<option value="2">Deuxième Semestre</option>
+								<option value="4">Semestre d'hiver</option>
 							</select>
 					    </div>
 				</div>
@@ -637,7 +638,7 @@
 					$voir = $dtb->query("SELECT * FROM filiere");
 					while ($affiche = $voir->fetch()) {?>
 										
-								<option><?=$affiche['filiere_description'];?></option>
+								<option value="<?=$affiche['filiere_sigle'];?>"><?=$affiche['filiere_description'];?></option>
 
 		<?php	
 			}
@@ -661,7 +662,7 @@
 			      			</select>	
 					    </div>
 				</div>
-				<hr><br>
+				<!-- <hr><br>
 				<div class="flex mb-3">
 		      		<div class="w-3/12 text-right pr-2">
 		      			
@@ -670,7 +671,7 @@
 		      			<input id="signature" type="checkbox" name="new_student">
 		      			<label for="signature"> Les nouveaux seulement.</label>
 		      		</div>
-		      	</div>
+		      	</div> -->
 				
 			</div>
 			<div class="p-3">
