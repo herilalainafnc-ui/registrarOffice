@@ -5,7 +5,6 @@ require 'dompdf/vendor/autoload.php';
 require 'dompdf/autoload.inc.php';
 require '../data/backdb.php';
 $ptype = $_GET['ptype'];
-
 ob_start();
 
 		if($ptype == "Statistique") {
