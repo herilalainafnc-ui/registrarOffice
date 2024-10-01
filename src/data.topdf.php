@@ -6,7 +6,7 @@ $ptype = $_GET['ptype'];
 $h = (date('H')+1);
 $date = 'h_'.date($h.'-i-s').' date_'.date('d-m-Y');
 ?>
-<title>Exportation</title>
+<title>Exportation (portrait)</title>
 
 <body class="h-screen" style="background-color:#63748b;">
 

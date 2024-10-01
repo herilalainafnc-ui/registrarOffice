@@ -2,17 +2,19 @@
 
 require '../../data/backdb.php';
 	
-	echo "<br>".$etude_envisage = $_GET['etude_envisage'];
-	echo "<br>".$status = $_GET['status'];
-	echo "<br>".$student_id = $_GET['student_id'];
-	echo "<br>".$session_id = $_GET['session_id'];
-	echo "<br>".$annee_etude = $_GET['annee_etude'];
-	echo "<br>".$abonment = $_GET['abonment'];
-	echo "<br>".$graduated = $_GET['graduated'];
-	echo "<br>".$new_student = $_GET['new_student'];
-
-
-
+	$etude_envisage = $_GET['etude_envisage'];
+	if ($_GET['status'] == "") {
+		$status = 'Externe';
+	}else{
+		$status = $_GET['status'];
+	}
+	
+	$student_id = $_GET['student_id'];
+	$session_id = $_GET['session_id'];
+	$annee_etude = $_GET['annee_etude'];
+	$abonment = $_GET['abonment'];
+	$graduated = $_GET['graduated'];
+	$new_student = $_GET['new_student'];
 
 	$verifySession = $dtb->query('SELECT * FROM t_2023_session WHERE session_id = "'.$session_id.'"');
 
@@ -24,7 +26,7 @@ require '../../data/backdb.php';
 	
 		$showMention = $findMention->fetch();
 		
-		echo "<br><br>".$etude_mention = $showMention['filiere_sigle'];
+		$etude_mention = $showMention['filiere_sigle'];
 
 
 	$verification_finance_licence = $dtb->query('SELECT * FROM t_2024_finance_detail_licence WHERE std_status = "'.$status.'" AND std_mention = "'.$etude_mention.'"');
@@ -84,11 +86,11 @@ require '../../data/backdb.php';
 
 	if ($graduated == 1) {
 
-		echo "<br>". $cout_frais_graduation = $result_finance['frais_graduation'];
+		$cout_frais_graduation = $result_finance['frais_graduation'];
 
 	}else{
 
-		echo "<br>". $cout_frais_graduation = 0;
+		$cout_frais_graduation = 0;
 
 	}
 
@@ -122,7 +124,7 @@ require '../../data/backdb.php';
 	
 	if ($semester == 1) {
 
-		echo "<br>". $frais_voyage = $result_finance['frais_voyage'];
+		$frais_voyage = $result_finance['frais_voyage'];
 
 	}else{
 

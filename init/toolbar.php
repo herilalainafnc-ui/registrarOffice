@@ -1,6 +1,6 @@
 <div class="w-full h-23 <?=$txt_one_color?> py-1 flex shadow-md">
 <!-- BRANCHE D'OUTILS 1 -->	
-	<div class="sm:w-3/12 lg:w-2/12 lg:border-r flex px-1">
+	<div class="sm:w-4/12 lg:w-3/12 lg:border-r flex px-1">
 		
 		<a href="#" id="<?php 
 if($page == "accueil.php" OR $page == "student.php" OR $page=="inscription.php") {
@@ -30,6 +30,17 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 				<center>
 				<i class="bi-file-text text-2xl"></i><br>
 						List pour la FOP
+				</center>
+			
+		</a>
+		<a href="#" id="finance" class="text-xs lg:w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
+if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
+	echo "toolInactive";
+} ?>">
+				<center>
+				<i class="bi-currency-dollar text-2xl"></i><br>
+						Finance
+						des étudiants
 				</center>
 			
 		</a>
@@ -321,15 +332,15 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 	</div>
 
 <!-- BRANCHE D'OUTILS 6 -->		
-	<div class="hidden block w-2/12 lg:flex px-1">
-		<a href="./settings.php" class="text-xs lg:w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
+	<div class="hidden block w-1/12 lg:flex px-1">
+		<a href="./settings.php" class="text-xs lg:w-full hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
 				<center>
 				<i class="bi-gear-fill text-2xl"></i><br>
 						Paramètres
 				</center>
 			
 		</a>
-		
+
 
 	</div>
 </div>
