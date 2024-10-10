@@ -11,6 +11,7 @@ $yearScoolNow = $_POST['yearStatistic'];
 		<thead>
 			<tr style="page-break-inside: avoid;">
 				<th style="width: 18%">Mention</th>
+				<th style="width: 8%" colspan="2">R.niveau</th>
 				<th style="width: 8%" colspan="2">Licence 1</th>
 				<th style="width: 8%" colspan="2">Licence 2</th>
 				<th style="width: 8%" colspan="2">Licence 3</th>
@@ -20,6 +21,8 @@ $yearScoolNow = $_POST['yearStatistic'];
 			</tr>
 			<tr style="page-break-inside: avoid;">
 				<th style="color: orange;"></th>
+				<th style="color: orange;">H</th>
+				<th style="color: orange;">F</th>
 				<th style="color: orange;">H</th>
 				<th style="color: orange;">F</th>
 				<th style="color: orange;">H</th>
@@ -40,6 +43,8 @@ $yearScoolNow = $_POST['yearStatistic'];
  $mentio = $dtb->query('SELECT * FROM filiere WHERE filiere_sigle !="CPRE"');
 
  // Requête SQL pour récupérer les données groupées
+$rm_H = 0;
+$rm_F = 0;
 $licence1_H = 0;
 $licence1_F = 0;
 $licence2_H = 0;
@@ -57,6 +62,8 @@ $thorizontal = 0;
 		$mention = $mt['filiere_description'];
 
 $result = $dtb->query('SELECT *,
+           SUM(CASE WHEN annee_etude = 0 AND sex = 1 THEN 1 ELSE 0 END) AS RM_H,
+           SUM(CASE WHEN annee_etude = 0 AND sex = 0 THEN 1 ELSE 0 END) AS RM_F,
            SUM(CASE WHEN annee_etude = 1 AND sex = 1 THEN 1 ELSE 0 END) AS Licence1_H,
            SUM(CASE WHEN annee_etude = 1 AND sex = 0 THEN 1 ELSE 0 END) AS Licence1_F,
            SUM(CASE WHEN annee_etude = 2 AND sex = 1 THEN 1 ELSE 0 END) AS Licence2_H,
@@ -74,7 +81,9 @@ $result = $dtb->query('SELECT *,
            $row = $result->fetch();
 
             	echo "<tr>";   
-	   				echo "<td>" . $mention . "</td>"; 
+	   		  echo "<td>" . $mention . "</td>"; 
+	                echo "<td>" . $row['RM_H'] . "</td>";
+	                echo "<td>" . $row['RM_F'] . "</td>";
 	                echo "<td>" . $row['Licence1_H'] . "</td>";
 	                echo "<td>" . $row['Licence1_F'] . "</td>";
 	                echo "<td>" . $row['Licence2_H'] . "</td>";
@@ -86,7 +95,9 @@ $result = $dtb->query('SELECT *,
 	                echo "<td>" . $row['Master2_H'] . "</td>";
 	                echo "<td>" . $row['Master2_F'] . "</td>";
 	 				echo "<td>".$sommeHoriz =  
-	                $row['Licence1_H']
+	                $row['RM_H']
+	                + $row['RM_F']
+	                + $row['Licence1_H']
 	                + $row['Licence1_F']
 	                + $row['Licence2_H']
 	                + $row['Licence2_F']
@@ -99,7 +110,8 @@ $result = $dtb->query('SELECT *,
 
     			echo "</tr>";
     		
-
+$rm_H =+ $rm_H + $row['RM_H'];
+$rm_F =+ $rm_F + $row['RM_F'];
 $licence1_H =+ $licence1_H + $row['Licence1_H'];
 $licence1_F =+ $licence1_F + $row['Licence1_F'];
 $licence2_H =+ $licence2_H + $row['Licence2_H'];
@@ -118,6 +130,8 @@ $thorizontal =+ intval($thorizontal) + intval($sommeHoriz);
 		<thead>
 			<tr style="page-break-inside: avoid; color: orange;" >
 				<th style="color: orange;">Sous total</th>
+				<th style="color: orange;"><?=$rm_H?></th>
+				<th style="color: orange;"><?=$rm_F?></th>
 				<th style="color: orange;"><?=$licence1_H?></th>
 				<th style="color: orange;"><?=$licence1_F?></th>
 				<th style="color: orange;"><?=$licence2_H?></th>
@@ -132,6 +146,7 @@ $thorizontal =+ intval($thorizontal) + intval($sommeHoriz);
 			</tr>
 			<tr style="page-break-inside: avoid;">
 				<th>Total</th>
+				<th colspan="2"><?=$rm_H+$rm_F?></th>
 				<th colspan="2"><?=$licence1_H+$licence1_F?></th>
 				<th colspan="2"><?=$licence2_H+$licence2_F?></th>
 				<th colspan="2"><?=$licence3_H+$licence3_F?></th>

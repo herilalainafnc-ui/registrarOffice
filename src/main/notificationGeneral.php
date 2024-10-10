@@ -874,7 +874,7 @@
 					    <div class="w-9/12">
 			    			<select id="niveau" name="niveau" class="input w-full">
 			    				<option value="TOUT">Tout</option>
-			    				<option value="1">Licence 1</option>
+			    				<option value="1" selected>Licence 1</option>
 			    				<option value="2">Licence 2</option>
 			    				<option value="3">Licence 3</option>
 			    				<option value="4">Master 1</option>
@@ -902,6 +902,16 @@
 							</select>
 					    </div>
 				</div>
+				<hr>
+				<b class="text-slate-500">Si vous voulez exporter un seul étudiant...</b><br>
+				<div class="flex mb-3">
+				    	<div class="w-6/12 text-right pr-2">
+					      	<label for="yearTicket">Matricule</label>
+					    </div>
+					    <div class="w-6/12">
+					    	<input type="text" name="student_id" class="input w-full">
+					    </div>
+				</div><hr>
 			</div>
 			<div class="p-3">
 				<center>

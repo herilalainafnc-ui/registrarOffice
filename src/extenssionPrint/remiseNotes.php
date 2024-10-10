@@ -109,7 +109,7 @@ if($apotr){
 				?></td>
  			<td class="py-1 border-l border-t border-slate-400"></td>
  			<td class="py-1 border-l border-t border-slate-400"></td>
- 			<td class="py-1 border-l border-t border-slate-400 text-bold text-center" style="color: red"><?php if ($showStdInCours['grade'] != 0) { echo $showStdInCours['grade'];	}?></td>
+ 			<td class="py-1 border-l border-t border-slate-400 text-bold text-center" style="color: <?php if ($showStdInCours['grade'] >= 10) { echo "blue"; }else{ echo "red"; } ?>"><?php if ($showStdInCours['grade'] != 0) { echo $showStdInCours['grade'];	}?></td>
  		</tr>
  <?php
  $nbr++;

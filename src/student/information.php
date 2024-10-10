@@ -166,6 +166,11 @@ $showDiplome = $findDiplome->fetch();
 				<?php 
 					}
 				?>
+				<br>
+				<div class="obtention_Bacc">
+					<label class="text-sm text-slate-400">Mot de passe mail</label>
+					<p class="showContact">-- <?=$profil['password'];?></p>
+				</div>
 			</div>
 		</div>
 

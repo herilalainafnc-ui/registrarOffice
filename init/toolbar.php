@@ -38,7 +38,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 	echo "toolInactive";
 } ?>">
 				<center>
-				<i class="bi-currency-dollar text-2xl"></i><br>
+				<i class="bi-currency-exchange text-2xl"></i><br>
 						Finance
 				</center>
 			
@@ -85,7 +85,16 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 
 <!-- BRANCHE D'OUTILS 3 -->		
 	<div class="sm:w-3/12 lg:w-2/12 lg:border-r flex px-1">
-		
+		<a target='_blank' href="../inscription/inscription.php" id="workedSlip" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
+if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
+	echo "toolInactive";
+} ?>">
+				<center>
+				<i class="bi-person-fill-add text-2xl"></i><br>
+						Inscription
+				</center>
+			
+		</a>
 		<a href="#" id="worked" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
@@ -106,16 +115,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 				</center>
 			
 		</a>
-		<a target='_blank' href="../inscription/inscription.php" id="workedSlip" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
-if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
-	echo "toolInactive";
-} ?>">
-				<center>
-				<i class="bi-person-fill-add text-2xl"></i><br>
-						Inscription
-				</center>
-			
-		</a>
+		
 	</div>
 
 <!-- BRANCHE D'OUTILS 4 -->		
@@ -309,10 +309,10 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
-} ?> toolInactive">
+} ?>">
 				<center>
-				<i class="bi-highlighter text-2xl"></i><br>
-						Election SA
+				<i class="bi-file-excel text-2xl"></i><br>
+						Sans Photos
 				</center>
 			
 		</a>

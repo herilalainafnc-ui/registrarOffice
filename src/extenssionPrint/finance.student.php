@@ -20,6 +20,7 @@
 	<table class="simpleTbl tbl text-[8px]">
 		<thead class="text-center">
 			<tr>
+				<th rowspan="2">No</th>
 				<th rowspan="2">ID</th>
 				<th rowspan="2">Nom et prénom</th>
 				<th rowspan="2">Mention</th>
@@ -55,18 +56,18 @@
 
 if ($types == 'TOUT') {
 	if ($level == 'TOUT') {
-		$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id ="'.$session_id.'"');	
+		$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id ="'.$session_id.'" ORDER BY student_id');	
 	}else{
-		$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id ="'.$session_id.'" AND level = "'.$level.'"');	
+		$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id ="'.$session_id.'" AND level = "'.$level.'" ORDER BY student_id');	
 	}
 }else{
 	if ($level == 'TOUT') {
-		$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id ="'.$session_id.'" AND mention = "'.$types.'"');
+		$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id ="'.$session_id.'" AND mention = "'.$types.'" ORDER BY student_id');
 	}else{
-		$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id ="'.$session_id.'" AND mention = "'.$types.'"  AND level = "'.$level.'"');
+		$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id ="'.$session_id.'" AND mention = "'.$types.'"  AND level = "'.$level.'" ORDER BY student_id');
 	}
 }
-
+	$nbrF = 1;
 	while ($showF = $findFinance->fetch()) {
 	$student_id = $showF['student_id'];
 	
@@ -86,9 +87,9 @@ if ($types == 'TOUT') {
 			$showSrc = $findSource->fetch();
 			
 			$nb_crd += $showCrs['credit'];
-			$ttl_cout += $showSrc['cout'];
+			$ttl_cout =+ $ttl_cout + $showSrc['cout'];
 
-			if ($showSrc['cout_lab'] != 0) {							
+			if (!empty($showSrc['cout_lab']) AND $showSrc['cout_lab'] != 0) {							
 				$n_lab++;
 				
 				if ($n_lab <= 2) {
@@ -99,7 +100,8 @@ if ($types == 'TOUT') {
 		}	
 
  ?>
-			<tr>
+			<tr style="<?php if ($ttl_cout == 0) { echo "background-color: #e87c68"; }?>">
+				<td><?=$nbrF?></td>
 				<td><?=$student_id?></td>
 				<td><?=$showStd['student_nom']." ".$showStd['student_prenom']?></td>
 				<td><?=$showF['mention']?></td>
@@ -133,7 +135,8 @@ if ($showF['mode_payement']== 'A') {
 			?>	</td>
 				<td><?=$showStd['sponsor_nom']?></td>
 			</tr>
-<?php 
+<?php
+	$nbrF++;
 	}
  ?>
 		</tbody>

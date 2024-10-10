@@ -63,7 +63,7 @@
 				</center>
 			
 		</a>
-		<a target="_blank" href="./data.topdf.php?ptype=Badge
+		<!-- <a target="_blank" href="./data.topdf.php?ptype=Badge
 		&id=<?=$id?>
 		&student_id=<?=$student_id?>
 		&student_nom=<?=$student_nom?>
@@ -81,7 +81,7 @@
 						Badge
 				</center>
 			
-		</a>
+		</a> -->
 		<a target="_blank" href="./data.topdf.php?ptype=Abonnement Caf
 		&id=<?=$id?>
 		&student_id=<?=$student_id?>
@@ -93,7 +93,7 @@
 		&image_student=<?=$image_student?>
 		&lookup_code=<?=$lookup_code?>
 		&status=<?=$status?>
-		&date_entry=<?=$date_entry?>" class="text-[11px] leading-tight sm:w-2/12 lg:w-1/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1<?php 
+		&date_entry=<?=$date_entry?>" class="text-[11px] leading-tight sm:w-2/12 lg:w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1<?php 
 		if ($status == "Externe" OR $status == "externe" OR $status == ""){ echo " toolInactive";}
 		 ?>">
 				<center>

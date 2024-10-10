@@ -72,11 +72,11 @@ if ($showCours['category'] == 0){
  	<thead>
  		<tr>
  			<th class="w-[30px]">No</th>
- 			<th class="w-[80px]">Matricule</th>
- 			<th class="w-[30px]">Noms</th>
- 			<th class="w-[80px]">Niveau</th>
+ 			<th class="">Matricule</th>
+ 			<th class="">Noms</th>
+ 			<th class="w-[90px]">Niveau</th>
  			<th class="w-[100px]">Téléphone</th>
- 			<th class="w-[30px]">Email</th>
+ 			<th class="text-right">Email</th>
  		</tr>
  	</thead>
  	<tbody>
@@ -109,7 +109,7 @@ if($apotr){
 			}
 				?></td>
  			<td class="py-1"><?=$apotr['student_tel']?></td>
- 			<td class="py-1"><?=$apotr['student_email']?></td>
+ 			<td class="py-1 text-right"><?=$apotr['student_email']?></td>
  		</tr>
  <?php
  $nbr++;
