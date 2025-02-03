@@ -20,7 +20,7 @@ $printName = $student_id."-BADGE-ETUDIANT";
  ?>
 
 
-<div style="height: 999px;width: 100%; background-image : url('../file/fond-badge.jpg');background-position: center; background-size: cover; font-family: corbel, sans-serif; position: relative;font-family: 'arial';">
+<div style="height: 840px;width: 100%; background-image : url('../file/fond-badge.jpg');background-position: center; background-size: cover; font-family: corbel, sans-serif; position: relative;font-family: 'arial';">
 <img src="../file/UAZ Official.png" style="height: 100px; position: absolute; top: 40px; left: 40px;">
 <center>
 	<br><br>
@@ -43,12 +43,12 @@ if(strlen($image_student)> 7){
 }
 ?>
 <center>
-	<b style="font-size: 35px; color: #07325a;"><?=strtoupper($student_nom)?><br><?=$student_prenom?></b><br>
+	<b style="font-size: 35px; color: #07325a;"><?=strtoupper($student_nom)?> <?=$student_prenom?></b><br>
 	<b style="font-size: 22px; position: absolute; transform: rotate(-90deg);text-align: left; left:570px; bottom: 515px; width: 100px;">
 		<?php if ($abonment == 1) { echo $status.' & Abonné';}else{ echo $status;} ?>	
 	</b>
 	
-	<b style="font-size: 90px; color: black;"><?=$student_id?></b>
+	<b style="font-size: 70px; color: black; position: absolute; transform: rotate(-90deg);top: 290px; left:15px;"><?=$student_id?></b>
 	<div style="color: white; background:#0054a5; border-radius: 10px; width: 70%; font-size: 25px"><b><?=$etude_envisage?></b></div>
 	
 

@@ -63,7 +63,7 @@
 				</center>
 			
 		</a>
-		<!-- <a target="_blank" href="./data.topdf.php?ptype=Badge
+		<a target="_blank" href="./data.topdf.php?ptype=Badge
 		&id=<?=$id?>
 		&student_id=<?=$student_id?>
 		&student_nom=<?=$student_nom?>
@@ -81,7 +81,7 @@
 						Badge
 				</center>
 			
-		</a> -->
+		</a>
 		<a target="_blank" href="./data.topdf.php?ptype=Abonnement Caf
 		&id=<?=$id?>
 		&student_id=<?=$student_id?>

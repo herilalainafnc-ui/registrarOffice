@@ -38,9 +38,9 @@
 
 	<?php
 
-//		for ($i=0; $i < 7; $i++) { 
+		for ($i=0; $i < 7; $i++) { 
 		?>
-<!-- 		<div style="page-break-inside: avoid; border: 1px dashed grey; grey; padding-top: 7.5px; padding-bottom: 7.5px; margin: 2px" class="opacity-[1]">
+ 		<div style="page-break-inside: avoid; border: 1px dashed grey; grey; padding-top: 7.5px; padding-bottom: 7.5px; margin: 2px" class="opacity-[1]">
 			<div class="border p-[15px] m-auto" style="height: 8.5cm; width:5.4cm; background-image : url('../file/badge-dos_2025.jpg');background-position: center; background-size: cover; font-family: corbel, sans-serif; position: relative; font-family: 'arial';">
 			<div style="height: 20px"></div>
 
@@ -59,9 +59,9 @@
 			</center>
 			</div>
 		</div>
- -->
+
 		<?php		
-//		}
+		}
 
 		$nbr = 1;
 		while($stdA = $searchStd->fetch()) {

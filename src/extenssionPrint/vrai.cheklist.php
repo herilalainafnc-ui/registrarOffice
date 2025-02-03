@@ -64,6 +64,8 @@ if ($etude_envisage == "Théologie") {
 	$dep_desc = 'COMM';
 }elseif ($etude_envisage == "Etudes anglophones") {
 	$dep_desc = 'LANG';
+}elseif ($etude_envisage == "Droit") {
+	$dep_desc = 'DROI';
 }elseif ($etude_envisage == "Cours Préparatoire") {
 	$dep_desc = 'CPRE';
 }elseif ($etude_envisage == "Tous les cours") {

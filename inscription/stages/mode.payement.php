@@ -266,8 +266,10 @@ if ($showCat['category'] == 0){
 			</tbody>
 		</table>
 
-		<p class="text-xs mb-2">Montant : 
-			<b class="bg-orange-300 py-1 px-2"><a id="montant"><?=$Montant = $showFin['cout_fraix_generaux'] + 
+		<table>
+			<tr>
+				<td class="text-right text-bold">Total = </td>
+				<td class="bg-blue-300 p-1"><a id="montant"><?=$Montant = $showFin['cout_fraix_generaux'] + 
 							$showFin['cout_logement'] +
 							$showFin['cout_fondDepot_dortoir'] +
 							$showFin['cout_abonment'] +
@@ -276,11 +278,22 @@ if ($showCat['category'] == 0){
 							$showFin['cout_voyage'] +
 							$tCout +
 							$somm_lab
-				?></a> ar</b> <em>(À payer lors de l'inscription : <?=$pay_inscription = $showFin['cout_fraix_generaux'] + $showFin['cout_fondDepot_dortoir']?> ar)</em>
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tranchable : <b class="bg-blue-300 py-1 px-2"><a id="tranchable"><?=$Montant_sans_fraix_Generaux =
+				?></a></td>
+				<td>ar</td>
+			</tr>
+			<tr>
+				<td class="text-right text-bold">Payé lors de l'inscription = </td>
+				<td><input type="text" id="paymentOnInscription" name="paymentOnInscription" class="border-0 p-1 text-xs" value="<?=$pay_inscription = $showFin['cout_fraix_generaux'] + $showFin['cout_fondDepot_dortoir']?>"></td>
+				<td>ar (Modifiable)</td>
+			</tr>
+			<tr>
+				<td class="text-right text-bold">Reste à tranché = </td>
+				<td class="bg-orange-300 p-1"><a id="tranchable"><?=$Montant_sans_fraix_Generaux =
 							$Montant - ($showFin['cout_fraix_generaux'] + $showFin['cout_fondDepot_dortoir'])
-				?></a> ar</b>
-			</p>
+				?></a></td>
+				<td>ar</td>
+			</tr>
+		</table>
 
 <?php } } ?>
 
@@ -390,6 +403,20 @@ if ($showCat['category'] == 0){
 
 <script type="text/javascript">
 	$(document).ready(function(){
+		$('#paymentOnInscription').keyup(function() {
+
+			var paymentOnInscription = $(this).val();
+			var montant = $('#montant').text();
+			var tranchable = montant - paymentOnInscription;
+
+			$('#tranchable').text(tranchable);
+			$('.paie100').text(tranchable);
+			$('.paie75').text((tranchable*75)/100);
+			$('.paie50').text((tranchable*50)/100);
+			$('.paie40').text((tranchable*40)/100);
+			$('.paie30').text((tranchable*30)/100);
+			$('.paie25').text((tranchable*25)/100);
+		});
 	
 		$('input[name="modePayement"]').change(function() {
 	        if ($(this).is(':checked')) {

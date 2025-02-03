@@ -1,6 +1,7 @@
 <?php 
 	
 	require('../init/.forPrint/top.forPrint.php');
+	//require('../init/.forPrint/top.sa.php');
 	$exportation = $_POST['exportation'];
 	
 ?>
@@ -59,7 +60,7 @@ if(empty($_POST['cours'])){
  			<tr>
  				<td class="w-[40px] border-x px-1">No</td>
  				<td class="w-[50px] border-r px-1">ID</td>
- 				<td class="w-[300px] border-r px-1">Nom et prénom</td>
+ 				<td class="w-[400px] border-r px-1">Nom et prénom</td>
  				<!-- <td class="w-[160px] border-1" style="border-bottom: 0px;">Mention</td> -->
  				<td class="border-r w-[70px] px-1">Niveau</td>
  				<!-- <td class="w- border-1" style="border-bottom: 0px;">Contact</td> -->
@@ -72,6 +73,7 @@ if(empty($_POST['cours'])){
 				}else{
  				 ?>
  				<td class="border-r px-1 text-right">Adresse Email</td>
+ 				<!-- <td class="border-r px-1 text-right">Signature</td> -->
  				 <?php 
 				}
 				?>
@@ -182,7 +184,7 @@ if (!empty($_POST['new_student'])) {
  				
  				<td class="w-[50px] border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><b><?=$student_id = $affiche['student_id']?></b></td>
  				
- 				<td class="w-[300px] border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?=$affiche['student_nom']." ".$affiche['student_prenom']?></td>
+ 				<td class="w-[400px] border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?=$affiche['student_nom']." ".$affiche['student_prenom']?></td>
  				
  				<!-- <td class="w-[160px]" style="<?php if(empty($_POST['cours'])){ echo"border-bottom : 0px;"; } ?>"><?=$affiche['etude_option']?></td> -->
  				
@@ -206,6 +208,7 @@ if (!empty($_POST['new_student'])) {
  				 ?>
  				
  				<td class="text-right <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?=$affiche['student_email']?></td>
+ 				<!-- <td style="height: 40px"></td> -->
  				 <?php 
 				}
 				?>

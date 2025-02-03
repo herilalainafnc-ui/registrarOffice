@@ -227,7 +227,7 @@ if ($showCat['category'] == 0){
 							$showFin['cout_voyage'] +
 							$tCout +
 							$somm_lab
-				?> ar</b> <em>(À payer lors de l'inscription : <?=$pay_inscription = $showFin['cout_fraix_generaux'] + $showFin['cout_fondDepot_dortoir']?> ar)</em>
+				?> ar</b> <em>(Payé lors de l'inscription : <?=$pay_inscription = $showFin['cout_fraix_generaux'] + $showFin['cout_fondDepot_dortoir']?> ar)</em>
 			</p>
 <?php 
 $findPayement = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE student_id="'.$student_id.'" AND session_id="'.$session_id.'"');
