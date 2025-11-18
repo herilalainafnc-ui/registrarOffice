@@ -1,12 +1,16 @@
 <?php 
+
 require ('../../data/backdb.php');
+
 	$nom = $_POST['nom'];
 	$prenom = $_POST['prenom'];
+	$mail = $_POST['mail'];
 	$pseudo = $_POST['pseudo'];
-	$raw_password = $_POST['password'];
-
-	 // Hacher le mot de passe avec password_hash() (Bcrypt par défaut)
-    $password = password_hash($raw_password, PASSWORD_BCRYPT);
+	$post = $_POST['post'];
+	
+	$passwordBrut = $_POST['password'];
+	$salt = 'fixing_password';
+	$password = hash('sha256', $passwordBrut. $salt);
 
 	$confirmPass = $_POST['confirmpass'];
 	$photos = $_FILES['photos']['name'];
@@ -16,18 +20,32 @@ require ('../../data/backdb.php');
 	$photos_dest = '../photosuser/';
 	$etat = 1;
 	$photosname = $prenom.$extension_photos;
-	$privilege = $_POST['privilege'];
+	
+	$level = $_POST['level'];
+
+
+	if ($level == 1) {
+		$privilege = "administrator";
+	}elseif($level == 2) {
+		$privilege = "registrar";
+	}elseif($level == 3) {
+		$privilege = "user";
+	}elseif($level == 4) {
+		$privilege = "visitor";
+	}
+
 	$theme = 'Blue';
 	
-if(isset($_POST['pseudo']) and isset($_POST['password']) AND !empty($password) and !empty($confirmPass)){
-	if($password == $confirmPass){
+	
 	in_array($extension_photos, $extension);
 	move_uploaded_file($photos_tmp, $photos_dest.$photosname);
 
 	$insertuser = $dtb->prepare("INSERT INTO compt_utilisateur(
 			nom,
 			prenom,
+			post,
 			pseudo,
+			mail,
 			password,
 			privilege,
 			photos,
@@ -36,7 +54,9 @@ if(isset($_POST['pseudo']) and isset($_POST['password']) AND !empty($password) a
 		) VALUES(
 			:nom,
 			:prenom,
+			:post,
 			:pseudo,
+			:mail,
 			:password,
 			:privilege,
 			:photos,
@@ -45,16 +65,18 @@ if(isset($_POST['pseudo']) and isset($_POST['password']) AND !empty($password) a
 )");$insertuser->execute(array(
 			'nom' => $nom,
 			'prenom' => $prenom,
+			'post' => $post,
 			'pseudo' => $pseudo,
+			'mail' => $mail,
 			'password' => $password,
 			'privilege' => $privilege,
 			'photos' => $photosname,
 			'etat' => $etat,
 			'theme' => $theme
 ));
-header('location:../../src/creat.account.php');
-	}else{
- 	echo "Votre confirmation de mot de passe n'est pas identique à l'origine!!";
-	}
-}
+	
+
+
+ header('location:../../src/creat.account.php');
+
 ?>

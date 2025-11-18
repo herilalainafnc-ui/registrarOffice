@@ -31,7 +31,7 @@ $preced = $soustract - 1;
 <?php
 $sigle = $profil['Sigle'];
 $title = $profil['title'];
-$cors = $dtb->query('SELECT * FROM t_2023_notes WHERE Sigle ="'.$sigle.'" AND title_cours = "'.$title.'" AND annee_scolaire = "'.$scolaire.'" AND ajout = 1 ORDER BY student_id');
+$cors = $dtb->query('SELECT * FROM t_2023_notes WHERE Sigle ="'.$sigle.'" AND annee_scolaire = "'.$scolaire.'" AND remove = 0 ORDER BY student_id');
 
 $nbr = 1;
 while ($cours_table = $cors->fetch()) {
@@ -55,7 +55,15 @@ if($apotr){
 	echo "<em style='color:red'>Etudiant non inscrit dans la base!!</em>";
 }
 					?></td>
-						<td class="c<?=$nbr.$i;?>">L<?=$apotr['annee_etude']?></td>
+						<td class="c<?=$nbr.$i;?>">
+<?php 
+if($apotr){
+	echo "L".$apotr['annee_etude'];
+}else{
+	echo "-";
+}
+ ?>			
+						</td>
 					<td class="c<?=$nbr.$i;?>"><?=$cours_table['semester']?></td>
 						<td>
 							<div class="nav-item dropstart" style="list-style: none">

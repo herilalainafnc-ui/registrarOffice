@@ -56,18 +56,55 @@
 
 if ($types == 'TOUT') {
 	if ($level == 'TOUT') {
-		$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id ="'.$session_id.'" ORDER BY student_id');	
+		//$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id = "'.$session_id.'" ORDER BY student_id');
+		$findFinance = $dtb->query('
+    SELECT f.*
+    FROM t_2024_etudiant_finace f
+    INNER JOIN (
+        SELECT student_id, session_id, MAX(id) AS id_ref
+        FROM t_2024_etudiant_finace
+        WHERE session_id = "'.$session_id.'"
+        GROUP BY student_id, session_id) x ON f.id = x.id_ref ORDER BY f.student_id');
 	}else{
-		$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id ="'.$session_id.'" AND level = "'.$level.'" ORDER BY student_id');	
+		//$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id ="'.$session_id.'" AND level = "'.$level.'" ORDER BY student_id');
+		$findFinance = $dtb->query('
+    SELECT f.*
+    FROM t_2024_etudiant_finace f
+    INNER JOIN (
+        SELECT student_id, session_id, MAX(id) AS id_ref
+        FROM t_2024_etudiant_finace
+        WHERE session_id = "'.$session_id.'"
+		AND level = "'.$level.'"
+        GROUP BY student_id, session_id) x ON f.id = x.id_ref ORDER BY f.student_id');	
 	}
 }else{
 	if ($level == 'TOUT') {
-		$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id ="'.$session_id.'" AND mention = "'.$types.'" ORDER BY student_id');
+		//$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id ="'.$session_id.'" AND mention = "'.$types.'" ORDER BY student_id');
+		$findFinance = $dtb->query('
+    SELECT f.*
+    FROM t_2024_etudiant_finace f
+    INNER JOIN (
+        SELECT student_id, session_id, MAX(id) AS id_ref
+        FROM t_2024_etudiant_finace
+        WHERE  session_id ="'.$session_id.'" 
+		AND mention = "'.$types.'"
+        GROUP BY student_id, session_id) x ON f.id = x.id_ref ORDER BY f.student_id');
 	}else{
-		$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id ="'.$session_id.'" AND mention = "'.$types.'"  AND level = "'.$level.'" ORDER BY student_id');
+		//$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id ="'.$session_id.'" AND mention = "'.$types.'"  AND level = "'.$level.'" ORDER BY student_id');
+		$findFinance = $dtb->query('
+    SELECT f.*
+    FROM t_2024_etudiant_finace f
+    INNER JOIN (
+        SELECT student_id, session_id, MAX(id) AS id_ref
+        FROM t_2024_etudiant_finace
+        WHERE  session_id ="'.$session_id.'" 
+		AND mention = "'.$types.'"  
+		AND level = "'.$level.'"
+        GROUP BY student_id, session_id) x ON f.id = x.id_ref ORDER BY f.student_id');
 	}
 }
 	$nbrF = 1;
+	$gttl = 0;
 	while ($showF = $findFinance->fetch()) {
 	$student_id = $showF['student_id'];
 	
@@ -118,7 +155,7 @@ if ($types == 'TOUT') {
 				<?php if ($semestreFinance != 1) { ?>
 				<td><?=$showF['cout_frais_graduation']?></td>
 				<?php } ?>
-				<td><?=$showF['cout_fraix_generaux']+$ttl_cout+$ttl_lab+$showF['cout_logement']+$showF['cout_fondDepot_dortoir']+$showF['cout_abonment']+$showF['cout_voyage']+$showF['cout_frais_graduation']?></td>
+				<td><?=$ttl = $showF['cout_fraix_generaux']+$ttl_cout+$ttl_lab+$showF['cout_logement']+$showF['cout_fondDepot_dortoir']+$showF['cout_abonment']+$showF['cout_voyage']+$showF['cout_frais_graduation']?></td>
 				<td><?=$showF['mode_payement']?></td>
 				<td><?php
 if ($showF['mode_payement']== 'A') {
@@ -136,10 +173,25 @@ if ($showF['mode_payement']== 'A') {
 				<td><?=$showStd['sponsor_nom']?></td>
 			</tr>
 <?php
+	$gttl =+ $gttl + $ttl;
 	$nbrF++;
 	}
  ?>
 		</tbody>
+		<tfoot>
+			<tr>
+				<th colspan="4"></th>
+				<th>FG</th>
+				<th></th>
+				<th>ECO</th>
+				<th colspan="2"></th>
+				<th>Dortoir</th>
+				<th>FD</th>
+				<th></th>
+				<th colspan="2" class="bg-slate-200">Total général</th>
+				<th colspan="4"><?=number_format($gttl, 0,'', ' ')?> ar</th>
+			</tr>
+		</tfoot>
 	</table>
 </div>
 <?php require('../init/.forPrint/foot.forPrint.php');?>

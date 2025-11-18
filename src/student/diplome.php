@@ -46,7 +46,26 @@ if($level <3 ){
 		
 		
 		<div class="absolute w-full text-black text-center top-0">
-			<div class="h-[220px]"></div>
+			<div class="h-[114px]"></div>
+			<input type="text" name="arretee_firstLine" value="Arrêté ministrériel d’habilitation N° 12.258 / 2022 - MESupRES du 29/04/2022" class="p-0 w-full text-center bg-transparent border-0" style="font-family: 'Times New Roman', serif; font-size: 17px;"><br>
+			<input type="text" name="arretee_secondLine" value="Arrêté ministériel d’équivalence administrative N° 31577 / 2012 de la FOP du 12/12/12" class="p-0 w-full text-center bg-transparent border-0" style="font-family: 'Times New Roman', serif; font-size: 17px;">
+			<div class="h-[23px]"></div>
+
+<?php 
+		if (isset($_GET['langue']) AND $langue == 'ANG') {
+			echo '<input type="text" name="arretee_secondLine" value="The Executive Committee, upon the recommendation of the Academic
+" class="p-0 w-full text-center bg-transparent border-0" style="font-family: \'Times New Roman\', serif; font-size: 19px;"><br>';
+			
+			echo '<input type="text" name="arretee_secondLine" value="Council of the University is granting to" class="p-0 w-full text-center bg-transparent border-0" style="font-family: \'Times New Roman\', serif; font-size: 19px;">';
+		}else{
+			echo '<input type="text" name="arretee_secondLine" value="Le comité directeur, sur la recommandation du conseil académique de l’université, a accordé à" class="p-0 w-full text-center bg-transparent border-0" style="font-family: \'Times New Roman\', serif; font-size: 19px;">';
+		}
+?>
+
+			
+
+			<div class="h-[5px]"></div>
+
 			<input type="text" value="<?=ucwords(strtolower($student_nom))." ".ucwords(strtolower($student_prenom))?>" class="font-tangerine 
 <?php 
 	$carName = intval(strlen($student_nom));
@@ -109,7 +128,7 @@ if($level <3 ){
 		<?php 
 		if (isset($_GET['langue']) AND $langue == 'ANG') {
 			?>
-				<p class="font-times text-[17px]">
+			<p class="font-times text-[17px]">
 				 <br> 
 		
 			<input type="text" value="With all the rights, privileges and honors pertaining to it." class="bg-transparent p-0 border-0 w-full text-center">

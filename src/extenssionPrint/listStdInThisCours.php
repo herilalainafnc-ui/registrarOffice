@@ -81,7 +81,7 @@ if ($showCours['category'] == 0){
  	</thead>
  	<tbody>
  <?php 
- $findStdInCours = $dtb->query('SELECT * FROM t_2023_notes WHERE id_cours = "'.$cours_id.'" AND annee_scolaire = "'.$yearForCours.'" ORDER BY student_id');
+ $findStdInCours = $dtb->query('SELECT * FROM t_2023_notes WHERE id_cours = "'.$cours_id.'" AND annee_scolaire = "'.$yearForCours.'" AND remove = 0 ORDER BY student_id');
  $nbr = 1;
  while($showStdInCours = $findStdInCours->fetch()) {
   ?>
@@ -99,17 +99,36 @@ if($apotr){
 		echo $apotr['student_nom']." ".$apotr['student_prenom'];
 	}
 }else{
-	echo "<em style='color:red'>Etudiant non inscrit dans la base!!</em>";
+	echo "<em style='color:red'>Etudiant supprimé de la base.</em>";
 }
 					?></td>
- 			<td class="py-1"><?php if($apotr['annee_etude'] <=3 ){
-				echo "Licence ".$apotr['annee_etude'];
-			}elseif ($apotr['annee_etude'] > 3){
-				echo "Master ".($apotr['annee_etude'] - 3);
-			}
+ 			<td class="py-1"><?php 
+if($apotr){
+	if($apotr['annee_etude'] <=3 ){
+		echo "Licence ".$apotr['annee_etude'];
+	}elseif ($apotr['annee_etude'] > 3){
+		echo "Master ".($apotr['annee_etude'] - 3);
+	}
+}else{
+	echo "-";
+}
 				?></td>
- 			<td class="py-1"><?=$apotr['student_tel']?></td>
- 			<td class="py-1 text-right"><?=$apotr['student_email']?></td>
+ 			<td class="py-1">
+<?php 
+if($apotr){
+	echo $apotr['student_tel'];
+}else{
+	echo "-";
+}
+				?>
+</td>
+ 			<td class="py-1 text-right"><?php 
+if($apotr){
+	echo $apotr['student_email'];
+}else{
+	echo "-";
+}
+				?></td>
  		</tr>
  <?php
  $nbr++;

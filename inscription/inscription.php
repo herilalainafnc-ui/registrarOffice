@@ -70,7 +70,7 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 
  ?>
 
-				<div class="my-3 px-2 mx-0.5 sm:w-4/12 xl:w-3/12 bg-slate-600 rounded-lg overflow-auto relative" style="height:calc(100vh - 230px);">
+				<div class="my-3 px-2 mx-0.5 sm:w-4/12 xl:w-4/12 border-slate-600 border-1 rounded-lg overflow-auto relative" style="height:calc(100vh - 230px);">
 						
 						<div class="flex my-2 relative text-white">
 
@@ -159,33 +159,33 @@ echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];
 						</div><hr>
 						<div class="w-full text-md">
 
-								<div id="intInformation" class="w-full bg-slate-400 text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200">
+								<div id="intInformation" class="w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200">
 									<i class="bi-info-square"></i>
 											Information
 								</div>
 							
-								<div id="intNewcours" class="w-full bg-slate-400 text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200">
+								<div id="intNewcours" class="w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200">
 									
 									<i class="bi-folder-plus"></i>
 											Cours offert
 								</div>
 
-								<div id="intModepayement" class="w-full bg-slate-400 text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-2001">
+								<div id="intModepayement" class="w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-2001">
 									
-									<i class="bi-folder-plus"></i>
+									<i class="bi-cash-coin"></i>
 											Mode de payement
 								</div>
 
-								<div id="intFicheinscription" class="w-full bg-slate-400 text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-2001">
+								<div id="intFicheinscription" class="w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-2001">
 									
-									<i class="bi-folder-plus"></i>
+									<i class="bi-file-text-fill"></i>
 											Fiche d'inscription 
 								</div>
 
 							</div>
 
 							<div class="absolute bottom-0 w-11/12 m-2 text-center">
-								<div class="gap-2 grid grid-cols-2 text-white bg-slate-600">
+								<div class="gap-2 grid grid-cols-2 text-white">
 									<a href="#" id="downStage" class="px-5 py-2 bg-slate-700 rounded-md toolInactive">Retour</a>
 									<a href="#" id="upStage" data-stage="1" class="px-5 py-2 rounded-md
 <?php 
@@ -222,13 +222,13 @@ echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];
 
 <!-- ::::::::::::::::::::::::::::::: MAIN CONTENT :::::::::::::::::::::::::::::::: -->
 
-						<div id="contentMain" class="my-3 px-2 sm:w-8/12 xl:w-9/12 border-2 border-slate-700 rounded-lg text-sm text-white" style="height:calc(100vh - 230px);">
+						<div id="contentMain" class="my-3 px-2 sm:w-8/12 xl:w-9/12 border-1 border-slate-600 rounded-lg text-sm text-white" style="height:calc(100vh - 230px);">
 
 							<div id="contentGenerateStudet" class="stage_0">
 								<div class="w-full text-center pt-20">
 									<a class="text-[30px] text-slate-600">Cela est indispensable.</a>
 									<div class="w-5/12 m-auto mt-4 p-3 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-lg border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all">
-										<a class="text-white">Assurez-vous de déterminer la session à laquelle cet étudiant s'inscrira.</a>
+										<a class="text-white">Veuillez préciser la session à laquelle cet étudiant doit s’inscrire.</a>
 
 					<form method="post" action="./app/generate.student.php?student_id=<?=$student_id?>&graduated=<?=$graduated?>" class="session-no-refrech">
 
@@ -244,8 +244,12 @@ echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];
 						<?php
 						
 						for ($i=0; $i <= 8; $i++) { 
+							if(date('m') >= 7) {
+								$as = $y." - ".($y+1);
+							}elseif(date('m') < 7) {
+								$as = ($y-1)." - ".$y;
+							}
 							
-							$as = $y." - ".($y+1);
 							?>
 											<option><?=$as?></option>
 						<?php
@@ -262,7 +266,7 @@ if (date('m') >= 7) {
 		echo "bg-cyan-700";
 	}
 }elseif (date('m') < 7) {
-	if ($showStudent_Session['annee_scolaire'] == $aSem_) {
+	if ($showStudent_Session['annee_scolaire'] != $aSem_) {
 	echo "bg-slate-800 toolInactive";
 	}else{
 		echo "bg-cyan-700";
@@ -286,7 +290,7 @@ if (date('m') >= 7) {
 
 }elseif (date('m') < 7) {
 	if (!empty($showStudent_Session['annee_scolaire'])) {
-		if ($showStudent_Session['annee_scolaire'] == $aSem_) {
+		if ($showStudent_Session['annee_scolaire'] != $aSem_) {
 			echo "<em class='text-green-500'>La session a déjà été créée. Vous pouvez passé à l'étape suivante.</em>";
 		}else{
 			echo "<em class='text-slate-500'>Veuillez enregistrer la session avant de passer à l'étape suivante.</em>";
@@ -320,13 +324,15 @@ if (date('m') >= 7) {
 								<div class="w-full text-center pt-20">
 									<a target="_blank" href="../src/data.topdf.php?ptype=Fiche_inscription
 									&id=<?=$id?>
+									&session_id=<?=$session_id?>
 									&student_id=<?=$student_id?>
 									&student_nom=<?=$student_nom?>
 									&student_prenom=<?=$student_prenom?>
 									&etude_envisage=<?=$etude_envisage?>
 									&level=<?=$level?>
 									&student_tel=<?=$student_tel?>
-									&image_student=<?=$image_student?>&session_id=<?=$session_id?>" id="ficheInscription" 
+									&image_student=<?=$image_student?>
+									" id="ficheInscription" 
 
 										class="text-[40px] leading-tight active:bg-cyan-700 p-1">
 										<div class="w-5/12 m-auto p-3 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-lg border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all">
@@ -475,10 +481,10 @@ if (date('m') >= 7) {
             	$('.stage_6').css({'display':'none'});
 
 
-            	$('#intInformation').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
-				$('#intNewcours').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
-				$('#intModepayement').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
-				$('#intFicheinscription').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
+            	$('#intInformation').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
+				$('#intNewcours').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
+				$('#intModepayement').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
+				$('#intFicheinscription').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
 
 
 				var url = './app/generate.stage.php?student_id=<?=$student_id?>&stage=1';
@@ -497,9 +503,9 @@ if (date('m') >= 7) {
             	$('.stage_6').css({'display':'none'});
 				
 				$('#intInformation').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-cyan-500');
-				$('#intNewcours').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
-				$('#intModepayement').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
-				$('#intFicheinscription').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
+				$('#intNewcours').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
+				$('#intModepayement').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
+				$('#intFicheinscription').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
 
 				
 				var url = './app/generate.stage.php?student_id=<?=$student_id?>&stage=2';
@@ -520,10 +526,10 @@ if (date('m') >= 7) {
             	$('.stage_5').css({'display':'none'});	
 				$('.stage_6').css({'display':'none'});
 
-            	$('#intInformation').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
+            	$('#intInformation').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
 				$('#intNewcours').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-cyan-500');
-				$('#intModepayement').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
-				$('#intFicheinscription').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
+				$('#intModepayement').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
+				$('#intFicheinscription').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
 
 				$('#stageMark_2').attr('class','text-xs p-1');
 
@@ -554,10 +560,10 @@ if (date('m') >= 7) {
 				$('.stage_5').css({'display':'none'});
 				$('.stage_6').css({'display':'none'});
 
-            	$('#intInformation').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
-				$('#intNewcours').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
+            	$('#intInformation').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
+				$('#intNewcours').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
 				$('#intModepayement').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-cyan-500');
-				$('#intFicheinscription').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
+				$('#intFicheinscription').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
 
 				$('#upStage').attr('class','px-5 py-2 bg-slate-700 rounded-md toolInactive');
             	
@@ -596,9 +602,9 @@ if (date('m') >= 7) {
 				$('.stage_5').css({'display':'none'});
 				$('.stage_6').css({'display':'none'});
 
-            	$('#intInformation').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
-				$('#intNewcours').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
-				$('#intModepayement').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
+            	$('#intInformation').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
+				$('#intNewcours').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
+				$('#intModepayement').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
 				$('#intFicheinscription').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-cyan-500');	
 
             	$('#stageMark_4').attr('class','text-xs p-1');
@@ -618,10 +624,10 @@ if (date('m') >= 7) {
 				$('.stage_5').css({'display':'block'});
 				$('.stage_6').css({'display':'none'});
 
-            	$('#intInformation').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
-				$('#intNewcours').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
-				$('#intModepayement').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
-				$('#intFicheinscription').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400');
+            	$('#intInformation').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
+				$('#intNewcours').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
+				$('#intModepayement').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
+				$('#intFicheinscription').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
 
 				$('#stageMark_5').attr('class','text-xs p-1');
 				
@@ -669,7 +675,7 @@ if (date('m') >= 7) {
             	
             	currentUrl.searchParams.set('stage', stage+1);
             	$(this).data('stage', stage+1);
-            	$('#downStage').attr('class', 'px-5 py-2 bg-slate-400 rounded-md');
+            	$('#downStage').attr('class', 'px-5 py-2  rounded-md');
 
             }else if(stage == 7) {
 
@@ -677,10 +683,10 @@ if (date('m') >= 7) {
 	       		$(this).attr('class', 'px-5 py-2 bg-slate-700 rounded-md toolInactive');
 	       		$('#downStage').attr('class', 'px-5 py-2 bg-slate-700 rounded-md toolInactive');
 
-	       		$('#intInformation').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400 toolInactive');
-				$('#intNewcours').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400 toolInactive');
-				$('#intModepayement').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400 toolInactive');
-				$('#intFicheinscription').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-slate-400 toolInactive');
+	       		$('#intInformation').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200  toolInactive');
+				$('#intNewcours').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200  toolInactive');
+				$('#intModepayement').attr('class','w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200  toolInactive');
+				$('#intFicheinscription').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200  toolInactive');
            
            	}
             

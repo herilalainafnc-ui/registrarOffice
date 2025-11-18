@@ -51,6 +51,79 @@
 
 	</div>
 
+<!-- FOR FICHE INSCRIPTION -->
+	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifFichInsc" style="backdrop-filter: blur(3px);">
+
+		<div class="w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+<form method="post" action="./data.topdf.php?ptype=Fiche_inscription
+	&id=<?=$id?>
+	&student_id=<?=$student_id?>
+	&student_nom=<?=$student_nom?>
+	&student_prenom=<?=$student_prenom?>
+	&etude_envisage=<?=$etude_envisage?>
+	&level=<?=$level?>
+	&student_tel=<?=$student_tel?>
+	&image_student=<?=$image_student?>" target="_blank">
+			<div class="p-2 text-black">
+				<b>Sélection de session.</b>
+			</div>
+			<div class="p-2 text-black flex">
+
+				<div class="w-6/12">
+					<label>Semestre</label><br>
+					<select name="semester" id="typeSemestre">
+						<option <?php 
+if (date('m')>7) {
+	echo "selected";	
+}else{
+
+}
+						 ?> value="1">Premier semestre</option>
+						<option value="3">Semestre d'été</option>
+						<option <?php 
+if (date('m')>7) {
+	
+}else{
+	echo "selected";
+}
+						 ?> value="2">Deuxième semestre</option>
+						<option value="4">Semestre d'hiver</option>
+					</select>
+				</div>
+
+				<div class="w-6/12">
+					<label>Année scolaire</label><br>
+					<select name="annee_scolaire" id="semesterTranscript">
+						<?php
+								$y = date('Y');
+								for ($i=0; $i <= 3; $i++) { 
+									
+									if (date('m')>7) {
+										$as = $y." - ".($y+1);	
+									}else{
+										$as = ($y-1)." - ".$y;
+									}
+									
+								?>
+								<option><?=$as?></option>
+								<?php
+								$y = $y - 1;
+								}
+						?>
+					</select>
+				</div>
+
+			</div>
+			<div class="p-3">
+				<center>
+				<a href="#" id="cancelnotifFichInsc" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
+				<button id="ficheInscription" type="submit" class="bg-cyan-800 p-2 rounded-md text-white mx-1">Afficher</button>
+				</center>	
+			</div>
+	</form>			
+		</div>
+
+	</div>
 
 <!-- FOR TRANSCRIPT -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifTranscript" style="backdrop-filter: blur(3px);">
@@ -211,7 +284,9 @@
 		$('#exportDiplome').click(function(){
 			$('#notifDiplome').css({'display':'block'});
 		});
-
+		$('#exportFichInsc').click(function(){
+			$('#notifFichInsc').css({'display':'block'});
+		});
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
 		$('#cancelnotifBulletin').click(function(){
@@ -228,6 +303,9 @@
 		});
 		$('#cancelnotifSupprStd').click(function(){
 			$('#notifSupprStd').css({'display':'none'});
+		});
+		$('#cancelnotifFichInsc').click(function(){
+			$('#notifFichInsc').css({'display':'none'});
 		});
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
@@ -260,6 +338,7 @@
 			level = $('#levelTranscript').val();
 			$('#showTranscript').attr('href','./data.topdf.php?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=Transcript&level='+level+'&semester='+semester);
 		});
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+		
 	});	
 </script>

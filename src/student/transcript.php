@@ -23,10 +23,10 @@
 /*::::::::::::::::::::::::::::::::::::::::*/
 	if ($level > 3) {
 		$init = 4;
-	}elseif($level <= 3) {
+	}elseif($level <= 3 AND $level >= 1) {
 		$init = 1;
 	}elseif($level == 0) {
-		$init = -1;
+		$init = 0;
 	}
 
 	for ($a=$init; $a <= $level; $a++) { 
@@ -34,10 +34,13 @@
 ?>
 	<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all'>
 <b>
-		<?php 
+		<?php
 		if($a<=3) {
 			echo "NIVEAU Licence ".$a;
 			$nbrA = $a+1;
+		}elseif($a==0){
+			echo "Remise à niveau";
+			$nbrA = $a;
 		}else{
 			echo "NIVEAU Master ".($a-3);
 			$nbrA = $a-2;
@@ -129,17 +132,32 @@ if ($crs['cours_category'] == 0){
 					<td class="<?=$bg_six_color?> <?=$txt_three_color?> px-0">
 
 <?php 
-if ($privilege == "registrar" OR $privilege == "administrator") {
+
+if ($rg_level <= 2) {
+
  ?>
 <input class="insimple text-sm bg-transparent px-2 g<?=$nbr.$a.$s?>" type="text" name="nb_crd<?=$s.$nbr;?>" value="<?php if($crs['grade']==-2){echo "Ok";}else{echo $crs['grade'];}?>">
 <?php 
-}else{
+
+}elseif($rg_level > 2 AND $rg_level < 4) {
 	echo "<a class='px-2'>".$crs['grade']."</a>";
+
+}elseif($rg_level >= 4) {
+	echo "<em class='px-2'>masqué</em>";
 }
+
  ?>
 </td>
-					<td><?php if($crs['grade']==-2){echo "";}else{echo $notecredi = $crs['credit'] * $crs['grade'];}?></td>
-					
+<td>
+<?php if($crs['grade']==-2){echo "";}else{
+	 $notecredi = $crs['credit'] * $crs['grade'];
+	 if ($rg_level < 4) {
+	 	echo $notecredi;
+	 }else{
+	 	echo "<em>masqué</em>";
+	 }
+} ?>					
+</td>
 					<td id="stp<?=$nbr.$a.$s?>" class="<?php 
 if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 	echo "bg-green-500";
@@ -306,8 +324,8 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 					<th class="px-2" colspan="2"><?=$nbr?> cours</th>
 					<th><?php if(!empty($tcredit)) { echo $tcredit;}?></th>
 					<th class="px-2"></th>
-					<th class="px-2"><?php if(($nbr-1)<1){echo 0;}else{echo round($tnote,2);}?></th>
-					<th><?php if(($nbr-1)<1){echo 0;}else{echo round($tnotecredit,2);}?></th>
+					<th class="px-2"><?php if(($nbr-1)<1){echo 0;}else{ if ($rg_level < 4) { echo round($tnote,2);}else{ echo "<em>masqué</em>";}}?></th>
+					<th><?php if(($nbr-1)<1){echo 0;}else{ if ($rg_level < 4) { echo round($tnotecredit,2);}else{ echo "<em>masqué</em>";}}?></th>
 					<th class="px-2" colspan="2"></th>
 				</tr>
 
@@ -332,12 +350,13 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 					<td colspan="4">Note de Work Education</td>
 					<td class="<?=$bg_six_color?> <?=$txt_three_color?> px-0 text-left">
 <?php 
-if ($privilege == "registrar" OR $privilege == "administrator") {
+if ($rg_level <= 2) {
  ?>
  <input class="insimple text-sm bg-transparent px-2" type="text" name="grade_work_educ" value="<?=$grade_work_educ?>">
 <?php 
 }else{
-	echo "<a class='px-2'>".$grade_work_educ."</a>";
+	if ($rg_level < 4) { echo "<a class='px-2'>".$grade_work_educ."</a>"; }else{ echo "<em>masqué</em>";}
+	
 }
  ?>
 					</td>
@@ -348,12 +367,13 @@ if ($privilege == "registrar" OR $privilege == "administrator") {
 					<td class="<?=$bg_six_color?> <?=$txt_three_color?> px-0 text-left">
 
 <?php 
-if ($privilege == "registrar" OR $privilege == "administrator") {
+if ($rg_level <= 2) {
  ?>
 <input class="insimple text-sm bg-transparent px-2" type="text" name="grade_remark_acad" value="<?=$grade_remark_acad?>">
 <?php 
 }else{
-	echo "<a class='px-2'>".$grade_remark_acad."</a>";
+	if ($rg_level < 4) { echo "<a class='px-2'>".$grade_remark_acad."</a>"; }else{ echo "<em>masqué</em>";}
+	
 }
  ?>
 					</td>
@@ -364,12 +384,13 @@ if ($privilege == "registrar" OR $privilege == "administrator") {
 					<td class="<?=$bg_six_color?> <?=$txt_three_color?> px-0 text-left">
 
 <?php 
-if ($privilege == "registrar" OR $privilege == "administrator") {
+if ($rg_level <= 2) {
  ?>
 <input class="insimple text-sm bg-transparent px-2" type="text" name="grade_chapel_part" value="<?=$grade_chapel_part?>">
 <?php 
 }else{
-	echo "<a class='px-2'>".$grade_chapel_part."</a>";
+	if ($rg_level < 4) { echo "<a class='px-2'>".$grade_chapel_part."</a>"; }else{ echo "<em>masqué</em>";}
+	
 }
  ?>
 					</td>
@@ -387,14 +408,14 @@ if ($privilege == "registrar" OR $privilege == "administrator") {
 				<tr>
 					<th colspan="4" class="text-right">Moyenne Majeur</th>
 					<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-					<th class="px-2"><?php if($nbrMaj != 0){echo round(($moyenMajSem = ($tTMaj/$tcreditMaj)),6);}else{echo 0;$moyenMajSem =0;}?></th>
+					<th class="px-2"><?php if ($rg_level < 4) { if($nbrMaj != 0){echo round(($moyenMajSem = ($tTMaj/$tcreditMaj)),6);}else{echo 0;$moyenMajSem =0;}}else{ echo "<em>masqué</em>";}?></th>
 					<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 				</tr>
 				
 				<!--  -->
 				<tr>
 					<th colspan="4" class="text-right">Moyenne Générale</th>
-					<th class="px-2 bg-cyan-700 text-white"><?php if($nbr != 0){echo round(($moyenGenSem = $tnotecredit/$tcredit),6);}else{echo 0;$moyenGenSem =0;}?></th>
+					<th class="px-2 bg-cyan-700 text-white"><?php if ($rg_level < 4) { if($nbr != 0){echo round(($moyenGenSem = $tnotecredit/$tcredit),6);}else{echo 0;$moyenGenSem =0;}}else{ echo "<em>masqué</em>";}?></th>
 				</tr>
 
 				<!-- <tr>
@@ -429,15 +450,15 @@ if ($privilege == "registrar" OR $privilege == "administrator") {
 		<tbody class=" <?=$bg_two_color?> <?=$txt_one_color?>">
 			<tr>
 				<td class="p-1 w-8/12 text-right">Note de Work Education cumulative</td>
-				<td class="px-2 w-2/12 text-bold"><?=round(($cumulWorkNote*20)/((($a-1)*2)*20),3);?></td>
+				<td class="px-2 w-2/12 text-bold"><?php if ($rg_level < 4) {round(($cumulWorkNote*20)/((($a-1)*2)*20),3);}else{ echo "<em>masqué</em>";}?></td>
 			</tr>
-			<tr>
+			<!-- <tr>
 				<td class="p-1 w-8/12 text-right">Nemarque académique cumulative</td>
-				<td class="px-2 w-2/12 text-bold"><?=round(($cumulremarkAcad*20)/((($a-1)*2)*20),3);?></td>
-			</tr>
+				<td class="px-2 w-2/12 text-bold"><?php if ($rg_level < 4) {round(($cumulremarkAcad*20)/((($a-1)*2)*20),3);}else{ echo "<em>masqué</em>";}?></td>
+			</tr> -->
 			<tr>
 				<td class="p-1 w-8/12 text-right">Note de participation à l'exercice de chapelle et à la semaine de prière cumulative</td>
-				<td class="px-2 w-2/12 text-bold"><?=round(($cumulChapel*20)/((($a-1)*2)*20),3);?></td>
+				<td class="px-2 w-2/12 text-bold"><?php if ($rg_level < 4) {round(($cumulChapel*20)/((($a-1)*2)*20),3);}else{ echo "<em>masqué</em>";}?></td>
 			</tr>
 		</tbody>
 	</table>
@@ -449,13 +470,13 @@ if ($privilege == "registrar" OR $privilege == "administrator") {
 			</tr> -->
 			<tr>
 				<th class="p-1 w-8/12 text-right">Moyenne Majeur Cumulative</th>
-				<th class="py-1 px-2 w-2/12"><?=round(($cumulMaj*20)/((($nbrA-1)*2)*20),6);?></th>
+				<th class="py-1 px-2 w-2/12"><?php if ($rg_level < 4) {round(($cumulMaj*20)/((($nbrA-1)*2)*20),6);}else{ echo "<em>masqué</em>";}?></th>
 			</tr>
 			
 			<!--  -->
 			<tr>
 				<th class="p-1 w-8/12 text-right bg-cyan-700">Moyenne Générale Cumulative</th>
-				<th class="py-1 px-2 w-2/12 bg-cyan-700"><?=round(($cumulGen*20)/((($nbrA-1)*2)*20),6);?></th>
+				<th class="py-1 px-2 w-2/12 bg-cyan-700"><?php if ($rg_level < 4) {round(($cumulGen*20)/((($nbrA-1)*2)*20),6);}else{ echo "<em>masqué</em>";}?></th>
 			</tr>
 		</thead>
 	</table>

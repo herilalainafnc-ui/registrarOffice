@@ -8,6 +8,7 @@
 	$retrouve = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE id ='".$id."' LIMIT 1");
 
 if($retrouve->rowCount() > 0) {
+
 $profil = $retrouve->fetch();
 $student_id = $profil['student_id'];
 $student_nom = $profil['student_nom'];
@@ -148,6 +149,7 @@ $yes = 1;
 
  <!-- DEBUT DU FORMULAIRE -->
  <form action="../app/.student/checkCours.php?id=<?=$id?>&student_id=<?=$student_id?>&page=newCours&user_id=<?=$rg_id?>" method="post" class="form-newCours">
+ 	
 		<table class="simpleTbl mb-1 w-full">
 			<thead>
 				<tr class="text-left bg-gradient-to-r from-green-600">
@@ -244,15 +246,15 @@ $yes = 1;
 							} 
 if (!empty($validExisting) AND $validExisting['grade'] >= 10) {
 	
-	echo " . <em class='text-green-400'>Déjà ajouté... Avec un note = <b>".$validExisting['grade']."</b></em>";
+	echo " . <em class='text-green-400'>Cours ajouté... Noté de = <b>".$validExisting['grade']."</b></em>";
 
 }elseif (!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 10) {
 	
-	echo " . <em class='text-red-500'>Déjà ajouté... Avec un note = <b>".$validExisting['grade'].", doit être repêché.</b></em>";
+	echo " . <em class='text-red-500'>Cours ajouté... Noté de = <b>".$validExisting['grade'].", doit être repêché.</b></em>";
 
 }elseif (!empty($validExisting) AND $validExisting['grade'] == 0){
 
-	echo " . <em class='text-orange-400'>Ajouté à la date ".$crs['date_entry'].".</b></em>";
+	echo " . <em class='text-orange-400'>Ajouté le - ".$crs['date_entry'].".</b></em>";
 
 }
 
@@ -432,7 +434,7 @@ $tcredit+= $credit + $crs['nb_crd'];
 
 		$(".form-newCours").on('submit',function (e) {
 
-			e.preventDefault();
+			//e.preventDefault();
 
 			var url = '../app/.student/checkCours.php?id=<?=$id?>&student_id=<?=$student_id?>&page=newCours&user_id=<?=$rg_id?>';
 			

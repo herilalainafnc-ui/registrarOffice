@@ -80,7 +80,7 @@
 		$eE = 'DROI';
 	}
  	
-	if($level<=1) {
+/*	if($level<=1) {
 
  		$init = $level;
 
@@ -105,12 +105,25 @@
 
  		$init = $level-1;
 
+ 	}*/
+
+ 	if ($level <= 3) {
+ 	
+ 		$init = 1;
+ 		$level = 3;
+ 	
+ 	}elseif($level > 3) {
+ 		
+ 		$init = 4;
+ 		$level = 5;
+ 	
  	}
 
 	for ($a=$init; $a <= $level; $a++) {
  ?>
 	<div id="year<?=$a?>" class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 <b>
+
 		<?php 
 		if($a<=3) {
 			echo "NIVEAU Licence ".$a;
@@ -124,7 +137,23 @@
  ?>
 
  <!-- DEBUT DU FORMULAIRE -->
- <form action="../app/.student/checkCours.php?id=<?=$id?>&student_id=<?=$student_id?>&page=newCours&user_id=<?=$rg_id?>" method="post" class="form-newCours">
+ <form action="../app/.student/checkCours.php?id=<?=$id?>&student_id=<?=$student_id?>&page=newCours&user_id=<?=$rg_id?>
+&etude_envisage=<?=$profil['etude_envisage']?>
+&status=<?=$profil['status']?>
+&new_student=<?=$profil['new_student']?>
+&graduated=<?=$profil['graduated']?>
+&student_adresse=<?=$profil['student_adresse']?>
+&etude_option=<?=$profil['etude_option']?>
+&annee_etude=<?=$profil['annee_etude']?>
+&sponsor_nom=<?=$profil['sponsor_nom']?>
+&sponsor_prenom=<?=$profil['sponsor_prenom']?>
+&sponsor_tel=<?=$profil['sponsor_tel']?>
+&sponsor_adresse=<?=$profil['sponsor_adresse']?>
+&situationf=<?=$profil['situationf']?>
+&nom_conjoint=<?=$profil['nom_conjoint']?>
+&nb_enfant=<?=$profil['nb_enfant']?>
+&abonment=<?=$profil['abonment']?>" method="post" class="form-newCours">
+
 		<table class="simpleTbl mb-1 w-full">
 			<thead>
 				<tr class="text-left bg-gradient-to-r from-green-600">
@@ -175,7 +204,7 @@
 			$annee_scolaire = $crs['yearlevel'];
 			$semester = $crs['semester'];
 
-	$verifyExisting = $dtb->query('SELECT * FROM t_2023_notes WHERE id_cours = "'.$note_id.'" AND student_id="'.$student_id.'" AND remove = 0');
+	$verifyExisting = $dtb->query('SELECT * FROM t_2023_notes WHERE id_cours = "'.$note_id.'" AND student_id="'.$student_id.'" AND ajout = 1 AND remove = 0');
 	$validExisting = $verifyExisting->fetch();
 	 ?>
 				<tr 
@@ -183,11 +212,11 @@
 
 				id="cours<?=$a.$s.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black"
 
-<?php }elseif(!empty($validExisting) AND ($validExisting['grade'] >= 10 OR $validExisting['grade'] == 0)) { ?>
+<?php }elseif(!empty($validExisting) AND ($validExisting['grade'] >= 12 OR $validExisting['grade'] == 0)) { ?>
 
 				class="bg-slate-700"
 
-<?php }elseif(!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 10){ ?>
+<?php }elseif(!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 12){ ?>
 
 				id="cours<?=$a.$s.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black bg-slate-700"
 
@@ -201,11 +230,11 @@
 
 						<input id="chk<?=$a.$s.$nbr;?>" type="checkbox" name="checklist[]" value="<?=$note_id?>" style="width: 100%; height: 100%;margin: none; border: none;">
 
-<?php }elseif(!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 10){ ?>
+<?php }elseif(!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 12){ ?>
 
 						<input id="chk<?=$a.$s.$nbr;?>" type="checkbox" name="checklist[]" value="<?=$note_id?>" style="width: 100%; height: 100%;margin: none; border: none;">	
 
-<?php }elseif(!empty($validExisting) AND ($validExisting['grade'] >= 10 OR $validExisting['grade'] == 0)){ ?>	
+<?php }elseif(!empty($validExisting) AND ($validExisting['grade'] >= 12 OR $validExisting['grade'] == 0)){ ?>	
 
 						<i class="bi-x-lg text-red-300"></i>	
 
@@ -232,7 +261,7 @@
 
 }elseif (!empty($validExisting) AND $validExisting['grade'] == 0){
 
-	echo "<em class='text-orange-400'>Ajouté à la date de ".substr($validExisting['date_entry'], 0, 10)."</b></em>";
+	echo "<em class='text-orange-400'>Ajouté le - ".substr($validExisting['date_entry'], 0, 10)."</b></em>";
 
 } ?></td>
 					<td><?=$crs['nb_crd']?></td>
@@ -298,40 +327,46 @@ $tcredit+= $credit + $crs['nb_crd'];
 					<th></th>
 				</tr>
 				<tr>
-					<td colspan="5" class="<?=$bg_four_color?>">
-						<a href="#" id="selectAll<?=$a.$s;?>" class="px-2 py-0 m-1"><i class="bi-arrow-90deg-up"></i> Cocher tout</a>
-						<a href="#" id="deselectAll<?=$a.$s;?>" class="px-2 py-0 m-1 hidden"><i class="bi-arrow-90deg-up"></i> Décocher tout</a>
-						
-						<b>Session :</b>
-						<select name="semesterSession" class="h-[22px] m-1 py-0 text-black text-sm" id="scolarSs<?=$a.$s;?>">
-							<option <?php if ($s == 1) {echo "selected";} ?> selected>Premier semestre</option>
-						<!-- 	<option>Semestre d'été</option>
-							<option <?php if ($s == 2) {echo "selected";} ?>>Deuxième semestre</option>
-							<option>Semestre d'hiver</option> -->
-						</select>
+					<td colspan="6" class="<?=$bg_four_color?>">
+						<div class="flex">
+							<div class="w-40 pt-1">
+								<a href="#" id="selectAll<?=$a.$s;?>" class="px-2 py-0 m-1"><i class="bi-arrow-90deg-up"></i> Cocher tout</a>
+								<a href="#" id="deselectAll<?=$a.$s;?>" class="px-2 py-0 m-1 hidden"><i class="bi-arrow-90deg-up"></i> Décocher tout</a>
+							</div>
+							<div>
+								<b>Session :</b>
+								<select name="semesterSession" class="h-[22px] m-1 py-0 text-black text-sm" id="scolarSs<?=$a.$s;?>">
+									<option <?php if (date('m')>=7) {echo "selected";} ?>>Premier semestre</option>
+									<option>Semestre d'été</option>
+									<option <?php if (date('m')<7) {echo "selected";} ?>>Deuxième semestre</option>
+									<option>Semestre d'hiver</option>
+								</select>
 
-						<b>Année du cours :</b>
-						<select name="annee_scolaire" class="h-[22px] m-1 py-0 text-black text-sm" id="scolarA<?=$a.$s;?>">
-							<?php
-								$mois = date('m');
-								if (intval($mois) < 7){
-									$z = date('Y');
-								}else{
-									
-									$z = date('Y') + 1;
-								}
-								$yn = 1;
-				        			for ($i=1; $i < 6; $i++) { 
-				        			?>
-				        				<option><?=($z-1)." - ".$z?></option>
-				        			<?php
-				        			$z = $z-$yn;
-				        		}
-			        		 ?>
-						</select>
+								<b>Année du cours :</b>
+								<select name="annee_scolaire" class="h-[22px] m-1 py-0 text-black text-sm" id="scolarA<?=$a.$s;?>">
+									<?php
+										$mois = date('m');
+										if (intval($mois) < 7){
+											$z = date('Y');
+										}else{
+											
+											$z = date('Y') + 1;
+										}
+										$yn = 1;
+						        			for ($i=1; $i < 6; $i++) { 
+						        			?>
+						        				<option><?=($z-1)." - ".$z?></option>
+						        			<?php
+						        			$z = $z-$yn;
+						        		}
+					        		 ?>
+								</select>
+							</div>
+						
+							
 						
 						<button id="submit<?=$a.$s;?>" type="submit" class="submiting px-2 text-center py-0 m-1 text-slate-400 bg-black">Ajouter au transcript</button>
-					
+						</div>
 					</td>
 				</tr>
 												<script type="text/javascript">
@@ -369,9 +404,9 @@ $tcredit+= $credit + $crs['nb_crd'];
 															
 															if (scolarA<?=$a.$s;?> != '' && scolarSs<?=$a.$s;?> !='') {
 																$('#submit<?=$a.$s;?>').attr('class','submiting px-2 text-center py-0 m-1 text-white bg-black');
-															}else{
+															}/*else{
 																$('#submit<?=$a.$s;?>').attr('class','submiting px-2 text-center py-0 m-1 text-slate-400 bg-slate-700 toolInactive');
-															}
+															}*/
 
 														});
 
@@ -381,9 +416,9 @@ $tcredit+= $credit + $crs['nb_crd'];
 															
 															if (scolarA<?=$a.$s;?> != '' && scolarSs<?=$a.$s;?> !='') {
 																$('#submit<?=$a.$s;?>').attr('class','submiting px-2 text-center py-0 m-1 text-white bg-black');
-															}else{
+															}/*else{
 																$('#submit<?=$a.$s;?>').attr('class','submiting px-2 text-center py-0 m-1 text-slate-400 bg-slate-700 toolInactive');
-															}
+															}*/
 
 														});
 
@@ -410,16 +445,31 @@ $tcredit+= $credit + $crs['nb_crd'];
 
 		$(".form-newCours").on('submit',function (e) {
 
-			e.preventDefault();
+			 e.preventDefault();
 
-			var url = '../app/.student/checkCours.php?id=<?=$id?>&student_id=<?=$student_id?>&page=newCours&user_id=<?=$rg_id?>';
+			var url = '../app/.student/checkCours.php?id=<?=$id?>&student_id=<?=$student_id?>&page=newCours&user_id=<?=$rg_id?>
+&etude_envisage=<?=$profil['etude_envisage']?>
+&status=<?=$profil['status']?>
+&new_student=<?=$profil['new_student']?>
+&graduated=<?=$profil['graduated']?>
+&student_adresse=<?=$profil['student_adresse']?>
+&etude_option=<?=$profil['etude_option']?>
+&annee_etude=<?=$profil['annee_etude']?>
+&sponsor_nom=<?=$profil['sponsor_nom']?>
+&sponsor_prenom=<?=$profil['sponsor_prenom']?>
+&sponsor_tel=<?=$profil['sponsor_tel']?>
+&sponsor_adresse=<?=$profil['sponsor_adresse']?>
+&situationf=<?=$profil['situationf']?>
+&nom_conjoint=<?=$profil['nom_conjoint']?>
+&nb_enfant=<?=$profil['nb_enfant']?>
+&abonment=<?=$profil['abonment']?>';
 			
 			var data = $(this).serialize();
 
 			$.post(url,data,function(response){
 				
-				alert("Cours bien enregistré! Vous pouvez continué !!");
-				//$(".submiting").attr('class','submiting px-2 text-center py-0 m-1 text-slate-400 bg-slate-700 toolInactive');
+				alert("Cours sauvegardé !");
+				/*$(".submiting").attr('class','submiting px-2 text-center py-0 m-1 text-slate-400 bg-slate-700 toolInactive');*/
 				
 			});
 

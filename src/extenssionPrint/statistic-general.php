@@ -1,12 +1,18 @@
 <?php 
 $yearNow = date('Y');
 
+$semestre =$_POST['semestre'];
 $yearScoolNow = $_POST['yearStatistic'];
+
+$findSessionOnSS = $dtb->query('SELECT * FROM t_2023_session WHERE session_name ="'.$semestre.'" AND session_year = "'.$yearScoolNow.'"');
+
+$showSessionOnSS = $findSessionOnSS->fetch();
+$session_id = $showSessionOnSS['session_id'];
 
  ?>
 <div class="" style="page-break-inside: avoid;">
 
-<b>Statistique générale </b><em class="text-xs">- Année <?=$yearScoolNow?></em>
+<b>Statistique générale </b><em class="text-xs"> • <b>Session : </b> <?=$semestre." ".$yearScoolNow?></em>
 	<table class="tbl" style="page-break-inside: avoid;">
 		<thead>
 			<tr style="page-break-inside: avoid;">
@@ -41,44 +47,42 @@ $yearScoolNow = $_POST['yearStatistic'];
 		<tbody>
 			<?php
 
- $mentio = $dtb->query('SELECT * FROM filiere WHERE filiere_sigle !="CPRE"');
+ $mentio = $dtb->query('SELECT * FROM filiere WHERE filiere_sigle !="CPRE" AND filiere_sigle !="EDUC"');
 
- // Requête SQL pour récupérer les données groupées
-$rm_N = 0;
-$rm_A = 0;
-$licence1_N = 0;
-$licence1_A = 0;
-$licence2_N = 0;
-$licence2_A = 0;
-$licence3_N = 0;
-$licence3_A = 0;
-$master1_N = 0;
-$master1_A = 0;
-$master2_N = 0;
-$master2_A = 0;
-$thorizontal_N = 0;
-$thorizontal_A = 0;
+	$rm_N = 0;
+	$rm_A = 0;
+	$licence1_N = 0;
+	$licence1_A = 0;
+	$licence2_N = 0;
+	$licence2_A = 0;
+	$licence3_N = 0;
+	$licence3_A = 0;
+	$master1_N = 0;
+	$master1_A = 0;
+	$master2_N = 0;
+	$master2_A = 0;
+	$thorizontal_N = 0;
+	$thorizontal_A = 0;
 
 	while($mt = $mentio->fetch()){
-		
+		$filiere_sigle= $mt['filiere_sigle'];
 		$mention = $mt['filiere_description'];
 
 $result = $dtb->query('SELECT *,
-	    SUM(CASE WHEN annee_etude = 0 AND new_student = 1 THEN 1 ELSE 0 END) AS RM_N,
-           SUM(CASE WHEN annee_etude = 0 AND new_student = 0 THEN 1 ELSE 0 END) AS RM_A,
-           SUM(CASE WHEN annee_etude = 1 AND new_student = 1 THEN 1 ELSE 0 END) AS Licence1_N,
-           SUM(CASE WHEN annee_etude = 1 AND new_student = 0 THEN 1 ELSE 0 END) AS Licence1_A,
-           SUM(CASE WHEN annee_etude = 2 AND new_student = 1 THEN 1 ELSE 0 END) AS Licence2_N,
-           SUM(CASE WHEN annee_etude = 2 AND new_student = 0 THEN 1 ELSE 0 END) AS Licence2_A,
-           SUM(CASE WHEN annee_etude = 3 AND new_student = 1 THEN 1 ELSE 0 END) AS Licence3_N,
-           SUM(CASE WHEN annee_etude = 3 AND new_student = 0 THEN 1 ELSE 0 END) AS Licence3_A,
-           SUM(CASE WHEN annee_etude = 4 AND new_student = 1 THEN 1 ELSE 0 END) AS Master1_N,
-           SUM(CASE WHEN annee_etude = 4 AND new_student = 0 THEN 1 ELSE 0 END) AS Master1_A,
-           SUM(CASE WHEN annee_etude = 5 AND new_student = 1 THEN 1 ELSE 0 END) AS Master2_N,
-           SUM(CASE WHEN annee_etude = 5 AND new_student = 0 THEN 1 ELSE 0 END) AS Master2_A
+		SUM(CASE WHEN niveau_std = 0 AND new_student = 1 THEN 1 ELSE 0 END) AS RM_N,
+		SUM(CASE WHEN niveau_std = 0 AND new_student = 0 THEN 1 ELSE 0 END) AS RM_A,
+		SUM(CASE WHEN niveau_std = 1 AND new_student = 1 THEN 1 ELSE 0 END) AS Licence1_N,
+		SUM(CASE WHEN niveau_std = 1 AND new_student = 0 THEN 1 ELSE 0 END) AS Licence1_A,
+		SUM(CASE WHEN niveau_std = 2 AND new_student = 1 THEN 1 ELSE 0 END) AS Licence2_N,
+		SUM(CASE WHEN niveau_std = 2 AND new_student = 0 THEN 1 ELSE 0 END) AS Licence2_A,
+		SUM(CASE WHEN niveau_std = 3 AND new_student = 1 THEN 1 ELSE 0 END) AS Licence3_N,
+		SUM(CASE WHEN niveau_std = 3 AND new_student = 0 THEN 1 ELSE 0 END) AS Licence3_A,
+		SUM(CASE WHEN niveau_std = 4 AND new_student = 1 THEN 1 ELSE 0 END) AS Master1_N,
+		SUM(CASE WHEN niveau_std = 4 AND new_student = 0 THEN 1 ELSE 0 END) AS Master1_A,
+		SUM(CASE WHEN niveau_std = 5 AND new_student = 1 THEN 1 ELSE 0 END) AS Master2_N,
+		SUM(CASE WHEN niveau_std = 5 AND new_student = 0 THEN 1 ELSE 0 END) AS Master2_A
 
-    FROM tbl_2024_etudiant WHERE etude_envisage = "'.$mention.'" AND annee_scolaire = "'.$yearScoolNow.'" ORDER BY etude_envisage');
-
+ FROM t_2024_inscription_session WHERE etude_mention = "'.$filiere_sigle.'" AND session_id = "'.$session_id.'" ORDER BY etude_mention');
 
            $row = $result->fetch();
 

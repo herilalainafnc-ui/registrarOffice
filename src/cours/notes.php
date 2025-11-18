@@ -33,7 +33,7 @@ $preced = $soustract - 1;
 <?php
 $sigle = $profil['Sigle'];
 $title = $profil['title'];
-$cors = $dtb->query('SELECT * FROM t_2023_notes WHERE Sigle ="'.$sigle.'" AND title_cours = "'.$title.'" AND annee_scolaire = "'.$scolaire.'" AND ajout = 1 ORDER BY student_id');
+$cors = $dtb->query('SELECT * FROM t_2023_notes WHERE Sigle ="'.$sigle.'" AND annee_scolaire = "'.$scolaire.'" AND remove = 0 ORDER BY student_id');
 
 $nbr = 1;
 while ($cours_table = $cors->fetch()) {
@@ -54,10 +54,19 @@ if($apotr){
 		echo $apotr['student_nom']." ".$apotr['student_prenom'];
 	}
 }else{
-	echo "<em style='color:red'>Etudiant non inscrit dans la base!!</em>";
+	echo "<em style='color:red'>Etudiant supprimé de la base.</em>";
 }
 					?></td>
-					<td class="c<?=$nbr.$soustract;?>">L<?=$apotr['annee_etude']?></td>
+					<td class="c<?=$nbr.$soustract;?>">
+<?php 
+if($apotr){
+	echo "L".$apotr['annee_etude'];
+}else{
+	echo "-";
+}
+ ?>						
+							
+						</td>
 					<td class="c<?=$nbr.$soustract;?>"><?=$cours_table['semester']?></td>
 					<td class="<?=$bg_six_color?> text-slate-800 px-0">
 <?php 

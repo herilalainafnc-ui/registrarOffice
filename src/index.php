@@ -45,7 +45,7 @@
 
 			/*$req = $dtb->query("SELECT * FROM rg_user WHERE user_pseudo='".$infinit_pseudo."' AND user_password='".$infinit_password."' limit 1");*/
 
-			$req = $dtb->query("SELECT * FROM compt_utilisateur WHERE  pseudo='".$infinit_pseudo."' AND password='".$infinit_password."' limit 1");
+			$req = $dtb->query("SELECT * FROM compt_utilisateur WHERE  pseudo='".$infinit_pseudo."' AND password='".$infinit_password."' AND etat=1 limit 1");
 
 				if($req->rowCount() > 0){
 					

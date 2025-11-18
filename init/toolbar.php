@@ -9,14 +9,14 @@ if($page == "accueil.php" OR $page == "student.php" OR $page=="inscription.php")
 	echo "exportListCours";
 }elseif($page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "exportListProf";
-} ?>" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
+} ?>" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if($rg_user['level'] <=3) { echo "";}else{ echo " toolInactive";}?>">
 				<center>
 				<i class="bi-filetype-pdf text-2xl"></i><br>
 						Exporter la liste
 				</center>
 			
 		</a>
-		<a id="exportStatistic" href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
+		<a id="exportStatistic" href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1<?php if($rg_user['level'] <=3) { echo "";}else{ echo " toolInactive";}?>">
 				<center>
 				<i class="bi-list-columns text-2xl"></i><br>
 						Statistique
@@ -26,7 +26,7 @@ if($page == "accueil.php" OR $page == "student.php" OR $page=="inscription.php")
 		<a href="#" id="exportListFOP" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
-} ?>">
+} ?><?php if($rg_user['level'] <=2) { echo "";}else{ echo " toolInactive";}?>">
 				<center>
 				<i class="bi-file-text text-2xl"></i><br>
 						List pour la FOP
@@ -36,7 +36,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 		<a href="#" id="finance" class="text-xs lg:w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
-} ?>">
+} ?><?php if($rg_user['level'] <=3) { echo "";}else{ echo " toolInactive";}?>">
 				<center>
 				<i class="bi-currency-exchange text-2xl"></i><br>
 						Finance
@@ -51,7 +51,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 		<a href="#" id="exportMesupres" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
-} ?>">
+} ?><?php if($rg_user['level'] <=2) { echo "";}else{ echo " toolInactive";}?>">
 				<center>
 				<i class="bi-bar-chart-steps text-2xl"></i><br>
 						Mesupres
@@ -62,7 +62,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 		<a href="#" id="exportListCSV" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
-} ?>">
+} ?><?php if($rg_user['level'] <=2) { echo "";}else{ echo " toolInactive";}?>">
 				<center>
 				<i class="bi-envelope-at text-2xl"></i><br>
 						Tamplate mail CSV
@@ -72,7 +72,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 		<a href="#" id="exportTicketMail" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
-} ?>">
+} ?><?php if($rg_user['level'] <=2) { echo "";}else{ echo " toolInactive";}?>">
 				<center>
 				<i class="bi-ticket-perforated-fill text-2xl"></i><br>
 						Tickets mail
@@ -88,7 +88,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 		<a target='_blank' href="../inscription/inscription.php" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
-} ?>">
+} ?><?php if($rg_user['level'] <=4) { echo "";}else{ echo " toolInactive";}?>">
 				<center>
 				<i class="bi-person-fill-add text-2xl"></i><br>
 						Inscription
@@ -98,7 +98,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 		<a href="#" id="worked" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
-} ?>">
+} ?><?php if($rg_user['level'] <=4) { echo "";}else{ echo " toolInactive";}?>">
 				<center>
 				<i class="bi-person-lines-fill text-2xl"></i><br>
 						Worked
@@ -108,10 +108,10 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 		<a href="#" id="workedSlip" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
-} ?>">
+} ?><?php if($rg_user['level'] <=4) { echo "";}else{ echo " toolInactive";}?>">
 				<center>
 				<i class="bi-card-checklist text-2xl"></i><br>
-						Worked Slip
+						Worked Slips
 				</center>			
 		</a>
 		
@@ -297,7 +297,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 		<a href="#" id="badgeGr" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
-} ?>">
+} ?><?php if($rg_user['level'] <=2) { echo "";}else{ echo " toolInactive";}?>">
 				<center>
 				<i class="bi-person-badge-fill text-2xl"></i><br>
 						Badge
@@ -308,7 +308,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
-} ?> toolInactive">
+} ?><?php if($rg_user['level'] <=1) { echo "";}else{ echo " toolInactive";}?>">
 				<center>
 				<i class="bi-file-excel text-2xl"></i><br>
 						Sans Photos
@@ -319,7 +319,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 		<a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
-} ?> toolInactive">
+} ?><?php if($rg_user['level'] <=1) { echo "";}else{ echo " toolInactive";}?>">
 				<center>
 				<i class="bi-download text-2xl"></i><br>
 						Photos en masse

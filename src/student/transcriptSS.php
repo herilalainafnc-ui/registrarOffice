@@ -313,10 +313,10 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 				<td class="p-1 w-8/12 text-right">Note de Work Education cumulative</td>
 				<td class="px-2 w-2/12 text-bold"><?=round(($cumulWorkNote*20)/((($i-1)*2)*20),3);?></td>
 			</tr>
-			<tr>
+			<!-- <tr>
 				<td class="p-1 w-8/12 text-right">Nemarque académique cumulative</td>
 				<td class="px-2 w-2/12 text-bold"><?=round(($cumulremarkAcad*20)/((($i-1)*2)*20),3);?></td>
-			</tr>
+			</tr> -->
 			<tr>
 				<td class="p-1 w-8/12 text-right">Note de participation à l'exercice de chapelle et à la semaine de prière cumulative</td>
 				<td class="px-2 w-2/12 text-bold"><?=round(($cumulChapel*20)/((($i-1)*2)*20),3);?></td>

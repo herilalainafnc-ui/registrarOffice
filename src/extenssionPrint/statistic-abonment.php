@@ -1,12 +1,17 @@
 <?php 
 $yearNow = date('Y');
 
+$semestre =$_POST['semestre'];
 $yearScoolNow = $_POST['yearStatistic'];
 
+$findSessionOnSS = $dtb->query('SELECT * FROM t_2023_session WHERE session_name ="'.$semestre.'" AND session_year = "'.$yearScoolNow.'"');
+
+$showSessionOnSS = $findSessionOnSS->fetch();
+$session_id = $showSessionOnSS['session_id'];
  ?>
 <div class="" style="page-break-inside: avoid;">
 
-<b>Statistique d'abonnement </b><em class="text-xs">- Année <?=$yearScoolNow?></em>
+<b>Statistique d'abonnement </b><em class="text-xs"> • <b>Session : </b> <?=$semestre." ".$yearScoolNow?></em>
 	<table class="tbl" style="page-break-inside: avoid;">
 		<thead>
 			<tr style="page-break-inside: avoid;">
@@ -28,7 +33,7 @@ $yearScoolNow = $_POST['yearStatistic'];
 		<tbody>
 			<?php
 
- $mentio = $dtb->query('SELECT * FROM filiere WHERE filiere_sigle !="CPRE"');
+ $mentio = $dtb->query('SELECT * FROM filiere WHERE filiere_sigle !="CPRE" AND filiere_sigle !="EDUC"');
 
  // Requête SQL pour récupérer les données groupées
 $abonnee_H = 0;
@@ -38,16 +43,19 @@ $nonAbonnee_F = 0;
 $thorizontal = 0;
 
 	while($mt = $mentio->fetch()){
-		
+
+		$filiere_sigle= $mt['filiere_sigle'];
 		$mention = $mt['filiere_description'];
+	
 
 $result = $dtb->query('SELECT *,
-           SUM(CASE WHEN abonment = 1 AND sex = 1 THEN 1 ELSE 0 END) AS Abonnee_H,
-           SUM(CASE WHEN abonment = 1 AND sex = 0 THEN 1 ELSE 0 END) AS Abonnee_F,
-           SUM(CASE WHEN abonment = 0 AND sex = 1 THEN 1 ELSE 0 END) AS NonAbonnee_H,
-           SUM(CASE WHEN abonment = 0 AND sex = 0 THEN 1 ELSE 0 END) AS NonAbonnee_F
+           SUM(CASE WHEN abonment_std = 1 THEN 1 ELSE 0 END) AS Abonnee_H,
+           SUM(CASE WHEN abonment_std = 1 THEN 1 ELSE 0 END) AS Abonnee_F,
+           SUM(CASE WHEN abonment_std = 0 THEN 1 ELSE 0 END) AS NonAbonnee_H,
+           SUM(CASE WHEN abonment_std = 0 THEN 1 ELSE 0 END) AS NonAbonnee_F
        
-    FROM tbl_2024_etudiant WHERE etude_envisage = "'.$mention.'" AND annee_scolaire = "'.$yearScoolNow.'" ORDER BY etude_envisage');
+    FROM t_2024_inscription_session WHERE etude_mention = "'.$filiere_sigle.'" AND session_id = "'.$session_id.'" ORDER BY etude_mention');
+
 
 
            $row = $result->fetch();

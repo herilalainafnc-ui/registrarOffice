@@ -61,16 +61,22 @@
 				      		</div>
 				      		<div class="w-9/12">
 				      			<select id="anneescolaire" name="anneescolaire" class="input w-full">
-									<?php
-									for ($i=0; $i < 5; $i++) { 
-										$a = date('Y')+1;
-										$annee = ($a-$i-1)." - ".($a-$i);
+				      				 <?php
+										$y = date('Y');
+										for ($i=0; $i <= 3; $i++) { 
+											
+											if (date('m')>7) {
+												$annee = $y." - ".($y+1);	
+											}else{
+												$annee = ($y-1)." - ".$y;
+											}
+											
+										?>
+										<option value="<?=$annee?>"><?=$annee?></option>
+										<?php
+										$y = $y - 1;
+										}
 									?>
-										<option value="<?=$annee?>"><?=$annee?></option>	
-
-									<?php
-									} 
-				      				 ?>
 				      			</select>	
 				      		</div>
 				      	</div>
@@ -134,9 +140,22 @@
 				      		</div>
 				      		<div class="w-9/12">
 				      			<select id="semestre" name="semestre" class="input w-full">
-				      				<option value="tout">Tout</option>
-				      				<option value="1">Semestre 1</option>
-				      				<option value="2">Semestre 2</option>
+				      				<option <?php 
+if (date('m')>7) {
+	echo "selected";	
+}else{
+
+}
+						 ?> value="1">Premier semestre</option>
+						<option value="3">Semestre d'été</option>
+						<option <?php 
+if (date('m')>7) {
+	
+}else{
+	echo "selected";
+}
+						 ?> value="2">Deuxième semestre</option>
+						<option value="4">Semestre d'hiver</option>
 				      			</select>	
 				      		</div>
 				      	</div>
@@ -234,9 +253,22 @@
 				      		</div>
 				      		<div class="w-9/12">
 				      			<select id="semestre" name="semester" class="input w-full">
-				      				<option value="tout">Tout</option>
-				      				<option value="1">Semestre 1</option>
-				      				<option value="2">Semestre 2</option>
+				      				<option <?php 
+if (date('m')>7) {
+	echo "selected";	
+}else{
+
+}
+						 ?> value="1">Premier semestre</option>
+						<option value="3">Semestre d'été</option>
+						<option <?php 
+if (date('m')>7) {
+	
+}else{
+	echo "selected";
+}
+						 ?> value="2">Deuxième semestre</option>
+						<option value="4">Semestre d'hiver</option>
 				      			</select>	
 				      		</div>
 				      	</div>
@@ -474,22 +506,39 @@
 			<div class="p-2">
 				<div class="flex mb-3">
 				    	<div class="w-3/12 text-right pr-2">
+					      	<label for="yearStatistic">Semestre</label>
+					    </div>
+					    <div class="w-9/12">
+					    	<select name="semestre" id="semstre" class="input w-full">
+								<option>Semestre d'été</option>
+						<option <?php if (date('m')>=7) {echo "selected";} ?>>Premier semestre</option>
+						<option>Semestre d'hiver</option>
+						<option <?php if (date('m')<7) {echo "selected";} ?>>Deuxième semestre</option>
+							</select>
+					    </div>
+				</div>
+				<div class="flex mb-3">
+				    	<div class="w-3/12 text-right pr-2">
 					      	<label for="yearStatistic">Année</label>
 					    </div>
 					    <div class="w-9/12">
 					    	<select name="yearStatistic" id="yearStatistic" class="input w-full">
-								<option></option>
-								<?php
-								$y = date('Y');
-								for ($i=0; $i <= 8; $i++) { 
+								 <?php
+								$mois = date('m');
+								if (intval($mois) < 7){
+									$z = date('Y');
+								}else{
 									
-									$as = $y." - ".($y+1);
-								?>
-								<option><?=$as?></option>
-								<?php
-								$y = $y - 1;
+									$z = date('Y') + 1;
 								}
-								 ?>
+								$yn = 1;
+				        			for ($i=1; $i < 10; $i++) { 
+				        			?>
+				        				<option><?=($z-1)." - ".$z?></option>
+				        			<?php
+				        			$z = $z-$yn;
+				        		}
+			        		 	?>
 							</select>
 					    </div>
 				</div>
@@ -497,7 +546,7 @@
 			<div class="p-3">
 				<center>
 				<a href="#" id="cancelnotifStatistic" class="bg-slate-400 p-2 rounded-md">Annuler</a>
-				<input id="btnStatistic" type="submit" class="bg-slate-400 p-2 rounded-md mx-1 toolInactive" value="Afficher">
+				<input id="btnStatistic" type="submit" class="bg-cyan-800 p-2 rounded-md text-white mx-1" value="Afficher">
 				</center>
 			</div>
 			</form>
@@ -598,7 +647,6 @@
 					    </div>
 					    <div class="w-9/12">
 					    	<select name="yearFinance" id="yearFinance" class="input w-full">
-								<option></option>
 								<?php
 								$y = date('Y');
 								for ($i=0; $i <= 8; $i++) { 
@@ -619,10 +667,22 @@
 					    </div>
 					    <div class="w-9/12">
 					    	<select name="semestreFinance" id="semestreFinance" class="input w-full">
-								<option value="1">Premier Semestre</option>
-								<option value="3">Semestre d'été</option>
-								<option value="2">Deuxième Semestre</option>
-								<option value="4">Semestre d'hiver</option>
+								<option <?php 
+if (date('m')>7) {
+	echo "selected";	
+}else{
+
+}
+						 ?> value="1">Premier semestre</option>
+						<option value="3">Semestre d'été</option>
+						<option <?php 
+if (date('m')>7) {
+	
+}else{
+	echo "selected";
+}
+						 ?> value="2">Deuxième semestre</option>
+						<option value="4">Semestre d'hiver</option>
 							</select>
 					    </div>
 				</div>
@@ -677,7 +737,7 @@
 			<div class="p-3">
 				<center>
 				<a href="#" id="cancelnotifFinance" class="bg-slate-400 p-2 rounded-md">Annuler</a>
-				<input id="btnFinance" type="submit" class="bg-slate-400 p-2 rounded-md mx-1 toolInactive" value="Afficher">
+				<input id="btnFinance" type="submit" class="bg-cyan-800 p-2 rounded-md mx-1" value="Afficher">
 				</center>
 			</div>
 			</form>
@@ -857,9 +917,7 @@
 					$voir = $dtb->query("SELECT * FROM filiere");
 					while ($affiche = $voir->fetch()) {?>
 										
-								<option <?php if ($affiche['filiere_description'] == "Théologie") {
-									echo "selected";
-								} ?>><?=$affiche['filiere_description'];?></option>
+								<option value="<?=$affiche['filiere_sigle']?>"><?=$affiche['filiere_description'];?></option>
 
 		<?php	
 			}
@@ -872,7 +930,7 @@
 					      	<label for="niveau">Niveau</label>
 					    </div>
 					    <div class="w-9/12">
-			    			<select id="niveau" name="niveau" class="input w-full">
+			    			<select id="niveau" name="level" class="input w-full">
 			    				<option value="TOUT">Tout</option>
 			    				<option value="1" selected>Licence 1</option>
 			    				<option value="2">Licence 2</option>
@@ -880,6 +938,19 @@
 			    				<option value="4">Master 1</option>
 			    				<option value="5">Master 2</option>
 			      			</select>	
+					    </div>
+				</div>
+				<div class="flex mb-3">
+						<div class="w-3/12 text-right pr-2">
+					      	<label for="niveau">Semestre</label>
+					    </div>
+					    <div class="w-9/12">
+			    			<select name="semesterBadgeGr" class="input w-full">
+								<option <?php if (date('m')>=7) {echo "selected";} ?> value="1">Premier semestre</option>
+								<option value="3">Semestre d'été</option>
+								<option <?php if (date('m')<7) {echo "selected";} ?> value="2">Deuxième semestre</option>
+								<option value="4">Semestre d'hiver</option>
+							</select>
 					    </div>
 				</div>
 				<div class="flex mb-3">
@@ -902,8 +973,18 @@
 							</select>
 					    </div>
 				</div>
+				<hr><br>
+				<div class="flex mb-3">
+				    	<div class="w-3/12 text-right pr-2">
+					      	
+					    </div>
+					    <div class="w-9/12">
+					    	<input type="checkbox" name="back" id="back" checked>
+								<label for="back"> Imprimer avec verso.</label>
+					    </div>
+				</div>
 				<hr>
-				<b class="text-slate-500">Si vous voulez exporter un seul étudiant...</b><br>
+				<b class="text-slate-500">Si vous voulez exporter pour un seul étudiant...</b><br>
 				<div class="flex mb-3">
 				    	<div class="w-6/12 text-right pr-2">
 					      	<label for="yearTicket">Matricule</label>

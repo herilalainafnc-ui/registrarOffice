@@ -47,7 +47,7 @@
 
 		}
 	}elseif (date('m') < 7) {
-		if ($show_stage['annee_scolaire'] == $aSem_) {
+		if ($show_stage['annee_scolaire'] != $aSem_) {
 			$id = $show_stage['id'];
 			
 			if ($stage == 2) {

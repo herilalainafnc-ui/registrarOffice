@@ -1,7 +1,24 @@
 <?php 
-require('../init/.forPrint/top.forPrint.php'); 
-$student_id = $_GET['student_id'];
+require('../init/.forPrint/top.forPrint.php');
+
 $session_id = $_GET['session_id'];
+
+//$semester = $_POST['semester'];
+//$annee_scolaire = $_POST['annee_scolaire'];
+
+$findSession = $dtb->query('SELECT * FROM t_2023_session WHERE session_id = "'.$session_id.'"');
+
+//$findSession = $dtb->query('SELECT * FROM t_2023_session WHERE session_name = "'.$semester.'" AND session_year = "'.$annee_scolaire.'"');
+
+$showSession = $findSession->fetch();
+
+
+$semester = $showSession['session_semester'];
+$session_name = $showSession['session_name'];
+$annee_scolaire = $showSession['session_year'];
+
+$student_id = $_GET['student_id'];
+//$session_id = $showSession['session_id'];
 
 $now = date('Y-m-d');
 $printName = $student_id."-FICHE INSCRIPTION";
@@ -14,7 +31,7 @@ $stdA = $searchStd->fetch();
  <div class="mb-24" id="exportToExcel">
 
 <center>
-	<b class="text-2xl">Fiche d'inscription</b>
+	<b class="text-xl">Fiche d'inscription - </b><em class="text-sm"><?=$session_name." ".$annee_scolaire?></em>
 </center>
 	
 	<div class="flex text-xs px-1 py-1" style="border: 1px solid #8e9bb2;">
@@ -53,10 +70,84 @@ if ($stdA['annee_etude'] == 0) {
 			<img src="../app/photosetudiants/<?=$stdA['image_student']?>">
 		</div>
 	</div>
-		<b class="text-lg">Liste des cours</b>
+		<b class="text-md">Cours ajouté</b>
 	<div>
-		
+
+<!-- 
+AFFICHAGE DE LISTE DE COURS SANS FINANCEMENT
+
 		<table class="tbl mb-2">
+			<thead class="bg-slate-200">
+				<tr>
+					<th style="width: 100px">Sigle</th>
+					<th style="">Titre du cours</th>
+					<th style="width: 60px">Crédits</th>
+					<th style="width: 80px">Catégorie</th>
+					<th style="width: 80px; text-align: left; padding-right: 6px;">Labo</th>
+				</tr>
+			</thead>
+			<tbody>
+				
+	<?php 
+		$findCours = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id="'.$student_id.'" AND session_id="'.$session_id.'" AND remove != 1');
+		$nbr = 0;
+		$tCredit = 0;
+		$tCout = 0;
+		$tLab = 0;
+		$n_lab = 0;
+		$somm_lab = 0;
+		while($showC = $findCours->fetch()) {
+	 ?>
+	 			<tr>
+	 				<td><?=$showC['Sigle']?></td>
+	 				<td><?=$showC['title_cours']?></td>
+	 				<td><?=$showC['credit']?></td>
+	 				<td><?php 
+if ($showC['cours_category'] == 0){
+	echo "Général";
+}elseif ($showC['cours_category'] == 1) {
+	echo "Majeur";
+}elseif ($showC['cours_category'] == -1 OR $showC['cours_category'] == 2) {
+	echo "Selective";
+}elseif ($showC['cours_category'] == 3) {
+	echo "Additionnel";
+}elseif ($showC['cours_category'] == 5) {
+	echo "``";
+}else{
+	echo "-";
+}
+
+	 				?></td>
+	 				<td><?php 
+	 if ($showC['lab']==0) {
+	 	echo "";
+	 	}else{
+	 		echo "Labo". $showC['lab'];
+	 	} 				
+	 			?></td>
+	 			</tr>
+	<?php
+		$nbr++;
+		$tCredit =+ $tCredit + $showC['credit'];
+		}
+	 ?>
+ 				
+			</tbody>
+			<tfoot>
+				<tr class="bg-slate-200">
+					<th colspan="2"><?=$nbr?> cours</th>
+					<th><?=$tCredit?></th>
+					<th></th>
+					<th class="text-right"><?=$tCout.' ar'?></th>
+					<th class="text-right"><?=$tLab.' ar'?></th> 
+				</tr>
+			</tfoot>
+		</table>
+ -->		
+ 		
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
+<!-- AFFICHAGE AVEC FINANCEMENT DE LISTE DE COURS -->
+ 		<table class="tbl mb-2">
 			<thead class="bg-slate-200">
 				<tr>
 					<th style="width: 100px">Sigle</th>
@@ -100,7 +191,7 @@ if ($showCat['category'] == 0){
 	echo "-";
 }
 				?></td>
-					<td class="text-right"><?=$showCF['cours_cout'].' ar'?></td>
+					<td class="text-right"><?=number_format($showCF['cours_cout'], 0, '', ' ').' ar'?></td>
 					<td class="text-right"><?php 
 					
 					if ($showCat['lab'] != 0) {						
@@ -109,12 +200,12 @@ if ($showCat['category'] == 0){
 
 						if ($n_lab <= 2) {
 
-							echo $showCat['cout_lab'];
+							echo number_format($showCat['cout_lab'], 0, '', ' ');
 							$somm_lab =+ $somm_lab + $showCat['cout_lab'];
 					
 						}else{
 						
-							echo "<a style='text-decoration: line-through; color: orange;'>".$showCat['cout_lab']."</a>";
+							echo "<a style='text-decoration: line-through; color: orange;'>".number_format($showCat['cout_lab'], 0, '', ' ')."</a>";
 						
 						}
 
@@ -135,15 +226,34 @@ if ($showCat['category'] == 0){
 				<tr class="bg-slate-200">
 					<th colspan="2"><?=$nbr?> cours</th>
 					<th><?=$tCredit?></th>
-					<!-- <th></th>
-					<th class="text-right"><?=$tCout.' ar'?></th>
-					<th class="text-right"><?=$tLab.' ar'?></th> -->
+					 <th></th>
+					<th class="text-right"><?=number_format($tCout, 0, '', ' ').' ar'?></th>
+					<th class="text-right"><?=number_format($somm_lab, 0, '', ' ').' ar'?></th>
 				</tr>
 			</tfoot>
 		</table>
-		<em class="text-xs"><b>Résidence : </b><?=$stdA['status']?></em><br>
-		<em class="text-xs"><b>Cafétéria : </b><?php if ($stdA['abonment'] == 1) { echo "Abonnée"; }else{ echo "Non abonnée"; }?></em><br>
 
+		
+<!-- <table class="tbl">
+<tr>
+<?php
+	$findCours = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id="'.$student_id.'" AND session_id="'.$session_id.'" AND remove != 1');
+	while($showC = $findCours->fetch()) {
+?>
+	
+		<td><?php echo $showC['Sigle'];?></td>
+	
+<?php 
+	}
+ ?>
+ </tr>
+</table> -->
+
+<em class="text-xs">Résidence : <b><?=$stdA['status']?></b></em><br>
+		<em class="text-xs">Cafétéria : <b><?php if ($stdA['abonment'] == 1) { echo "Abonnée"; }else{ echo "Non abonnée"; }?></b></em><br><br>
+
+<!-- AFFICHAGE DES FRAIS A PAYER -->		
+ 
 <?php 
 
 	if(!empty($session_id)) {
@@ -155,28 +265,31 @@ if ($showCat['category'] == 0){
 	
 	if (!empty($showFin['session_id']) OR $showFin['session_id'] != 0) {
  ?>
- 		<b class="text-lg">Finance</b>
-		<table class="tbl mb-2" style="width:100%">
-			<thead class="bg-sky-200">
-				<tr class="text-right">
-					<th>Frais Généraux</th>
-					<?php if ($stdA['status'] == "Interne" OR $stdA['status'] == "Bungalow") { ?>
-						<th>Logement</th>
-						<th>Fond Dépôt</th>
+ <div class="flex gap-5">
+ 	<div class="w-6/12">
+ <em class="text-xs"><b>NB :</b> Le frais généraux doivent être payés le jour de l'inscription.</em>
+ 		<table class="w-full tbl mb-2">
+ 			<thead class="bg-sky-200">
+ 				<tr class="text-center">
+ 					<th colspan="2">Frais divers</th>
+ 				</tr>
+ 			</thead>
+ 			<tbody>
+ 				<tr>
+ 					<td>Frais Généraux</td>
+ 					<td class="text-right"><?=number_format($showFin['cout_fraix_generaux'], 0, '', ' ')?> ar</td>
+ 				</tr>
+ 				<tr>
+ 					<?php if ($stdA['etude_envisage'] == "Théologie" AND $stdA['annee_etude'] == 1) { ?>
+					<td>Frais Costume</td>
 					<?php }?>
-
-					<?php if ($stdA['abonment'] == 1) { ?>
-						<th>Céféteria</th>
+ 					
+ 					<?php if ($stdA['etude_envisage'] == "Théologie" AND $stdA['annee_etude'] == 1) { ?>
+						<td class="text-right"><?=number_format($showFin['cout_costume'], 0, '', ' ')?> ar</td>
 					<?php }?>
-
-					<?php if ($stdA['etude_envisage'] == "Théologie" AND $stdA['annee_etude'] == 1) { ?>
-						<th>Frais Costume</th>
-					<?php }?>
-
-					<?php if ($stdA['graduated'] == 1) { ?>
-						<th>Frais Graduation</th>
-					<?php }?>
-					<th>
+ 				</tr>
+ 				<tr>
+ 					<td>
 <?php 
 	if ($stdA["etude_envisage"] == "Théologie") {
 		echo "Colloque";
@@ -185,159 +298,203 @@ if ($showCat['category'] == 0){
 	}
 
  ?>
-					</th>
-					<th>Total Cours</th>
-					<th>Total Lab</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr class="text-bold text-right">
-					<td><?=$showFin['cout_fraix_generaux']?> ar</td>
+					</td>
+					<td class="text-right"><?=number_format($showFin['cout_voyage'], 0, '', ' ')?> ar</td>
+ 				</tr>
+ 				<!-- <tr>
+ 					<td>Fond de dépôt</td>
+ 					<td class="text-right"><?=number_format($showFin['cout_fondDepot_dortoir'], 0, '', ' ')?> ar</td>
+ 				</tr> -->
+ 			</tbody>
+ 		</table>
 
-					<?php if ($stdA['status'] == "Interne" OR $stdA['status'] == "Bungalow") { ?>
-						<td><?=$showFin['cout_logement']?> ar</td>
-						<td><?=$showFin['cout_fondDepot_dortoir']?> ar</td>
-					<?php }?>
-
-					<?php if ($stdA['abonment'] == 1) { ?>
-						<td><?=$showFin['cout_abonment']?> ar</td>
-					<?php }?>
-
-					<?php if ($stdA['etude_envisage'] == "Théologie" AND $stdA['annee_etude'] == 1) { ?>
-						<td><?=$showFin['cout_costume']?> ar</td>
-					<?php }?>
-
-					<?php if ($stdA['graduated'] == 1) { ?>
-						<td><?=$showFin['cout_frais_graduation']?> ar</td>
-					<?php } ?>
-					<td><?=$showFin['cout_voyage']?> ar</td>
-					<td><?=$tCout?> ar</td>
-					<td><?=$somm_lab?> ar</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<p class="text-sm mb-2">Montant : 
-			<b class="bg-orange-300 py-1 px-2"><?=$Montant = $showFin['cout_fraix_generaux'] + 
+ 		<table class="w-full tbl mb-2">
+ 			<thead class="bg-sky-200">
+ 				<tr>
+ 					<th colspan="2" class="text-center">Frais de scolarité</th>	
+ 				</tr>
+ 			</thead>
+ 			<tbody>
+ 				<tr>
+ 					<td>Total du cours</td>
+ 					<td class="text-right"><?=number_format($tCout, 0, '', ' ')?> ar</td>
+ 				</tr>
+ 				<tr>
+ 					<td>Total de Laboratoire</td>
+ 					<td class="text-right"><?=number_format($somm_lab, 0, '', ' ')?> ar</td>
+ 				</tr>
+ 				<tr>
+ 					<td>Frais du logement</td>
+ 					<td class="text-right"><?=number_format($showFin['cout_logement'], 0, '', ' ')?> ar</td>
+ 				</tr>
+ 				
+ 				<tr>
+ 					<td>Frais de caféteria</td>
+ 					<td class="text-right"><?=number_format($showFin['cout_abonment'], 0, '', ' ')?> ar</td>
+ 				</tr>
+ 				<tr>
+ 					<td>Frais de Graduation</td>
+ 					<td class="text-right">
+<?php if ($stdA['graduated'] == 1) { ?>
+					<?=number_format($showFin['cout_frais_graduation'], 0, '', ' ')?> ar
+<?php }else{ echo '0 ar';} ?>
+ 					</td>
+ 				</tr>
+ 				
+ 			</tbody>
+<?php
+$Montant = $showFin['cout_fraix_generaux'] + 
 							$showFin['cout_logement'] +
 							$showFin['cout_fondDepot_dortoir'] +
 							$showFin['cout_abonment'] +
-							$showFin['cout_costume'] +
 							$showFin['cout_frais_graduation'] +
-							$showFin['cout_voyage'] +
 							$tCout +
-							$somm_lab
-				?> ar</b> <em>(Payé lors de l'inscription : <?=$pay_inscription = $showFin['cout_fraix_generaux'] + $showFin['cout_fondDepot_dortoir']?> ar)</em>
-			</p>
-<?php 
+							$somm_lab;
+$pay_inscription = $showFin['cout_fraix_generaux'] + $showFin['cout_fondDepot_dortoir'];
 $findPayement = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE student_id="'.$student_id.'" AND session_id="'.$session_id.'"');
 
 $showPayement = $findPayement->fetch();
 
 $modeP = $showPayement['mode_payement'];
-?>
-<div class="w-full gap-3 flex">
+?>	
+ 			<tfoot>
+ 				<tr>
+ 					<th>Sous total frais de scolarité</th>
+ 					<th class="text-right"><?=number_format($Montant_sans_fraix_Generaux = $Montant - $pay_inscription, 0, '', ' ')?> ar</th>
+ 				</tr>
+ 			</tfoot>
+ 		</table>
+ 	</div>
+<div class="w-6/12">
 <?php 
 	
 	if ($stdA['sponsor_nom'] != "") {
 ?>	
-	<div class="w-5/12">
-		<b class="text-lg">Boursier par <br><?=$stdA['sponsor_nom']." ".$stdA['sponsor_prenom']?>.</b>
+	<div>
+		<b class="text-xs">Boursié(e) par : <?=$stdA['sponsor_nom']." ".$stdA['sponsor_prenom']?></b>
 	</div>
 <?php
-	}else{
+	}
  ?>
-<div class="w-5/12">
-	<b class="text-lg">Mode de paiement</b>
+ <!-- __________________________________________________________________ -->
+
+<!-- MODE DE PAYEMENT -->
+<div>
+	<b class="text-md">Mode de paiement choisi :</b>
+
 	<table class="tbl mb-2">
 			<thead>
 				<tr>
-					<th colspan="3" class="text-center text-bold"> <?=$Montant_sans_fraix_Generaux =
-							$Montant - $pay_inscription?> ar</th>
+					<th colspan="3" class="text-center text-bold">
+<?=number_format($Montant_sans_fraix_Generaux = $Montant - $pay_inscription, 0, '', ' ')?> ar
+					</th>
 				</tr>
 				<tr>
-					<th colspan="3" class="text-center text-bold">Payé en tranches de TYPE <?=$modeP?></th>
+					<th colspan="3" class="text-center text-bold text-[20px]">Tranche <?=$modeP?></th>
 				</tr>
 
+			</thead>
+			<thead>
+				<tr>
+					<th>Pourcentage</th>
+					<th>Mentant</th>
+					<th>Date de paiement</th>
+				</tr>
 			</thead>
 			<tbody>
 				<?php if ($modeP == 'A') {  ?>
 					<tr>
 						<td>100 %</td>
-						<td class="text-right"><?=$Montant_sans_fraix_Generaux ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="Mercredi, 16 octobre 2024"></td>
+						<td class="text-right"><?=number_format($Montant_sans_fraix_Generaux, 0, '', ' ') ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="03 octobre 2025"></td>
 					</tr>
 				<?php }elseif ($modeP == 'B') {  ?>
 					<tr>
 						<td>50 %</td>
-						<td class="text-right"><?=($Montant_sans_fraix_Generaux *50) /100 ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="Mercredi, 16 octobre 2024"></td>
+						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *50) /100, 0, '', ' ') ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="03 octobre 2025"></td>
 					</tr>
 					<tr>
 						<td>50 %</td>
-						<td class="text-right"><?=($Montant_sans_fraix_Generaux *50) /100 ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="Vendredi, 17 janvier 2025"></td>
+						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *50) /100, 0, '', ' ') ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="30 janvier 2026"></td>
 					</tr>
 				<?php }elseif ($modeP == 'C') {  ?>
 					<tr>
 						<td>75 %</td>
-						<td class="text-right"><?=($Montant_sans_fraix_Generaux *75) /100 ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="Mercredi, 16 octobre 2024"></td>
+						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *75) /100, 0, '', ' ') ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="03 octobre 2025"></td>
 					</tr>
 					<tr>
 						<td>25 %</td>
-						<td class="text-right"><?=($Montant_sans_fraix_Generaux *25) /100 ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="Vendredi, 17 janvier 2025"></td>
+						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *25) /100, 0, '', ' ') ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="30 janvier 2026"></td>
 					</tr>
 				<?php }elseif ($modeP == 'D') {  ?>
 					<tr>
 						<td>40 %</td>
-						<td class="text-right"><?=($Montant_sans_fraix_Generaux *40) /100 ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="Mercredi, 16 octobre 2024"></td>
+						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *40) /100, 0, '', ' ') ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="03 octobre 2025"></td>
 					</tr>
 					<tr>
 						<td>30 %</td>
-						<td class="text-right"><?=($Montant_sans_fraix_Generaux *30) /100 ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="Vendredi, 22 novembre 2024"></td>
+						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *30) /100, 0, '', ' ') ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="19 decembre 2025"></td>
 					</tr>
 					<tr>
 						<td>30 %</td>
-						<td class="text-right"><?=($Montant_sans_fraix_Generaux *30) /100 ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="Vendredi, 20 décembre 2024"></td>
+						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *30) /100, 0, '', ' ') ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="30 janvier 2026"></td>
 					</tr>
 				<?php }elseif ($modeP == 'E') {  ?>
 					<tr>
 						<td>25 %</td>
-						<td class="text-right"><?=($Montant_sans_fraix_Generaux *25) /100 ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="Mercredi, 16 octobre 2024"></td>
+						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *25) /100, 0, '', ' ') ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="24 octobre 2025"></td>
 					</tr>
 					<tr>
 						<td>25 %</td>
-						<td class="text-right"><?=($Montant_sans_fraix_Generaux *25) /100 ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="Vendredi, 22 novembre 2024"></td>
+						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *25) /100, 0, '', ' ') ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="28 novembre 2025"></td>
 					</tr>
 					<tr>
 						<td>25 %</td>
-						<td class="text-right"><?=($Montant_sans_fraix_Generaux *25) /100 ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="Vendredi, 20 décembre 2024"></td>
+						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *25) /100, 0, '', ' ') ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="19 decembre 2025"></td>
 					</tr>
 					<tr>
 						<td>25 %</td>
-						<td class="text-right"><?=($Montant_sans_fraix_Generaux *25) /100 ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="Vendredi, 17 janvier 2025"></td>
+						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *25) /100, 0, '', ' ') ?> ar</td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="30 janvier 2026"></td>
 					</tr>
 				<?php } ?>
 			</tbody>
 	</table>
 </div>
 
-<?php } } } ?>
+<b class="text-[10px]">Total Général (frais divers + frais de scolarité ) : <?=number_format($showFin['cout_fraix_generaux']+$showFin['cout_costume']+$showFin['cout_voyage']+$Montant_sans_fraix_Generaux, 0, '', ' ')?> ar</b>
+</div>
 
-<div class="w-7/12">
-	<b class="text-sm">WORK EDUCATION CHOISI : <input type="text" placeholder="____________________________" class="h-4 p-0 border-0 text-xs"></b>
+</div>
+	
+<div class="w-full gap-3 flex">
+
+
+
+<?php  } } ?>
+
+<!-- _______________________________________________________________________________________ -->
+
+
+<div class="w-full pb-3">
+	<hr>
+	<div class="flex gap-5 pt-3">
+		<b class="text-sm w-3/12">Work education :</b>
+		<input type="text" class="p-0 text-mg border-1 w-9/12">
+	</div>
 	<b class="text-sm">ENGAGEMENT</b><br>
 
-<p class="text-[11px]" style="line-height: 13px;">Je sousigné(e) <?=strtoupper($stdA['student_nom'])." ".$stdA['student_prenom']?><br>m'engage, durant mon séjour à l'Université Adventiste Zurcher, à maintenir en tout temps une conduite et attitude exemplaire, et en harmonie avec
+<p class="text-[10px]" style="">Je sousigné(e) <?=strtoupper($stdA['student_nom'])." ".$stdA['student_prenom']?><br>m'engage, durant mon séjour à l'Université Adventiste Zurcher, à maintenir en tout temps une conduite et attitude exemplaire, et en harmonie avec
 la philosophie chrétienne de cette institution qui m'acceuille; à contribuer positivement à la vie de l'université et à vivre en tout temps en conformité
 avec ses principes et règlements. Le non-respect de cet engagement pourrait entrainer une sanction ou même un renvoi temporaire.</p>
 </div>
@@ -345,13 +502,13 @@ avec ses principes et règlements. Le non-respect de cet engagement pourrait ent
 	</div>
 	
 
-
+<hr>
 <div>
-			<em class="text-sm mt-2">Sambaina, le <?php
+			<em class="text-[10px] mt-1">Sambaina, le <?php
 				 echo date('d')." ";
 				 $volana = date('m');
 				 if($volana == '01'){echo('Janvier ');}
-				 else if($volana == '02'){echo('Fevrier ');}
+				 else if($volana == '02'){echo('Février ');}
 				 else if($volana == '03'){echo('Mars ');}
 				 else if($volana == '04'){echo('Avril ');}
 				 else if($volana == '05'){echo('Mai ');}
@@ -363,9 +520,10 @@ avec ses principes et règlements. Le non-respect de cet engagement pourrait ent
 				 else if($volana == '11'){echo('Novembre ');}
 				 else if($volana == '12'){echo('Decembre ');}
 				 echo date('Y')
-				 ?></em>	
+				 ?></em>
+				 <b class="text-[10px]"> - Approuvée par :</b>
 		</div>
-		<p class="text-sm">Approuvée par :</p>
+		
 		<table class="text-sm text-[10px]" style="width: 100%; page-break-inside: avoid;">
 			<tbody>
 				<tr>
@@ -378,25 +536,25 @@ avec ses principes et règlements. Le non-respect de cet engagement pourrait ent
 					<!-- <td></td> -->
 					<td></td>
 					<td></td>
-					<td style="height: 70px;"></td>
+					<td style="height: 30px;"></td>
 				</tr>
-				<tr style="font-size : 11px; line-height: 11px;">
-					<td style="border-top: 1px solid black; text-align: center;">Etudiant(e)</td>
+				<tr style="font-size : 10px; line-height: 10px;">
+					<td style="border-top: 1px solid black; text-align: center;">Étudiant(e)</td>
 					<td style="width: 20px"></td>
 					<td style="border-top: 1px solid black; text-align: center;">Chef de mention</td>
 					<td style="width: 20px"></td>
-					<td style="border-top: 1px solid black; text-align: center;">Vice-Recteur<br>financière / Controleur</td>
+					<td style="border-top: 1px solid black; text-align: center;">Vice-Recteur aux affaires financières <br>/ Controleur</td>
 					<td style="width: 20px"></td>
 					<!-- <td style="border-top: 1px solid black; text-align: center;">Vice-Recteur<br>académique</td>
 					<td style="width: 20px"></td> -->
-					<td style="border-top: 1px solid black; text-align: center;">Vice-Recteur<br>aux Affaire Estudiantine</td>
+					<td style="border-top: 1px solid black; text-align: center;">Vice-Recteur aux Affaires Estudiantines</td>
 					<td style="width: 20px"></td>
 					<td style="border-top: 1px solid black; text-align: center;">Registraire</td>
 				</tr>
 			</tbody>
 		</table>
-<div class="text-sm mt-1" style="border-top:1px solid black; width: 100%;">
-	<em>Université Adventiste Zurcher</em>
+<div class="text-[10px] mt-1" style="border-top:1px solid black; width: 100%;">
+	<em class="text-[10px]">Université Adventiste Zurcher</em>
 </div>
 
 </div>

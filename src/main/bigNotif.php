@@ -83,6 +83,18 @@ while($ct = $cat->fetch()){
 					<div id="parcours">
 	 					<select class="input w-full" type="number" name="parcours">
 							<option value="all">-</option>
+<?php 
+$cat = $dtb->query("SELECT * FROM filiere");
+
+while($ct = $cat->fetch()){
+?>
+ 						<option><?=$ct['filiere_sigle']?></option>
+
+<?php 
+}
+?>
+
+
 	 					</select>
  					</div>
 				</div>
@@ -273,6 +285,7 @@ while($tch = $teach->fetch()){
 
 	</div>
 
+
 <script type="text/javascript">
 	$(document).ready(function() {
 		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -372,7 +385,8 @@ while($tch = $teach->fetch()){
 				$('#alert-prof').text('Ces zones sont obligatoires !');
 			}
 		});
-		
+
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
 	});
 </script>
 <style type="text/css">

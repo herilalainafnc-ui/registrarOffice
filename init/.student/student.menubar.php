@@ -5,22 +5,15 @@
 							<a href="#" data-bs-toggle="dropdown" aria-expanded="false">
 							<div class="w-[75px] <?=$bg_one_color?>">
 								<?php
-								if (!empty($profil['image_student'])) {
 								
-									$imangeLen = strlen($profil['image_student']);
-									
-									if ($profil['image_student'] !="" OR $imangeLen >=10) { ?>
+								$extentionImage = substr($profil['image_student'], -4);
 
-									<img src="../app/photosetudiants/<?=$profil['image_student'] ?>" class="border-1 border-black w-full">
-
-								<?php 
-									}else{
+								if ($extentionImage == '.jpg' OR $extentionImage == '.JPG') {
+								
 								?>
-									
-									<img src="../app/photosetudiants/10054.jpg" class="border-1 border-black w-full">
+									<img src="../app/photosetudiants/<?=$profil['image_student']?>" class="border-1 border-black w-full">
 
-								<?php
-									}
+								<?php	
 								}else{ ?>
 									
 									<img src="../app/photosetudiants/10054.jpg" class="border-1 border-black w-full">

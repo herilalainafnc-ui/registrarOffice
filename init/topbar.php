@@ -8,7 +8,7 @@
 
 	if($infinit_pseudo !='' && $infinit_password !=''){
 
-		$rg_utilisateur = $dtb->query("SELECT * FROM compt_utilisateur WHERE pseudo='".$infinit_pseudo."' AND password='".$infinit_password."' limit 1");
+		$rg_utilisateur = $dtb->query("SELECT * FROM compt_utilisateur WHERE pseudo='".$infinit_pseudo."' AND password='".$infinit_password."' AND etat=1 limit 1");
 		$rg_user = $rg_utilisateur->fetch();
 
 		$rg_id = $rg_user['id'];
@@ -17,10 +17,11 @@
 		$rg_userId = $rg_user['id'];
 		$rg_photos = $rg_user['photos'];
 		$privilege = $rg_user['privilege'];
+		$rg_level = $rg_user['level'];
 
-		if ($page != 'inscription.php' AND $privilege == 'visitor') {
+		/*if ($page != 'inscription.php' AND $privilege == 'visitor') {
 			header('location:../inscription/inscription.php');
-		}
+		}*/
 
 	}else{
 		header('location:./index.php');
@@ -43,21 +44,21 @@
 			if($page == "accueil.php" OR $page == "student.php") {
 			 ?>
 			<form method="post" action="accueil.php">
-					<input id="std-search" type="text" name="search" placeholder="Search student..." class="h-8 px-2 text-sm border <?=$bg_two_color?> sm:w-full lg:w-4/12">
+					<input id="std-search" type="text" name="search" placeholder="Search student..." class="h-8 px-2 text-sm border <?=$bg_two_color?> sm:w-full lg:w-4/12 rounded-1">
 				<button type="submit" style="display: none" onclick="surligne();"></button>
 			</form>
 			<?php 
 			}elseif($page == "accueil.cours.php" OR $page == "cours.php") {
 			?>
 			<form method="post" action="accueil.cours.php">
-					<input id="cours-search" type="text" name="search" placeholder="Search course..." class="h-8 px-2 text-sm border <?=$bg_two_color?> sm:w-full lg:w-4/12">
+					<input id="cours-search" type="text" name="search" placeholder="Search course..." class="h-8 px-2 text-sm border <?=$bg_two_color?> sm:w-full lg:w-4/12 rounded-1">
 				<button type="submit" style="display: none" onclick="surligne();"></button>
 			</form>
 			<?php 
 			}elseif($page == "accueil.prof.php" OR $page == "prof.php") {
 			?>
 			<form method="post" action="accueil.cours.php">
-					<input id="prof-search" type="text" name="search" placeholder="Search teacher..." class="h-8 px-2 text-sm border <?=$bg_two_color?> sm:w-full lg:w-4/12">
+					<input id="prof-search" type="text" name="search" placeholder="Search teacher..." class="h-8 px-2 text-sm border <?=$bg_two_color?> sm:w-full lg:w-4/12 rounded-1">
 				<button type="submit" style="display: none" onclick="surligne();"></button>
 			</form>
 			<?php 
@@ -90,9 +91,9 @@
 		        
 		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="./my.account.php">
 		        <span class="bi-gear"></span>&nbsp;&nbsp; Mon compte</a></li>
-		<?php 		            
-		if(($rg_user['privilege'] == 'administrator') OR ($rg_user['privilege_2'] == 'administrator') OR ($rg_user['privilege_3'] == 'administrator') OR ($rg_user['privilege_4'] == 'administrator')) {
-		?>
+		
+		<?php if($rg_user['level'] <=2) { ?>
+				
 				<li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../app/Motors/" target="_blank">
 		        <span class="bi-code-slash"></span>&nbsp;&nbsp; Lanceur de code</a></li>
 
@@ -117,13 +118,10 @@
 		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../../" target="_blank">
 		        <span class="bi-alexa"></span>&nbsp;&nbsp; Registrar</a></li>
 		        
-		<?php
-		}else{
-		echo "";
-		}
-		?>
+		<?php }else{echo "";}?>
+		        
 		        <li><hr class="dropdown-divider"></li>
-		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="#" class="logOut"><span class="bi-door-open-fill"></span> Déconnecter</a></li>
+		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="#" class="logOut"><span class="bi-door-open-fill"></span>&nbsp;&nbsp; Ce déconnecter</a></li>
 			</ul>
 		</div>
 	</div>

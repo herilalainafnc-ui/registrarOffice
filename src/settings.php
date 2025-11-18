@@ -2,7 +2,7 @@
 <html>
 <head>
 	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
-	<title>Cours</title>
+	<title>Général</title>
 </head>
 <body class="<?=$bg_three_color?> sm:text-xs lg:text-sm">
 	<div class="h-screen w-full <?=$bg_three_color?>">
@@ -20,19 +20,24 @@
 			
 				<div class="back" style="height: calc(100vh - 152px);">
 					<div class="w-full grid gap-4 xl:grid-cols-4 sm:grdi-cols-1 p-4">
-						<a href="./my.account.php">
+						<!-- <a href="./my.account.php" class="toolInactive">
 							<div class='m-0 p-3 <?=$bg_one_color?> hover:bg-slate-700 rounded-md border-2 border-slate-800 hover:border-cyan-500 transition-all text-white'>
 							<b class="text-lg"><i class="bi-gear"></i>&nbsp;&nbsp; Mon compte</b><br><br>
-							<p class="text-slate-500">Je peux modifier, configurer, verifier mon compte dans ce rubrique.</p>
+							<p class="text-slate-500">Modifier, configurer, verifier mon compte ici.</p>
+							</div>
+						</a> -->
+						<a href="./creat.account.php" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
+							<div class='m-0 p-3 <?=$bg_one_color?> hover:bg-slate-700 rounded-md border-2 border-slate-800 hover:border-cyan-500 transition-all text-white h-[160px]'>
+							<b class="text-lg"><i class="bi-person-fill"></i>&nbsp;&nbsp; Utilisateur</b><br><br>
+							<p class="text-slate-500">Consulter la liste des utilisateurs. Créer un nouveau utilisateur.</p>
 							</div>
 						</a>
-						<a href="./creat.account.php">
-							<div class='m-0 p-3 <?=$bg_one_color?> hover:bg-slate-700 rounded-md border-2 border-slate-800 hover:border-cyan-500 transition-all text-white'>
-							<b class="text-lg"><i class="bi-person-fill-add"></i>&nbsp;&nbsp; Nouveau compte</b><br><br>
-							<p class="text-slate-500">C'est simple. Créez un nouveau compte pour un autre utilisateur.</p>
+						<a href="./gestion_finance.php" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
+							<div class='m-0 p-3 <?=$bg_one_color?> hover:bg-slate-700 rounded-md border-2 border-slate-800 hover:border-cyan-500 transition-all text-white h-[160px]'>
+							<b class="text-lg"><i class="bi-currency-exchange"></i>&nbsp;&nbsp; Finance</b><br><br>
+							<p class="text-slate-500">Voir, Modifier les détails financiaires des étudiants.</p>
 							</div>
 						</a>
-
 					</div>
 					
 					<?php require('../init/footer.php'); ?>

@@ -17,18 +17,22 @@
 	$parcours = $_POST['parcours'];
 	$lab = $_POST['lab'];
 
-	$verifyFinance = $dtb->query("SELECT * FROM t_2024_finance_detail_licence WHERE std_mention ='INFO'");
-	$showFinance = $verifyFinance->fetch();
+
+	$verification_finance_licence = $dtb->query('SELECT * FROM t_2024_finance_detail_licence WHERE std_mention = "'.$dep_desc.'" AND level = "'.$yearlevel.'" AND semester = "'.$semester.'"');
+
+	$result_finance = $verification_finance_licence->fetch();
+
+	$total_cout_cours = $result_finance['ecolage'] * $nb_credit;
 
 	if($lab == "0" OR $lab == "") {
 		$cout_lab = 0;
 	}else{
-		$cout_lab = $showFinance['laboratory'];
+		if ($result_finance['laboratory_info'] == 0) {
+			$cout_lab = $result_finance['laboratory_lang'];
+		}else{
+			$cout_lab = $result_finance['laboratory_info'];
+		}
 	}
-
-	$cout_cours = $showFinance['ecolage'];
-
-	$total_cout_cours = $cout_cours * $nb_crd;
 
 
 	$last_change_datetime = date('Y-m-d');

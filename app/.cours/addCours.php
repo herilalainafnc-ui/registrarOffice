@@ -12,22 +12,26 @@
 	$teacher_id = $_POST['teacher_id'];;
 	$semester = $_POST['semester'];
 	$lab = $_POST['lab'];
-	
-	if($lab == "0" OR $lab == "") {
- 				$cout_lab = 0;
- 			}else{
- 				$cout_lab = 30000;
-			}
-
- 			$cCrd = 18000;
-
- 			$cout = $cCrd * $nb_crd;
-
-	$ajout = 1;
-
 	$yearlevel = $_POST['yearlevel'];
 	$description = $_POST['description'];
 	$remark = $_POST['remark'];
+
+
+	$verification_finance_licence = $dtb->query('SELECT * FROM t_2024_finance_detail_licence WHERE std_mention = "'.$dep_desc.'" AND level = "'.$yearlevel.'" AND semester = "'.$semester.'"');
+
+	$result_finance = $verification_finance_licence->fetch();
+
+	$cout = $result_finance['ecolage'] * $nb_credit;
+
+	if ($result_finance['laboratory_info'] == 0) {
+		$cout_lab = $result_finance['laboratory_lang'];
+	}else{
+		$cout_lab = $result_finance['laboratory_info'];
+	}
+	
+	$ajout = 1;
+
+	
 
 	$active = 1;
 

@@ -32,6 +32,12 @@ require '../../data/backdb.php';
 	}
 
 	$etude_envisage = $_GET['etude_envisage'];
+
+$findInfiliere = $dtb->query('SELECT * FROM filiere WHERE filiere_description = "'.$etude_envisage.'"');
+$showInfiliere = $findInfiliere->fetch();
+$etude_envisage_sign = $showInfiliere['filiere_sigle'];
+
+
 	$father_name = $_POST['father_name'];
 	$father_prof = $_POST['father_prof'];
 	$parent_tel = $_POST['parent_tel'];
@@ -57,6 +63,141 @@ require '../../data/backdb.php';
 	$abonment = $_POST['abonment'];
 	
 	$last_change_datetime = date('Y-m-d');
+
+	$semesterForInformation = $_POST['semesterForInformation'];
+	$annee_scolaireForInformation =$_POST['annee_scolaireForInformation'];
+
+
+	$verificationOldStatus = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'"');
+ 	$oldStatusConfirmed = $verificationOldStatus->fetch();
+ 	$oldStatus = $oldStatusConfirmed['status'];
+
+ 	
+/*========================================== UPDATE STUDENT ON SESSION ==========================*/	
+
+$findSessionOnSS = $dtb->query('SELECT * FROM t_2023_session WHERE session_name ="'.$semesterForInformation.'" AND session_year = "'.$annee_scolaireForInformation.'"');
+
+$showSessionOnSS = $findSessionOnSS->fetch();
+$session_id_for_modification = $showSessionOnSS['session_id'];
+$nbr_semester = $showSessionOnSS['session_semester'];
+
+$verification = $dtb->query('SELECT * FROM t_2024_inscription_session WHERE student_id = "'.$student_id.'" AND session_id = "'.$session_id_for_modification.'"');
+
+$answering = $verification->fetch();
+
+if (!empty($answering)) {
+	$idForSession = $answering['id'];
+	$updateSession = $dtb->prepare("UPDATE t_2024_inscription_session SET 
+		
+		status=:status,
+		new_student=:new_student,
+		graduated=:graduated,
+		nbr_semester=:nbr_semester,
+		adresse_actuel_std=:adresse_actuel_std,
+		parcours_std=:parcours_std,
+		niveau_std=:niveau_std,
+		sponsor_name=:sponsor_name,
+		sponsor_lastName=:sponsor_lastName,
+		sponsor_contact=:sponsor_contact,
+		sponsor_address=:sponsor_address,
+		etat_civil_std=:etat_civil_std,
+		conjoint_name=:conjoint_name,
+		nb_enfant=:nb_enfant,
+		abonment_std=:abonment_std,
+		annee_scolaire=:annee_scolaire,
+		date_entry=:date_entry
+
+	WHERE id=:idForSession");
+
+	$updateSession->bindParam(':status',$status,PDO::PARAM_STR);
+	$updateSession->bindParam(':new_student',$new_student,PDO::PARAM_INT);
+	$updateSession->bindParam(':graduated',$graduated,PDO::PARAM_INT);
+	$updateSession->bindParam(':nbr_semester',$semesterForInformation,PDO::PARAM_STR);
+	$updateSession->bindParam(':adresse_actuel_std',$student_adresse,PDO::PARAM_STR);
+	$updateSession->bindParam(':parcours_std',$etude_option,PDO::PARAM_STR);
+	$updateSession->bindParam(':niveau_std',$annee_etude,PDO::PARAM_STR);
+	$updateSession->bindParam(':sponsor_name',$sponsor_nom,PDO::PARAM_STR);
+	$updateSession->bindParam(':sponsor_lastName',$sponsor_prenom,PDO::PARAM_STR);
+	$updateSession->bindParam(':sponsor_contact',$sponsor_tel,PDO::PARAM_STR);
+	$updateSession->bindParam(':sponsor_address',$sponsor_adresse,PDO::PARAM_STR);
+	$updateSession->bindParam(':etat_civil_std',$situationf,PDO::PARAM_STR);
+	$updateSession->bindParam(':conjoint_name',$nom_conjoint,PDO::PARAM_STR);
+	$updateSession->bindParam(':nb_enfant',$nb_enfant,PDO::PARAM_INT);
+	$updateSession->bindParam(':abonment_std',$abonment,PDO::PARAM_INT);
+	$updateSession->bindParam(':annee_scolaire',$annee_scolaire,PDO::PARAM_STR);
+	$updateSession->bindParam(':date_entry',$last_change_datetime,PDO::PARAM_STR);
+	$updateSession->bindParam(':idForSession',$idForSession,PDO::PARAM_INT);
+
+	$updateSession->execute();
+
+}else{
+	$insertSession = $dtb->prepare('INSERT INTO t_2024_inscription_session (
+		student_id,
+		etude_mention,
+		status,
+		new_student,
+		graduated,
+		session_id,
+		nbr_semester,
+		adresse_actuel_std,
+		parcours_std,
+		niveau_std,
+		sponsor_name,
+		sponsor_lastName,
+		sponsor_contact,
+		sponsor_address,
+		etat_civil_std,
+		conjoint_name,
+		nb_enfant,
+		abonment_std,
+		annee_scolaire,
+		date_entry
+	) VALUES (
+		:student_id,
+		:etude_mention,
+		:status,
+		:new_student,
+		:graduated,
+		:session_id,
+		:nbr_semester,
+		:adresse_actuel_std,
+		:parcours_std,
+		:niveau_std,
+		:sponsor_name,
+		:sponsor_lastName,
+		:sponsor_contact,
+		:sponsor_address,
+		:etat_civil_std,
+		:conjoint_name,
+		:nb_enfant,
+		:abonment_std,
+		:annee_scolaire,
+		:date_entry
+	)');
+	$insertSession->execute(array(
+		'student_id' => $student_id,
+		'etude_mention' => $etude_envisage_sign,
+		'status' => $status,
+		'new_student' => $new_student,
+		'graduated' => $graduated,
+		'session_id' => $session_id_for_modification,
+		'nbr_semester' => $semesterForInformation,
+		'adresse_actuel_std' => $student_adresse,
+		'parcours_std' => $etude_option,
+		'niveau_std' => $annee_etude,
+		'sponsor_name' => $sponsor_nom,
+		'sponsor_lastName' => $sponsor_prenom,
+		'sponsor_contact' => $sponsor_tel,
+		'sponsor_address' => $sponsor_adresse,
+		'etat_civil_std' => $situationf,
+		'conjoint_name' => $nom_conjoint,
+		'nb_enfant' => $nb_enfant,
+		'abonment_std' => $abonment,
+		'annee_scolaire' => $annee_scolaire,
+		'date_entry' => $last_change_datetime
+
+	));
+}
 
 /*========================================== UPDATE STUDENT =====================================*/
 
@@ -242,6 +383,68 @@ require '../../data/backdb.php';
 			));
 		}
 	}
+
+
+	$verification_finance = $dtb->query(
+		'SELECT * FROM t_2024_finance_detail_licence 
+		 WHERE
+		 std_status = "'.$status.'" 
+		 AND std_mention = "'.$etude_envisage_sign.'" 
+		 AND level = "'.$annee_etude.'" 
+		 AND semester = "'.$nbr_semester.'" 
+		 LIMIT 1'
+	);
+
+	$verif_Fnc = $verification_finance->fetch();
+
+	$frais_generaux = $verif_Fnc['frais_generaux'];
+	$logement = $verif_Fnc['dortoir'] * $verif_Fnc['nb_jours_semestre'];
+	
+
+
+ 	if ($oldStatus == 'Interne') {
+ 		$fond_depot = $verif_Fnc['fond_depot'];	
+ 	}else{
+ 		$fond_depot = 0;	
+ 	}
+	
+	
+	if ($abonment == 1) {
+		$cafeteria = $verif_Fnc['cafeteria'] * $verif_Fnc['nb_jours_semestre'];
+	}else{
+		$cafeteria = 0;
+	}
+	
+	$frais_graduation = $verif_Fnc['frais_graduation'];
+	$costume = $verif_Fnc['frais_costume'];
+
+
+
+
+	$updateFnc = $dtb->prepare('UPDATE t_2024_etudiant_finace SET 
+		level=:level,
+		status=:status,
+		cout_fraix_generaux=:cout_fraix_generaux,
+		cout_logement=:cout_logement,
+		cout_fondDepot_dortoir=:cout_fondDepot_dortoir,
+		cout_abonment=:cout_abonment,
+		cout_frais_graduation=:cout_frais_graduation,
+		cout_costume=:cout_costume
+
+		WHERE student_id =:student_id AND session_id=:session_id');
+		$updateFnc->bindParam(':level',$annee_etude,PDO::PARAM_INT);
+		$updateFnc->bindParam(':status',$status,PDO::PARAM_STR);
+		$updateFnc->bindParam(':cout_fraix_generaux',$frais_generaux,PDO::PARAM_STR);
+		$updateFnc->bindParam(':cout_logement',$logement,PDO::PARAM_STR);
+		$updateFnc->bindParam(':cout_fondDepot_dortoir',$fond_depot,PDO::PARAM_STR);
+		$updateFnc->bindParam(':cout_abonment',$cafeteria,PDO::PARAM_STR);
+		$updateFnc->bindParam(':cout_frais_graduation',$frais_graduation,PDO::PARAM_STR);
+		$updateFnc->bindParam(':cout_costume',$costume,PDO::PARAM_STR);
+		$updateFnc->bindParam(':student_id',$student_id,PDO::PARAM_STR);
+		$updateFnc->bindParam(':session_id',$session_id_for_modification,PDO::PARAM_INT);
+		$updateFnc->execute();
+
+
 
  header('location:../../src/student.php?id='.$id.'&page=information');
 

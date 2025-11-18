@@ -9,7 +9,8 @@
 			</div>
 			<div class="w-4/12 text-right">
 				<div class="w-full flex gap-1 relative">
-					<input type="submit" class="submitPers rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier">
+					<a href="#" class="submitPers submitRedirect rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]">Modifier</a>
+					<!-- <input type="submit" class="submitPers rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier"> -->
 					<a href="#" class="annulPers rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
 				</div>
 				<a href="#" id="editPers" class="text-right"><i class="bi-pencil-square"></i></a>	
@@ -82,7 +83,7 @@ while ($showR = $findRegion->fetch()) {
 			</div>
 			<div class="w-4/12 text-right">
 				<div class="w-full flex gap-1 relative">
-					<input type="submit" class="submitContact rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier">
+					<a href="#" class="submitContact submitRedirect rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]">Modifier</a>
 					<a href="#" class="annulContact rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
 				</div>
 				<a href="#" id="editContact" class="text-right"><i class="bi-pencil-square"></i></a>
@@ -185,7 +186,7 @@ $showDiplome = $findDiplome->fetch();
 			</div>
 			<div class="w-4/12 text-right">
 				<div class="w-full flex gap-1 relative">
-					<input type="submit" class="submitEtd rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier">
+					<a href="#" class="submitEtd submitRedirect rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]">Modifier</a>
 					<a href="#" class="annulEtd rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
 				</div>
 				<a href="#" id="editEtd" class="text-right"><i class="bi-pencil-square"></i></a>
@@ -296,7 +297,7 @@ $y = $y - 1;
 			</div>
 			<div class="w-4/12 text-right">
 				<div class="w-full flex gap-1 relative">
-					<input type="submit" class="submitParent rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier">
+					<a href="#" class="submitParent submitRedirect rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]">Modifier</a>
 					<a href="#" class="annulParent rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
 				</div>
 				<a href="#" id="editParent" class="text-right"><i class="bi-pencil-square"></i></a>
@@ -334,7 +335,7 @@ $y = $y - 1;
 			</div>
 			<div class="w-4/12 text-right">
 				<div class="w-full flex gap-1 relative">
-					<input type="submit" class="submitSpons rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier">
+					<a href="#" class="submitSpons submitRedirect rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]">Modifier</a>
 					<a href="#" class="annulSpons rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
 				</div>
 				<a href="#" id="editSpons" class="text-right"><i class="bi-pencil-square"></i></a>
@@ -369,7 +370,7 @@ $y = $y - 1;
 			</div>
 			<div class="w-4/12 text-right">
 				<div class="w-full flex gap-1 relative">
-					<input id="firstAutr" type="submit" class="submitAutr rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier">
+					<a href="#" class="submitAutr submitRedirect rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]">Modifier</a>
 					<a href="#" class="annulAutr rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
 				</div>
 				<a href="#" id="editAutr" class="text-right"><i class="bi-pencil-square"></i></a>
@@ -414,6 +415,72 @@ $y = $y - 1;
 
 
 </div>
+
+<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="sessionForInformation" style="backdrop-filter: blur(3px);">
+
+		<div class="w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+			<div class="p-2 text-black">
+				<b>Enregistrement....</b>
+				<p>Enregistrer cette modification dans la session suivante :</p>
+			</div>
+			<div class="p-2 text-black flex">
+				
+				
+				<div class="w-6/12">
+					<label>Semestre</label><br>
+					<select name="semesterForInformation">
+						<option <?php 
+if (date('m')>7) {
+	echo "selected";	
+}else{
+
+}
+						 ?>>Premier semestre</option>
+						<option>Semestre d'été</option>
+						<option <?php 
+if (date('m')>7) {
+	
+}else{
+	echo "selected";
+}
+						 ?>>Deuxième semestre</option>
+						<option>Semestre d'hiver</option>
+					</select>
+				</div>
+
+				<div class="w-6/12">
+					<label>Année scolaire</label><br>
+					<select name="annee_scolaireForInformation">
+						<?php
+								$y = date('Y');
+								for ($i=0; $i <= 3; $i++) { 
+									
+									if (date('m')>7) {
+										$as = $y." - ".($y+1);	
+									}else{
+										$as = ($y-1)." - ".$y;
+									}
+									
+								?>
+								<option><?=$as?></option>
+								<?php
+								$y = $y - 1;
+								}
+						?>
+					</select>
+				</div>
+
+			</div>
+			<div class="p-3">
+				<center>
+					<a href="#" id="cancelsessionForInformation" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
+					<input id="submit" type="submit" class="bg-cyan-800 p-2 rounded-md text-white mx-1" value="Modifier">
+				</center>	
+			</div>
+		</div>
+
+	</div>
+
 </form>
 
 <!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -421,11 +488,28 @@ $y = $y - 1;
 <script type="text/javascript">
 	$(document).ready(function(){
 
+		var rg_user = <?=$rg_user['level'];?>;
+		
+
+		$('.submitRedirect').click(function(){
+			$('#sessionForInformation').attr('class','absolute w-full h-screen top-0 left-0 z-40');
+		});
+		$('#cancelsessionForInformation').click(function(){
+			$('#sessionForInformation').attr('class','absolute w-full h-screen top-0 left-0 z-40 hidden');
+		});
+		
+		$('#submit').click(function() {
+
+			$('#sessionForInformation').attr('class','absolute w-full h-screen top-0 left-0 z-40 hidden');
+		});
+		
 		$('.form-no-refrech').on('submit',function (e) {
 			
 			e.preventDefault();
 
-			var url = '../app/.student/updateStd.php?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>';
+			var url = '../app/.student/updateStd.php?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>&etude_envisage=<?=$etude_envisage?>';
+			
+			alert("Modification bien effectuée.");
 			
 			var session_id = $('input[name="session_id"]').val();
 			
@@ -456,7 +540,7 @@ $y = $y - 1;
 				
 			});
 
-			if (session_id != "") {
+			/*if (session_id != "") {
 					
 					var status = $('#status').val();
 					var etude_envisage = '<?=$etude_envisage?>';
@@ -482,15 +566,21 @@ $y = $y - 1;
 			        });
 
 			}
-
+*/
 		});
 		
 		$('#editPers').click(function(){
+			if (rg_user < 3) {
+
 			$(this).css({'display':'none'});
 			$('.annulPers').css({'display':'block'});
 			$('.editPers').css({'display':'block'});
 			$('#firstPers').focus();
 			$('.showPers').css({'display':'none'});
+
+			}else{
+				alert('Vous ne pouvez pas modifier ce contenu');
+			}
 		});
 		$('.annulPers').click(function(){
 			$(this).css({'display':'none'});
@@ -506,11 +596,15 @@ $y = $y - 1;
 
 
 		$('#editContact').click(function(){
+			if (rg_user < 3) {
 			$(this).css({'display':'none'});
 			$('.annulContact').css({'display':'block'});
 			$('.editContact').css({'display':'block'});
 			$('#firstContact').focus();
 			$('.showContact').css({'display':'none'});
+			}else{
+				alert('Vous ne pouvez pas modifier ce contenu');
+			}
 		});
 		$('.annulContact').click(function(){
 			$(this).css({'display':'none'});
@@ -526,11 +620,15 @@ $y = $y - 1;
 
 
 		$('#editEtd').click(function(){
+			if (rg_user < 3) {
 			$(this).css({'display':'none'});
 			$('.annulEtd').css({'display':'block'});
 			$('.editEtd').css({'display':'block'});
 			$('#firstEtd').focus();
 			$('.showEtd').css({'display':'none'});
+			}else{
+				alert('Vous ne pouvez pas modifier ce contenu');
+			}
 		});
 		$('.annulEtd').click(function(){
 			$(this).css({'display':'none'});
@@ -546,11 +644,15 @@ $y = $y - 1;
 
 
 		$('#editParent').click(function(){
+			if (rg_user < 3) {
 			$(this).css({'display':'none'});
 			$('.annulParent').css({'display':'block'});
 			$('.editParent').css({'display':'block'});
 			$('#firstParent').focus();
 			$('.showParent').css({'display':'none'});
+			}else{
+				alert('Vous ne pouvez pas modifier ce contenu');
+			}
 		});
 		$('.annulParent').click(function(){
 			$(this).css({'display':'none'});
@@ -566,11 +668,15 @@ $y = $y - 1;
 
 
 		$('#editSpons').click(function(){
+			if (rg_user < 3) {
 			$(this).css({'display':'none'});
 			$('.annulSpons').css({'display':'block'});
 			$('.editSpons').css({'display':'block'});
 			$('#firstSpons').focus();
 			$('.showSpons').css({'display':'none'});
+			}else{
+				alert('Vous ne pouvez pas modifier ce contenu');
+			}
 		});
 		$('.annulSpons').click(function(){
 			$(this).css({'display':'none'});
@@ -586,11 +692,15 @@ $y = $y - 1;
 
 
 		$('#editAutr').click(function(){
+			if (rg_user < 3) {
 			$(this).css({'display':'none'});
 			$('.annulAutr').css({'display':'block'});
 			$('.editAutr').css({'display':'block'});
 			$('#firstAutr').focus();
 			$('.showAutr').css({'display':'none'});
+			}else{
+				alert('Vous ne pouvez pas modifier ce contenu');
+			}
 		});
 		$('.annulAutr').click(function(){
 			$(this).css({'display':'none'});

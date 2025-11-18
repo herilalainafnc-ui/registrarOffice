@@ -15,12 +15,14 @@ echo "<br>".$last_change_user_id = $_GET['user_id'];
 	$updatenote = $dtb->prepare("UPDATE t_2023_notes SET 
 		retrait_date=:retrait_date,
 		ajout=:ajout,
+		remove=:remove,
 		last_change_user_id=:last_change_user_id,
 		last_change_datetime=:last_change_datetime 
 		WHERE id=:id");
 	
 	$updatenote->bindParam(':retrait_date',$retrait_date,PDO::PARAM_STR);
 	$updatenote->bindParam(':ajout',$ajout,PDO::PARAM_INT);
+	$updatenote->bindParam(':remove',$remove,PDO::PARAM_INT);
 	$updatenote->bindParam(':last_change_user_id',$last_change_user_id,PDO::PARAM_INT);
 	$updatenote->bindParam(':last_change_datetime',$last_change_datetime,PDO::PARAM_STR);
 	$updatenote->bindParam(':id',$idSupprCours,PDO::PARAM_INT);

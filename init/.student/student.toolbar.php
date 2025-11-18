@@ -94,11 +94,11 @@
 		&lookup_code=<?=$lookup_code?>
 		&status=<?=$status?>
 		&date_entry=<?=$date_entry?>" class="text-[11px] leading-tight sm:w-2/12 lg:w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1<?php 
-		if ($status == "Externe" OR $status == "externe" OR $status == ""){ echo " toolInactive";}
+		if ($status == "Externe" OR $status == "externe" OR $status == "" OR $abonment == "0"){ echo " toolInactive";}
 		 ?>">
 				<center>
 				<i class="bi-credit-card-fill text-2xl"></i><br>
-						Carte abonnée
+						Carte d'abonnement
 				</center>
 		
 			
@@ -153,17 +153,13 @@
 				</center>
 			
 		</a>
-		<!-- <a target="_blank" href="./data.topdf.php?ptype=Fiche_inscription
-		&id=<?=$id?>
-		&student_id=<?=$student_id?>
-		&student_nom=<?=$student_nom?>
-		&student_prenom=<?=$student_prenom?>
-		&etude_envisage=<?=$etude_envisage?>
-		&level=<?=$level?>
-		&student_tel=<?=$student_tel?>
-		&image_student=<?=$image_student?>" id="ficheInscription" 
 
-			class="text-[11px] leading-tight sm:w-2/12 lg:w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'diplome') or empty($_GET['page'])) {
+<!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->		
+<!-- BEGIN FICHE D'INSCRIPTION -->		
+		<a id="exportFichInsc" href="#" 
+
+			class="text-[11px] leading-tight sm:w-2/12 lg:w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php
+			 if (isset($_GET['page']) and ($_GET['page'] == 'diplome') or empty($_GET['page'])) {
 																								echo "toolInactive";
 																							}?>">
 		
@@ -172,7 +168,10 @@
 						Fiche d'inscription
 				</center>
 			
-		</a> -->
+		</a>
+<!-- END FICHE D'INSCRIPTION -->
+<!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->		
+
 		<a href="#" id="<?php if (!empty($_GET['page']) AND $_GET['page'] == 'bulletin'){echo 'exportBulletin';}
 							elseif(!empty($_GET['page']) AND $_GET['page'] == 'transcript'){echo 'exportTranscript';}
 							elseif(!empty($_GET['page']) AND $_GET['page'] == 'transcriptSS'){echo 'exportTranscriptSS';}
@@ -189,3 +188,6 @@
 			
 		</a>
 	</div>
+
+
+
