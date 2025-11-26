@@ -6,7 +6,7 @@ $yearScoolNow = $_POST['yearStatistic'];
  ?>
 <div class="" style="page-break-inside: avoid;">
 
-<b>Statistique par Niveau </b><em class="text-xs">- Année <?=$yearScoolNow?></em>
+<b>Statistique par Mention </b><em class="text-xs">- Année <?=$yearScoolNow?></em>
 	<table class="tbl" style="page-break-inside: avoid;">
 		<thead>
 			<tr style="page-break-inside: avoid;">

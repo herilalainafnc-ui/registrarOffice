@@ -13,6 +13,28 @@ $printName = $student_id."-CERTIFICAT_SCOLARITE";
 $searchStd = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'"'); 
 $stdA = $searchStd->fetch();
 
+// Récupérer les infos de l'utilisateur connecté pour la signature
+$infinit_pseudo = $_SESSION['infinit_pseudo'] ?? '';
+$infinit_password = $_SESSION['infinit_password'] ?? '';
+
+if(!empty($infinit_pseudo) && !empty($infinit_password)){
+  $rg_utilisateur = $dtb->query("SELECT * FROM compt_utilisateur WHERE pseudo='".$infinit_pseudo."' AND password='".$infinit_password."' AND etat=1 limit 1");
+  if($rg_utilisateur->rowCount() > 0){
+    $rg_user = $rg_utilisateur->fetch();
+    $user_nom = $rg_user['nom'];
+    $user_prenom = $rg_user['prenom'];
+    $user_post = $rg_user['post'];
+  } else {
+    $user_nom = 'Utilisateur';
+    $user_prenom = '';
+    $user_post = 'Secrétaire Académique';
+  }
+} else {
+  $user_nom = 'Utilisateur';
+  $user_prenom = '';
+  $user_post = 'Secrétaire Académique';
+}
+
 // Fonction pour formater les dates en français
 function formatDateFr($date) {
   $mois_fr = array(
@@ -251,11 +273,11 @@ function formatDateFr($date) {
 
   <!-- Signature Section -->
   <div class="signature-section">
-    <div style="font-size: 13px;">Le Secrétaire Académique</div>
+    <div style="font-size: 13px;"><?= $user_post ?></div>
     <div class="signature-line">
       <div style="margin-bottom: 50px;">&nbsp;</div>
     </div>
-    <div class="signature-name">M. Francky NOMENJANAHARY</div>
+    <div class="signature-name"><?= strtoupper($user_nom) . " " . $user_prenom ?></div>
   </div>
 
 </div>

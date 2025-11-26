@@ -8,6 +8,13 @@ $findSessionOnSS = $dtb->query('SELECT * FROM t_2023_session WHERE session_name 
 
 $showSessionOnSS = $findSessionOnSS->fetch();
 $session_id = $showSessionOnSS['session_id'];
+
+// Définir l'année scolaire actuelle
+$annee_scolaire = "2025 - 2026";
+// Compter le nombre d'étudiants abonnés pour l'année scolaire (unique students from tbl_2024_etudiant)
+$countAbonnesQ = $dtb->query('SELECT COUNT(*) AS total_abonnes FROM tbl_2024_etudiant WHERE abonment = 1 AND annee_scolaire = "'.$annee_scolaire.'"');
+$countAbonnesR = $countAbonnesQ->fetch();
+$totalAbonnesAnnee = intval($countAbonnesR['total_abonnes']);
  ?>
 <div class="" style="page-break-inside: avoid;">
 
@@ -48,38 +55,35 @@ $thorizontal = 0;
 		$mention = $mt['filiere_description'];
 	
 
-$result = $dtb->query('SELECT *,
-           SUM(CASE WHEN abonment_std = 1 THEN 1 ELSE 0 END) AS Abonnee_H,
-           SUM(CASE WHEN abonment_std = 1 THEN 1 ELSE 0 END) AS Abonnee_F,
-           SUM(CASE WHEN abonment_std = 0 THEN 1 ELSE 0 END) AS NonAbonnee_H,
-           SUM(CASE WHEN abonment_std = 0 THEN 1 ELSE 0 END) AS NonAbonnee_F
-       
-    FROM t_2024_inscription_session WHERE etude_mention = "'.$filiere_sigle.'" AND session_id = "'.$session_id.'" ORDER BY etude_mention');
+        $result = $dtb->query('SELECT
+            SUM(CASE WHEN e.abonment = 1 AND e.sex = 1 THEN 1 ELSE 0 END) AS Abonnee_H,
+            SUM(CASE WHEN e.abonment = 1 AND e.sex = 0 THEN 1 ELSE 0 END) AS Abonnee_F,
+            SUM(CASE WHEN e.abonment = 0 AND e.sex = 1 THEN 1 ELSE 0 END) AS NonAbonnee_H,
+            SUM(CASE WHEN e.abonment = 0 AND e.sex = 0 THEN 1 ELSE 0 END) AS NonAbonnee_F
+        FROM tbl_2024_etudiant e
+        WHERE e.etude_envisage = "'.$mention.'" AND e.annee_scolaire = "'.$annee_scolaire.'"');		$row = $result->fetch();
 
+		// Normaliser
+		$row['Abonnee_H'] = isset($row['Abonnee_H']) ? intval($row['Abonnee_H']) : 0;
+		$row['Abonnee_F'] = isset($row['Abonnee_F']) ? intval($row['Abonnee_F']) : 0;
+		$row['NonAbonnee_H'] = isset($row['NonAbonnee_H']) ? intval($row['NonAbonnee_H']) : 0;
+		$row['NonAbonnee_F'] = isset($row['NonAbonnee_F']) ? intval($row['NonAbonnee_F']) : 0;
 
+		echo "<tr>";
+			echo "<td>" . $mention . "</td>";
+			echo "<td>" . $row['Abonnee_H'] . "</td>";
+			echo "<td>" . $row['Abonnee_F'] . "</td>";
+			echo "<td>" . $row['NonAbonnee_H'] . "</td>";
+			echo "<td>" . $row['NonAbonnee_F'] . "</td>";
+			$sommeHoriz = $row['Abonnee_H'] + $row['Abonnee_F'] + $row['NonAbonnee_H'] + $row['NonAbonnee_F'];
+			echo "<td>" . $sommeHoriz . "</td>";
+		echo "</tr>";
 
-           $row = $result->fetch();
-
-            	echo "<tr>";   
-	   				echo "<td>" . $mention . "</td>"; 
-	                echo "<td>" . $row['Abonnee_H'] . "</td>";
-	                echo "<td>" . $row['Abonnee_F'] . "</td>";
-	                echo "<td>" . $row['NonAbonnee_H'] . "</td>";
-	                echo "<td>" . $row['NonAbonnee_F'] . "</td>";
-	 				echo "<td>".$sommeHoriz = 
-	 				$row['Abonnee_H']+
-					$row['Abonnee_F']+
-					$row['NonAbonnee_H']+
-					$row['NonAbonnee_F']
-	 				."</td>";
-    			echo "</tr>";
-    		
-
-$abonnee_H =+ $abonnee_H + $row['Abonnee_H'];
-$abonnee_F =+ $abonnee_F + $row['Abonnee_F'];
-$nonAbonnee_H =+ $nonAbonnee_H + $row['NonAbonnee_H'];
-$nonAbonnee_F =+ $nonAbonnee_F + $row['NonAbonnee_F'];
-$thorizontal =+ intval($thorizontal) +  intval($sommeHoriz);      
+		$abonnee_H += $row['Abonnee_H'];
+		$abonnee_F += $row['Abonnee_F'];
+		$nonAbonnee_H += $row['NonAbonnee_H'];
+		$nonAbonnee_F += $row['NonAbonnee_F'];
+		$thorizontal += $sommeHoriz;
 	}
         ?>
 		</tbody>
