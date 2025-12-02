@@ -1,263 +1,384 @@
+<?php 
+session_start();
+require('../data/backdb.php');
+
+/* SESSION LOG */
+if ((isset($_COOKIE['infinit_pseudo']) && isset($_COOKIE['infinit_password'])) && (!empty($_COOKIE['infinit_pseudo']) && !empty($_COOKIE['infinit_password']))) {
+    $_SESSION['infinit_pseudo'] = $_COOKIE['infinit_pseudo'];
+    $_SESSION['infinit_password'] = $_COOKIE['infinit_password'];
+}
+
+if(isset($_SESSION['infinit_pseudo']) && isset($_SESSION['infinit_password'])) {
+    if(!empty($_SESSION['infinit_pseudo']) && !empty($_SESSION['infinit_password'])) {
+        header('location:./accueil.php');
+    }
+}
+
+if(!empty($_POST)) {
+    if(isset($_POST['infinit_pseudo']) && isset($_POST['infinit_password'])) {
+        $infinit_pseudo = $_POST['infinit_pseudo'];
+        $salt = 'fixing_password';
+        $infinit_password = hash('sha256', $_POST['infinit_password']. $salt);
+        
+        if(isset($_POST['infinit_souvenir']) && !empty($_POST['infinit_souvenir'])) {
+            setcookie('infinit_pseudo', $infinit_pseudo, time()+20*24*60*60, null, null, false, true);
+            setcookie('infinit_password', $infinit_password, time()+20*24*60*60, null, null, false, true);
+        }
+        
+        $req = $dtb->query("SELECT * FROM compt_utilisateur WHERE pseudo='".$infinit_pseudo."' AND password='".$infinit_password."' AND etat=1 limit 1");
+        
+        if($req->rowCount() > 0) {
+            $req = $req->fetch();
+            $_SESSION['infinit_pseudo'] = $infinit_pseudo;
+            $_SESSION['infinit_password'] = $infinit_password;
+            header('location: ./accueil.php');
+        } else {
+            header('location: ./index.php');
+        }
+    }
+}
+?>
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-	<?php require ('../init/head.php');
-	
-	/*require('../data/connectdb.php');*/
-	require('../data/backdb.php');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - Infinit Registrar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.0/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            --primary-color: #0ea5e9;
+            --secondary-color: #1e293b;
+            --accent-color: #f97316;
+            --background-dark: #0f172a;
+            --card-bg: rgba(15, 23, 42, 0.8);
+            --input-bg: rgba(30, 41, 59, 0.8);
+            --text-light: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.2);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
 
-	/* SESSION LOG */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-	/*:::::::::::::::::::::::: SESSION COLORS ::::::::::::::::::::::::*/
+        html, body {
+            height: 100%;
+            width: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
 
+        body {
+            background: linear-gradient(-45deg, var(--background-dark), #1a1f35, #0f172a, #1e293b);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
 
-	/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+        /* Animated background elements */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: moveBackground 20s infinite alternate;
+        }
 
-	if ((isset($_COOKIE['infinit_pseudo']) and isset($_COOKIE['infinit_password'])) AND (!empty($_COOKIE['infinit_pseudo']) and !empty($_COOKIE['infinit_password']))) {
-		$_SESSION['infinit_pseudo'] = $_COOKIE['infinit_pseudo'];
-		$_SESSION['infinit_password'] = $_COOKIE['infinit_password'];
-				
-	}
-	
-	if( isset($_SESSION['infinit_pseudo']) AND isset($_SESSION['infinit_password']) ) {
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -50%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: moveBackground 15s infinite alternate-reverse;
+        }
 
-		if( !empty($_SESSION['infinit_pseudo']) AND !empty($_SESSION['infinit_password']) ) {
+        .container-wrapper {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+            z-index: 1;
+            position: relative;
+        }
 
-			header('location:./accueil.php');
+        .login-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 48px 32px;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.5s ease-out;
+        }
 
-		}
-	}
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-		if(!empty($_POST)) {
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
-			if (isset($_POST['infinit_pseudo']) and isset($_POST['infinit_password'])) {
-				
-				$infinit_pseudo = $_POST['infinit_pseudo'];
+        @keyframes moveBackground {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
 
-				$salt = 'fixing_password';
-				//$infinit_password = $_POST['infinit_password'];
-				$infinit_password = hash('sha256', $_POST['infinit_password']. $salt);
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
 
-				if (isset($_POST['infinit_souvenir']) and !empty($_POST['infinit_souvenir'])) {
-					setcookie('infinit_pseudo',$user_pseudo,time()+20,null,null,false,true);
-					setcookie('infinit_password',$user_password,time()+20,null,null,false,true);
-				}
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
 
-			/*$req = $dtb->query("SELECT * FROM rg_user WHERE user_pseudo='".$infinit_pseudo."' AND user_password='".$infinit_password."' limit 1");*/
+        .logo-container img {
+            width: 50px;
+            height: 50px;
+            animation: float 3s ease-in-out infinite;
+        }
 
-			$req = $dtb->query("SELECT * FROM compt_utilisateur WHERE  pseudo='".$infinit_pseudo."' AND password='".$infinit_password."' AND etat=1 limit 1");
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
 
-				if($req->rowCount() > 0){
-					
-					$req = $req->fetch();
-					$_SESSION['infinit_pseudo'] = $infinit_pseudo;
-					$_SESSION['infinit_password'] = $infinit_password;
+        .logo-container h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+        }
 
-				header('location: ./accueil.php');
+        .login-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
 
-				} else {
-					header('location: ./index.php');
-				}
-			}
-		}
+        .form-group {
+            margin-bottom: 20px;
+        }
 
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-	?>
-	<title>Log-in</title>
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--input-bg);
+            border: 1.5px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 14px;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .input-wrapper input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: rgba(30, 41, 59, 1);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+
+        .input-wrapper input:hover {
+            border-color: var(--primary-color);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px 8px;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        .remember-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: -8px;
+            margin-bottom: 24px;
+        }
+
+        .remember-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary-color);
+        }
+
+        .remember-checkbox label {
+            margin-bottom: 0;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px 24px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(14, 165, 233, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 600px) {
+            .login-card {
+                padding: 32px 24px;
+            }
+
+            .login-header {
+                margin-bottom: 32px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container-wrapper">
+        <div class="login-card">
+            <!-- Header -->
+            <div class="login-header">
+                <div class="logo-container">
+                    <img src="../file/logo-coldbloud.png" alt="Logo Infinit Registrar">
+                    <h1>Registrar</h1>
+                </div>
+                <p class="login-subtitle">Veuillez vous connecter pour continuer</p>
+            </div>
 
-	<div class="main">
-		<!-- <a href="#" class="b-white" data-bs-toggle="modal" data-bs-target="#notification-download" style="position: absolute; top: 10px; right: 10px" title="Assurez-vous de télécharger la version application de ce programme pour qu'il devienne indépendant du navigateur.">Télécharger l'app</a> -->
-		
-		<div style="height: 20%;">
-			
-		</div>
-		<div class="rounded-md p-4" id="windowLog">
-			
-			<center>
-				<img src="../file/logo-coldbloud.png" style="width: 40px; height: 40px;">
-				<b style="font-size: 30px; color: #e6e9f0"> Infinit Registrar</b><br>
-				<p style="font-size: 17px; color: #e6e9f0">Veuillez connecter pour continuer.</p>
-			</center>
-			
+            <!-- Login Form -->
+            <form method="post" action="">
+                <div class="form-group">
+                    <label for="pseudo">Nom d'utilisateur</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="pseudo" name="infinit_pseudo" placeholder="Entrez votre identifiant" required>
+                    </div>
+                </div>
 
-<form method="post" action="">
-				
-				<div class="flex mt-10">
-					
-					<input class="inputLog" type="text" name="infinit_pseudo" placeholder="Utilisateur">
-				</div>
-				
-				<div class="flex mt-4">
-					
-					<input class="inputLog" id="emp_password" type="password" name="infinit_password" placeholder="Mot de passe">
-					
-				</div>
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" name="infinit_password" placeholder="Entrez votre mot de passe" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword()">
+                            <span id="eye-icon">🙉</span>
+                        </button>
+                    </div>
+                </div>
 
-				<div style="text-align:right; width: 100%;">
-					<i class="eye bi-eye-slash text-slate-100 pointer-events-auto" style="display: block;"><a href="#"> Afficher le mot de passe</a></i>
-					<i class="eye bi-eye-fill text-slate-100 pointer-events-auto" style="display: none"><a href="#"> Cacher le mot de passe</a></i>
+                <div class="remember-checkbox">
+                    <input type="checkbox" id="remember" name="infinit_souvenir" value="1">
+                    <label for="remember">Se souvenir de moi</label>
+                </div>
 
-				</div>
-				
-				<div class="w-full mt-4">
-					<button type="submit" class="text-slate-100 bg-cyan-700 p-2 rounded-md w-full">Connecter</button>	
-				</div><br>
-				
-</form>
+                <button type="submit" class="submit-btn">Connexion</button>
+            </form>
+        </div>
+    </div>
 
-		</div>
-	</div>
-
-<div class="modal notif-fade" id="notification-download" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered notif-centered">
-		<div class="modal-content notif-content">
-			<div class="notif-head">
-				Téléchargement de l'application RHM
-			</div>
-			<div class="notif-body">
-				
-				<div class="styl-details flex" id="macbook">
-					<div class="col-lg-4 center">
-						<img src="./files/Apple_logo_grey.svg.png" style="width: 100px">
-						<b class="b-black pointer-none">Version MacOS</b>
-					</div>
-					<div class="col-lg-8">
-						<div class="flex">
-							<img src="./files/logo-coldbloud.png" style="width: 30px; height: 30px;">
-							<b class="b-blue pointer-none">&nbsp;&nbsp;RHM</b>	
-						</div>
-						<div>
-							<p class="b-grey pointer-none" style="font-size: 11px"><br>Mode d'installation : Après avoir télécharger le fichier "zip", décompressez-le dans votre dossier <b class="b-blue">Documents</b> ou dans un emplacement sûr. Ouvrir le dossier décompressé et cliquez sur l'application <b class="b-blue">RHM</b>.<br>Vous pouvez garder l'application dans le Dock pour faciliter l'accès au lancement prochain.</p>	
-						</div>
-					</div>
-				</div>
-				<div class="styl-details flex" id="windows">
-					<div class="col-lg-4 center">
-						<img src="./files/Windows_logo_-_2012.png" style="width: 100px">
-						<b class="b-black pointer-none">Version Windows</b>
-					</div>
-					<div class="col-lg-8">
-						<div class="flex">
-							<img src="./files/logo-coldbloud.png" style="width: 30px; height: 30px;">
-							<b class="b-blue pointer-none">&nbsp;&nbsp;RHM</b>	
-						</div>
-						<div>
-							<p class="b-grey pointer-none" style="font-size: 11px"><br>Mode d'installation : Après avoir télécharger le fichier "zip", décompressez-le dans votre dossier <b class="b-blue">Documents</b> ou dans un emplacement sûr. Ouvrir le dossier décompressé et cliquez sur l'application <b class="b-blue">RHM.exe</b>.<br>Vous pouvez épingler l'application sur la barre des tâches ou créez un raccourci sur le bureau pour faciliter l'accès au lancement prochain.</p>	
-						</div>
-					</div>
-					
-				</div>
-
-			</div>
-			<div class="notif-foot">
-				<a href="#" id="annulate" class="btn btn-simple" data-bs-dismiss="modal">Annuler</a>&nbsp;&nbsp;
-				<a href="#" id="btn-download" class="btn btn-submit link-disabled" onclick="success()">Télécharger</a>
-			</div>
-		</div>
-	</div>
-</div>
-
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eye-icon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.textContent = '🙉';
+            }
+        }
+    </script>
 </body>
 </html>
-
-
-<script type="text/javascript">
-	function success() {
-		alert ('Téléchargement effectué.');
-	};
-	$(document).ready(function(){
-		
-		$(window).ready(function() {
-			$('.user_pseudo').focus();		
-		});
-
-		$('#emp_password').keyup(function(){
-			var pass = $(this).val();
-			
-			if(pass != "") {
-
-				$(".bi-eye-slash").click(function(){
-					$(this).css("display", "none");
-					$(".bi-eye-fill").css("display", "block");
-					$('#emp_password').prop('type','text');
-				});
-				$(".bi-eye-fill").click(function(){
-					$(this).css("display", "none");
-					$(".bi-eye-slash").css("display", "block");
-					$('#emp_password').prop('type','password');
-				});
-
-			}else{
-				$(".bi-eye-slash").css("display", "block");
-				$(".bi-eye-fill").css("display", "none");
-				$('#emp_password').prop('type','password');
-			}
-		});
-
-		$('#windows').click(function() {
-			$(this).css({
-				'background-color':'#d0ecf8'
-			});
-			$('#macbook').css({
-				'background-color':'#f9f9f9',
-				'border':'0px'
-			});
-			$('#btn-download').css({
-			        	'cursor':'pointer',
-			        	'pointer-events':'auto',
-			        	'text-decoration' : 'none',
-			        	'opacity':'1'
-	        });
-			$('#btn-download').attr('href','./files/RHM-win32-x64.zip');
-
-		});
-		$('#macbook').click(function() {
-			$(this).css({
-				'background-color':'#d0ecf8'
-			});
-			$('#windows').css({
-				'background-color':'#f9f9f9',
-				'border':'0px'
-			});
-			$('#btn-download').css({
-			        	'cursor':'pointer',
-			        	'pointer-events':'auto',
-			        	'text-decoration' : 'none',
-			        	'opacity':'1'
-	        });
-			$('#btn-download').attr('href','./files/RHM-darwin-x64.zip');
-		});
-
-
-	});
-
-</script>
-<style type="text/css">
-	#windows, #macbook{
-		margin-bottom: 12px;
-	}
-	#windowLog{
-		border: 1px solid #1f2633;
-		backdrop-filter: blur(50px);
-		margin: auto;
-		width: 450px;
-	}
-	.inputLog{
-		padding: 1px 4px 1px 4px;
-		height: 40px;
-		width: 100%;
-		border: none;
-		border-radius: 8px;
-		background-color: #e6e9f0;
-	}
-	.main{
-		background-image: url('./css/téléchargement.jpg');
-		background-size: cover;
-		background-position: center;
-		background-repeat: no-repeat;
-		width: 100%;
-		height: 100vh;
-	}
-</style>

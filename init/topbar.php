@@ -28,107 +28,328 @@
 	}
  ?>
 
-<div class="flex w-full h-12 shadow-sm p-1 <?=$bg_one_color?> <?=$txt_one_color?>">
+<style>
+	/* Topbar animations and styles */
+	.topbar-search-input {
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
 	
-	<div class="sm:w-3/12 lg:w-2/12 px-2 mt-2">
-		<a href="../src/" class="flex">
-			<img src="../file/logo-coldbloud.png" class="w-6 h-6 mx-3 mx-2">
-			<b> Infinit Registrar</b>
+	.topbar-search-input:focus {
+		box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.3);
+		border-color: #06b6d4;
+		transform: scale(1.02);
+	}
+	
+	.user-avatar {
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+	
+	.user-avatar:hover {
+		transform: scale(1.1);
+		box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+	}
+	
+	.dropdown-menu {
+		animation: slideDown 0.2s ease-out;
+		backdrop-filter: blur(8px);
+	}
+	
+	@keyframes slideDown {
+		from {
+			opacity: 0;
+			transform: translateY(-10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+	
+	.dropdown-item-hover {
+		transition: all 0.2s ease;
+		position: relative;
+		overflow: hidden;
+	}
+	
+	.dropdown-item-hover::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		height: 100%;
+		width: 3px;
+		background: linear-gradient(180deg, #06b6d4, #3b82f6);
+		transform: scaleY(0);
+		transition: transform 0.2s ease;
+	}
+	
+	.dropdown-item-hover:hover::before {
+		transform: scaleY(1);
+	}
+	
+	.logo-container {
+		transition: all 0.3s ease;
+	}
+	
+	.logo-container:hover {
+		transform: translateX(3px);
+	}
+	
+	.search-icon {
+		position: absolute;
+		left: 10px;
+		top: 50%;
+		transform: translateY(-50%);
+		color: #94a3b8;
+		pointer-events: none;
+	}
+	
+	.search-wrapper {
+		position: relative;
+	}
+	
+	.search-wrapper input {
+		padding-left: 35px;
+	}
+	
+	/* Mobile menu toggle */
+	@media (max-width: 640px) {
+		.mobile-hidden {
+			display: none !important;
+		}
+	}
+</style>
+
+<div class="flex items-center justify-between w-full h-14 shadow-lg <?=$bg_one_color?> <?=$txt_one_color?> px-3 border-b border-slate-700">
+	
+	<!-- Logo Section -->
+	<div class="flex items-center gap-3 lg:w-2/12">
+		<a href="../src/" class="logo-container flex items-center gap-2 hover:opacity-80 transition-opacity">
+			<div class="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg p-1 shadow-md">
+				<img src="../file/logo-coldbloud.png" class="w-full h-full">
+			</div>
+			<span class="hidden md:block font-bold text-base bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+				Infinit Registrar
+			</span>
 		</a>
 	</div>
 	
-	<div class="sm:w-5/12 lg:w-7/12 mt-1">
-		
-		<div class="search w-full hidden text-right">
+	<!-- Search Section -->
+	<div class="flex-1 px-2 lg:px-4 lg:w-7/12">
+		<div class="search w-full flex justify-center">
 			<?php 
 			if($page == "accueil.php" OR $page == "student.php") {
 			 ?>
-			<form method="post" action="accueil.php">
-					<input id="std-search" type="text" name="search" placeholder="Search student..." class="h-8 px-2 text-sm border <?=$bg_two_color?> sm:w-full lg:w-4/12 rounded-1">
+			<form method="post" action="accueil.php" class="search-wrapper w-full max-w-md">
+				<input id="std-search" type="text" name="search" 
+					   placeholder="Rechercher un étudiant..." 
+					   class="topbar-search-input h-10 px-2 pl-10 text-sm border border-slate-600 <?=$bg_two_color?> text-slate-100 w-full rounded-lg focus:outline-none placeholder-slate-400">
 				<button type="submit" style="display: none" onclick="surligne();"></button>
 			</form>
 			<?php 
 			}elseif($page == "accueil.cours.php" OR $page == "cours.php") {
 			?>
-			<form method="post" action="accueil.cours.php">
-					<input id="cours-search" type="text" name="search" placeholder="Search course..." class="h-8 px-2 text-sm border <?=$bg_two_color?> sm:w-full lg:w-4/12 rounded-1">
+			<form method="post" action="accueil.cours.php" class="search-wrapper w-full max-w-md">
+				<i class="bi bi-book search-icon"></i>
+				<input id="cours-search" type="text" name="search" 
+					   placeholder="Rechercher un cours..." 
+					   class="topbar-search-input h-10 px-2 pl-10 text-sm border border-slate-600 <?=$bg_two_color?> text-slate-100 w-full rounded-lg focus:outline-none placeholder-slate-400">
 				<button type="submit" style="display: none" onclick="surligne();"></button>
 			</form>
 			<?php 
 			}elseif($page == "accueil.prof.php" OR $page == "prof.php") {
 			?>
-			<form method="post" action="accueil.cours.php">
-					<input id="prof-search" type="text" name="search" placeholder="Search teacher..." class="h-8 px-2 text-sm border <?=$bg_two_color?> sm:w-full lg:w-4/12 rounded-1">
+			<form method="post" action="accueil.cours.php" class="search-wrapper w-full max-w-md">
+				<i class="bi bi-person-badge search-icon"></i>
+				<input id="prof-search" type="text" name="search" 
+					   placeholder="Rechercher un enseignant..." 
+					   class="topbar-search-input h-10 px-2 pl-10 text-sm border border-slate-600 <?=$bg_two_color?> text-slate-100 w-full rounded-lg focus:outline-none placeholder-slate-400">
 				<button type="submit" style="display: none" onclick="surligne();"></button>
 			</form>
 			<?php 
 			}
 			?>
 		</div>
-
 	</div>
-	<div class="sm:w-4/12 lg:w-3/12 flex text-right">
-		<div class="w-4/12">
-			
-		</div>
-		<div class="w-1/12">
-			<!-- <div class="p-1 text-lg">
-				<a href="#" id="light"><span class="bi-sun-fill"></span></a>
-				<a href="#" id="dark" class="hidden text-slate-800"><span class="bi-moon-stars-fill"></span></a>
-			</div> -->
-		</div>
-		<div class="px-2 w-7/12 relative text-right">
-
-			<a href="#" class="" data-bs-toggle="dropdown" aria-expanded="false">
-				<b class="pt-2 absolute right-14 text-xs"><?=$rg_last_name;?></b>
-				<div class="rounded-full <?=$bg_eight_color?> w-9 h-9 mx-2 absolute top-0.5 right-0 p-0.5">
-					<img src="../app/photosuser/<?=$rg_photos?>" class="rounded-full w-full h-full">
+	
+	<!-- User Profile Section -->
+	<div class="flex items-center gap-3 lg:w-3/12 justify-end">
+		<!-- Theme Toggle (commented out but styled) -->
+		<!-- <div class="mobile-hidden">
+			<button id="light" class="p-2 hover:bg-slate-700 rounded-lg transition-colors">
+				<i class="bi-sun-fill text-lg text-yellow-400"></i>
+			</button>
+			<button id="dark" class="hidden p-2 hover:bg-slate-700 rounded-lg transition-colors">
+				<i class="bi-moon-stars-fill text-lg"></i>
+			</button>
+		</div> -->
+		
+		<!-- User Dropdown -->
+		<div class="relative dropdown-container">
+			<a href="#" class="flex items-center gap-2 hover:opacity-90 transition-all duration-300" data-bs-toggle="dropdown" aria-expanded="false">
+				<span class="hidden sm:block font-medium text-sm text-slate-200 hover:text-cyan-400 transition-colors"><?=$rg_last_name;?></span>
+				<div class="user-avatar rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 w-10 h-10 p-0.5 shadow-lg ring-2 ring-transparent hover:ring-cyan-400/50 transition-all duration-300">
+					<img src="../app/photosuser/<?=$rg_photos?>" class="rounded-full w-full h-full object-cover border-2 border-slate-800" alt="User Avatar">
 				</div>		
 			</a>
-			<ul class="dropdown-menu border bg-slate-300 text-black p-0 rounded-0 text-xs" style="max-height:400px; min-width: 200px; position: absolute; right: 20px;">
-		            
-		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white toolInactive"><?=$rg_user['privilege'];?></li>
+			
+			<!-- Dropdown Menu -->
+			<ul class="dropdown-menu bg-slate-800/95 backdrop-blur-xl border border-slate-700/50 text-slate-100 p-2 rounded-xl shadow-2xl text-sm overflow-auto" 
+			    style="max-height:500px; min-width: 260px; position: absolute; right: 0; margin-top: 12px; backdrop-filter: blur(12px);">
 		        
-		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="./my.account.php">
-		        <span class="bi-gear"></span>&nbsp;&nbsp; Mon compte</a></li>
+		        <!-- User Info Header with gradient background -->
+		        <li class="px-4 py-3 bg-gradient-to-br from-slate-700 via-slate-600 to-slate-700 rounded-lg mb-2 shadow-md">
+		        	<div class="flex items-center gap-3">
+		        		<div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg">
+		        			<i class="bi bi-person-circle text-white text-xl"></i>
+		        		</div>
+		        		<div class="flex-1 min-w-0">
+		        			<div class="font-bold text-white truncate"><?=$rg_name?> <?=$rg_last_name?></div>
+		        			<div class="text-xs text-cyan-400 font-medium uppercase tracking-wide"><?=$rg_user['privilege'];?></div>
+		        		</div>
+		        	</div>
+		        </li>
+		        
+		        <!-- My Account -->
+		        <li class="dropdown-item-hover mb-1">
+		        	<a href="./my.account.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
+		        		<div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
+		        			<i class="bi-gear text-cyan-400 group-hover:rotate-90 transition-transform duration-300"></i>
+		        		</div>
+		        		<span class="flex-1 group-hover:translate-x-1 transition-transform duration-200">Mon compte</span>
+		        	</a>
+		        </li>
 		
-		<?php if($rg_user['level'] <=2) { ?>
+				<?php if($rg_user['level'] <=2) { ?>
 				
-				<li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../app/Motors/" target="_blank">
-		        <span class="bi-code-slash"></span>&nbsp;&nbsp; Lanceur de code</a></li>
+				<!-- Divider -->
+				<li class="my-2">
+					<div class="h-px bg-gradient-to-r from-transparent via-slate-600 to-transparent"></div>
+				</li>
+				
+				<!-- Section Title -->
+				<li class="px-3 py-2">
+					<div class="flex items-center gap-2">
+						<div class="w-1 h-4 bg-gradient-to-b from-purple-500 to-blue-500 rounded-full"></div>
+						<span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Outils Dev</span>
+					</div>
+				</li>
+				
+				<!-- Dev Tools Items -->
+				<li class="dropdown-item-hover mb-1">
+					<a href="../app/Motors/" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
+						<div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
+			        		<i class="bi-code-slash text-purple-400"></i>
+			        	</div>
+			        	<span class="flex-1 group-hover:translate-x-1 transition-transform duration-200">Lanceur de code</span>
+			        	<i class="bi-box-arrow-up-right text-xs text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+			        </a>
+				</li>
 
-				<li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../wordpress/wp-login.php" target="_blank">
-		        <span class="bi-wordpress"></span>&nbsp;&nbsp; Wordpress</a></li>
+				<li class="dropdown-item-hover mb-1">
+					<a href="../wordpress/wp-login.php" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
+						<div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
+			        		<i class="bi-wordpress text-blue-400"></i>
+			        	</div>
+			        	<span class="flex-1 group-hover:translate-x-1 transition-transform duration-200">WordPress</span>
+			        	<i class="bi-box-arrow-up-right text-xs text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+			        </a>
+				</li>
 		        
-		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../../phpmyadmin/index.php?route=/database/structure&db=registrar_db" target="_blank">
-		        <span class="bi-database-exclamation"></span>&nbsp;&nbsp; Base de donnée MySQL</a></li>
+		        <li class="dropdown-item-hover mb-1">
+		        	<a href="../../phpmyadmin/index.php?route=/database/structure&db=registrar_db" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
+		        		<div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center group-hover:bg-orange-500/20 transition-colors">
+			        		<i class="bi-database-exclamation text-orange-400"></i>
+			        	</div>
+			        	<span class="flex-1 group-hover:translate-x-1 transition-transform duration-200 text-sm">MySQL</span>
+			        	<i class="bi-box-arrow-up-right text-xs text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+			        </a>
+		        </li>
 		        
-		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="https://icons.getbootstrap.com/" target="_blank">
-		        <span class="bi-bootstrap-fill"></span>&nbsp;&nbsp; Bootstrap Icon</a></li>
+		        <li class="dropdown-item-hover mb-1">
+		        	<a href="https://icons.getbootstrap.com/" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
+		        		<div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
+			        		<i class="bi-bootstrap-fill text-purple-500"></i>
+			        	</div>
+			        	<span class="flex-1 group-hover:translate-x-1 transition-transform duration-200 text-sm">Icons</span>
+			        	<i class="bi-box-arrow-up-right text-xs text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+			        </a>
+		        </li>
 
-		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="https://tailwindcss.com/docs/installation"  target="_blank"><i class="bi-filetype-css"></i>&nbsp;&nbsp; Tailwind CSS</a></li>
-
-		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../../rhm/" target="_blank">
-		        <span class="bi-app-indicator"></span>&nbsp;&nbsp; Resource Humaine</a></li>
-
-
-		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../../uaz-site/" target="_blank">
-		        <span class="bi-award-fill"></span>&nbsp;&nbsp; UAZ SITE</a></li>
-
-		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="../../" target="_blank">
-		        <span class="bi-alexa"></span>&nbsp;&nbsp; Registrar</a></li>
+		        <li class="dropdown-item-hover mb-1">
+		        	<a href="https://tailwindcss.com/docs/installation" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
+		        		<div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
+			        		<i class="bi-filetype-css text-cyan-400"></i>
+			        	</div>
+			        	<span class="flex-1 group-hover:translate-x-1 transition-transform duration-200 text-sm">Tailwind</span>
+			        	<i class="bi-box-arrow-up-right text-xs text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+			        </a>
+		        </li>
 		        
-		<?php }else{echo "";}?>
+		        <!-- Divider -->
+		        <li class="my-2">
+					<div class="h-px bg-gradient-to-r from-transparent via-slate-600 to-transparent"></div>
+				</li>
+				
+				<!-- Applications Section Title -->
+				<li class="px-3 py-2">
+					<div class="flex items-center gap-2">
+						<div class="w-1 h-4 bg-gradient-to-b from-green-500 to-blue-500 rounded-full"></div>
+						<span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Applications</span>
+					</div>
+				</li>
+
+				<!-- Applications Items -->
+		        <li class="dropdown-item-hover mb-1">
+		        	<a href="../../rhm/" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
+		        		<div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center group-hover:bg-green-500/20 transition-colors">
+			        		<i class="bi-app-indicator text-green-400"></i>
+			        	</div>
+			        	<span class="flex-1 group-hover:translate-x-1 transition-transform duration-200 text-sm">RH</span>
+			        	<i class="bi-box-arrow-up-right text-xs text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+			        </a>
+		        </li>
+
+		        <li class="dropdown-item-hover mb-1">
+		        	<a href="../../uaz-site/" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
+		        		<div class="w-8 h-8 rounded-lg bg-yellow-500/10 flex items-center justify-center group-hover:bg-yellow-500/20 transition-colors">
+			        		<i class="bi-award-fill text-yellow-400"></i>
+			        	</div>
+			        	<span class="flex-1 group-hover:translate-x-1 transition-transform duration-200 text-sm">UAZ Site</span>
+			        	<i class="bi-box-arrow-up-right text-xs text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+			        </a>
+		        </li>
+
+		        <li class="dropdown-item-hover mb-1">
+		        	<a href="../../" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
+		        		<div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
+			        		<i class="bi-alexa text-blue-400"></i>
+			        	</div>
+			        	<span class="flex-1 group-hover:translate-x-1 transition-transform duration-200 text-sm">Registrar</span>
+			        	<i class="bi-box-arrow-up-right text-xs text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+			        </a>
+		        </li>
 		        
-		        <li><hr class="dropdown-divider"></li>
-		        <li class="px-2 py-1 hover:bg-cyan-700 hover:text-white"><a href="#" class="logOut"><span class="bi-door-open-fill"></span>&nbsp;&nbsp; Ce déconnecter</a></li>
+				<?php }?>
+		        
+		        <!-- Final Divider -->
+		        <li class="my-2">
+					<div class="h-px bg-gradient-to-r from-transparent via-slate-600 to-transparent"></div>
+				</li>
+		        
+		        <!-- Logout with special styling -->
+		        <li class="dropdown-item-hover">
+		        	<a href="#" class="logOut flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-gradient-to-r hover:from-red-600 hover:to-red-700 transition-all duration-200 group">
+		        		<div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
+			        		<i class="bi-door-open-fill text-red-400 group-hover:text-white transition-colors"></i>
+			        	</div>
+			        	<span class="flex-1 group-hover:translate-x-1 transition-transform duration-200 font-medium group-hover:text-white">Se déconnecter</span>
+			        	<i class="bi-arrow-right text-sm opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200"></i>
+			        </a>
+		        </li>
 			</ul>
 		</div>
 	</div>
-	
-
-	
-				
 </div>
 
 <script type="text/javascript">
