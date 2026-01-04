@@ -29,70 +29,165 @@
  ?>
 
 <style>
-	/* Topbar animations and styles */
-	.topbar-search-input {
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	}
+	/* ===== THEME TOGGLE & MODES ===== */
 	
-	.topbar-search-input:focus {
-		box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.3);
-		border-color: #06b6d4;
-		transform: scale(1.02);
-	}
-	
-	.user-avatar {
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	}
-	
-	.user-avatar:hover {
-		transform: scale(1.1);
-		box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
-	}
-	
-	.dropdown-menu {
-		animation: slideDown 0.2s ease-out;
-		backdrop-filter: blur(8px);
-	}
-	
-	@keyframes slideDown {
-		from {
-			opacity: 0;
-			transform: translateY(-10px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-	
-	.dropdown-item-hover {
+	/* Theme Toggle Button */
+	.theme-toggle {
+		width: 40px;
+		height: 40px;
+		border-radius: 8px;
+		border: 1px solid #1a3a5c;
+		background: #0d1f3c;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		transition: all 0.2s ease;
 		position: relative;
 		overflow: hidden;
 	}
 	
-	.dropdown-item-hover::before {
-		content: '';
+	.theme-toggle:hover {
+		background: #1a3a5c;
+		border-color: #4e9ede;
+	}
+	
+	.theme-toggle .icon-sun,
+	.theme-toggle .icon-moon {
 		position: absolute;
-		left: 0;
-		top: 0;
-		height: 100%;
-		width: 3px;
-		background: linear-gradient(180deg, #06b6d4, #3b82f6);
-		transform: scaleY(0);
-		transition: transform 0.2s ease;
-	}
-	
-	.dropdown-item-hover:hover::before {
-		transform: scaleY(1);
-	}
-	
-	.logo-container {
 		transition: all 0.3s ease;
 	}
 	
+	.theme-toggle .icon-sun {
+		color: #fbbf24;
+		font-size: 18px;
+	}
+	
+	.theme-toggle .icon-moon {
+		color: #8eb8d4;
+		font-size: 18px;
+	}
+	
+	/* Dark mode (default) */
+	[data-theme="dark"] .theme-toggle .icon-sun {
+		opacity: 1;
+		transform: rotate(0deg) scale(1);
+	}
+	
+	[data-theme="dark"] .theme-toggle .icon-moon {
+		opacity: 0;
+		transform: rotate(-90deg) scale(0);
+	}
+	
+	/* Light mode */
+	[data-theme="light"] .theme-toggle .icon-sun {
+		opacity: 0;
+		transform: rotate(90deg) scale(0);
+	}
+	
+	[data-theme="light"] .theme-toggle .icon-moon {
+		opacity: 1;
+		transform: rotate(0deg) scale(1);
+	}
+	
+	[data-theme="light"] .theme-toggle {
+		background: #e8f1f8;
+		border-color: #8eb8d4;
+	}
+	
+	[data-theme="light"] .theme-toggle:hover {
+		background: #d1e5f4;
+		border-color: #4e9ede;
+	}
+	
+	[data-theme="light"] .theme-toggle .icon-moon {
+		color: #1a3a5c;
+	}
+	
+	/* ===== LIGHT MODE STYLES ===== */
+	[data-theme="light"] .topbar-bleu-nuit {
+		background: #e8f1f8 !important;
+		border-bottom-color: #8eb8d4 !important;
+	}
+	
+	[data-theme="light"] .topbar-bleu-nuit {
+		color: #0a1628 !important;
+	}
+	
+	[data-theme="light"] .logo-text-gradient {
+		background: linear-gradient(135deg, #1a3a5c, #4e9ede);
+		-webkit-background-clip: text;
+		background-clip: text;
+	}
+	
+	[data-theme="light"] .topbar-search-input {
+		background: #ffffff !important;
+		border-color: #8eb8d4 !important;
+		color: #0a1628 !important;
+	}
+	
+	[data-theme="light"] .topbar-search-input::placeholder {
+		color: #5a8aa8 !important;
+	}
+	
+	[data-theme="light"] .dropdown-menu {
+		background: #ffffff !important;
+		border-color: #8eb8d4 !important;
+	}
+	
+	[data-theme="light"] .dropdown-item-hover:hover {
+		background: #e8f1f8 !important;
+		color: #0a1628 !important;
+	}
+	
+	/* ===== BLEU NUIT TOPBAR STYLES ===== */
+	.topbar-search-input {
+		transition: all 0.15s ease;
+		background: #0d1f3c !important;
+		border-color: #1a3a5c !important;
+		color: #e8f1f8 !important;
+	}
+	
+	.topbar-search-input:focus {
+		box-shadow: 0 0 0 2px rgba(78, 158, 222, 0.3);
+		border-color: #4e9ede !important;
+	}
+	
+	.topbar-search-input::placeholder {
+		color: #5a8aa8 !important;
+	}
+	
+	.user-avatar {
+		transition: all 0.15s ease;
+	}
+	
+	.user-avatar:hover {
+		transform: scale(1.05);
+		box-shadow: 0 2px 8px rgba(78, 158, 222, 0.3);
+	}
+	
+	.dropdown-menu {
+		background: #0a1628 !important;
+		border: 1px solid #1a3a5c !important;
+		border-radius: 8px;
+	}
+	
+	.dropdown-item-hover {
+		transition: all 0.15s ease;
+		color: #8eb8d4;
+	}
+	
+	.dropdown-item-hover:hover {
+		background: #0d1f3c !important;
+		color: #e8f1f8 !important;
+	}
+	
+	.logo-container {
+		transition: all 0.15s ease;
+	}
+	
 	.logo-container:hover {
-		transform: translateX(3px);
+		opacity: 0.8;
 	}
 	
 	.search-icon {
@@ -100,7 +195,7 @@
 		left: 10px;
 		top: 50%;
 		transform: translateY(-50%);
-		color: #94a3b8;
+		color: #5a8aa8;
 		pointer-events: none;
 	}
 	
@@ -112,6 +207,20 @@
 		padding-left: 35px;
 	}
 	
+	/* Topbar background */
+	.topbar-bleu-nuit {
+		background: #0a1628 !important;
+		border-bottom: 1px solid #1a3a5c !important;
+	}
+	
+	/* Logo text gradient */
+	.logo-text-gradient {
+		background: linear-gradient(135deg, #4e9ede, #8eb8d4);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+	
 	/* Mobile menu toggle */
 	@media (max-width: 640px) {
 		.mobile-hidden {
@@ -120,15 +229,15 @@
 	}
 </style>
 
-<div class="flex items-center justify-between w-full h-14 shadow-lg <?=$bg_one_color?> <?=$txt_one_color?> px-3 border-b border-slate-700">
+<div class="flex items-center justify-between w-full h-14 topbar-bleu-nuit text-[#e8f1f8] px-3">
 	
 	<!-- Logo Section -->
 	<div class="flex items-center gap-3 lg:w-2/12">
-		<a href="../src/" class="logo-container flex items-center gap-2 hover:opacity-80 transition-opacity">
-			<div class="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg p-1 shadow-md">
+		<a href="../src/" class="logo-container flex items-center gap-2">
+			<div class="w-8 h-8 bg-gradient-to-br from-[#4e9ede] to-[#1a3a5c] rounded-lg p-1 shadow-md">
 				<img src="../file/logo-coldbloud.png" class="w-full h-full">
 			</div>
-			<span class="hidden md:block font-bold text-base bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+			<span class="hidden md:block font-bold text-base logo-text-gradient">
 				Infinit Registrar
 			</span>
 		</a>
@@ -174,15 +283,11 @@
 	
 	<!-- User Profile Section -->
 	<div class="flex items-center gap-3 lg:w-3/12 justify-end">
-		<!-- Theme Toggle (commented out but styled) -->
-		<!-- <div class="mobile-hidden">
-			<button id="light" class="p-2 hover:bg-slate-700 rounded-lg transition-colors">
-				<i class="bi-sun-fill text-lg text-yellow-400"></i>
-			</button>
-			<button id="dark" class="hidden p-2 hover:bg-slate-700 rounded-lg transition-colors">
-				<i class="bi-moon-stars-fill text-lg"></i>
-			</button>
-		</div> -->
+		<!-- Theme Toggle Button -->
+		<button class="theme-toggle" id="themeToggle" title="Basculer le thème">
+			<i class="bi bi-sun-fill icon-sun"></i>
+			<i class="bi bi-moon-stars-fill icon-moon"></i>
+		</button>
 		
 		<!-- User Dropdown -->
 		<div class="relative dropdown-container">
@@ -353,6 +458,30 @@
 </div>
 
 <script type="text/javascript">
+	// ===== THEME TOGGLE FUNCTIONALITY =====
+	(function() {
+		const themeToggle = document.getElementById('themeToggle');
+		const html = document.documentElement;
+		
+		// Get saved theme or default to dark
+		const savedTheme = localStorage.getItem('theme') || 'dark';
+		html.setAttribute('data-theme', savedTheme);
+		
+		// Toggle theme on click
+		if (themeToggle) {
+			themeToggle.addEventListener('click', function() {
+				const currentTheme = html.getAttribute('data-theme');
+				const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+				
+				html.setAttribute('data-theme', newTheme);
+				localStorage.setItem('theme', newTheme);
+				
+				// Dispatch event for other components to react
+				window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: newTheme } }));
+			});
+		}
+	})();
+
 	$(document).ready(function() {
 		$('#std-search').keyup(function() {
 			var input = $(this).val();
@@ -424,37 +553,6 @@
 				$('#profSearch-result').css({'display':'none'});
 				$('#all-prof').css({'display':'block'});
 			}
-		});
-/*/////////////////////////////////////////////////////////////////*/
-		$('#light').click(function(){
-			
-			var bg_one_color = '<?=$bg_one_color?>';
-			var bg_two_color = '<?=$bg_two_color?>';
-			var bg_three_color = '<?=$bg_three_color?>';
-			var bg_four_color = '<?=$bg_four_color?>';
-			var bg_five_color = '<?=$bg_five_color?>';
-			var bg_six_color = '<?=$bg_six_color?>';
-			var bg_seven_color = '<?=$bg_seven_color?>';
-			var bg_eight_color = '<?=$bg_eight_color?>';
-	
-			var br_two_color = '<?=$br_two_color?>';
-			var br_three_color = '<?=$br_three_color?>';
-
-			var txt_one_color = '<?=$txt_one_color?>';
-			var txt_two_color = '<?=$txt_two_color?>';
-			var txt_three_color = '<?=$txt_three_color?>';
-
-			$(this).css({'display':'none'});
-			$('#dark').css({'display':'block'});
-
-		});
-
-		$('#dark').click(function(){
-			
-			$(this).css({'display':'none'});
-			$('#light').css({'display':'block'});
-
-
 		});
 	});
 

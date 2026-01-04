@@ -1,202 +1,196 @@
 <style type="text/css">
-	/* Sidebar Animations & Transitions */
+	/* ===== BLEU NUIT SIDEBAR STYLES ===== */
 	.sidebar-menu {
-		background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
-		box-shadow: 2px 0 12px rgba(0, 0, 0, 0.3);
+		background: #0a1628;
+		border-right: 1px solid #1a3a5c;
 		overflow-y: auto;
 		overflow-x: hidden;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		transition: background 0.2s ease, border-color 0.2s ease;
+	}
+	
+	/* Light Mode Sidebar */
+	[data-theme="light"] .sidebar-menu {
+		background: #f0f7fc;
+		border-right-color: #8eb8d4;
+	}
+	
+	[data-theme="light"] .menu-section-header {
+		color: #1a3a5c;
+	}
+	
+	[data-theme="light"] .menu-item a {
+		color: #1a3a5c;
+	}
+	
+	[data-theme="light"] .menu-item:hover a {
+		background: #e0eef7;
+		color: #0a1628;
+	}
+	
+	[data-theme="light"] .menu-item.active a {
+		background: rgba(78, 158, 222, 0.2);
+		color: #1a3a5c;
+	}
+	
+	[data-theme="light"] .menu-icon-wrapper {
+		background: #e0eef7;
+	}
+	
+	[data-theme="light"] .menu-item:hover .menu-icon-wrapper {
+		background: #d1e5f4;
+	}
+	
+	[data-theme="light"] .menu-item.active .menu-icon-wrapper {
+		background: rgba(78, 158, 222, 0.25);
+	}
+	
+	[data-theme="light"] .menu-icon {
+		color: #3d6a8a;
+	}
+	
+	[data-theme="light"] .menu-item:hover .menu-icon {
+		color: #1a3a5c;
+	}
+	
+	[data-theme="light"] .menu-item.active .menu-icon {
+		color: #1a3a5c;
+	}
+	
+	[data-theme="light"] .mobile-menu-toggle {
+		background: #4e9ede;
+	}
+	
+	[data-theme="light"] .sidebar-overlay {
+		background: rgba(10, 22, 40, 0.5);
 	}
 	
 	.sidebar-menu::-webkit-scrollbar {
-		width: 6px;
+		width: 4px;
 	}
 	
 	.sidebar-menu::-webkit-scrollbar-track {
-		background: rgba(15, 23, 42, 0.5);
-		border-radius: 10px;
+		background: transparent;
 	}
 	
 	.sidebar-menu::-webkit-scrollbar-thumb {
-		background: linear-gradient(180deg, #06b6d4, #3b82f6);
-		border-radius: 10px;
+		background: #1a3a5c;
+		border-radius: 4px;
 	}
-	
-	.sidebar-menu::-webkit-scrollbar-thumb:hover {
-		background: linear-gradient(180deg, #0891b2, #2563eb);
-	}
-	
+
 	/* Menu Section Headers */
 	.menu-section-header {
 		display: flex;
 		align-items: center;
 		gap: 8px;
-		padding: 12px 16px;
-		margin: 16px 8px 8px 8px;
+		padding: 8px 16px;
+		margin: 16px 8px 4px 8px;
 		font-size: 11px;
-		font-weight: 700;
+		font-weight: 500;
 		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: #94a3b8;
-		position: relative;
-	}
-	
-	.menu-section-header::before {
-		content: '';
-		width: 3px;
-		height: 16px;
-		background: linear-gradient(180deg, #06b6d4, #3b82f6);
-		border-radius: 2px;
-		box-shadow: 0 0 8px rgba(6, 182, 212, 0.5);
-	}
-	
-	.menu-section-header::after {
-		content: '';
-		flex: 1;
-		height: 1px;
-		background: linear-gradient(to right, rgba(148, 163, 184, 0.3), transparent);
-		margin-left: 8px;
+		letter-spacing: 0.05em;
+		color: #5a8aa8;
 	}
 	
 	/* Menu Items */
 	.menu-item {
-		position: relative;
-		margin: 4px 8px;
-		border-radius: 10px;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		overflow: hidden;
-	}
-	
-	.menu-item::before {
-		content: '';
-		position: absolute;
-		left: 0;
-		top: 0;
-		height: 100%;
-		width: 4px;
-		background: linear-gradient(180deg, #06b6d4, #3b82f6);
-		transform: scaleX(0);
-		transition: transform 0.3s ease;
-		border-radius: 0 4px 4px 0;
-	}
-	
-	.menu-item:hover::before {
-		transform: scaleX(1);
+		margin: 2px 8px;
+		border-radius: 6px;
 	}
 	
 	.menu-item a {
 		display: flex;
 		align-items: center;
 		gap: 12px;
-		padding: 12px 16px;
-		color: #e2e8f0;
+		padding: 10px 12px;
+		color: #8eb8d4;
 		text-decoration: none;
-		border-radius: 10px;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		position: relative;
-		z-index: 1;
+		border-radius: 6px;
+		transition: all 0.15s ease;
+		font-size: 13px;
 	}
 	
 	.menu-item:hover a {
-		background: rgba(6, 182, 212, 0.15);
-		transform: translateX(4px);
-		color: #fff;
+		background: #0d1f3c;
+		color: #e8f1f8;
 	}
 	
 	/* Active Menu Item */
-	.menu-item.active {
-		background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.2));
-		border: 1px solid rgba(6, 182, 212, 0.3);
-		box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
-	}
-	
-	.menu-item.active::before {
-		transform: scaleX(1);
-	}
-	
 	.menu-item.active a {
-		color: #fff;
-		font-weight: 600;
-	}
-	
-	.menu-item.active .menu-icon {
-		transform: scale(1.1);
-		color: #06b6d4;
+		background: rgba(78, 158, 222, 0.15);
+		color: #4e9ede;
+		font-weight: 500;
 	}
 	
 	/* Menu Icon Container */
 	.menu-icon-wrapper {
-		width: 36px;
-		height: 36px;
+		width: 32px;
+		height: 32px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		border-radius: 8px;
-		background: rgba(51, 65, 85, 0.5);
-		transition: all 0.3s ease;
+		border-radius: 6px;
+		background: #0d1f3c;
+		transition: all 0.15s ease;
 	}
 	
 	.menu-item:hover .menu-icon-wrapper {
-		background: rgba(6, 182, 212, 0.2);
-		transform: rotate(5deg) scale(1.05);
+		background: #1a3a5c;
 	}
 	
 	.menu-item.active .menu-icon-wrapper {
-		background: rgba(6, 182, 212, 0.25);
-		box-shadow: 0 0 12px rgba(6, 182, 212, 0.4);
+		background: rgba(78, 158, 222, 0.2);
 	}
 	
 	.menu-icon {
-		font-size: 18px;
-		color: #94a3b8;
-		transition: all 0.3s ease;
+		font-size: 16px;
+		color: #5a8aa8;
 	}
 	
 	.menu-item:hover .menu-icon {
-		color: #06b6d4;
+		color: #e8f1f8;
+	}
+	
+	.menu-item.active .menu-icon {
+		color: #4e9ede;
 	}
 	
 	/* Menu Title */
 	.menu-title {
-		font-size: 14px;
-		font-weight: 500;
+		font-size: 13px;
 		flex: 1;
 	}
 	
 	/* Inactive/Disabled Items */
 	.toolInactive {
-		opacity: 0.5;
+		opacity: 0.4;
 		pointer-events: none;
-		cursor: not-allowed;
 	}
 	
 	/* Mobile Menu Toggle */
 	.mobile-menu-toggle {
 		display: none;
 		position: fixed;
-		bottom: 24px;
-		right: 24px;
-		width: 56px;
-		height: 56px;
-		background: linear-gradient(135deg, #06b6d4, #3b82f6);
-		border-radius: 50%;
-		box-shadow: 0 4px 20px rgba(6, 182, 212, 0.4);
+		bottom: 20px;
+		right: 20px;
+		width: 48px;
+		height: 48px;
+		background: #4e9ede;
+		border-radius: 8px;
 		z-index: 1000;
 		cursor: pointer;
 		align-items: center;
 		justify-content: center;
-		transition: all 0.3s ease;
+		transition: all 0.15s ease;
 		border: none;
 	}
 	
 	.mobile-menu-toggle:hover {
-		transform: scale(1.1);
-		box-shadow: 0 6px 24px rgba(6, 182, 212, 0.6);
+		background: #3d8ed0;
 	}
 	
 	.mobile-menu-toggle i {
 		color: white;
-		font-size: 24px;
+		font-size: 20px;
 	}
 	
 	/* Mobile Sidebar Overlay */
@@ -207,11 +201,10 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		background: rgba(0, 0, 0, 0.5);
-		backdrop-filter: blur(4px);
+		background: rgba(10, 22, 40, 0.85);
 		z-index: 998;
 		opacity: 0;
-		transition: opacity 0.3s ease;
+		transition: opacity 0.2s ease;
 	}
 	
 	.sidebar-overlay.active {
@@ -223,16 +216,15 @@
 		.sidebar-menu {
 			position: fixed;
 			top: 56px;
-			left: -320px;
-			width: 280px;
-			height: calc(100vh - 56px);
+			left: -280px;
+			width: 260px;
+			height: calc(100vh - 56px) !important;
 			z-index: 999;
-			transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+			transition: left 0.2s ease;
 		}
 		
 		.sidebar-menu.active {
 			left: 0;
-			box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
 		}
 		
 		.mobile-menu-toggle {
@@ -243,45 +235,6 @@
 			display: block;
 		}
 	}
-	
-	/* Badge for items count */
-	.menu-badge {
-		padding: 2px 8px;
-		background: linear-gradient(135deg, #06b6d4, #3b82f6);
-		color: white;
-		font-size: 11px;
-		font-weight: 700;
-		border-radius: 12px;
-		box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
-	}
-	
-	/* Animation on load */
-	@keyframes slideInLeft {
-		from {
-			opacity: 0;
-			transform: translateX(-20px);
-		}
-		to {
-			opacity: 1;
-			transform: translateX(0);
-		}
-	}
-	
-	.menu-item {
-		animation: slideInLeft 0.3s ease forwards;
-		opacity: 0;
-	}
-	
-	.menu-item:nth-child(1) { animation-delay: 0.05s; }
-	.menu-item:nth-child(2) { animation-delay: 0.1s; }
-	.menu-item:nth-child(3) { animation-delay: 0.15s; }
-	.menu-item:nth-child(4) { animation-delay: 0.2s; }
-	.menu-item:nth-child(5) { animation-delay: 0.25s; }
-	.menu-item:nth-child(6) { animation-delay: 0.3s; }
-	.menu-item:nth-child(7) { animation-delay: 0.35s; }
-	.menu-item:nth-child(8) { animation-delay: 0.4s; }
-	.menu-item:nth-child(9) { animation-delay: 0.45s; }
-	.menu-item:nth-child(10) { animation-delay: 0.5s; }
 </style>
 
 <!-- Sidebar Overlay for Mobile -->
@@ -293,7 +246,6 @@
 	<nav class="py-2">
 		<!-- Etudiants Section -->
 		<div class="menu-section-header">
-			<i class="bi bi-mortarboard-fill text-cyan-400"></i>
 			<span>Étudiants</span>
 		</div>
 		
@@ -314,10 +266,18 @@
 				<span class="menu-title">Créer un étudiant</span>
 			</a>
 		</div>
+
+		<div class="menu-item <?php if($page == "meilleurs-etudiants.php") { echo "active"; } ?>">
+			<a href="./meilleurs-etudiants.php">
+				<div class="menu-icon-wrapper">
+					<i class="bi bi-trophy-fill menu-icon"></i>
+				</div>
+				<span class="menu-title">Meilleurs Étudiants</span>
+			</a>
+		</div>
 		
 		<!-- Professeurs Section -->
 		<div class="menu-section-header">
-			<i class="bi bi-person-badge-fill text-purple-400"></i>
 			<span>Professeurs</span>
 		</div>
 		
@@ -341,7 +301,6 @@
 		
 		<!-- Cours Section -->
 		<div class="menu-section-header">
-			<i class="bi bi-book-fill text-blue-400"></i>
 			<span>Cours</span>
 		</div>
 		
@@ -362,10 +321,23 @@
 				<span class="menu-title">Créer un cours</span>
 			</a>
 		</div>
+
+		<!-- Emploi du temps Section -->
+		<div class="menu-section-header">
+			<span>Emploi du temps</span>
+		</div>
+		
+		<div class="menu-item">
+			<a href="./accueil.cours.php">
+				<div class="menu-icon-wrapper">
+					<i class="bi bi-calendar3-week menu-icon"></i>
+				</div>
+				<span class="menu-title">Emplois du temps</span>
+			</a>
+		</div>
 		
 		<!-- Paramètres Section -->
 		<div class="menu-section-header">
-			<i class="bi bi-gear-fill text-orange-400"></i>
 			<span>Paramètres</span>
 		</div>
 		
@@ -388,7 +360,6 @@
 </button>
 
 <script type="text/javascript">
-	// Mobile menu toggle functionality
 	document.addEventListener('DOMContentLoaded', function() {
 		const mobileToggle = document.getElementById('mobileMenuToggle');
 		const sidebar = document.getElementById('sidebarMenu');
@@ -398,37 +369,26 @@
 		function toggleMenu() {
 			sidebar.classList.toggle('active');
 			overlay.classList.toggle('active');
-			
-			// Change icon
-			if (sidebar.classList.contains('active')) {
-				toggleIcon.classList.remove('bi-list');
-				toggleIcon.classList.add('bi-x-lg');
-			} else {
-				toggleIcon.classList.remove('bi-x-lg');
-				toggleIcon.classList.add('bi-list');
-			}
+			toggleIcon.classList.toggle('bi-list');
+			toggleIcon.classList.toggle('bi-x-lg');
 		}
 		
 		mobileToggle.addEventListener('click', toggleMenu);
 		overlay.addEventListener('click', toggleMenu);
 		
-		// Close menu when clicking a link
 		const menuLinks = sidebar.querySelectorAll('.menu-item a');
 		menuLinks.forEach(link => {
 			link.addEventListener('click', function() {
-				if (window.innerWidth < 1024) {
-					toggleMenu();
-				}
+				if (window.innerWidth < 1024) toggleMenu();
 			});
 		});
 		
-		// Handle window resize
 		window.addEventListener('resize', function() {
 			if (window.innerWidth >= 1024) {
 				sidebar.classList.remove('active');
 				overlay.classList.remove('active');
-				toggleIcon.classList.remove('bi-x-lg');
 				toggleIcon.classList.add('bi-list');
+				toggleIcon.classList.remove('bi-x-lg');
 			}
 		});
 	});

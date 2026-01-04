@@ -1,17 +1,67 @@
 <style type="text/css">
+	/* ============================================
+	   BLEU NUIT TOOLBAR STYLES
+	   Modern, minimal design with night blue
+	   ============================================ */
+	
 	/* Toolbar Container */
 	.toolbar-container {
-		background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-		border-bottom: 1px solid rgba(6, 182, 212, 0.2);
-		min-height: 75px;
-		transition: all 0.3s ease;
+		background: #0a1628;
+		border-bottom: 1px solid #1a3a5c;
+		min-height: 72px;
+		transition: background 0.2s ease, border-color 0.2s ease;
+	}
+	
+	/* ===== LIGHT MODE TOOLBAR ===== */
+	[data-theme="light"] .toolbar-container {
+		background: #f0f7fc;
+		border-bottom-color: #8eb8d4;
+	}
+	
+	[data-theme="light"] .toolbar-section {
+		border-right-color: #8eb8d4;
+	}
+	
+	[data-theme="light"] .tool-btn {
+		color: #1a3a5c;
+	}
+	
+	[data-theme="light"] .tool-btn:hover {
+		background: #e0eef7;
+		color: #0a1628;
+	}
+	
+	[data-theme="light"] .tool-icon {
+		background: #e0eef7;
+	}
+	
+	[data-theme="light"] .tool-btn:hover .tool-icon {
+		background: #4e9ede;
+		color: #ffffff;
+	}
+	
+	[data-theme="light"] .toolbar-dropdown {
+		background: #ffffff;
+		border-color: #8eb8d4;
+	}
+	
+	[data-theme="light"] .toolbar-dropdown .dropdown-header {
+		background: #4e9ede;
+		color: #ffffff;
+	}
+	
+	[data-theme="light"] .toolbar-dropdown li a p {
+		color: #1a3a5c;
+	}
+	
+	[data-theme="light"] .toolbar-dropdown li a:hover p {
+		background: #e0eef7;
+		color: #0a1628;
 	}
 	
 	/* Toolbar Section */
 	.toolbar-section {
-		border-right: 1px solid rgba(148, 163, 184, 0.1);
-		transition: all 0.3s ease;
+		border-right: 1px solid #1a3a5c;
 	}
 	
 	.toolbar-section:last-child {
@@ -26,198 +76,118 @@
 		align-items: center;
 		justify-content: center;
 		gap: 6px;
-		padding: 12px 8px;
+		padding: 10px 8px;
 		text-decoration: none;
-		color: #cbd5e1;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		border-radius: 8px;
-		overflow: hidden;
+		color: #8eb8d4;
+		transition: all 0.15s ease;
+		border-radius: 6px;
 		cursor: pointer;
 		border: none;
 		background: transparent;
-		min-height: 70px;
-	}
-	
-	.tool-btn::before {
-		content: '';
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		height: 3px;
-		background: linear-gradient(90deg, #06b6d4, #3b82f6);
-		transform: scaleX(0);
-		transition: transform 0.3s ease;
-	}
-	
-	.tool-btn:hover::before {
-		transform: scaleX(1);
+		min-height: 68px;
 	}
 	
 	.tool-btn:hover {
-		background: rgba(6, 182, 212, 0.1);
-		color: #fff;
-		transform: translateY(-2px);
+		background: #0d1f3c;
+		color: #e8f1f8;
 	}
 	
 	.tool-btn:active {
-		background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.2));
-		transform: translateY(0);
+		background: #0f2847;
 	}
 	
 	/* Tool Icon */
 	.tool-icon {
-		width: 40px;
-		height: 40px;
+		width: 36px;
+		height: 36px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		border-radius: 10px;
-		background: rgba(51, 65, 85, 0.5);
-		transition: all 0.3s ease;
-		font-size: 20px;
+		border-radius: 6px;
+		background: #0d1f3c;
+		transition: all 0.15s ease;
+		font-size: 18px;
 	}
 	
 	.tool-btn:hover .tool-icon {
-		background: rgba(6, 182, 212, 0.2);
-		transform: rotate(-5deg) scale(1.1);
-		box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+		background: #4e9ede;
+		color: #0a1628;
 	}
 	
 	.tool-btn i {
-		transition: all 0.3s ease;
-	}
-	
-	.tool-btn:hover i {
-		color: #06b6d4;
+		transition: color 0.15s ease;
 	}
 	
 	/* Tool Label */
 	.tool-label {
-		font-size: 11px;
+		font-size: 10px;
 		font-weight: 500;
 		text-align: center;
 		line-height: 1.2;
-		letter-spacing: 0.02em;
+		letter-spacing: 0.01em;
 		max-width: 100%;
 		word-wrap: break-word;
 	}
 	
 	/* Inactive Tools */
 	.toolInactive {
-		opacity: 0.4;
+		opacity: 0.35;
 		pointer-events: none;
 		cursor: not-allowed;
 	}
 	
 	.toolInactive .tool-icon {
-		background: rgba(51, 65, 85, 0.3);
+		background: hsl(217.2 32.6% 12%);
 	}
 	
 	/* Dropdown Menu Styles */
 	.toolbar-dropdown {
-		background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-		border: 1px solid rgba(6, 182, 212, 0.3);
-		border-radius: 12px;
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-		padding: 8px;
-		backdrop-filter: blur(12px);
-		animation: dropdownSlide 0.2s ease;
-	}
-	
-	@keyframes dropdownSlide {
-		from {
-			opacity: 0;
-			transform: translateY(-10px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
+		background: #0a1628;
+		border: 1px solid #1a3a5c;
+		border-radius: 8px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+		padding: 4px;
 	}
 	
 	.toolbar-dropdown .dropdown-header {
-		background: linear-gradient(135deg, #06b6d4, #3b82f6);
-		color: white;
-		padding: 8px 12px;
-		font-size: 11px;
-		font-weight: 700;
+		background: #4e9ede;
+		color: #0a1628;
+		padding: 6px 12px;
+		font-size: 10px;
+		font-weight: 600;
 		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		margin: 4px 0;
-		border-radius: 6px;
-		box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+		letter-spacing: 0.05em;
+		margin: 4px;
+		border-radius: 4px;
 	}
 	
 	.toolbar-dropdown li a {
 		display: block;
-		transition: all 0.2s ease;
 	}
 	
 	.toolbar-dropdown li a p {
-		padding: 10px 12px;
-		margin: 0;
-		border-radius: 6px;
-		color: #e2e8f0;
-		transition: all 0.2s ease;
-		position: relative;
-		overflow: hidden;
-	}
-	
-	.toolbar-dropdown li a p::before {
-		content: '';
-		position: absolute;
-		left: 0;
-		top: 0;
-		height: 100%;
-		width: 3px;
-		background: linear-gradient(180deg, #06b6d4, #3b82f6);
-		transform: scaleY(0);
-		transition: transform 0.2s ease;
+		padding: 8px 12px;
+		margin: 2px 4px;
+		border-radius: 4px;
+		color: #8eb8d4;
+		transition: all 0.15s ease;
 	}
 	
 	.toolbar-dropdown li a:hover p {
-		background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.15));
-		color: #fff;
-		transform: translateX(4px);
-	}
-	
-	.toolbar-dropdown li a:hover p::before {
-		transform: scaleY(1);
+		background: #0d1f3c;
+		color: #e8f1f8;
 	}
 	
 	/* Responsive Toolbar */
 	@media (max-width: 1024px) {
 		.toolbar-section {
 			border-right: none;
-			border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+			border-bottom: 1px solid #1a3a5c;
 		}
 		
 		.tool-btn {
-			min-height: 60px;
+			min-height: 58px;
 			padding: 8px 6px;
-		}
-		
-		.tool-icon {
-			width: 36px;
-			height: 36px;
-			font-size: 18px;
-		}
-		
-		.tool-label {
-			font-size: 10px;
-		}
-	}
-	
-	@media (max-width: 640px) {
-		.toolbar-container {
-			min-height: auto;
-		}
-		
-		.tool-btn {
-			min-height: 55px;
-			padding: 6px 4px;
-			gap: 4px;
 		}
 		
 		.tool-icon {
@@ -231,39 +201,51 @@
 		}
 	}
 	
+	@media (max-width: 640px) {
+		.toolbar-container {
+			min-height: auto;
+		}
+		
+		.tool-btn {
+			min-height: 52px;
+			padding: 6px 4px;
+			gap: 4px;
+		}
+		
+		.tool-icon {
+			width: 28px;
+			height: 28px;
+			font-size: 14px;
+		}
+		
+		.tool-label {
+			font-size: 8px;
+		}
+	}
+	
 	/* Tool Badge/Indicator */
 	.tool-badge {
 		position: absolute;
-		top: 8px;
-		right: 8px;
-		width: 8px;
-		height: 8px;
-		background: linear-gradient(135deg, #ef4444, #dc2626);
+		top: 6px;
+		right: 6px;
+		width: 6px;
+		height: 6px;
+		background: hsl(0 84.2% 60.2%);
 		border-radius: 50%;
-		box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
-		animation: pulse 2s infinite;
 	}
 	
-	@keyframes pulse {
-		0%, 100% {
-			opacity: 1;
-			transform: scale(1);
-		}
-		50% {
-			opacity: 0.7;
-			transform: scale(1.1);
-		}
+	/* Tool type hover colors - all use blue for consistency */
+	.tool-btn.tool-export:hover .tool-icon,
+	.tool-btn.tool-stats:hover .tool-icon,
+	.tool-btn.tool-document:hover .tool-icon,
+	.tool-btn.tool-finance:hover .tool-icon,
+	.tool-btn.tool-sort:hover .tool-icon,
+	.tool-btn.tool-filter:hover .tool-icon,
+	.tool-btn.tool-search:hover .tool-icon,
+	.tool-btn.tool-settings:hover .tool-icon {
+		background: hsl(217.2 91.2% 59.8%);
+		color: hsl(222.2 84% 4.9%);
 	}
-	
-	/* Special color variants for different tool types */
-	.tool-btn.tool-export:hover i { color: #f59e0b; }
-	.tool-btn.tool-stats:hover i { color: #8b5cf6; }
-	.tool-btn.tool-document:hover i { color: #10b981; }
-	.tool-btn.tool-finance:hover i { color: #ef4444; }
-	.tool-btn.tool-sort:hover i { color: #06b6d4; }
-	.tool-btn.tool-filter:hover i { color: #3b82f6; }
-	.tool-btn.tool-search:hover i { color: #f59e0b; }
-	.tool-btn.tool-settings:hover i { color: #64748b; }
 </style>
 
 <div class="toolbar-container w-full py-2 flex flex-wrap <?=$txt_one_color?>">
