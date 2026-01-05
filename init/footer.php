@@ -13,7 +13,7 @@
 		color: #1a3a5c;
 	}
 </style>
-<div class="sm:w-full lg:w-10/12 h-6 footer-bleu-nuit mt-1 py-0.5 px-2 absolute bottom-0 flex">
+<div class="w-full h-6 footer-bleu-nuit py-0.5 px-2 flex">
 	<div class="w-3/12 px-4" id="<?php
 	/*if ($page == "accueil.php" OR $page =="student.php") {echo 'compterStd';}
 	elseif ($page == "accueil.cours.php" OR $page =="cours.php") {echo 'compterCours';}

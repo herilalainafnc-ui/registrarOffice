@@ -93,6 +93,15 @@
 
 	<!-- ===== GLOBAL THEME STYLES ===== -->
 	<style>
+		/* Prevent body scroll - app should be contained */
+		html, body {
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+			height: 100vh;
+			max-height: 100vh;
+		}
+		
 		/* Transition for smooth theme change */
 		*, *::before, *::after {
 			transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;

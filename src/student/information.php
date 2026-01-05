@@ -1,151 +1,412 @@
 
-<form method="post" action="../app/.student/updateStd.php?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>&etude_envisage=<?=$etude_envisage?>" class="form-no-refrech" target="_blank">
-<div class="w-full grid gap-2 sm:grid-cols-1 lg:grid-cols-2 mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">
+<style>
+	/* ===== SHADCN-INSPIRED MODERN STYLES ===== */
+	.info-card {
+		background: rgba(15, 23, 42, 0.6);
+		backdrop-filter: blur(12px);
+		border: 1px solid rgba(51, 65, 85, 0.5);
+		border-radius: 12px;
+		padding: 20px;
+		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+	
+	.info-card:hover {
+		border-color: rgba(56, 189, 248, 0.4);
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(56, 189, 248, 0.1);
+	}
+	
+	.card-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 20px;
+		padding-bottom: 12px;
+		border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+	}
+	
+	.card-title {
+		font-size: 14px;
+		font-weight: 600;
+		color: #f1f5f9;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+	
+	.card-title i {
+		color: #38bdf8;
+		font-size: 16px;
+	}
+	
+	.card-actions {
+		display: flex;
+		gap: 8px;
+		align-items: center;
+	}
+	
+	.btn-edit {
+		width: 32px;
+		height: 32px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 8px;
+		background: rgba(51, 65, 85, 0.5);
+		color: #94a3b8;
+		transition: all 0.15s ease;
+		border: 1px solid transparent;
+	}
+	
+	.btn-edit:hover {
+		background: rgba(56, 189, 248, 0.1);
+		color: #38bdf8;
+		border-color: rgba(56, 189, 248, 0.3);
+	}
+	
+	.btn-primary {
+		padding: 6px 14px;
+		border-radius: 8px;
+		background: linear-gradient(135deg, #0ea5e9, #0284c7);
+		color: white;
+		font-size: 12px;
+		font-weight: 500;
+		transition: all 0.15s ease;
+		border: none;
+		box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+	}
+	
+	.btn-primary:hover {
+		background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+		transform: translateY(-1px);
+		box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+	}
+	
+	.btn-secondary {
+		padding: 6px 14px;
+		border-radius: 8px;
+		background: rgba(51, 65, 85, 0.6);
+		color: #94a3b8;
+		font-size: 12px;
+		font-weight: 500;
+		transition: all 0.15s ease;
+		border: 1px solid rgba(71, 85, 105, 0.5);
+	}
+	
+	.btn-secondary:hover {
+		background: rgba(71, 85, 105, 0.6);
+		color: #e2e8f0;
+	}
+	
+	.field-group {
+		margin-bottom: 16px;
+	}
+	
+	.field-label {
+		font-size: 11px;
+		font-weight: 500;
+		color: #64748b;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		margin-bottom: 4px;
+		display: block;
+	}
+	
+	.field-value {
+		font-size: 13px;
+		color: #e2e8f0;
+		padding: 8px 0;
+		border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+	}
+	
+	.field-value.locked {
+		color: #94a3b8;
+		display: flex;
+		align-items: center;
+		gap: 6px;
+	}
+	
+	.field-value.locked i {
+		font-size: 12px;
+		color: #64748b;
+	}
+	
+	.field-input {
+		width: 100%;
+		padding: 8px 12px;
+		background: rgba(15, 23, 42, 0.8);
+		border: 1px solid rgba(51, 65, 85, 0.6);
+		border-radius: 8px;
+		color: #e2e8f0;
+		font-size: 13px;
+		transition: all 0.15s ease;
+	}
+	
+	.field-input:focus {
+		outline: none;
+		border-color: #38bdf8;
+		box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+	}
+	
+	.field-input::placeholder {
+		color: #64748b;
+	}
+	
+	select.field-input {
+		cursor: pointer;
+	}
+	
+	select.field-input option {
+		background: #0f172a;
+		color: #e2e8f0;
+		padding: 8px;
+	}
+	
+	.grid-two-cols {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 24px;
+	}
+	
+	@media (max-width: 640px) {
+		.grid-two-cols {
+			grid-template-columns: 1fr;
+			gap: 16px;
+		}
+		
+		.info-card {
+			padding: 16px;
+		}
+	}
+	
+	/* Light mode */
+	[data-theme="light"] .info-card {
+		background: rgba(255, 255, 255, 0.9);
+		border-color: rgba(203, 213, 225, 0.8);
+	}
+	
+	[data-theme="light"] .info-card:hover {
+		border-color: rgba(14, 165, 233, 0.5);
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+	}
+	
+	[data-theme="light"] .card-header {
+		border-bottom-color: rgba(203, 213, 225, 0.6);
+	}
+	
+	[data-theme="light"] .card-title {
+		color: #1e293b;
+	}
+	
+	[data-theme="light"] .field-label {
+		color: #64748b;
+	}
+	
+	[data-theme="light"] .field-value {
+		color: #1e293b;
+		border-bottom-color: rgba(203, 213, 225, 0.5);
+	}
+	
+	[data-theme="light"] .field-input {
+		background: #ffffff;
+		border-color: #e2e8f0;
+		color: #1e293b;
+	}
+	
+	[data-theme="light"] .btn-edit {
+		background: rgba(241, 245, 249, 0.8);
+		color: #64748b;
+	}
+	
+	[data-theme="light"] .btn-edit:hover {
+		background: rgba(14, 165, 233, 0.1);
+		color: #0ea5e9;
+	}
+	
+	[data-theme="light"] .btn-secondary {
+		background: #f1f5f9;
+		color: #475569;
+		border-color: #e2e8f0;
+	}
+</style>
 
-	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all'>
-		<div class="w-full flex mb-4">
-			<div class="w-8/12">
-				<b>Infos personnelle</b>	
+<form method="post" action="../app/.student/updateStd.php?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>&etude_envisage=<?=$etude_envisage?>" class="form-no-refrech" target="_blank">
+<div class="w-full grid gap-4 grid-cols-1 lg:grid-cols-2 mt-3 p-3 overflow-auto" style="max-height: calc(100vh - 246px);">
+
+	<div class='info-card'>
+		<div class="card-header">
+			<div class="card-title">
+				<i class="bi bi-person-badge"></i>
+				<span>Informations personnelles</span>
 			</div>
-			<div class="w-4/12 text-right">
-				<div class="w-full flex gap-1 relative">
-					<a href="#" class="submitPers submitRedirect rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]">Modifier</a>
-					<!-- <input type="submit" class="submitPers rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]" value="Modifier"> -->
-					<a href="#" class="annulPers rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
-				</div>
-				<a href="#" id="editPers" class="text-right"><i class="bi-pencil-square"></i></a>	
+			<div class="card-actions">
+				<a href="#" class="submitPers submitRedirect btn-primary hidden">Enregistrer</a>
+				<a href="#" class="annulPers btn-secondary hidden">Annuler</a>
+				<a href="#" id="editPers" class="btn-edit"><i class="bi-pencil"></i></a>	
 			</div>
 		</div>
 
-		<div class="w-full flex">
-			<div class="w-6/12">
-				<label class="text-sm text-slate-400">Nom</label>
-				<p class="showPers">-- <?=strtoupper($student_nom)?></p><input id="firstPers"  class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="student_nom" value="<?=$student_nom?>"><br>
+		<div class="grid-two-cols">
+			<div>
+				<div class="field-group">
+					<label class="field-label">Nom</label>
+					<p class="showPers field-value"><?=strtoupper($student_nom)?></p>
+					<input id="firstPers" class="editPers field-input hidden" type="text" name="student_nom" value="<?=$student_nom?>">
+				</div>
 
-				<label class="text-sm text-slate-400">Date de naissance</label>
-				<p class="showPers">-- <?=$profil['dateNaissance']?></p><input class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="date" name="dateNaissance" value="<?=$profil['dateNaissance']?>"><br>
+				<div class="field-group">
+					<label class="field-label">Date de naissance</label>
+					<p class="showPers field-value"><?=$profil['dateNaissance']?></p>
+					<input class="editPers field-input hidden" type="date" name="dateNaissance" value="<?=$profil['dateNaissance']?>">
+				</div>
 
-				<label class="text-sm text-slate-400">Genre</label>
-				<p class="showPers">-- <?php if($profil['sex'] == '0'){echo 'Feminin';}else{echo 'Masculin';}?></p>
-				<select class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="sex" default>
-					<option class="<?=$bg_one_color?>" value="1" <?php if($profil['sex'] == '1'){echo 'selected';}?>>Masculin</option>
-					<option class="<?=$bg_one_color?>" value="0" <?php if($profil['sex'] == '0'){echo 'selected';}?>>Feminin</option>
-				</select><br>
+				<div class="field-group">
+					<label class="field-label">Genre</label>
+					<p class="showPers field-value"><?php if($profil['sex'] == '0'){echo 'Féminin';}else{echo 'Masculin';}?></p>
+					<select class="editPers field-input hidden" name="sex">
+						<option value="1" <?php if($profil['sex'] == '1'){echo 'selected';}?>>Masculin</option>
+						<option value="0" <?php if($profil['sex'] == '0'){echo 'selected';}?>>Féminin</option>
+					</select>
+				</div>
 
-				<label class="text-sm text-slate-400">CIN</label>
-				<p class="showPers">-- <?=$profil['num_cin']?></p><input class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="num_cin" value="<?=$profil['num_cin']?>"><br>
+				<div class="field-group">
+					<label class="field-label">CIN</label>
+					<p class="showPers field-value"><?=$profil['num_cin']?></p>
+					<input class="editPers field-input hidden" type="text" name="num_cin" value="<?=$profil['num_cin']?>">
+				</div>
 
-				<label class="text-sm text-slate-400">CIN région</label>
-				<p class="showPers">-- <?php $findRegi = $dtb->query('SELECT * FROM region WHERE id ="'.$profil['cin_region'].'"'); $showRegi = $findRegi->fetch(); if(!empty($showRegi)){echo $showRegi['region'];}?></p>
-				<select class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="cin_region">
-					<option class="<?=$bg_one_color?>"></option>
+				<div class="field-group">
+					<label class="field-label">CIN région</label>
+					<p class="showPers field-value"><?php $findRegi = $dtb->query('SELECT * FROM region WHERE id ="'.$profil['cin_region'].'"'); $showRegi = $findRegi->fetch(); if(!empty($showRegi)){echo $showRegi['region'];}?></p>
+					<select class="editPers field-input hidden" name="cin_region">
+						<option value=""></option>
 <?php 
 $findRegion = $dtb->query('SELECT * FROM region ORDER BY region');
 while ($showR = $findRegion->fetch()) {
  ?>	
- 					<option class="<?=$bg_one_color?>" value="<?=$showR['id']?>" <?php if($profil['cin_region'] == $showR['id'] OR $profil['cin_region'] == $showR['region']){echo 'selected';}?>><?=$showR['region']?></option>
+ 						<option value="<?=$showR['id']?>" <?php if($profil['cin_region'] == $showR['id'] OR $profil['cin_region'] == $showR['region']){echo 'selected';}?>><?=$showR['region']?></option>
  <?php 
 }
  ?>
-					
-				</select>
-				<br>
-
-				
-				
+					</select>
+				</div>
 			</div>
-			<div class="w-6/12">
-				<label class="text-sm text-slate-400">Prénom</label>
-				<p class="showPers">-- <?=$student_prenom?></p><input class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="student_prenom" value="<?=$student_prenom?>"><br>
+			<div>
+				<div class="field-group">
+					<label class="field-label">Prénom</label>
+					<p class="showPers field-value"><?=$student_prenom?></p>
+					<input class="editPers field-input hidden" type="text" name="student_prenom" value="<?=$student_prenom?>">
+				</div>
 
-				<label class="text-sm text-slate-400">Lieu de naissance</label>
-				<p class="showPers">-- <?=$profil['lieuNaissance']?></p><input class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="lieuNaissance" value="<?=$profil['lieuNaissance']?>"><br>
+				<div class="field-group">
+					<label class="field-label">Lieu de naissance</label>
+					<p class="showPers field-value"><?=$profil['lieuNaissance']?></p>
+					<input class="editPers field-input hidden" type="text" name="lieuNaissance" value="<?=$profil['lieuNaissance']?>">
+				</div>
 
-				<label class="text-sm text-slate-400">Nationalité</label>
-				<p class="showPers">-- <?=$profil['nationalite']?></p><input class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="nationalite" value="<?=$profil['nationalite']?>"><br>
+				<div class="field-group">
+					<label class="field-label">Nationalité</label>
+					<p class="showPers field-value"><?=$profil['nationalite']?></p>
+					<input class="editPers field-input hidden" type="text" name="nationalite" value="<?=$profil['nationalite']?>">
+				</div>
 
-				<label class="text-sm text-slate-400">Date de délivrance</label>
-				<p class="showPers">-- <?=$profil['cin_date_delivre']?></p><input class="editPers p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="date" name="cin_date_delivre" value="<?=$profil['cin_date_delivre']?>"><br>
+				<div class="field-group">
+					<label class="field-label">Date de délivrance</label>
+					<p class="showPers field-value"><?=$profil['cin_date_delivre']?></p>
+					<input class="editPers field-input hidden" type="date" name="cin_date_delivre" value="<?=$profil['cin_date_delivre']?>">
+				</div>
 
-				<input type="text" class="p-0 text-black h-5 text-sm border-0 w-11/12" name="session_id" value="" style="display:none">
-				
+				<input type="hidden" name="session_id" value="">
 			</div>
 		</div>
-
 	</div>
 
 <!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all'>
-		<div class="w-full flex mb-4">
-			<div class="w-8/12">
-				<b>Infos du contact</b>	
+	<div class='info-card'>
+		<div class="card-header">
+			<div class="card-title">
+				<i class="bi bi-telephone"></i>
+				<span>Informations de contact</span>
 			</div>
-			<div class="w-4/12 text-right">
-				<div class="w-full flex gap-1 relative">
-					<a href="#" class="submitContact submitRedirect rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]">Modifier</a>
-					<a href="#" class="annulContact rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
-				</div>
-				<a href="#" id="editContact" class="text-right"><i class="bi-pencil-square"></i></a>
+			<div class="card-actions">
+				<a href="#" class="submitContact submitRedirect btn-primary hidden">Enregistrer</a>
+				<a href="#" class="annulContact btn-secondary hidden">Annuler</a>
+				<a href="#" id="editContact" class="btn-edit"><i class="bi-pencil"></i></a>
 			</div>
 		</div>
 
-		<div class="w-full flex">
-			<div class="w-6/12">
-				<label class="text-sm text-slate-400">Téléphone</label>
-				<p class="showContact">-- <?=$profil['student_tel']?></p><input id="firstContact"  class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="student_tel" value="<?=$profil['student_tel']?>"><br>
-				<label class="text-sm text-slate-400">Adresse mail</label>
-				<p class="showContact">-- <?=$profil['student_email']?></p><input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="student_email" value="<?=$profil['student_email']?>"><br>
-				<label class="text-sm text-slate-400">Pays d'origine</label>
-				<p class="showContact">-- <?=$profil['pays_origine']?></p><input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="pays_origine" value="<?=$profil['pays_origine']?>"><br>
-				<label class="text-sm text-slate-400">Région</label>
-				<p class="showContact">-- <?php $findRegi = $dtb->query('SELECT * FROM region WHERE id ="'.$profil['student_region'].'"'); $showRegi = $findRegi->fetch(); if (!empty($showRegi)) {echo $showRegi['region'];}?></p>
-				<select class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="student_region">
-					<option class="<?=$bg_one_color?>"></option>
+		<div class="grid-two-cols">
+			<div>
+				<div class="field-group">
+					<label class="field-label">Téléphone</label>
+					<p class="showContact field-value"><?=$profil['student_tel']?></p>
+					<input id="firstContact" class="editContact field-input hidden" type="text" name="student_tel" value="<?=$profil['student_tel']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Adresse mail</label>
+					<p class="showContact field-value"><?=$profil['student_email']?></p>
+					<input class="editContact field-input hidden" type="text" name="student_email" value="<?=$profil['student_email']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Pays d'origine</label>
+					<p class="showContact field-value"><?=$profil['pays_origine']?></p>
+					<input class="editContact field-input hidden" type="text" name="pays_origine" value="<?=$profil['pays_origine']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Région</label>
+					<p class="showContact field-value"><?php $findRegi = $dtb->query('SELECT * FROM region WHERE id ="'.$profil['student_region'].'"'); $showRegi = $findRegi->fetch(); if (!empty($showRegi)) {echo $showRegi['region'];}?></p>
+					<select class="editContact field-input hidden" name="student_region">
+						<option value=""></option>
 <?php 
 $findRegion = $dtb->query('SELECT * FROM region ORDER BY region');
 while ($showR = $findRegion->fetch()) {
  ?>	
- 					<option class="<?=$bg_one_color?>" value="<?=$showR['id']?>" <?php if($profil['student_region'] == $showR['id'] OR $profil['student_region'] == $showR['region']){echo 'selected';}?>><?=$showR['region']?></option>
+ 						<option value="<?=$showR['id']?>" <?php if($profil['student_region'] == $showR['id'] OR $profil['student_region'] == $showR['region']){echo 'selected';}?>><?=$showR['region']?></option>
  <?php 
 }
  ?>
-					
-				</select>
-					<br>
-				<label class="text-sm text-slate-400">Adresse actuel</label>
-				<p class="showContact">-- <?=$profil['student_adresse']?></p><input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="student_adresse" value="<?=$profil['student_adresse']?>"><br>
+					</select>
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Adresse actuelle</label>
+					<p class="showContact field-value"><?=$profil['student_adresse']?></p>
+					<input class="editContact field-input hidden" type="text" name="student_adresse" value="<?=$profil['student_adresse']?>">
+				</div>
 			</div>
-			<div class="w-6/12">
+			<div>
 				<?php 
 					if ($level <= 3) {
 $findBacc = $dtb->query('SELECT * FROM t_2024_bacc WHERE student_id = "'.$student_id.'"');
 $showBacc = $findBacc->fetch();
 				 ?>	
-				<div class="obtention_Bacc">
-					<label class="text-sm text-slate-400">Série du Bacc</label>
-					<p class="showContact">-- <?php if(!empty($showBacc)) {echo $showBacc['bacc_serie'];}?></p>
-					<select class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="serie_bacc">
-						<option class="<?=$bg_one_color?>"></option>
-						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'A1') { echo 'selected';}}?>>A1</option>
-						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'A2') { echo 'selected';}}?>>A2</option>
-						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'BTP') { echo 'selected';}}?>>BTP</option>
-						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'C') { echo 'selected';}}?>>C</option>
-						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'D') { echo 'selected';}}?>>D</option>
-						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'Electronique') { echo 'selected';}}?>>Electronique</option>
-						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'G1') { echo 'selected';}}?>>G1</option>
-						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'G2') { echo 'selected';}}?>>G2</option>
-						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'G3') { echo 'selected';}}?>>G3</option>
-						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'L') { echo 'selected';}}?>>L</option>
-						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'S') { echo 'selected';}}?>>S</option>
-						<option class="<?=$bg_one_color?>" <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'OSE') { echo 'selected';}}?>>OSE</option>
+				<div class="field-group">
+					<label class="field-label">Série du Bacc</label>
+					<p class="showContact field-value"><?php if(!empty($showBacc)) {echo $showBacc['bacc_serie'];}?></p>
+					<select class="editContact field-input hidden" name="serie_bacc">
+						<option value=""></option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'A1') { echo 'selected';}}?>>A1</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'A2') { echo 'selected';}}?>>A2</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'BTP') { echo 'selected';}}?>>BTP</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'C') { echo 'selected';}}?>>C</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'D') { echo 'selected';}}?>>D</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'Electronique') { echo 'selected';}}?>>Electronique</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'G1') { echo 'selected';}}?>>G1</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'G2') { echo 'selected';}}?>>G2</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'G3') { echo 'selected';}}?>>G3</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'L') { echo 'selected';}}?>>L</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'S') { echo 'selected';}}?>>S</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'OSE') { echo 'selected';}}?>>OSE</option>
 					</select>
 				</div>
-				<br>
-				<div class="obtention_Bacc">
-					<label class="text-sm text-slate-400">Année d'obtention Bacc</label>
-					<p class="showContact">-- <?php if(!empty($showBacc)) {echo $showBacc['date_obtent'];}?></p>
-					<input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="date" name="obtention_bacc" value="<?=$showBacc['date_obtent']?>">
+				
+				<div class="field-group">
+					<label class="field-label">Année d'obtention Bacc</label>
+					<p class="showContact field-value"><?php if(!empty($showBacc)) {echo $showBacc['date_obtent'];}?></p>
+					<input class="editContact field-input hidden" type="date" name="obtention_bacc" value="<?=$showBacc['date_obtent']?>">
 				</div>
 				
 				<?php 
@@ -153,87 +414,93 @@ $showBacc = $findBacc->fetch();
 $findDiplome = $dtb->query('SELECT * FROM t_2024_diplome_preced WHERE student_id = "'.$student_id.'"');
 $showDiplome = $findDiplome->fetch();
 				?>
-					<div class="diplome_preced">
-						<label class="text-sm text-slate-400">Diplôme précédent</label>
-						<p class="showContact">-- <?php if(!empty($showDiplome)) {echo $showDiplome['diplome_name'];}?></p>
-						<input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="diplome_preced" value="<?php if(!empty($showDiplome)) {echo $showDiplome['diplome_name'];}?>">
-					</div>
-					<br>
-					<div class="diplome_preced">
-						<label class="text-sm text-slate-400">Date d'obtention</label>
-						<p class="showContact">-- <?php if(!empty($showDiplome)) {echo $showDiplome['date_obtent'];}?></p>
-						<input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="date" name="date_obtent_diplome_preced" value="<?=$showDiplome['date_obtent']?>">
-					</div>
+				<div class="field-group">
+					<label class="field-label">Diplôme précédent</label>
+					<p class="showContact field-value"><?php if(!empty($showDiplome)) {echo $showDiplome['diplome_name'];}?></p>
+					<input class="editContact field-input hidden" type="text" name="diplome_preced" value="<?php if(!empty($showDiplome)) {echo $showDiplome['diplome_name'];}?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Date d'obtention</label>
+					<p class="showContact field-value"><?php if(!empty($showDiplome)) {echo $showDiplome['date_obtent'];}?></p>
+					<input class="editContact field-input hidden" type="date" name="date_obtent_diplome_preced" value="<?=$showDiplome['date_obtent']?>">
+				</div>
 				<?php 
 					}
 				?>
-				<br>
-				<div class="obtention_Bacc">
-					<label class="text-sm text-slate-400">Mot de passe mail</label>
-					<p class="showContact">-- <?=$profil['password'];?></p>
+				
+				<div class="field-group">
+					<label class="field-label">Mot de passe mail</label>
+					<p class="showContact field-value locked"><i class="bi bi-lock-fill"></i><?=$profil['password'];?></p>
 				</div>
 			</div>
 		</div>
-
 	</div>
 
 <!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all'>
-		<div class="w-full flex mb-4">
-			<div class="w-8/12">
-				<b>Infos d'étude</b>	
+	<div class='info-card'>
+		<div class="card-header">
+			<div class="card-title">
+				<i class="bi bi-mortarboard"></i>
+				<span>Informations d'études</span>
 			</div>
-			<div class="w-4/12 text-right">
-				<div class="w-full flex gap-1 relative">
-					<a href="#" class="submitEtd submitRedirect rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]">Modifier</a>
-					<a href="#" class="annulEtd rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
-				</div>
-				<a href="#" id="editEtd" class="text-right"><i class="bi-pencil-square"></i></a>
+			<div class="card-actions">
+				<a href="#" class="submitEtd submitRedirect btn-primary hidden">Enregistrer</a>
+				<a href="#" class="annulEtd btn-secondary hidden">Annuler</a>
+				<a href="#" id="editEtd" class="btn-edit"><i class="bi-pencil"></i></a>
 			</div>
 		</div>
 
-		<div class="w-full flex">
-			<div class="w-6/12">
-				<label class="text-sm text-slate-400">Mention</label>
-				<p class=""><i class="bi-lock-fill"></i> <?=$etude_envisage?></p><br>
-				<label class="text-sm text-slate-400">Niveau</label>
-				<p class="showEtd">--<?php if ($profil['annee_etude']==0) {
+		<div class="grid-two-cols">
+			<div>
+				<div class="field-group">
+					<label class="field-label">Mention</label>
+					<p class="field-value locked"><i class="bi-lock-fill"></i><?=$etude_envisage?></p>
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Niveau</label>
+					<p class="showEtd field-value"><?php if ($profil['annee_etude']==0) {
 										echo "Remise à niveau";
 									}elseif($profil['annee_etude'] > 0 AND $profil['annee_etude'] < 4) {
 										echo "Licence ".$profil['annee_etude'];
 									}else{
 										echo "Master ".($profil['annee_etude']-3);
 									} ?>	
-				</p>
-				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="annee_etude" id="annee_etude">
-					<option class="<?=$bg_one_color?>" value="0" <?php if($profil['annee_etude'] == 0){echo 'selected';}?>>Remise à niveau</option>
-					<option class="<?=$bg_one_color?>" value="1" <?php if($profil['annee_etude'] == 1){echo 'selected';}?>>Licence 1</option>
-					<option class="<?=$bg_one_color?>" value="2" <?php if($profil['annee_etude'] == 2){echo 'selected';}?>>Licence 2</option>
-					<option class="<?=$bg_one_color?>" value="3" <?php if($profil['annee_etude'] == 3){echo 'selected';}?>>Licence 3</option>
-					<option class="<?=$bg_one_color?>" value="4" <?php if($profil['annee_etude'] == 4){echo 'selected';}?>>Master 1</option>
-					<option class="<?=$bg_one_color?>" value="5" <?php if($profil['annee_etude'] == 5){echo 'selected';}?>>Master 2</option>
-				</select>
-				<br>
-				<label class="text-sm text-slate-400">Matricule</label>
-				<p><i class="bi-lock-fill"></i> <?=$profil['student_id']?></p><br>
+					</p>
+					<select class="editEtd field-input hidden" name="annee_etude" id="annee_etude">
+						<option value="0" <?php if($profil['annee_etude'] == 0){echo 'selected';}?>>Remise à niveau</option>
+						<option value="1" <?php if($profil['annee_etude'] == 1){echo 'selected';}?>>Licence 1</option>
+						<option value="2" <?php if($profil['annee_etude'] == 2){echo 'selected';}?>>Licence 2</option>
+						<option value="3" <?php if($profil['annee_etude'] == 3){echo 'selected';}?>>Licence 3</option>
+						<option value="4" <?php if($profil['annee_etude'] == 4){echo 'selected';}?>>Master 1</option>
+						<option value="5" <?php if($profil['annee_etude'] == 5){echo 'selected';}?>>Master 2</option>
+					</select>
+				</div>
 				
-				<label class="text-sm text-slate-400">Status</label>
-				<p class="showEtd">-- <?=$profil['status']?></p>
-				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="status" id="status">
-					<option class="<?=$bg_one_color?>"></option>
-					<option class="<?=$bg_one_color?>" <?php if($profil['status'] == 'Externe'){echo 'selected';}?>>Externe</option>
-					<option class="<?=$bg_one_color?>" <?php if($profil['status'] == 'Interne'){echo 'selected';}?>>Interne</option>
-					<option class="<?=$bg_one_color?>" <?php if($profil['status'] == 'Bungalow'){echo 'selected';}?>>Bungalow</option>
-				</select>
-				<br>
+				<div class="field-group">
+					<label class="field-label">Matricule</label>
+					<p class="field-value locked"><i class="bi-lock-fill"></i><?=$profil['student_id']?></p>
+				</div>
 				
+				<div class="field-group">
+					<label class="field-label">Status</label>
+					<p class="showEtd field-value"><?=$profil['status']?></p>
+					<select class="editEtd field-input hidden" name="status" id="status">
+						<option value=""></option>
+						<option <?php if($profil['status'] == 'Externe'){echo 'selected';}?>>Externe</option>
+						<option <?php if($profil['status'] == 'Interne'){echo 'selected';}?>>Interne</option>
+						<option <?php if($profil['status'] == 'Bungalow'){echo 'selected';}?>>Bungalow</option>
+					</select>
+				</div>
 			</div>
-			<div class="w-6/12">
-				<label class="text-sm text-slate-400">Parcours</label>
-				<p class="showEtd">-- <?=$etude_option?></p>
-				<select id="firstEtd" class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="etude_option">
-					<option class="<?=$bg_one_color?>" ></option>
+			<div>
+				<div class="field-group">
+					<label class="field-label">Parcours</label>
+					<p class="showEtd field-value"><?=$etude_option?></p>
+					<select id="firstEtd" class="editEtd field-input hidden" name="etude_option">
+						<option value=""></option>
 <?php 
 $findSignMention = $dtb->query('SELECT * FROM filiere WHERE filiere_description ="'.$etude_envisage.'"');
 
@@ -244,242 +511,274 @@ $findSignMention = $dtb->query('SELECT * FROM filiere WHERE filiere_description 
 $findOption = $dtb->query('SELECT * FROM filiere_parcours WHERE departement ="'.$SignMention.'" ORDER BY description');
 while ($showO = $findOption->fetch()) {
  ?>	
- 					<option class="<?=$bg_one_color?>" <?php if($profil['etude_option'] == $showO['description']){echo 'selected';}?>><?=$showO['description']?></option>
+ 						<option <?php if($profil['etude_option'] == $showO['description']){echo 'selected';}?>><?=$showO['description']?></option>
  <?php 
 }
  ?>		
- 				</select>
-				<br>
-				<label class="text-sm text-slate-400">Année universitaire</label>
-				<p class="showEtd">-- <?=$profil['annee_scolaire']?></p>
-				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="annee_scolaire">
+ 					</select>
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Année universitaire</label>
+					<p class="showEtd field-value"><?=$profil['annee_scolaire']?></p>
+					<select class="editEtd field-input hidden" name="annee_scolaire">
 <?php
 $y = date('Y');
 for ($i=0; $i <= 8; $i++) { 
 	
 	$as = $y." - ".($y+1);
 	?>
-		<option class="<?=$bg_one_color?>" <?php if($profil['annee_scolaire'] == $as){echo 'selected';}?>><?=$as?></option>
+						<option <?php if($profil['annee_scolaire'] == $as){echo 'selected';}?>><?=$as?></option>
 <?php
 $y = $y - 1;
 }
  ?>
-				</select>
-				<br>
-				<label class="text-sm text-slate-400">Ancien étudiant</label>
-				<p class="showEtd">-- <?php $new_student = $profil['new_student']; if($profil['new_student'] == 1){echo 'Non';}else{echo 'Oui';}?></p>
+					</select>
+				</div>
 				
-				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="new_student" id="new_student">
-					<option class="<?=$bg_one_color?>" <?php if($profil['new_student'] == 1){echo 'selected';}?> value="1">Non</option>
-					<option class="<?=$bg_one_color?>" <?php if($profil['new_student'] == 0){echo 'selected';}?> value="0">Oui</option>
-				</select>
+				<div class="field-group">
+					<label class="field-label">Ancien étudiant</label>
+					<p class="showEtd field-value"><?php $new_student = $profil['new_student']; if($profil['new_student'] == 1){echo 'Non';}else{echo 'Oui';}?></p>
+					<select class="editEtd field-input hidden" name="new_student" id="new_student">
+						<option <?php if($profil['new_student'] == 1){echo 'selected';}?> value="1">Non</option>
+						<option <?php if($profil['new_student'] == 0){echo 'selected';}?> value="0">Oui</option>
+					</select>
+				</div>
 				
-				<br>
-				<label class="text-sm text-slate-400">Gradué</label>
-				<p class="showEtd">-- <?php if($profil['graduated'] == "" OR $profil['graduated'] == 0){echo 'Non';}else{echo 'Oui';}?></p>
-				<select class="editEtd p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="graduated" id="graduated">
-					<option class="<?=$bg_one_color?>" <?php if($profil['graduated'] == 0){echo 'selected';}?> value="0">Non</option>
-					<option class="<?=$bg_one_color?>" <?php if($profil['graduated'] == 1){echo 'selected';}?> value="1">Oui</option>
-				</select>
-				<br>
-				
+				<div class="field-group">
+					<label class="field-label">Gradué</label>
+					<p class="showEtd field-value"><?php if($profil['graduated'] == "" OR $profil['graduated'] == 0){echo 'Non';}else{echo 'Oui';}?></p>
+					<select class="editEtd field-input hidden" name="graduated" id="graduated">
+						<option <?php if($profil['graduated'] == 0){echo 'selected';}?> value="0">Non</option>
+						<option <?php if($profil['graduated'] == 1){echo 'selected';}?> value="1">Oui</option>
+					</select>
+				</div>
 			</div>
 		</div>
-
 	</div>
 
 <!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all'>
-		<div class="w-full flex mb-4">
-			<div class="w-8/12">
-				<b>Infos parentale</b>	
+	<div class='info-card'>
+		<div class="card-header">
+			<div class="card-title">
+				<i class="bi bi-people"></i>
+				<span>Informations parentales</span>
 			</div>
-			<div class="w-4/12 text-right">
-				<div class="w-full flex gap-1 relative">
-					<a href="#" class="submitParent submitRedirect rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]">Modifier</a>
-					<a href="#" class="annulParent rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
+			<div class="card-actions">
+				<a href="#" class="submitParent submitRedirect btn-primary hidden">Enregistrer</a>
+				<a href="#" class="annulParent btn-secondary hidden">Annuler</a>
+				<a href="#" id="editParent" class="btn-edit"><i class="bi-pencil"></i></a>
+			</div>
+		</div>
+
+		<div class="grid-two-cols">
+			<div>
+				<div class="field-group">
+					<label class="field-label">Nom du père</label>
+					<p class="showParent field-value"><?=$profil['father_name']?></p>
+					<input id="firstParent" class="editParent field-input hidden" type="text" name="father_name" value="<?=$profil['father_name']?>">
 				</div>
-				<a href="#" id="editParent" class="text-right"><i class="bi-pencil-square"></i></a>
-			</div>
-		</div>
-
-		<div class="w-full flex">
-			<div class="w-6/12">
-				<label class="text-sm text-slate-400">Nom du père</label>
-				<p class="showParent">-- <?=$profil['father_name']?></p><input id="firstParent" class="editParent p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="father_name" value="<?=$profil['father_name']?>"><br>
-				<label class="text-sm text-slate-400">Nom de la mère</label>
-				<p class="showParent">-- <?=$profil['mother_name']?></p><input class="editParent p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="mother_name" value="<?=$profil['mother_name']?>"><br>
-				<label class="text-sm text-slate-400">Téléphone</label>
-				<p class="showParent">-- <?=$profil['parent_tel']?></p><input class="editParent p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="parent_tel" value="<?=$profil['parent_tel']?>"><br>
-				<label class="text-sm text-slate-400">Adresse</label>
-				<p class="showParent">-- <?=$profil['parent_adresse']?></p><input class="editParent p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="parent_adresse" value="<?=$profil['parent_adresse']?>"><br>
-			</div>
-			<div class="w-6/12">
-				<label class="text-sm text-slate-400">Sa profession</label>
-				<p class="showParent">-- <?=$profil['father_prof']?></p><input class="editParent p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="father_prof" value="<?=$profil['father_prof']?>"><br>
-				<label class="text-sm text-slate-400">Sa profession</label>
-				<p class="showParent">-- <?=$profil['mother_prof']?></p><input class="editParent p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="mother_prof" value="<?=$profil['mother_prof']?>"><br>
 				
+				<div class="field-group">
+					<label class="field-label">Nom de la mère</label>
+					<p class="showParent field-value"><?=$profil['mother_name']?></p>
+					<input class="editParent field-input hidden" type="text" name="mother_name" value="<?=$profil['mother_name']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Téléphone</label>
+					<p class="showParent field-value"><?=$profil['parent_tel']?></p>
+					<input class="editParent field-input hidden" type="text" name="parent_tel" value="<?=$profil['parent_tel']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Adresse</label>
+					<p class="showParent field-value"><?=$profil['parent_adresse']?></p>
+					<input class="editParent field-input hidden" type="text" name="parent_adresse" value="<?=$profil['parent_adresse']?>">
+				</div>
+			</div>
+			<div>
+				<div class="field-group">
+					<label class="field-label">Sa profession (père)</label>
+					<p class="showParent field-value"><?=$profil['father_prof']?></p>
+					<input class="editParent field-input hidden" type="text" name="father_prof" value="<?=$profil['father_prof']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Sa profession (mère)</label>
+					<p class="showParent field-value"><?=$profil['mother_prof']?></p>
+					<input class="editParent field-input hidden" type="text" name="mother_prof" value="<?=$profil['mother_prof']?>">
+				</div>
 			</div>
 		</div>
-
 	</div>
 
 <!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all'>
-		<div class="w-full flex mb-4">
-			<div class="w-8/12">
-				<b>Infos sponsoring</b>	
+	<div class='info-card'>
+		<div class="card-header">
+			<div class="card-title">
+				<i class="bi bi-heart"></i>
+				<span>Informations sponsoring</span>
 			</div>
-			<div class="w-4/12 text-right">
-				<div class="w-full flex gap-1 relative">
-					<a href="#" class="submitSpons submitRedirect rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]">Modifier</a>
-					<a href="#" class="annulSpons rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
+			<div class="card-actions">
+				<a href="#" class="submitSpons submitRedirect btn-primary hidden">Enregistrer</a>
+				<a href="#" class="annulSpons btn-secondary hidden">Annuler</a>
+				<a href="#" id="editSpons" class="btn-edit"><i class="bi-pencil"></i></a>
+			</div>
+		</div>
+
+		<div class="grid-two-cols">
+			<div>
+				<div class="field-group">
+					<label class="field-label">Nom du sponsor</label>
+					<p class="showSpons field-value"><?=$profil['sponsor_nom']?></p>
+					<input id="firstSpons" class="editSpons field-input hidden" type="text" name="sponsor_nom" value="<?=$profil['sponsor_nom']?>">
 				</div>
-				<a href="#" id="editSpons" class="text-right"><i class="bi-pencil-square"></i></a>
+				
+				<div class="field-group">
+					<label class="field-label">Téléphone</label>
+					<p class="showSpons field-value"><?=$profil['sponsor_tel']?></p>
+					<input class="editSpons field-input hidden" type="text" name="sponsor_tel" value="<?=$profil['sponsor_tel']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Adresse</label>
+					<p class="showSpons field-value"><?=$profil['sponsor_adresse']?></p>
+					<input class="editSpons field-input hidden" type="text" name="sponsor_adresse" value="<?=$profil['sponsor_adresse']?>">
+				</div>
+			</div>
+			<div>
+				<div class="field-group">
+					<label class="field-label">Prénom</label>
+					<p class="showSpons field-value"><?=$profil['sponsor_prenom']?></p>
+					<input class="editSpons field-input hidden" type="text" name="sponsor_prenom" value="<?=$profil['sponsor_prenom']?>">
+				</div>
 			</div>
 		</div>
-
-		<div class="w-full flex">
-			<div class="w-6/12">
-				<label class="text-sm text-slate-400">Nom du sponsor</label>
-				<p class="showSpons">-- <?=$profil['sponsor_nom']?></p><input id="firstSpons" class="editSpons p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="sponsor_nom" value="<?=$profil['sponsor_nom']?>"><br>
-				<label class="text-sm text-slate-400">Téléphone</label>
-				<p class="showSpons">-- <?=$profil['sponsor_tel']?></p><input class="editSpons p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="sponsor_tel" value="<?=$profil['sponsor_tel']?>"><br>
-				<label class="text-sm text-slate-400">Adresse</label>
-				<p class="showSpons">-- <?=$profil['sponsor_adresse']?></p><input class="editSpons p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="sponsor_adresse" value="<?=$profil['sponsor_adresse']?>"><br>
-				
-			</div>
-			<div class="w-6/12">
-				<label class="text-sm text-slate-400">Prénom</label>
-				<p class="showSpons">-- <?=$profil['sponsor_prenom']?></p><input class="editSpons p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="sponsor_prenom" value="<?=$profil['sponsor_prenom']?>"><br>
-				
-			</div>
-		</div>
-
 	</div>
 
 <!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all'>
-		<div class="w-full flex mb-4">
-			<div class="w-8/12">
-				<b>Autres...</b>	
+	<div class='info-card'>
+		<div class="card-header">
+			<div class="card-title">
+				<i class="bi bi-three-dots"></i>
+				<span>Autres informations</span>
 			</div>
-			<div class="w-4/12 text-right">
-				<div class="w-full flex gap-1 relative">
-					<a href="#" class="submitAutr submitRedirect rounded-md px-2 bg-cyan-700 text-center hidden absolute right-[70px]">Modifier</a>
-					<a href="#" class="annulAutr rounded-md px-2 <?=$bg_four_color?> text-center hidden absolute right-0">Annuler</a>
+			<div class="card-actions">
+				<a href="#" class="submitAutr submitRedirect btn-primary hidden">Enregistrer</a>
+				<a href="#" class="annulAutr btn-secondary hidden">Annuler</a>
+				<a href="#" id="editAutr" class="btn-edit"><i class="bi-pencil"></i></a>
+			</div>
+		</div>
+
+		<div class="grid-two-cols">
+			<div>
+				<div class="field-group">
+					<label class="field-label">État civil</label>
+					<p class="showAutr field-value"><?=$profil['situationf']?></p>
+					<select id="firstAutr" class="editAutr field-input hidden" name="situationf">
+						<option <?php if($profil['situationf'] == 'Célibataire'){echo 'selected';}?>>Célibataire</option>
+						<option <?php if($profil['situationf'] == 'Marié'){echo 'selected';}?>>Marié</option>
+					</select>
 				</div>
-				<a href="#" id="editAutr" class="text-right"><i class="bi-pencil-square"></i></a>
-			</div>
-		</div>
-
-		<div class="w-full flex">
-			<div class="w-6/12">
-				<label class="text-sm text-slate-400">État civil</label>
-				<p class="showAutr">-- <?=$profil['situationf']?></p>
-				<select id="firstAutr" class="editAutr p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="situationf">
-					<option class="<?=$bg_one_color?>" <?php if($profil['situationf'] == 'Célibataire'){echo 'selected';}?>>Célibataire</option>
-					<option class="<?=$bg_one_color?>" <?php if($profil['situationf'] == 'Marié'){echo 'selected';}?>>Marié</option>
-				</select>
-					<br>
-				<label class="text-sm text-slate-400">Nombre d'enfant</label>
-				<p class="showAutr">-- <?=$profil['nb_enfant']?></p><input class="editAutr p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="nb_enfant" value="<?=$profil['nb_enfant']?>"><br>
-				<label class="text-sm text-slate-400">Numéro visa</label>
-				<p class="showAutr">-- <?=$profil['num_visa']?></p><input class="editAutr p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="num_visa" value="<?=$profil['num_visa']?>"><br>
-			</div>
-			<div class="w-6/12">
-				<label class="text-sm text-slate-400">Nom du/de conjoint(e)</label>
-				<p class="showAutr">-- <?=$profil['nom_conjoint']?></p><input class="editAutr p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="nom_conjoint" value="<?=$profil['nom_conjoint']?>"><br>
-				<label class="text-sm text-slate-400">Réligion</label>
-				<p class="showAutr">-- <?=$profil['religion']?></p>
-				<select class="editAutr p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="religion">
-					<option class="<?=$bg_one_color?>" <?php if($profil['religion'] == 'Adventiste' OR $profil['religion'] == 'Adventiste du Septieme-jour'){echo 'selected';}?>>Adventiste</option>
-					<option class="<?=$bg_one_color?>" <?php if($profil['religion'] != 'Adventiste' AND $profil['religion'] != 'Adventiste du Septieme-jour'){echo 'selected';}?>>non Adventiste</option>
-				</select><br>
-				<label class="text-sm text-slate-400">Abonné au CAF</label>
-				<p class="showAutr">-- <?php if ($profil['abonment'] == 1) { echo "Oui"; }else{ echo "Non"; }?></p>
 				
-				<select class="editAutr p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="abonment" id="abonment">
-					<option class="<?=$bg_one_color?>" <?php if($profil['abonment'] == 1){ echo 'selected'; }?> value="1">Oui</option>
-					<option class="<?=$bg_one_color?>" <?php if($profil['abonment'] == 0 OR $profil['abonment'] == ''){ echo 'selected'; }?> value="0">Non</option>
-				</select><br>
+				<div class="field-group">
+					<label class="field-label">Nombre d'enfants</label>
+					<p class="showAutr field-value"><?=$profil['nb_enfant']?></p>
+					<input class="editAutr field-input hidden" type="text" name="nb_enfant" value="<?=$profil['nb_enfant']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Numéro visa</label>
+					<p class="showAutr field-value"><?=$profil['num_visa']?></p>
+					<input class="editAutr field-input hidden" type="text" name="num_visa" value="<?=$profil['num_visa']?>">
+				</div>
+			</div>
+			<div>
+				<div class="field-group">
+					<label class="field-label">Nom du/de conjoint(e)</label>
+					<p class="showAutr field-value"><?=$profil['nom_conjoint']?></p>
+					<input class="editAutr field-input hidden" type="text" name="nom_conjoint" value="<?=$profil['nom_conjoint']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Religion</label>
+					<p class="showAutr field-value"><?=$profil['religion']?></p>
+					<select class="editAutr field-input hidden" name="religion">
+						<option <?php if($profil['religion'] == 'Adventiste' OR $profil['religion'] == 'Adventiste du Septieme-jour'){echo 'selected';}?>>Adventiste</option>
+						<option <?php if($profil['religion'] != 'Adventiste' AND $profil['religion'] != 'Adventiste du Septieme-jour'){echo 'selected';}?>>non Adventiste</option>
+					</select>
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Abonné au CAF</label>
+					<p class="showAutr field-value"><?php if ($profil['abonment'] == 1) { echo "Oui"; }else{ echo "Non"; }?></p>
+					<select class="editAutr field-input hidden" name="abonment" id="abonment">
+						<option <?php if($profil['abonment'] == 1){ echo 'selected'; }?> value="1">Oui</option>
+						<option <?php if($profil['abonment'] == 0 OR $profil['abonment'] == ''){ echo 'selected'; }?> value="0">Non</option>
+					</select>
+				</div>
 			</div>
 		</div>
-
 	</div>
-
-
 
 </div>
 
-<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="sessionForInformation" style="backdrop-filter: blur(3px);">
-
-		<div class="w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
-			<div class="p-2 text-black">
-				<b>Enregistrement....</b>
-				<p>Enregistrer cette modification dans la session suivante :</p>
+<div class="fixed inset-0 z-50 hidden" id="sessionForInformation" style="backdrop-filter: blur(8px); background: rgba(0,0,0,0.5);">
+	<div class="flex items-center justify-center min-h-screen p-4">
+		<div class="w-full max-w-md bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden">
+			<div class="px-6 py-4 border-b border-slate-700 bg-gradient-to-r from-slate-800 to-slate-900">
+				<h3 class="text-lg font-semibold text-white flex items-center gap-2">
+					<i class="bi bi-save text-cyan-400"></i>
+					Enregistrement de la modification
+				</h3>
+				<p class="text-sm text-slate-400 mt-1">Sélectionnez la session pour cette modification</p>
 			</div>
-			<div class="p-2 text-black flex">
-				
-				
-				<div class="w-6/12">
-					<label>Semestre</label><br>
-					<select name="semesterForInformation">
-						<option <?php 
-if (date('m')>7) {
-	echo "selected";	
-}else{
+			
+			<div class="p-6 space-y-4">
+				<div class="grid grid-cols-2 gap-4">
+					<div>
+						<label class="field-label">Semestre</label>
+						<select name="semesterForInformation" class="field-input w-full mt-1">
+							<option <?php if (date('m')>7) { echo "selected"; } ?>>Premier semestre</option>
+							<option>Semestre d'été</option>
+							<option <?php if (date('m')<=7) { echo "selected"; } ?>>Deuxième semestre</option>
+							<option>Semestre d'hiver</option>
+						</select>
+					</div>
 
-}
-						 ?>>Premier semestre</option>
-						<option>Semestre d'été</option>
-						<option <?php 
-if (date('m')>7) {
-	
-}else{
-	echo "selected";
-}
-						 ?>>Deuxième semestre</option>
-						<option>Semestre d'hiver</option>
-					</select>
-				</div>
-
-				<div class="w-6/12">
-					<label>Année scolaire</label><br>
-					<select name="annee_scolaireForInformation">
-						<?php
-								$y = date('Y');
-								for ($i=0; $i <= 3; $i++) { 
-									
-									if (date('m')>7) {
-										$as = $y." - ".($y+1);	
-									}else{
-										$as = ($y-1)." - ".$y;
-									}
-									
-								?>
-								<option><?=$as?></option>
-								<?php
-								$y = $y - 1;
+					<div>
+						<label class="field-label">Année scolaire</label>
+						<select name="annee_scolaireForInformation" class="field-input w-full mt-1">
+							<?php
+							$y = date('Y');
+							for ($i=0; $i <= 3; $i++) { 
+								if (date('m')>7) {
+									$as = $y." - ".($y+1);	
+								}else{
+									$as = ($y-1)." - ".$y;
 								}
-						?>
-					</select>
+							?>
+							<option><?=$as?></option>
+							<?php
+							$y = $y - 1;
+							}
+							?>
+						</select>
+					</div>
 				</div>
-
 			</div>
-			<div class="p-3">
-				<center>
-					<a href="#" id="cancelsessionForInformation" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
-					<input id="submit" type="submit" class="bg-cyan-800 p-2 rounded-md text-white mx-1" value="Modifier">
-				</center>	
+			
+			<div class="px-6 py-4 border-t border-slate-700 bg-slate-800/50 flex justify-end gap-3">
+				<a href="#" id="cancelsessionForInformation" class="btn-secondary px-5 py-2">Annuler</a>
+				<input id="submit" type="submit" class="btn-primary px-5 py-2 cursor-pointer" value="Confirmer">
 			</div>
 		</div>
-
 	</div>
+</div>
 
 </form>
 

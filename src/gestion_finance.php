@@ -57,9 +57,9 @@
 			
 			<!-- BARRE DE MENU --><?php require('../init/menubar.php');?>
 
-			<div class="sm:w-full lg:w-10/12">
+			<div class="sm:w-full lg:w-10/12 flex flex-col" style="height: calc(100vh - 56px);">
 			
-				<div class="back" style="height: calc(100vh - 152px);">
+				<div class="back flex-1 overflow-hidden">
 					
 					<div class="p-2 overflow-auto" style="height: calc(100vh - 75px);">
 <?php 

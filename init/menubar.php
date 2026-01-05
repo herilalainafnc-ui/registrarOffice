@@ -241,7 +241,7 @@
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 <!-- Sidebar Menu -->
-<div class="xl:w-2/12 lg:w-3/12 sidebar-menu hidden lg:block" id="sidebarMenu" style="height: calc(100vh - 48px);">
+<div class="xl:w-2/12 lg:w-3/12 sidebar-menu hidden lg:block" id="sidebarMenu" style="height: calc(100vh - 56px);">
 	
 	<nav class="py-2">
 		<!-- Etudiants Section -->
@@ -258,7 +258,7 @@
 			</a>
 		</div>
 
-		<div class="menu-item <?php if($rg_user['level'] > 2) { echo "toolInactive"; } ?>">
+		<div class="menu-item <?php if($page == "creat.student.php") { echo "active"; } ?> <?php if($rg_user['level'] > 2) { echo "toolInactive"; } ?>">
 			<a href="./creat.student.php">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-person-plus-fill menu-icon"></i>
@@ -272,7 +272,7 @@
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-trophy-fill menu-icon"></i>
 				</div>
-				<span class="menu-title">Meilleurs Étudiants</span>
+				<span class="menu-title">Dean's List</span>
 			</a>
 		</div>
 		

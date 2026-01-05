@@ -15,17 +15,10 @@
 			
 			<!-- BARRE DE MENU --><?php require('../init/menubar.php');?>
 
-			<div class="sm:w-full lg:w-10/12">
+			<div class="sm:w-full lg:w-10/12 flex flex-col" style="height: calc(100vh - 56px);">
 	
-			
-				<div class="back" style="height: calc(100vh - 152px);">
-					<div class="w-full grid gap-4 xl:grid-cols-4 sm:grdi-cols-1 p-4">
-						<!-- <a href="./my.account.php" class="toolInactive">
-							<div class='m-0 p-3 <?=$bg_one_color?> hover:bg-slate-700 rounded-md border-2 border-slate-800 hover:border-cyan-500 transition-all text-white'>
-							<b class="text-lg"><i class="bi-gear"></i>&nbsp;&nbsp; Mon compte</b><br><br>
-							<p class="text-slate-500">Modifier, configurer, verifier mon compte ici.</p>
-							</div>
-						</a> -->
+				<div class="back flex-1 overflow-y-auto">
+					<div class="w-full grid gap-4 xl:grid-cols-4 sm:grid-cols-1 p-4">
 						<a href="./creat.account.php" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
 							<div class='m-0 p-3 <?=$bg_one_color?> hover:bg-slate-700 rounded-md border-2 border-slate-800 hover:border-cyan-500 transition-all text-white h-[160px]'>
 							<b class="text-lg"><i class="bi-person-fill"></i>&nbsp;&nbsp; Utilisateur</b><br><br>
@@ -39,10 +32,9 @@
 							</div>
 						</a>
 					</div>
-					
-					<?php require('../init/footer.php'); ?>
 				</div>
-
+				
+				<?php require('../init/footer.php'); ?>
 
 			</div>
 

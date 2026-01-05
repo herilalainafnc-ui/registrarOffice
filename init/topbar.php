@@ -259,7 +259,6 @@
 			}elseif($page == "accueil.cours.php" OR $page == "cours.php") {
 			?>
 			<form method="post" action="accueil.cours.php" class="search-wrapper w-full max-w-md">
-				<i class="bi bi-book search-icon"></i>
 				<input id="cours-search" type="text" name="search" 
 					   placeholder="Rechercher un cours..." 
 					   class="topbar-search-input h-10 px-2 pl-10 text-sm border border-slate-600 <?=$bg_two_color?> text-slate-100 w-full rounded-lg focus:outline-none placeholder-slate-400">
@@ -269,7 +268,6 @@
 			}elseif($page == "accueil.prof.php" OR $page == "prof.php") {
 			?>
 			<form method="post" action="accueil.cours.php" class="search-wrapper w-full max-w-md">
-				<i class="bi bi-person-badge search-icon"></i>
 				<input id="prof-search" type="text" name="search" 
 					   placeholder="Rechercher un enseignant..." 
 					   class="topbar-search-input h-10 px-2 pl-10 text-sm border border-slate-600 <?=$bg_two_color?> text-slate-100 w-full rounded-lg focus:outline-none placeholder-slate-400">

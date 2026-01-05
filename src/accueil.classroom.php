@@ -13,10 +13,10 @@
 			
 			<!-- BARRE DE MENU --><?php require('../init/menubar.php');?>
 
-			<div class="sm:w-full lg:w-10/12">
+			<div class="sm:w-full lg:w-10/12 flex flex-col" style="height: calc(100vh - 56px);">
 			<!-- BARRE D'OUTILS --><?php require('../init/toolbar.php');?>
 			
-				<div class="back" style="height: calc(100vh - 152px);">
+				<div class="back flex-1 overflow-hidden">
 					
 					
 

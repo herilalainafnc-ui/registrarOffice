@@ -13,10 +13,10 @@
 			
 			<!-- BARRE DE MENU --><?php require('../init/menubar.php');?>
 
-			<div class="sm:w-full lg:w-10/12">
+			<div class="sm:w-full lg:w-10/12 flex flex-col" style="height: calc(100vh - 56px);">
 			<!-- BARRE D'OUTILS --><?php require('../init/toolbar.php');?>
 				
-				<div class="w-full px-0.5" style="height: calc(100vh - 157px);">
+				<div class="w-full px-0.5 flex-1 overflow-hidden">
 					<div class="flex w-full">
 <?php
 	$id = $_GET['id'];

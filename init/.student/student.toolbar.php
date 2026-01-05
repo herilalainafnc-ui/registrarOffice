@@ -1,193 +1,159 @@
-<div class="w-full flex px-1 <?=$txt_one_color?>">
-		
-		<a href="#" class="text-[11px] leading-tight sm:w-2/12 lg:w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information' or $_GET['page'] == 'diplome') or empty($_GET['page'])) {
-																								echo "toolInactive";
-																							}?>" data-bs-toggle="dropdown" aria-expanded="false">
-				<center>
-				<i class="bi-sort-alpha-up-alt text-2xl"></i><br>
-						Trier par
-				</center>
-			
-		</a>
-				<ul class="dropdown-menu border bg-slate-300 text-black p-0 rounded-0 text-xs">
+<style>
+.std-toolbar {
+	background: rgba(15, 23, 42, 0.6);
+	backdrop-filter: blur(8px);
+	border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+}
+.std-toolbar-btn {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 8px 12px;
+	border-radius: 8px;
+	transition: all 0.15s ease;
+	min-width: 70px;
+	gap: 4px;
+}
+.std-toolbar-btn:hover {
+	background: rgba(51, 65, 85, 0.5);
+}
+.std-toolbar-btn:active {
+	background: rgba(14, 165, 233, 0.2);
+}
+.std-toolbar-btn i {
+	font-size: 20px;
+	opacity: 0.9;
+}
+.std-toolbar-btn span {
+	font-size: 10px;
+	font-weight: 500;
+	color: #94a3b8;
+	text-align: center;
+	line-height: 1.2;
+}
+.std-toolbar-btn:hover span {
+	color: #e2e8f0;
+}
+.std-toolbar-btn.toolInactive {
+	opacity: 0.4;
+	pointer-events: none;
+}
+.std-toolbar-divider {
+	width: 1px;
+	height: 40px;
+	background: rgba(51, 65, 85, 0.5);
+	margin: 0 4px;
+	align-self: center;
+}
+.std-dropdown-menu {
+	background: rgba(15, 23, 42, 0.95);
+	backdrop-filter: blur(12px);
+	border: 1px solid rgba(51, 65, 85, 0.6);
+	border-radius: 10px;
+	padding: 6px;
+	min-width: 160px;
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+.std-dropdown-menu li a {
+	display: block;
+	padding: 8px 12px;
+	border-radius: 6px;
+	font-size: 12px;
+	color: #cbd5e1;
+	transition: all 0.15s ease;
+}
+.std-dropdown-menu li a:hover {
+	background: rgba(14, 165, 233, 0.15);
+	color: #38bdf8;
+}
+[data-theme="light"] .std-toolbar {
+	background: rgba(255, 255, 255, 0.8);
+	border-bottom-color: rgba(203, 213, 225, 0.6);
+}
+[data-theme="light"] .std-toolbar-btn:hover {
+	background: rgba(241, 245, 249, 0.8);
+}
+[data-theme="light"] .std-toolbar-btn span {
+	color: #64748b;
+}
+[data-theme="light"] .std-toolbar-btn:hover span {
+	color: #1e293b;
+}
+[data-theme="light"] .std-dropdown-menu {
+	background: rgba(255, 255, 255, 0.98);
+	border-color: rgba(203, 213, 225, 0.8);
+}
+[data-theme="light"] .std-dropdown-menu li a {
+	color: #475569;
+}
+[data-theme="light"] .std-dropdown-menu li a:hover {
+	background: rgba(14, 165, 233, 0.1);
+	color: #0284c7;
+}
+</style>
 
-					<li><a href="?id=<?=$id;?>&page=transcriptSS"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Classement en session</p>
-					</a></li>
-					<li><a href="?id=<?=$id;?>&page=transcript"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Classement en semestre</p>
-					</a></li>
-					
+<div class="std-toolbar w-full flex items-center gap-1 px-2 py-1.5 <?=$txt_one_color?> overflow-x-auto" style="scrollbar-width: none;">
+	
 
-				</ul>
+	<!-- Check list -->
+	<a target="_blank" href="./data.topdf.php?ptype=Checklist&id=<?=$id?>&student_id=<?=$student_id?>&student_nom=<?=$student_nom?>&student_prenom=<?=$student_prenom?>&etude_envisage=<?=$etude_envisage?>&etude_option=<?=$etude_option?>&student_tel=<?=$student_tel?>&image_student=<?=$image_student?>&lookup_code=<?=$lookup_code?>&status=<?=$status?>&date_entry=<?=$date_entry?>" class="std-toolbar-btn">
+		<i class="bi-check-square-fill text-amber-400"></i>
+		<span>Check list</span>
+	</a>
 
-		<!-- <a href="#" class="text-xs w-4/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information' or $_GET['page'] == 'diplome') or empty($_GET['page'])) {
-																								echo "toolInactive";
-																							}?>">
-				<center>
-				<i class="bi-funnel text-2xl"></i><br>
-						Filter
-				</center>
-			
-		</a> -->
-		<a href="#" class="text-[11px] leading-tight sm:w-2/12 lg:w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information') or empty($_GET['page'])) {
-																								echo "toolInactive";
-																							}?>" data-bs-toggle="dropdown" aria-expanded="false">
-				<center>
-				<i class="bi-flag text-2xl"></i><br>
-						Langues
-				</center>
-		</a>
-				<ul class="dropdown-menu border bg-slate-300 text-black p-0 rounded-0 text-xs">
+	<!-- Badge -->
+	<a target="_blank" href="./data.topdf.php?ptype=Badge&id=<?=$id?>&student_id=<?=$student_id?>&student_nom=<?=$student_nom?>&student_prenom=<?=$student_prenom?>&etude_envisage=<?=$etude_envisage?>&etude_option=<?=$etude_option?>&student_tel=<?=$student_tel?>&image_student=<?=$image_student?>&lookup_code=<?=$lookup_code?>&status=<?=$status?>&abonment=<?=$abonment?>&date_entry=<?=$date_entry?>" class="std-toolbar-btn">
+		<i class="bi-person-badge-fill text-slate-400"></i>
+		<span>Badge</span>
+	</a>
 
-					<li><a href="?id=<?=$id;?>&page=<?=$_GET['page']?>&langue=FR"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Français</p>
-					</a></li>
-					<li><a href="?id=<?=$id;?>&page=<?=$_GET['page']?>&langue=ANG"><p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Anglais</p>
-					</a></li>
+	<!-- Carte d'abonnement -->
+	<a target="_blank" href="./data.topdf.php?ptype=Abonnement Caf&id=<?=$id?>&student_id=<?=$student_id?>&student_nom=<?=$student_nom?>&student_prenom=<?=$student_prenom?>&etude_envisage=<?=$etude_envisage?>&etude_option=<?=$etude_option?>&student_tel=<?=$student_tel?>&image_student=<?=$image_student?>&lookup_code=<?=$lookup_code?>&status=<?=$status?>&date_entry=<?=$date_entry?>" class="std-toolbar-btn <?php if ($status == "Externe" OR $status == "externe" OR $status == "" OR $abonment == "0"){ echo "toolInactive";} ?>">
+		<i class="bi-credit-card-fill text-purple-400"></i>
+		<span>Carte CAF</span>
+	</a>
 
-				</ul>
+	<!-- Certificat scolarité -->
+	<a target="_blank" href="./data.topdf.php?ptype=Certificat de scolarité&id=<?=$id?>&student_id=<?=$student_id?>&student_nom=<?=$student_nom?>&student_prenom=<?=$student_prenom?>&etude_envisage=<?=$etude_envisage?>&etude_option=<?=$etude_option?>&student_tel=<?=$student_tel?>&image_student=<?=$image_student?>&lookup_code=<?=$lookup_code?>&status=<?=$status?>&date_entry=<?=$date_entry?>" class="std-toolbar-btn">
+		<i class="bi-file-earmark-text-fill text-slate-400"></i>
+		<span>Certificat</span>
+	</a>
 
-		<a target="_blank" href="./data.topdf.php?ptype=Checklist
-		&id=<?=$id?>
-		&student_id=<?=$student_id?>
-		&student_nom=<?=$student_nom?>
-		&student_prenom=<?=$student_prenom?>
-		&etude_envisage=<?=$etude_envisage?>
-		&etude_option=<?=$etude_option?>
-		&student_tel=<?=$student_tel?>
-		&image_student=<?=$image_student?>
-		&lookup_code=<?=$lookup_code?>
-		&status=<?=$status?>
-		&date_entry=<?=$date_entry?>" class="text-[11px] leading-tight sm:w-2/12 lg:w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
-				<center>
-				<i class="bi-check-square-fill text-2xl text-orange-300"></i><br>
-						Check list
-				</center>
-			
-		</a>
-		<a target="_blank" href="./data.topdf.php?ptype=Badge
-		&id=<?=$id?>
-		&student_id=<?=$student_id?>
-		&student_nom=<?=$student_nom?>
-		&student_prenom=<?=$student_prenom?>
-		&etude_envisage=<?=$etude_envisage?>
-		&etude_option=<?=$etude_option?>
-		&student_tel=<?=$student_tel?>
-		&image_student=<?=$image_student?>
-		&lookup_code=<?=$lookup_code?>
-		&status=<?=$status?>
-		&abonment=<?=$abonment?>
-		&date_entry=<?=$date_entry?>" class="text-[11px] leading-tight sm:w-2/12 lg:w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
-				<center>
-				<i class="bi-person-badge-fill text-2xl"></i><br>
-						Badge
-				</center>
-			
-		</a>
-		<a target="_blank" href="./data.topdf.php?ptype=Abonnement Caf
-		&id=<?=$id?>
-		&student_id=<?=$student_id?>
-		&student_nom=<?=$student_nom?>
-		&student_prenom=<?=$student_prenom?>
-		&etude_envisage=<?=$etude_envisage?>
-		&etude_option=<?=$etude_option?>
-		&student_tel=<?=$student_tel?>
-		&image_student=<?=$image_student?>
-		&lookup_code=<?=$lookup_code?>
-		&status=<?=$status?>
-		&date_entry=<?=$date_entry?>" class="text-[11px] leading-tight sm:w-2/12 lg:w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1<?php 
-		if ($status == "Externe" OR $status == "externe" OR $status == "" OR $abonment == "0"){ echo " toolInactive";}
-		 ?>">
-				<center>
-				<i class="bi-credit-card-fill text-2xl"></i><br>
-						Carte d'abonnement
-				</center>
-		
-			
-		</a>
-		<a target="_blank" href="./data.topdf.php?ptype=Certificat de scolarité
-		&id=<?=$id?>
-		&student_id=<?=$student_id?>
-		&student_nom=<?=$student_nom?>
-		&student_prenom=<?=$student_prenom?>
-		&etude_envisage=<?=$etude_envisage?>
-		&etude_option=<?=$etude_option?>
-		&student_tel=<?=$student_tel?>
-		&image_student=<?=$image_student?>
-		&lookup_code=<?=$lookup_code?>
-		&status=<?=$status?>
-		&date_entry=<?=$date_entry?>" class="text-[11px] leading-tight sm:w-2/12 lg:w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
-				<center>
-				<i class="bi-file-earmark-text-fill text-2xl"></i><br>
-						Certificat scolarité
-				</center>
-			
-		</a>
-		<a target="_blank" href="./data.topdf.php?ptype=Worked_point
-		&id=<?=$id?>
-		&student_id=<?=$student_id?>
-		&student_nom=<?=$student_nom?>
-		&student_prenom=<?=$student_prenom?>
-		&etude_envisage=<?=$etude_envisage?>
-		&level=<?=$level?>
-		&student_tel=<?=$student_tel?>
-		&image_student=<?=$image_student?>" class="text-[11px] leading-tight sm:w-2/12 lg:w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
-				<center>
-				<i class="bi-person-lines-fill text-2xl"></i><br>
-						Worked Points
-				</center>
-			
-		</a>
-		
-		<a href="?id=<?=$id?>&page=newCours" class="text-[11px] leading-tight sm:w-2/12 lg:w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
-				<center>
-				<i class="bi-folder-plus text-2xl text-cyan-500"></i><br>
-						Ajout cours
-				</center>
-			
-		</a>
-		
-		
-		<a href="?id=<?=$id;?>&page=courssupprim" class="text-[11px] leading-tight sm:w-2/12 lg:w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1">
-				<center>
-				<i class="bi-trash2 text-2xl text-red-500"></i><br>
-						Cours retiré
-				</center>
-			
-		</a>
+	<!-- Worked Points -->
+	<a target="_blank" href="./data.topdf.php?ptype=Worked_point&id=<?=$id?>&student_id=<?=$student_id?>&student_nom=<?=$student_nom?>&student_prenom=<?=$student_prenom?>&etude_envisage=<?=$etude_envisage?>&level=<?=$level?>&student_tel=<?=$student_tel?>&image_student=<?=$image_student?>" class="std-toolbar-btn">
+		<i class="bi-person-lines-fill text-slate-400"></i>
+		<span>Worked</span>
+	</a>
 
-<!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->		
-<!-- BEGIN FICHE D'INSCRIPTION -->		
-		<a id="exportFichInsc" href="#" 
+	<div class="std-toolbar-divider"></div>
 
-			class="text-[11px] leading-tight sm:w-2/12 lg:w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php
-			 if (isset($_GET['page']) and ($_GET['page'] == 'diplome') or empty($_GET['page'])) {
-																								echo "toolInactive";
-																							}?>">
-		
-				<center>
-				<i class="bi-file-text-fill text-2xl text-green-300"></i><br>
-						Fiche d'inscription
-				</center>
-			
-		</a>
-<!-- END FICHE D'INSCRIPTION -->
-<!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->		
+	<!-- Ajout cours -->
+	<a href="?id=<?=$id?>&page=newCours" class="std-toolbar-btn">
+		<i class="bi-folder-plus text-cyan-400"></i>
+		<span>Ajout cours</span>
+	</a>
 
-		<a href="#" id="<?php if (!empty($_GET['page']) AND $_GET['page'] == 'bulletin'){echo 'exportBulletin';}
-							elseif(!empty($_GET['page']) AND $_GET['page'] == 'transcript'){echo 'exportTranscript';}
-							elseif(!empty($_GET['page']) AND $_GET['page'] == 'transcriptSS'){echo 'exportTranscriptSS';}
-						?>" 
+	<!-- Cours retiré -->
+	<a href="?id=<?=$id;?>&page=courssupprim" class="std-toolbar-btn">
+		<i class="bi-trash2 text-red-400"></i>
+		<span>Cours retiré</span>
+	</a>
 
-			class="text-[11px] leading-tight sm:w-2/12 lg:w-2/12 hover:<?=$bg_six_color?> active:bg-cyan-700 p-1 <?php if (isset($_GET['page']) and ($_GET['page'] == 'information' or $_GET['page'] == 'newCours' or $_GET['page'] == 'diplome') or empty($_GET['page'])) {
-																								echo "toolInactive";
-																							}?>">
-		
-				<center>
-				<i class="bi-filetype-pdf text-2xl text-blue-400"></i><br>
-						Exporter
-				</center>
-			
-		</a>
-	</div>
+	<div class="std-toolbar-divider"></div>
+
+	<!-- Fiche d'inscription -->
+	<a id="exportFichInsc" href="#" class="std-toolbar-btn <?php if (isset($_GET['page']) and ($_GET['page'] == 'diplome') or empty($_GET['page'])) { echo "toolInactive"; }?>">
+		<i class="bi-file-text-fill text-emerald-400"></i>
+		<span>Fiche inscr.</span>
+	</a>
+
+	<!-- Exporter PDF -->
+	<a href="#" id="<?php if (!empty($_GET['page']) AND $_GET['page'] == 'bulletin'){echo 'exportBulletin';} elseif(!empty($_GET['page']) AND $_GET['page'] == 'transcript'){echo 'exportTranscript';} elseif(!empty($_GET['page']) AND $_GET['page'] == 'transcriptSS'){echo 'exportTranscriptSS';} ?>" class="std-toolbar-btn <?php if (isset($_GET['page']) and ($_GET['page'] == 'information' or $_GET['page'] == 'newCours' or $_GET['page'] == 'diplome') or empty($_GET['page'])) { echo "toolInactive"; }?>">
+		<i class="bi-filetype-pdf text-blue-400"></i>
+		<span>Exporter</span>
+	</a>
+</div>
 
 
 
