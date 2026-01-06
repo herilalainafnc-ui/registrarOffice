@@ -489,12 +489,12 @@ while ($showSignMention = $findSignMention->fetch()) {
 		</ul>
 
 		<!-- Search Button -->
-		<a href="#" class="tool-btn tool-search text-xs flex-1 searchTool">
+		<!-- <a href="#" class="tool-btn tool-search text-xs flex-1 searchTool">
 			<div class="tool-icon">
 				<i class="bi bi-search"></i>
 			</div>
 			<span class="tool-label">Rechercher</span>
-		</a>
+		</a> -->
 
 	</div>
 

@@ -180,7 +180,17 @@
     <div class="best-students-container flex-1 overflow-y-auto overflow-x-hidden p-4">
         
         <?php
-        $annees = $dtb->query('SELECT DISTINCT annee_scolaire FROM t_2023_notes WHERE annee_scolaire IS NOT NULL ORDER BY annee_scolaire DESC');
+        // Pagination
+        $page = isset($_GET['page_annee']) ? intval($_GET['page_annee']) : 1;
+        $limit = 1;
+        $offset = ($page - 1) * $limit;
+        
+        // Compter le nombre total d'années disponibles
+        $countAnnees = $dtb->query('SELECT COUNT(DISTINCT annee_scolaire) as total FROM t_2023_notes WHERE annee_scolaire IS NOT NULL');
+        $totalAnnees = $countAnnees->fetch()['total'];
+        $totalPages = ceil($totalAnnees / $limit);
+        
+        $annees = $dtb->query("SELECT DISTINCT annee_scolaire FROM t_2023_notes WHERE annee_scolaire IS NOT NULL ORDER BY annee_scolaire DESC LIMIT $limit OFFSET $offset");
         $mentions_list = $dtb->query('SELECT DISTINCT filiere_description, filiere_sigle FROM filiere ORDER BY filiere_sigle');
         $all_mentions = $mentions_list->fetchAll(PDO::FETCH_ASSOC);
         
@@ -242,6 +252,7 @@
                                     
                                     $query = "
                                         SELECT 
+                                            e.id,
                                             n.student_id,
                                             e.student_nom,
                                             e.student_prenom,
@@ -300,7 +311,7 @@
                                     
                                     <!-- Info -->
                                     <div class="flex-grow min-w-0">
-                                        <a href="./student.php?id=<?= $student['student_id'] ?>&page=information" 
+                                        <a href="./student.php?id=<?= $student['id'] ?>&page=information" 
                                            class="text-sm font-medium text-slate-200 hover:text-blue-400 transition-colors truncate block">
                                             <?= strtoupper($student['student_nom']) ?> <?= ucfirst(strtolower($student['student_prenom'])) ?>
                                         </a>
@@ -342,5 +353,40 @@
         </div>
         
         <?php } ?>
+        
+        <!-- Navigation de pagination -->
+        <div class="mt-6 mb-4 flex items-center justify-between">
+            
+            <!-- Bouton Précédent -->
+            <?php if ($page > 1): ?>
+            <a href="?page=meilleurs-etudiants&page_annee=<?= $page - 1 ?>" 
+               class="py-3 px-5 rounded-xl border border-slate-600/50 bg-slate-700/30 hover:bg-slate-700/50 transition-all duration-200 flex items-center gap-2 group">
+                <i class="bi bi-chevron-left text-slate-400 group-hover:-translate-x-1 transition-transform"></i>
+                <span class="text-slate-300 font-medium">Années récentes</span>
+            </a>
+            <?php else: ?>
+            <div></div>
+            <?php endif; ?>
+            
+            <!-- Indicateur de page -->
+            <div class="flex items-center gap-2">
+                <span class="text-slate-500 text-sm">Page</span>
+                <span class="px-3 py-1 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 font-semibold"><?= $page ?></span>
+                <span class="text-slate-500 text-sm">/ <?= $totalPages ?></span>
+            </div>
+            
+            <!-- Bouton Suivant -->
+            <?php if ($page < $totalPages): ?>
+            <a href="?page=meilleurs-etudiants&page_annee=<?= $page + 1 ?>" 
+               class="py-3 px-5 rounded-xl border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 transition-all duration-200 flex items-center gap-2 group">
+                <span class="text-blue-400 font-medium">Années précédentes</span>
+                <i class="bi bi-chevron-right text-blue-400 group-hover:translate-x-1 transition-transform"></i>
+            </a>
+            <?php else: ?>
+            <div></div>
+            <?php endif; ?>
+            
+        </div>
+        
     </div>
 </div>

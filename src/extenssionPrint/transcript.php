@@ -368,15 +368,15 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 			</tr>
 			<tr class="border-r border-b">
 				<td class=" w-8/12 text-right">Note de Work Education cumulative</td>
-				<td class=" w-2/12 text-bold"><?=round(($cumulWorkNote*20)/((($a-1)*2)*20),3);?></td>
+				<td class=" w-2/12 text-bold"><?=round(($cumulWorkNote*20)/((($a-1)*2)*20),2);?></td>
 			</tr>
 			<!-- <tr class="border-r border-b">
 				<td class=" w-8/12 text-right">Nemarque académique cumulative</td>
-				<td class=" w-2/12 text-bold"><?=round(($cumulremarkAcad*20)/((($a-1)*2)*20),3);?></td>
+				<td class=" w-2/12 text-bold"><?=round(($cumulremarkAcad*20)/((($a-1)*2)*20),2);?></td>
 			</tr> -->
 			<tr class="border-r border-b">
 				<td class=" w-8/12 text-right">Note de participation à l'exercice de chapelle et à la semaine de prière cumulative</td>
-				<td class=" w-2/12 text-bold"><?=round(($cumulChapel*20)/((($a-1)*2)*20),3);?></td>
+				<td class=" w-2/12 text-bold"><?=round(($cumulChapel*20)/((($a-1)*2)*20),2);?></td>
 			</tr>
 		</tbody>
 	</table>
@@ -384,16 +384,16 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 		<thead>
 			<tr>
 				<th class=" w-8/12 text-right">Moyenne Générale Cumulative</th>
-				<th class=" w-2/12"><?=round(($cumulGen*20)/((($nbrA-1)*2)*20),3);?></th>
+				<th class=" w-2/12"><?=round(($cumulGen*20)/((($nbrA-1)*2)*20),2);?></th>
 			</tr>
 			<tr>
 				<th class=" w-8/12 text-right">Moyenne Majeur Cumulative</th>
-				<th class=" w-2/12"><?=round(($cumulMaj*20)/((($nbrA-1)*2)*20),3);?></th>
+				<th class=" w-2/12"><?=round(($cumulMaj*20)/((($nbrA-1)*2)*20),2);?></th>
 			</tr>
 			<!--  -->
 			<tr>
 				<th class=" w-8/12 text-right">Moyenne Cumulative</th>
-				<th class=" w-2/12"><?=round(($cumulFinale*20)/((($nbrA-1)*2)*20),3);?></th>
+				<th class=" w-2/12"><?=round(($cumulFinale*20)/((($nbrA-1)*2)*20),2);?></th>
 			</tr>
 		</thead>
 	</table>

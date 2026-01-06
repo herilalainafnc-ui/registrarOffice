@@ -408,14 +408,14 @@ if ($rg_level <= 2) {
 				<tr>
 					<th colspan="4" class="text-right">Moyenne Majeur</th>
 					<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-					<th class="px-2"><?php if ($rg_level < 4) { if($nbrMaj != 0){echo round(($moyenMajSem = ($tTMaj/$tcreditMaj)),6);}else{echo 0;$moyenMajSem =0;}}else{ echo "<em>masqué</em>";}?></th>
+					<th class="px-2"><?php if ($rg_level < 4) { if($nbrMaj != 0){echo round(($moyenMajSem = ($tTMaj/$tcreditMaj)),2);}else{echo 0;$moyenMajSem =0;}}else{ echo "<em>masqué</em>";}?></th>
 					<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 				</tr>
 				
 				<!--  -->
 				<tr>
 					<th colspan="4" class="text-right">Moyenne Générale</th>
-					<th class="px-2 bg-cyan-700 text-white"><?php if ($rg_level < 4) { if($nbr != 0){echo round(($moyenGenSem = $tnotecredit/$tcredit),6);}else{echo 0;$moyenGenSem =0;}}else{ echo "<em>masqué</em>";}?></th>
+					<th class="px-2 bg-cyan-700 text-white"><?php if ($rg_level < 4) { if($nbr != 0){echo round(($moyenGenSem = $tnotecredit/$tcredit),2);}else{echo 0;$moyenGenSem =0;}}else{ echo "<em>masqué</em>";}?></th>
 				</tr>
 
 				<!-- <tr>
@@ -450,15 +450,15 @@ if ($rg_level <= 2) {
 		<tbody class=" <?=$bg_two_color?> <?=$txt_one_color?>">
 			<tr>
 				<td class="p-1 w-8/12 text-right">Note de Work Education cumulative</td>
-				<td class="px-2 w-2/12 text-bold"><?php if ($rg_level < 4) {round(($cumulWorkNote*20)/((($a-1)*2)*20),3);}else{ echo "<em>masqué</em>";}?></td>
+				<td class="px-2 w-2/12 text-bold"><?php if ($rg_level < 4) {round(($cumulWorkNote*20)/((($a-1)*2)*20),2);}else{ echo "<em>masqué</em>";}?></td>
 			</tr>
 			<!-- <tr>
 				<td class="p-1 w-8/12 text-right">Nemarque académique cumulative</td>
-				<td class="px-2 w-2/12 text-bold"><?php if ($rg_level < 4) {round(($cumulremarkAcad*20)/((($a-1)*2)*20),3);}else{ echo "<em>masqué</em>";}?></td>
+				<td class="px-2 w-2/12 text-bold"><?php if ($rg_level < 4) {round(($cumulremarkAcad*20)/((($a-1)*2)*20),2);}else{ echo "<em>masqué</em>";}?></td>
 			</tr> -->
 			<tr>
 				<td class="p-1 w-8/12 text-right">Note de participation à l'exercice de chapelle et à la semaine de prière cumulative</td>
-				<td class="px-2 w-2/12 text-bold"><?php if ($rg_level < 4) {round(($cumulChapel*20)/((($a-1)*2)*20),3);}else{ echo "<em>masqué</em>";}?></td>
+				<td class="px-2 w-2/12 text-bold"><?php if ($rg_level < 4) {round(($cumulChapel*20)/((($a-1)*2)*20),2);}else{ echo "<em>masqué</em>";}?></td>
 			</tr>
 		</tbody>
 	</table>
@@ -466,17 +466,17 @@ if ($rg_level <= 2) {
 		<thead class="bg-slate-900">
 			<!-- <tr>
 				<th class="p-1 w-8/12 text-right">Moyenne Générale Cumulative</th>
-				<th class="py-1 px-2 w-2/12"><?=round(($cumulFinale*20)/((($nbrA-1)*2)*20),3);?></th>
+				<th class="py-1 px-2 w-2/12"><?=round(($cumulFinale*20)/((($nbrA-1)*2)*20),2);?></th>
 			</tr> -->
 			<tr>
 				<th class="p-1 w-8/12 text-right">Moyenne Majeur Cumulative</th>
-				<th class="py-1 px-2 w-2/12"><?php if ($rg_level < 4) {round(($cumulMaj*20)/((($nbrA-1)*2)*20),6);}else{ echo "<em>masqué</em>";}?></th>
+				<th class="py-1 px-2 w-2/12"><?php if ($rg_level < 4) {round(($cumulMaj*20)/((($nbrA-1)*2)*20),2);}else{ echo "<em>masqué</em>";}?></th>
 			</tr>
 			
 			<!--  -->
 			<tr>
 				<th class="p-1 w-8/12 text-right bg-cyan-700">Moyenne Générale Cumulative</th>
-				<th class="py-1 px-2 w-2/12 bg-cyan-700"><?php if ($rg_level < 4) {round(($cumulGen*20)/((($nbrA-1)*2)*20),6);}else{ echo "<em>masqué</em>";}?></th>
+				<th class="py-1 px-2 w-2/12 bg-cyan-700"><?php if ($rg_level < 4) {round(($cumulGen*20)/((($nbrA-1)*2)*20),2);}else{ echo "<em>masqué</em>";}?></th>
 			</tr>
 		</thead>
 	</table>

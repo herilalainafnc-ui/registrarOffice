@@ -20,25 +20,22 @@
 	/**/
 	$cumulFinale = 0;
 
-	$beginAnual = $anual - $level;
-/*::::::::::::::::::::::::::::::::::::::::*/
-	if ($level > 3) {
-		$init = 4;
-	}elseif($level <= 3) {
-		$init = 1;
-	}
+	// Récupérer toutes les sessions distinctes où l'étudiant a des notes
+	$searchAllSessions = $dtb->query("SELECT DISTINCT n.session_id, s.session_name, s.session_semester, s.session_year 
+		FROM t_2023_notes n 
+		INNER JOIN t_2023_session s ON n.session_id = s.session_id 
+		WHERE n.student_id = '".$student_id."' AND n.ajout = '".$yes."' 
+		ORDER BY s.session_year ASC, s.session_semester ASC");
 
-	for ($a=$init; $a <= $level; $a++) { 
-/*::::::::::::::::::::::::::::::::::::::::*/
+	$sessionCount = 0;
+	
+	while($showSs = $searchAllSessions->fetch()){
+		$sessionCount++;
+		$session_id = $showSs['session_id'];
+		$combinAnual = $showSs['session_year'];
 		?>
 <div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 		<?php
-		$combinAnual = $beginAnual." - ".$beginAnual+1;
-
-			$searchSession = $dtb->query('SELECT * FROM t_2023_session WHERE session_year="'.$combinAnual.'"');
-			while($showSs = $searchSession->fetch()){
-				$session_id = $showSs['session_id'];
-
 				$cours = $dtb->query("SELECT * FROM t_2023_notes WHERE student_id ='".$student_id."' AND ajout='".$yes."' AND session_id='".$session_id."' ORDER BY id");
 
 				if ($cours->rowCount() > 0) {
@@ -47,7 +44,7 @@
 					<table class="simpleTbl mb-1">
 						<thead>
 							<tr class="text-center bg-gradient-to-r from-cyan-500">
-								<th colspan="10" id="semestre<?=$a.$s;?>"><?=$showSs['session_name']?> - Session N*<?=$showSs['session_semester']?> | Année <?=$combinAnual?></th>
+								<th colspan="10" id="semestre<?=$sessionCount;?>"><?=$showSs['session_name']?> - Session N*<?=$showSs['session_semester']?> | Année <?=$combinAnual?></th>
 							</tr>
 						</thead>
 						<thead class="<?=$bg_one_color?> text-white">
@@ -59,7 +56,6 @@
 								<th class="w-20">Notes/20</th>
 								<th class="w-20">Crd * Not</th>
 								<th class="w-4">État</th>
-								<th class="w-4">ID</th>
 								<th class="w-4"></th>
 							</tr>
 						</thead>	
@@ -83,13 +79,15 @@ $tMaj = 0;
 $tTMaj = 0;
 $tcredit = 0;
 $tnote = 0;
-$tnotecredit = 0;				
+$tnotecredit = 0;
+					$note_id = 0;				
 					while($crs=$cours->fetch()){
+						$note_id = $crs['id'];
 						if (!empty($crs)) {
 							?>
 							<tbody class="<?=$bg_four_color?>">
-								<form method="post" action="../app/.student/updatenote.php?id=<?=$id;?>&nbr=<?=$s.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$a.$s?>&user_id=<?=$rg_id?>">			
-				<tr id="note<?=$s.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black">
+								<form method="post" action="../app/.student/updatenote.php?id=<?=$id;?>&nbr=<?=$sessionCount.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$sessionCount?>&user_id=<?=$rg_id?>">			
+				<tr id="note<?=$sessionCount.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black">
 					<td class="bg-gradient-to-r from-orange-800 to-orange-400"><?=$crs['Sigle']?></td>
 					<td><?=$crs['title_cours']?></td>
 					<td><?=$crs['credit']?></td>
@@ -108,7 +106,7 @@ if ($crs['cours_category'] == 0){
 	echo "-";
 }
 						 ?></td>
-					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="nb_crd<?=$s.$nbr;?>" value="<?=$crs['grade']?>"></td>
+					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="nb_crd<?=$sessionCount.$nbr;?>" value="<?=$crs['grade']?>"></td>
 					<td><?=$notecredi = $crs['credit'] * $crs['grade']?></td>
 					
 					<td class="<?php 
@@ -140,14 +138,16 @@ if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 }
 
 							 ?></td>
-					<td><?=$session_id?></td>
 					<td><div class="relative">
-						<a href="#" id="coursPush<?=$a.$s.$nbr?>" data-bs-toggle="dropdown" aria-expanded="false" title="Historique de solde"><span class="bi-three-dots-vertical"></span></a>
+						<a href="#" id="coursPush<?=$sessionCount.$nbr?>" data-bs-toggle="dropdown" aria-expanded="false" title="Historique de solde"><span class="bi-three-dots-vertical"></span></a>
 
 							<ul class="dropdown-menu absolute border <?=$bg_six_color?> text-black p-0 rounded-0 text-xs">
 
-								<li><a href="../app/.student/del-cours.momentanee.php?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$a.$s?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>">		<p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Supprimer</p>
+								<li><p class="px-2 py-1">Session ID : <?=$session_id?></p></li>
+								<hr>
+								<li><a href="../app/.student/del-cours.momentanee.php?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$sessionCount?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>">		<p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Supprimer</p>
 								</a></li>
+
 
 							</ul>
 
@@ -228,7 +228,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 					<th colspan="2"></th>
 				</tr>
 
-<form method="post" action="../app/.student/updatePromotionNote.php?id=<?=$id;?>&session_id=<?=$session_id?>&student_id=<?=$student_id;?>&nbr=<?=$s.$nbr;?>&a=<?=$a?>&s=<?=$s?>&annee_scolaire=<?=$annee_scolaire?>&user_id=<?=$rg_id?>" enctype="multipart/form-data" class="form-no-refrech">
+<form method="post" action="../app/.student/updatePromotionNote.php?id=<?=$id;?>&session_id=<?=$session_id?>&student_id=<?=$student_id;?>&nbr=<?=$sessionCount.$nbr;?>&sessionCount=<?=$sessionCount?>&annee_scolaire=<?=$annee_scolaire?>&user_id=<?=$rg_id?>" enctype="multipart/form-data" class="form-no-refrech">
 <?php
 	
 	if(!empty($session_id)){
@@ -266,18 +266,18 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 	}
  ?>
 				
-				<tr>
+				<!-- <tr>
 					<th colspan="4" class="text-right">Moyenne Générale</th>
 					<th class="px-2"><?php if($nbrGen != 0){echo $moyenGenSem = round(($tTGen/$nbrGen),2);}else{echo 0;$moyenGenSem =0;}?></th>
-				</tr>
+				</tr> -->
 				<tr>
 					<th colspan="4" class="text-right">Moyenne Majeur</th>
-					<th class="px-2"><?php if($nbrMaj != 0){echo $moyenMajSem = round(($tTMaj/$nbrMaj),2);}else{echo 0;}?></th>
+					<th class="px-2"><?php if($nbrMaj != 0){echo $moyenMajSem = round(($tTMaj/$nbrMaj),2);}else{echo 0;$moyenMajSem=0;}?></th>
 				</tr>
 				<!--  -->
 				<tr>
-					<th colspan="4" class="text-right">Moyenne</th>
-					<th class="px-2 bg-cyan-700"><?php if($nbrFinale != 0){echo $moyenFinale = round(($tTFinale/$nbrFinale),2);}else{echo 0;$moyenFinale =0;}?></th>
+					<th colspan="4" class="text-right">Moyenne Générale</th>
+					<th class="px-2 bg-cyan-700"><?php if($nbrFinale != 0){echo $moyenFinale = round(($tnotecredit/$tcredit),2);}else{echo 0;$moyenFinale =0;}?></th>
 				</tr>
 			</tfoot>
 							
@@ -295,9 +295,6 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 		/**/
 		$cumulFinale += $finale + $moyenFinale;
 				}
-			}
-
-		$beginAnual++;
 		?>
 </div>
 		<?php
@@ -311,15 +308,15 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 		<tbody class=" <?=$bg_two_color?>">
 			<tr>
 				<td class="p-1 w-8/12 text-right">Note de Work Education cumulative</td>
-				<td class="px-2 w-2/12 text-bold"><?=round(($cumulWorkNote*20)/((($i-1)*2)*20),3);?></td>
+				<td class="px-2 w-2/12 text-bold"><?php if($sessionCount > 0){echo round($cumulWorkNote/$sessionCount, 2);}else{echo 0;}?></td>
 			</tr>
 			<!-- <tr>
 				<td class="p-1 w-8/12 text-right">Nemarque académique cumulative</td>
-				<td class="px-2 w-2/12 text-bold"><?=round(($cumulremarkAcad*20)/((($i-1)*2)*20),3);?></td>
+				<td class="px-2 w-2/12 text-bold"><?php if($sessionCount > 0){echo round($cumulremarkAcad/$sessionCount, 2);}else{echo 0;}?></td>
 			</tr> -->
 			<tr>
 				<td class="p-1 w-8/12 text-right">Note de participation à l'exercice de chapelle et à la semaine de prière cumulative</td>
-				<td class="px-2 w-2/12 text-bold"><?=round(($cumulChapel*20)/((($i-1)*2)*20),3);?></td>
+				<td class="px-2 w-2/12 text-bold"><?php if($sessionCount > 0){echo round($cumulChapel/$sessionCount, 2);}else{echo 0;}?></td>
 			</tr>
 		</tbody>
 	</table>
@@ -327,17 +324,17 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 		<thead class="bg-slate-900">
 			<tr>
 				<th class="p-1 w-8/12 text-right">Moyenne Générale Cumulative</th>
-				<th class="py-1 px-2 w-2/12"><?=round(($cumulGen*20)/((($i-1)*2)*20),3);?></th>
+				<th class="py-1 px-2 w-2/12"><?php if($sessionCount > 0){echo round($cumulGen/$sessionCount, 2);}else{echo 0;}?></th>
 			</tr>
 			<tr>
 				<th class="p-1 w-8/12 text-right">Moyenne Majeur Cumulative</th>
-				<th class="py-1 px-2 w-2/12"><?=round(($cumulMaj*20)/((($i-1)*2)*20),3);?></th>
+				<th class="py-1 px-2 w-2/12"><?php if($sessionCount > 0){echo round($cumulMaj/$sessionCount, 2);}else{echo 0;}?></th>
 			</tr>
 			
 			<!--  -->
 			<tr>
 				<th class="p-1 w-8/12 text-right bg-cyan-700">Moyenne Cumulative</th>
-				<th class="py-1 px-2 w-2/12 bg-cyan-700  text-white"><?=round(($cumulFinale*20)/((($i-1)*2)*20),3);?></th>
+				<th class="py-1 px-2 w-2/12 bg-cyan-700  text-white"><?php if($sessionCount > 0){echo round($cumulFinale/$sessionCount, 2);}else{echo 0;}?></th>
 			</tr>
 		</thead>
 	</table>

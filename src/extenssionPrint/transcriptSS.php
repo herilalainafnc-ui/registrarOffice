@@ -222,7 +222,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 						$nbr++;
 					}
 				?>
-<tfoot class="bg-slate-800 text-white">
+<tfoot>
 				<tr>
 					<th colspan="2"><?=$nbr?> cours</th>
 					<th><?php if(!empty($tcredit)) { echo $tcredit;}?></th>
@@ -309,39 +309,39 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 
 	?>
 
-<div class='p-1 bg-slate-600 hover:bg-slate-500 mb-4 rounded-md border-2 border-slate-600 hover:border-cyan-500 transition-all text-xs text-white'>
+<div class='p-1 mb-4 rounded-md border-1 border-slate-600 text-xs'>
 	<b>MOYENNE CUMULATIVE</b>
 	<table class="mb-1 w-full" style="page-break-inside: avoid;">
-		<tbody class=" bg-slate-700">
+		<tbody>
 			<tr>
-				<td class="p-1 w-8/12 text-right">Note de Work Education cumulative</td>
-				<td class="px-2 w-2/12 text-bold"><?=round(($cumulWorkNote*20)/((($i-1)*2)*20),3);?></td>
+				<td class="text-xs p-1 w-8/12 text-right">Note de Work Education cumulative</td>
+				<td class="text-xs px-2 w-2/12 text-bold"><?=round(($cumulWorkNote*20)/((($i-1)*2)*20),2);?></td>
 			</tr>
 			<!-- <tr>
 				<td class="p-1 w-8/12 text-right">Nemarque académique cumulative</td>
-				<td class="px-2 w-2/12 text-bold"><?=round(($cumulremarkAcad*20)/((($i-1)*2)*20),3);?></td>
+				<td class="px-2 w-2/12 text-bold"><?=round(($cumulremarkAcad*20)/((($i-1)*2)*20),2);?></td>
 			</tr> -->
 			<tr>
-				<td class="p-1 w-8/12 text-right">Note de participation à l'exercice de chapelle et à la semaine de prière cumulative</td>
-				<td class="px-2 w-2/12 text-bold"><?=round(($cumulChapel*20)/((($i-1)*2)*20),3);?></td>
+				<td class="text-xs p-1 w-8/12 text-right">Note de participation à l'exercice de chapelle et à la semaine de prière cumulative</td>
+				<td class="text-xs px-2 w-2/12 text-bold"><?=round(($cumulChapel*20)/((($i-1)*2)*20),2);?></td>
 			</tr>
 		</tbody>
 	</table>
 	<table class="mb-1 w-full" style="page-break-inside: avoid;">
-		<thead class="bg-slate-900">
+		<thead>
 			<tr>
-				<th class="p-1 w-8/12 text-right">Moyenne Générale Cumulative</th>
-				<th class="py-1 px-2 w-2/12"><?=round(($cumulGen*20)/((($i-1)*2)*20),3);?></th>
+				<th class="text-xs p-1 w-8/12 text-right">Moyenne Générale Cumulative</th>
+				<th class="text-xs py-1 px-2 w-2/12"><?=round(($cumulGen*20)/((($i-1)*2)*20),2);?></th>
 			</tr>
 			<tr>
-				<th class="p-1 w-8/12 text-right">Moyenne Majeur Cumulative</th>
-				<th class="py-1 px-2 w-2/12"><?=round(($cumulMaj*20)/((($i-1)*2)*20),3);?></th>
+				<th class="text-xs p-1 w-8/12 text-right">Moyenne Majeur Cumulative</th>
+				<th class="text-xs py-1 px-2 w-2/12"><?=round(($cumulMaj*20)/((($i-1)*2)*20),2);?></th>
 			</tr>
 			
 			<!--  -->
 			<tr>
-				<th class="p-1 w-8/12 text-right bg-cyan-700">Moyenne Cumulative</th>
-				<th class="py-1 px-2 w-2/12 bg-cyan-700  text-white"><?=round(($cumulFinale*20)/((($i-1)*2)*20),3);?></th>
+				<th class="text-xs p-1 w-8/12 text-right bg-cyan-700">Moyenne Cumulative</th>
+				<th class="text-xs py-1 px-2 w-2/12 bg-cyan-700  text-white"><?=round(($cumulFinale*20)/((($i-1)*2)*20),2);?></th>
 			</tr>
 		</thead>
 	</table>

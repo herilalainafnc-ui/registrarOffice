@@ -1,14 +1,25 @@
 <?php 
 require('../init/.forPrint/top.forPrint.php');
 
-$session_id = $_GET['session_id'];
 
-//$semester = $_POST['semester'];
-//$annee_scolaire = $_POST['annee_scolaire'];
+
+if (empty($_GET['session_id'])) {
+	
+	$semester = $_POST['semester'];
+	$annee_scolaire = $_POST['annee_scolaire'];
+
+	$findSession = $dtb->query('SELECT * FROM t_2023_session WHERE session_semester = "'.$semester.'" AND session_year = "'.$annee_scolaire.'"');
+
+	$showSession = $findSession->fetch();
+	$session_id = $showSession['session_id'];
+
+}else{
+
+	$session_id = $_GET['session_id'];
+}
+
 
 $findSession = $dtb->query('SELECT * FROM t_2023_session WHERE session_id = "'.$session_id.'"');
-
-//$findSession = $dtb->query('SELECT * FROM t_2023_session WHERE session_name = "'.$semester.'" AND session_year = "'.$annee_scolaire.'"');
 
 $showSession = $findSession->fetch();
 

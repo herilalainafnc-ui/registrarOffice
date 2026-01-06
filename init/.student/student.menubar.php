@@ -89,9 +89,9 @@ if(isset($_GET['page']) and $_GET['page'] == "information") {
 									</div>
 								</a>
 		
-								<a href="?id=<?=$id;?>&page=transcript">
+								<a href="?id=<?=$id;?>&page=transcriptSS">
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
-if(isset($_GET['page']) and $_GET['page'] == "transcript") {
+if(isset($_GET['page']) and $_GET['page'] == "transcriptSS") {
 	echo "bg-cyan-700 text-white";
 } ?>">
 										
