@@ -2,9 +2,10 @@
 /app/photosetudiants/
 /app/photosuser/
 /app/photosetudiants.zip
+/app/Motors/
 /dash/
 /data/backdb.php
 /file/
 /framework/
 /node_modulesC/
-/data/backdb.php
+/src/student/ajax-meilleurs-etudiants.php
