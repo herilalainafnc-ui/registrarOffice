@@ -83,5 +83,5 @@
 
 	}
 
-	header('location:../../src/student.php?id='.$id.'&page=transcript#semestre'.$a.$s);
+	header('location:../../src/student.php?id='.$id.'&page=transcriptSS#semestre'.$a.$s);
  ?>

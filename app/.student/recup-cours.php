@@ -66,6 +66,6 @@ echo "<br>".$last_change_user_id = $_GET['user_id'];
 		$updateReste->bindParam(':student_id',$student_id,PDO::PARAM_STR);
 		$updateReste->execute();
 
-header('location:../../src/student.php?id='.$id.'&page=transcript#semestre'.$as);
+header('location:../../src/student.php?id='.$id.'&page=transcriptSS#semestre'.$as);
 
  ?>

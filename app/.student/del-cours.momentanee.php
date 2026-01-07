@@ -70,6 +70,6 @@ require ('../../data/backdb.php');
 
 
 
-	header('location:../../src/student.php?id='.$id.'&page=transcript#semestre'.$as);
+	header('location:../../src/student.php?id='.$id.'&page=transcriptSS#semestre'.$as);
 
  ?>

@@ -144,6 +144,27 @@ if($profil['annee_etude'] == 0) {
 							
 						</div>
 						<hr>
+						<?php 
+						// Vérification si l'étudiant est suspendu
+						$isSuspended = false;
+						if (isset($profil['suspended']) && $profil['suspended'] == 1) {
+							$dateFin = $profil['date_fin_suspension'];
+							if (empty($dateFin) || strtotime($dateFin) >= strtotime(date('Y-m-d'))) {
+								$isSuspended = true;
+							}
+						}
+						
+						if ($isSuspended) {
+						?>
+						<div class="w-full py-2 px-3 my-2 bg-orange-500 text-white rounded-lg text-center">
+							<i class="bi bi-exclamation-triangle-fill"></i>
+							<b class="text-sm">ÉTUDIANT SUSPENDU</b>
+							<p class="text-xs mt-1">L'inscription et la prise de cours sont bloquées.</p>
+							<?php if (!empty($profil['date_fin_suspension'])) { ?>
+								<p class="text-xs">Fin: <?= date('d/m/Y', strtotime($profil['date_fin_suspension'])) ?></p>
+							<?php } ?>
+						</div>
+						<?php } ?>
 						<div class="w-full py-2 text-sm  text-white">
 								<b><?=strtoupper($profil['student_nom']) ?> <?=$profil['student_prenom'] ?></b><br>
 								<em><?=$profil['etude_envisage']." - ".$profil['etude_option'] ?></em><br>
@@ -164,13 +185,13 @@ echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];
 											Information
 								</div>
 							
-								<div id="intNewcours" class="w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200">
+								<div id="intNewcours" class="w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 <?php if($isSuspended) echo 'opacity-50 pointer-events-none'; ?>">
 									
 									<i class="bi-folder-plus"></i>
 											Cours offert
 								</div>
 
-								<div id="intModepayement" class="w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-2001">
+								<div id="intModepayement" class="w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-2001 <?php if($isSuspended) echo 'opacity-50 pointer-events-none'; ?>">
 									
 									<i class="bi-cash-coin"></i>
 											Mode de payement

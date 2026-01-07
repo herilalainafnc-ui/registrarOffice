@@ -406,7 +406,7 @@ if ($rg_level <= 2) {
 					<th class="px-2"><?php if($nbrGen != 0){echo $moyenGenSem = round(($tTGen/$nbrGen),2);}else{echo 0;$moyenGenSem =0;}?></th>
 				</tr> -->
 				<tr>
-					<th colspan="4" class="text-right">Moyenne Majeur</th>
+					<th colspan="4" class="text-right">Moyenne Majeure</th>
 					<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 					<th class="px-2"><?php if ($rg_level < 4) { if($nbrMaj != 0){echo round(($moyenMajSem = ($tTMaj/$tcreditMaj)),2);}else{echo 0;$moyenMajSem =0;}}else{ echo "<em>masqué</em>";}?></th>
 					<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
@@ -469,7 +469,7 @@ if ($rg_level <= 2) {
 				<th class="py-1 px-2 w-2/12"><?=round(($cumulFinale*20)/((($nbrA-1)*2)*20),2);?></th>
 			</tr> -->
 			<tr>
-				<th class="p-1 w-8/12 text-right">Moyenne Majeur Cumulative</th>
+				<th class="p-1 w-8/12 text-right">Moyenne Majeure Cumulative</th>
 				<th class="py-1 px-2 w-2/12"><?php if ($rg_level < 4) {round(($cumulMaj*20)/((($nbrA-1)*2)*20),2);}else{ echo "<em>masqué</em>";}?></th>
 			</tr>
 			

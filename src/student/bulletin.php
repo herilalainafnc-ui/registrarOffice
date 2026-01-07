@@ -202,7 +202,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 	}
  ?>
 				<tr>
-					<th colspan="4" class="text-right">Moyenne Majeur</th>
+					<th colspan="4" class="text-right">Moyenne Majeure</th>
 					<th class="px-2"><?php if($nbrMaj != 0 && $tcreditMaj != 0){echo round(($moyenMajSem = ($tTMaj/$tcreditMaj)),2);}else{echo 0;$moyenMajSem =0;}?></th>
 				</tr>
 				

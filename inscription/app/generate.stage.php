@@ -5,6 +5,18 @@
 	$student_id = $_GET['student_id'];
 	$stage = $_GET['stage'];
 
+	// Vérification si l'étudiant est suspendu
+	$checkSuspension = $dtb->query('SELECT suspended, date_fin_suspension FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'"');
+	$suspensionData = $checkSuspension->fetch();
+	
+	if ($suspensionData && $suspensionData['suspended'] == 1) {
+		$dateFin = $suspensionData['date_fin_suspension'];
+		if (empty($dateFin) || strtotime($dateFin) >= strtotime(date('Y-m-d'))) {
+			echo "BLOCKED";
+			exit;
+		}
+	}
+
 	$y = date('Y');
 
 	$findStudent_Session = $dtb->query('SELECT * FROM t_2024_inscription_session WHERE student_id="'.$student_id.'" ORDER BY id DESC');

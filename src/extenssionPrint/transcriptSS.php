@@ -9,11 +9,11 @@
 	$searchStd = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'"');
 	$stdA = $searchStd->fetch();
 ?>
-<div class="mb-24">
+<div class="mb-12">
 	<center>
-		<b class="text-2xl">Transcript par Session</b>
+		<b class="text-lg">Transcript par Session</b>
 	</center>
-	<div class="flex text-xs px-1 py-1" style="border: 1px solid #8e9bb2;">
+	<div class="flex text-[10px] px-1 py-0.5" style="border: 1px solid #8e9bb2;">
 		<div class="w-10/12 flex">
 			<div class="text-right w-4/12">
 				<label>Matricule - </label><br>
@@ -114,21 +114,21 @@
 
 		if ($cours->rowCount() > 0) {
 			?>
-			<table class="tbl mb-1" style="page-break-inside: avoid;">
+			<table class="tbl mb-0.5 text-[10px]" style="page-break-inside: avoid;">
 				<thead>
-					<tr class="text-center bg-slate-500 text-white">
-						<th colspan="10"><b><?=$niveau_label?></b> | <?=$showSs['session_name']?> - Session N°<?=$showSs['session_semester']?> | Année <?=$combinAnual?></th>
+					<tr class="text-center bg-slate-500 text-white text-[9px]">
+						<th colspan="10" class="py-0.5"><b><?=$niveau_label?></b> | <?=$showSs['session_name']?> - Session N°<?=$showSs['session_semester']?> | Année <?=$combinAnual?></th>
 					</tr>
 				</thead>
 				<thead class="bg-slate-200">
 					<tr>
-						<th style="width: 100px">Sigle</th>
-						<th style="width: 400px">Titre du cours</th>
-						<th style="width: 50px">Crédits</th>
-						<th style="width: 50px">Catégorie</th>
-						<th style="width: 50px">Notes/20</th>
-						<th style="width: 50px">Crd*Not</th>
-						<th style="width: 30px">État</th>
+						<th style="width: 70px">Sigle</th>
+						<th style="width: 280px">Titre du cours</th>
+						<th style="width: 35px">Crd</th>
+						<th style="width: 40px">Cat.</th>
+						<th style="width: 35px">Note</th>
+						<th style="width: 40px">Crd*N</th>
+						<th style="width: 20px">É</th>
 					</tr>
 				</thead>	
 			<?php
@@ -244,7 +244,7 @@
 				}
 				?>
 				<tr>
-					<th colspan="4" class="text-right">Moyenne Majeur</th>
+					<th colspan="4" class="text-right">Moyenne Majeure</th>
 					<th class="px-2"><?=$moyenMajSem?></th>
 				</tr>
 				<tr>
@@ -253,7 +253,7 @@
 				</tr>
 				<!-- Récapitulatif de la session -->
 				<tr class="bg-slate-100">
-					<th colspan="7" class="text-left text-xs p-1">
+					<th colspan="7" class="text-left text-[8px] p-0.5">
 						<b>Récapitulatif :</b> 
 						<?=$nbr?> cours | 
 						<span class="text-green-700"><?=$coursValides?> validé(s) (<?=$creditsValides?> crédits)</span> | 
@@ -283,40 +283,40 @@
 ?>
 
 <!-- RÉCAPITULATIF GÉNÉRAL -->
-<div class='p-2 mb-4 rounded-md text-xs' style="border: 2px solid #334155; background: #f1f5f9;">
-	<b class="text-sm">RÉCAPITULATIF GÉNÉRAL</b>
+<div class='p-1 mb-2 rounded-md text-[9px]' style="border: 1px solid #334155; background: #f1f5f9;">
+	<b class="text-[10px]">RÉCAPITULATIF GÉNÉRAL</b>
 	<table class="mb-1 w-full" style="page-break-inside: avoid;">
 		<tbody>
 			<tr>
-				<td class="p-1 w-6/12">Nombre total de sessions</td>
-				<td class="px-2 w-6/12 font-bold"><?=$sessionCount?></td>
+				<td class="text-xs p-1 w-6/12">Nombre total de sessions</td>
+				<td class="text-xs px-2 w-6/12 font-bold"><?=$sessionCount?></td>
 			</tr>
 			<tr>
-				<td class="p-1 w-6/12">Nombre total de cours</td>
-				<td class="px-2 w-6/12 font-bold"><?=$totalCours?></td>
+				<td class="text-xs p-1 w-6/12">Nombre total de cours</td>
+				<td class="text-xs px-2 w-6/12 font-bold"><?=$totalCours?></td>
 			</tr>
 			<tr>
-				<td class="p-1 w-6/12 text-green-700">Cours validés (Succès)</td>
-				<td class="px-2 w-6/12 font-bold text-green-700"><?=$totalCoursValides?> cours (<?=$totalCreditsValides?> crédits)</td>
+				<td class="text-xs p-1 w-6/12 text-green-700">Cours validés (Succès)</td>
+				<td class="text-xs px-2 w-6/12 font-bold text-green-700"><?=$totalCoursValides?> cours (<?=$totalCreditsValides?> crédits)</td>
 			</tr>
 			<tr>
-				<td class="p-1 w-6/12 text-red-700">Cours échoués (Échec)</td>
-				<td class="px-2 w-6/12 font-bold text-red-700"><?=$totalCoursEchoues?> cours (<?=$totalCreditsEchoues?> crédits)</td>
+				<td class="text-xs p-1 w-6/12 text-red-700">Cours échoués (Échec)</td>
+				<td class="text-xs px-2 w-6/12 font-bold text-red-700"><?=$totalCoursEchoues?> cours (<?=$totalCreditsEchoues?> crédits)</td>
 			</tr>
 			<tr>
-				<td class="p-1 w-6/12">Total des crédits</td>
-				<td class="px-2 w-6/12 font-bold"><?=$cumulCredit?> crédits</td>
+				<td class="text-xs p-1 w-6/12">Total des crédits</td>
+				<td class="text-xs px-2 w-6/12 font-bold"><?=$cumulCredit?> crédits</td>
 			</tr>
 			<tr>
-				<td class="p-1 w-6/12">Taux de réussite</td>
-				<td class="px-2 w-6/12 font-bold <?=($tauxReussite >= 50) ? 'text-green-700' : 'text-red-700'?>"><?=$tauxReussite?>%</td>
+				<td class="text-xs p-1 w-6/12">Taux de réussite</td>
+				<td class="text-xs px-2 w-6/12 font-bold <?=($tauxReussite >= 50) ? 'text-green-700' : 'text-red-700'?>"><?=$tauxReussite?>%</td>
 			</tr>
 		</tbody>
 	</table>
 </div>
 
-<div class='p-1 mb-4 rounded-md border-1 border-slate-600 text-xs'>
-	<b>MOYENNE CUMULATIVE</b>
+<div class='p-1 mb-2 rounded-md border-1 border-slate-600 text-[9px]'>
+	<b class="text-[10px]">MOYENNE CUMULATIVE</b>
 	<table class="mb-1 w-full" style="page-break-inside: avoid;">
 		<tbody>
 			<tr>
@@ -332,7 +332,7 @@
 	<table class="mb-1 w-full" style="page-break-inside: avoid;">
 		<thead>
 			<tr>
-				<th class="text-xs p-1 w-8/12 text-right">Moyenne Majeur Cumulative</th>
+				<th class="text-xs p-1 w-8/12 text-right">Moyenne Majeure Cumulative</th>
 				<th class="text-xs py-1 px-2 w-2/12"><?=($sessionCount > 0) ? round($cumulMaj / $sessionCount, 2) : 0?></th>
 			</tr>
 			<tr>

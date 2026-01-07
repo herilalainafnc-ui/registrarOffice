@@ -180,18 +180,35 @@
     <div class="best-students-container flex-1 overflow-y-auto overflow-x-hidden p-4">
         
         <?php
+        // Calculer l'année académique actuelle
+        // Si on est entre janvier et août, l'année académique est (année-1)-(année)
+        // Si on est entre septembre et décembre, l'année académique est (année)-(année+1)
+        $currentMonth = intval(date('n'));
+        $currentYear = intval(date('Y'));
+        
+        if ($currentMonth >= 9) {
+            // Septembre à Décembre : année actuelle - année suivante
+            $currentAcademicYear = $currentYear . '-' . ($currentYear + 1);
+        } else {
+            // Janvier à Août : année précédente - année actuelle
+            $currentAcademicYear = ($currentYear - 1) . '-' . $currentYear;
+        }
+        
         // Pagination
         $page = isset($_GET['page_annee']) ? intval($_GET['page_annee']) : 1;
         $limit = 1;
         $offset = ($page - 1) * $limit;
         
-        // Compter le nombre total d'années disponibles
-        $countAnnees = $dtb->query('SELECT COUNT(DISTINCT session_year) as total FROM t_2023_session WHERE session_year IS NOT NULL');
+        // Compter le nombre total d'années disponibles (seulement celles <= année actuelle)
+        $countAnnees = $dtb->prepare('SELECT COUNT(DISTINCT session_year) as total FROM t_2023_session WHERE session_year IS NOT NULL AND session_year <= :currentYear');
+        $countAnnees->execute([':currentYear' => $currentAcademicYear]);
         $totalAnnees = $countAnnees->fetch()['total'];
         $totalPages = ceil($totalAnnees / $limit);
         
-        // Récupérer les années distinctes depuis t_2023_session
-        $annees = $dtb->query("SELECT DISTINCT session_year FROM t_2023_session WHERE session_year IS NOT NULL ORDER BY session_year DESC LIMIT $limit OFFSET $offset");
+        // Récupérer les années distinctes depuis t_2023_session (seulement <= année actuelle)
+        $annees = $dtb->prepare("SELECT DISTINCT session_year FROM t_2023_session WHERE session_year IS NOT NULL AND session_year <= :currentYear ORDER BY session_year DESC LIMIT $limit OFFSET $offset");
+        $annees->execute([':currentYear' => $currentAcademicYear]);
+        
         $mentions_list = $dtb->query('SELECT DISTINCT filiere_description, filiere_sigle FROM filiere ORDER BY filiere_sigle');
         $all_mentions = $mentions_list->fetchAll(PDO::FETCH_ASSOC);
         

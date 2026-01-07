@@ -3,6 +3,24 @@
 
 	$id = $_GET['id'];
 	$student_id = $_GET['student_id'];
+
+	// Vérification si l'étudiant est suspendu
+	$checkSuspension = $dtb->query('SELECT suspended, date_fin_suspension FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'"');
+	$suspensionData = $checkSuspension->fetch();
+	
+	if ($suspensionData && $suspensionData['suspended'] == 1) {
+		// Vérifier si la suspension est toujours active
+		$dateFin = $suspensionData['date_fin_suspension'];
+		if (empty($dateFin) || strtotime($dateFin) >= strtotime(date('Y-m-d'))) {
+			echo '<div class="bg-red-500 text-white p-4 rounded-lg text-center">
+				<i class="bi bi-exclamation-triangle-fill text-2xl"></i><br>
+				<b>ACCÈS REFUSÉ</b><br>
+				Cet étudiant est actuellement suspendu et ne peut pas prendre de cours.
+			</div>';
+			exit;
+		}
+	}
+
 	$semesterSession = $_POST['semesterSession'];
 
 	if ($semesterSession == "Premier semestre") {

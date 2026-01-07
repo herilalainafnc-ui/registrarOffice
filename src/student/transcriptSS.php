@@ -272,7 +272,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 					<th class="px-2"><?php if($nbrGen != 0){echo $moyenGenSem = round(($tTGen/$nbrGen),2);}else{echo 0;$moyenGenSem =0;}?></th>
 				</tr> -->
 				<tr>
-					<th colspan="4" class="text-right">Moyenne Majeur</th>
+					<th colspan="4" class="text-right">Moyenne Majeure</th>
 					<th class="px-2"><?php if($nbrMaj != 0){echo $moyenMajSem = round(($tTMaj/$nbrMaj),2);}else{echo 0;$moyenMajSem=0;}?></th>
 				</tr>
 				<!--  -->
@@ -328,7 +328,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 				<th class="py-1 px-2 w-2/12"><?php if($sessionCount > 0){echo round($cumulGen/$sessionCount, 2);}else{echo 0;}?></th>
 			</tr>
 			<tr>
-				<th class="p-1 w-8/12 text-right">Moyenne Majeur Cumulative</th>
+				<th class="p-1 w-8/12 text-right">Moyenne Majeure Cumulative</th>
 				<th class="py-1 px-2 w-2/12"><?php if($sessionCount > 0){echo round($cumulMaj/$sessionCount, 2);}else{echo 0;}?></th>
 			</tr>
 			

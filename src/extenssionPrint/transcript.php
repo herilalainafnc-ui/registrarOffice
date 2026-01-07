@@ -317,7 +317,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 					<th class="bg-slate-200"><?php if($nbrGen != 0){echo $moyenGenSem = round(($tTGen/$nbrGen),2);}else{echo 0;$moyenGenSem =0;}?></th>
 				</tr>
 				<tr>
-					<th colspan="4" class="bg-slate-200 text-right">Moyenne Majeur</th>
+					<th colspan="4" class="bg-slate-200 text-right">Moyenne Majeure</th>
 					<th class="bg-slate-200"><?php if($nbrMaj != 0){echo $moyenMajSem = round(($tTMaj/$nbrMaj),2);}else{echo$moyenMajSem =0; 0;}?></th>
 				</tr>
 				<tr>
@@ -326,7 +326,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 				</tr> -->
 
 				<tr>
-					<th colspan="4" class="text-right">Moyenne Majeur</th>
+					<th colspan="4" class="text-right">Moyenne Majeure</th>
 					
 					<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 					<th class="bg-slate-200"><?php if($nbrMaj != 0){echo round(($moyenMajSem = ($tTMaj/$tcreditMaj)),6);}else{echo 0;$moyenMajSem =0;}?></th>
@@ -387,7 +387,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 				<th class=" w-2/12"><?=round(($cumulGen*20)/((($nbrA-1)*2)*20),2);?></th>
 			</tr>
 			<tr>
-				<th class=" w-8/12 text-right">Moyenne Majeur Cumulative</th>
+				<th class=" w-8/12 text-right">Moyenne Majeure Cumulative</th>
 				<th class=" w-2/12"><?=round(($cumulMaj*20)/((($nbrA-1)*2)*20),2);?></th>
 			</tr>
 			<!--  -->

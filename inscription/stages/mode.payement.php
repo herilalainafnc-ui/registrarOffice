@@ -8,6 +8,25 @@
 	$recupsdt = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id ="'.$student_id.'" AND remove != 1 limit 1');
 
 	$profil = $recupsdt->fetch();
+	
+	// Vérification si l'étudiant est suspendu
+	$isSuspended = false;
+	if (isset($profil['suspended']) && $profil['suspended'] == 1) {
+		$dateFin = $profil['date_fin_suspension'];
+		if (empty($dateFin) || strtotime($dateFin) >= strtotime(date('Y-m-d'))) {
+			$isSuspended = true;
+		}
+	}
+	
+	if ($isSuspended) {
+		echo '<div class="bg-orange-500 text-white p-6 rounded-lg text-center m-4">
+			<i class="bi bi-exclamation-triangle-fill text-4xl"></i>
+			<h3 class="text-lg font-bold mt-2">ÉTUDIANT SUSPENDU</h3>
+			<p class="mt-2">Cet étudiant est suspendu et ne peut pas effectuer d\'inscription.</p>
+		</div>';
+		return;
+	}
+	
 		$id = $profil['id'];
 		$student_id = $profil['student_id'];
 		$student_nom = $profil['student_nom'];

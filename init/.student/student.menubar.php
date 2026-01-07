@@ -37,6 +37,11 @@
 
 							<div class="w-9/12 text-left pl-3">
 								
+								<?php if(!empty($profil['suspended']) && $profil['suspended'] == 1): ?>
+								<div class="w-full bg-gradient-to-r from-orange-600 to-orange-500 px-2 text-white mb-1">
+									<b><i class="bi-person-dash-fill"></i> SUSPENDU</b>
+								</div>
+								<?php else: ?>
 								<div class="w-full bg-gradient-to-r from-cyan-500 px-2 text-white">
 									<b>
 <?php
@@ -49,6 +54,7 @@ if ($profil['new_student'] == 1) {
 }
 ?>	</b>
 								</div>
+								<?php endif; ?>
 								
 								<b class="text-1xl"><?=$profil['student_id'] ?></b>
 								<p><?php
@@ -140,6 +146,22 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 									</div>
 								</a>
 
+								<?php if(!empty($profil['suspended']) && $profil['suspended'] == 1): ?>
+								<a href="#" id="linkLeverSuspension">
+									<div class="w-full hover:bg-green-500 hover:text-slate-100 p-2 my-1 text-green-600 rounded-md">
+										<i class="bi-person-check-fill"></i>
+												Lever la suspension
+									</div>
+								</a>
+								<?php else: ?>
+								<a href="#" id="linkSuspendStd">
+									<div class="w-full hover:bg-orange-500 hover:text-slate-100 p-2 my-1 text-orange-600 rounded-md">
+										<i class="bi-person-dash-fill"></i>
+												Suspendre
+									</div>
+								</a>
+								<?php endif; ?>
+
 								<a href="#" id="linkSupprStd">
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 text-red-600 rounded-md">
 										
@@ -151,6 +173,91 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 							</div>
 						</div>
 
+
+							<!-- MODAL SUSPENSION -->
+						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifSuspendStd" style="backdrop-filter: blur(30px);">
+<form method="post" action="../app/.student/suspendre.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>">
+							<div class="w-[500px] <?=$bg_eight_color?> border-2 border-orange-500 mx-auto my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
+								<div class="p-3 bg-orange-500 text-white rounded-t-md">
+									<p class="text-lg font-bold"><i class="bi-exclamation-triangle-fill mr-2"></i>Suspendre l'étudiant</p>
+								</div>
+								<div class="p-4">
+									<p class="mb-3 text-sm text-slate-600">Cette action va suspendre <b><?=strtoupper($profil['student_nom']).' '.$profil['student_prenom']?></b> de l'université. Il ne pourra pas se réinscrire ni prendre des cours pendant la période définie.</p>
+									
+									<div class="mb-3">
+										<label class="block text-sm font-medium mb-1 text-slate-700">Date de début</label>
+										<input type="date" name="date_debut_suspension" required class="w-full p-2 border border-slate-300 rounded-md" value="<?=date('Y-m-d')?>">
+									</div>
+									
+									<div class="mb-3">
+										<label class="block text-sm font-medium mb-1 text-slate-700">Date de fin</label>
+										<input type="date" name="date_fin_suspension" id="date_fin_suspension" required class="w-full p-2 border border-slate-300 rounded-md">
+									</div>
+									
+									<div class="mb-3">
+										<label class="block text-sm font-medium mb-1 text-slate-700">Durée prédéfinie</label>
+										<select id="duree_predefinie" class="w-full p-2 border border-slate-300 rounded-md">
+											<option value="">-- Choisir une durée --</option>
+											<option value="6">1 semestre (6 mois)</option>
+											<option value="12">2 semestres (1 an)</option>
+											<option value="24">4 semestres (2 ans)</option>
+											<option value="36">6 semestres (3 ans)</option>
+											<option value="0">Indéfini</option>
+										</select>
+									</div>
+									
+									<div class="mb-3">
+										<label class="block text-sm font-medium mb-1 text-slate-700">Motif de la suspension</label>
+										<textarea name="motif_suspension" rows="3" required class="w-full p-2 border border-slate-300 rounded-md" placeholder="Indiquez le motif de la suspension..."></textarea>
+									</div>
+
+								</div>
+								<div class="flex p-3 border-t border-slate-200 justify-end gap-2">
+									<a href="#" id="cancelSuspendStd" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-md hover:bg-slate-300">Annuler</a>
+									<button type="submit" class="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600">
+										<i class="bi-person-dash mr-1"></i> Confirmer la suspension
+									</button>
+								</div>
+							</div>
+</form>
+						</div>
+
+							<!-- MODAL LEVER SUSPENSION -->
+						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifLeverSuspension" style="backdrop-filter: blur(30px);">
+<form method="post" action="../app/.student/lever-suspension.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>">
+							<div class="w-[500px] <?=$bg_eight_color?> border-2 border-green-500 mx-auto my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
+								<div class="p-3 bg-green-500 text-white rounded-t-md">
+									<p class="text-lg font-bold"><i class="bi-person-check-fill mr-2"></i>Lever la suspension</p>
+								</div>
+								<div class="p-4">
+									<p class="mb-3 text-sm text-slate-600">Vous êtes sur le point de lever la suspension de <b><?=strtoupper($profil['student_nom']).' '.$profil['student_prenom']?></b>.</p>
+									
+									<?php if(!empty($profil['motif_suspension'])): ?>
+									<div class="mb-3 p-3 bg-orange-50 border border-orange-200 rounded-md">
+										<p class="text-sm font-medium text-orange-800 mb-1">Motif de suspension :</p>
+										<p class="text-sm text-orange-700"><?=$profil['motif_suspension']?></p>
+										<p class="text-xs text-orange-600 mt-2">
+											Du <?=date('d/m/Y', strtotime($profil['date_debut_suspension']))?> 
+											au <?=date('d/m/Y', strtotime($profil['date_fin_suspension']))?>
+										</p>
+									</div>
+									<?php endif; ?>
+									
+									<div class="mb-3">
+										<label class="block text-sm font-medium mb-1 text-slate-700">Commentaire (optionnel)</label>
+										<textarea name="commentaire_levee" rows="2" class="w-full p-2 border border-slate-300 rounded-md" placeholder="Raison de la levée de suspension..."></textarea>
+									</div>
+
+								</div>
+								<div class="flex p-3 border-t border-slate-200 justify-end gap-2">
+									<a href="#" id="cancelLeverSuspension" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-md hover:bg-slate-300">Annuler</a>
+									<button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
+										<i class="bi-person-check mr-1"></i> Confirmer la levée
+									</button>
+								</div>
+							</div>
+</form>
+						</div>
 
 							<!-- MODIF IMAGE -->
 
@@ -220,6 +327,43 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 		});
 		$('#linkSupprStd').click(function(){
 			$('#notifSupprStd').css({'display':'block'});
+		});
+		
+		// Gestion de la suspension
+		$('#linkSuspendStd').click(function(){
+			$('#notifSuspendStd').css({'display':'block'});
+		});
+		$('#cancelSuspendStd').click(function(){
+			$('#notifSuspendStd').css({'display':'none'});
+		});
+		
+		// Gestion de la levée de suspension
+		$('#linkLeverSuspension').click(function(){
+			$('#notifLeverSuspension').css({'display':'block'});
+		});
+		$('#cancelLeverSuspension').click(function(){
+			$('#notifLeverSuspension').css({'display':'none'});
+		});
+		
+		// Calcul automatique de la date de fin selon la durée choisie
+		$('#duree_predefinie').change(function(){
+			var duree = $(this).val();
+			if(duree !== '' && duree !== '0') {
+				var today = new Date();
+				today.setMonth(today.getMonth() + parseInt(duree));
+				var yyyy = today.getFullYear();
+				var mm = String(today.getMonth() + 1).padStart(2, '0');
+				var dd = String(today.getDate()).padStart(2, '0');
+				$('#date_fin_suspension').val(yyyy + '-' + mm + '-' + dd);
+			} else if(duree === '0') {
+				// Indéfini = 10 ans
+				var today = new Date();
+				today.setFullYear(today.getFullYear() + 10);
+				var yyyy = today.getFullYear();
+				var mm = String(today.getMonth() + 1).padStart(2, '0');
+				var dd = String(today.getDate()).padStart(2, '0');
+				$('#date_fin_suspension').val(yyyy + '-' + mm + '-' + dd);
+			}
 		});
 	});
 </script>

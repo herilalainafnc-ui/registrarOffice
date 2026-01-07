@@ -1,5 +1,37 @@
 
 <?php 
+	/*::::::::::::::::::::::: VÉRIFICATION SUSPENSION ::::::::::::::::::::::*/
+	
+	// Vérifier si l'étudiant est suspendu
+	$isSuspended = false;
+	if (isset($profil['suspended']) && $profil['suspended'] == 1) {
+		$dateFin = $profil['date_fin_suspension'];
+		if (empty($dateFin) || strtotime($dateFin) >= strtotime(date('Y-m-d'))) {
+			$isSuspended = true;
+		}
+	}
+	
+	if ($isSuspended) {
+?>
+<div class="mt-2 p-4 text-center">
+	<div class="bg-orange-500 text-white p-6 rounded-lg shadow-lg">
+		<i class="bi bi-exclamation-triangle-fill text-5xl"></i>
+		<h3 class="text-xl font-bold mt-3">ÉTUDIANT SUSPENDU</h3>
+		<p class="mt-2">Cet étudiant est actuellement suspendu et ne peut pas prendre de nouveaux cours.</p>
+		<?php if (!empty($profil['date_fin_suspension'])) { ?>
+			<p class="mt-2 text-sm">Fin de suspension prévue: <b><?= date('d/m/Y', strtotime($profil['date_fin_suspension'])) ?></b></p>
+		<?php } ?>
+		<?php if (!empty($profil['motif_suspension'])) { ?>
+			<p class="mt-2 text-sm bg-orange-600 p-2 rounded">Motif: <?= htmlspecialchars($profil['motif_suspension']) ?></p>
+		<?php } ?>
+	</div>
+</div>
+<?php
+		return; // Arrêter l'exécution du reste de la page
+	}
+?>
+
+<?php 
 	/*::::::::::::::::::::::: SESSION GENERATE ::::::::::::::::::::::*/
 
 		$aSs = date('Y');
