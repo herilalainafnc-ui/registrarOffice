@@ -33,6 +33,18 @@
 		$sessionCount++;
 		$session_id = $showSs['session_id'];
 		$combinAnual = $showSs['session_year'];
+		
+		// Récupérer le yearlevel depuis les notes de cette session
+		$getYearlevel = $dtb->query("SELECT yearlevel FROM t_2023_notes WHERE student_id='".$student_id."' AND session_id='".$session_id."' AND ajout='".$yes."' LIMIT 1");
+		$ylData = $getYearlevel->fetch();
+		$yearlevel = $ylData ? $ylData['yearlevel'] : 1;
+		
+		// Déterminer le niveau (Licence ou Master)
+		if ($yearlevel <= 3) {
+			$niveau_label = "Licence " . $yearlevel;
+		} else {
+			$niveau_label = "Master " . ($yearlevel - 3);
+		}
 		?>
 <div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 		<?php
@@ -44,7 +56,7 @@
 					<table class="simpleTbl mb-1">
 						<thead>
 							<tr class="text-center bg-gradient-to-r from-cyan-500">
-								<th colspan="10" id="semestre<?=$sessionCount;?>"><?=$showSs['session_name']?> - Session N*<?=$showSs['session_semester']?> | Année <?=$combinAnual?></th>
+								<th colspan="10" id="semestre<?=$sessionCount;?>"><b><?=$niveau_label?></b> | <?=$showSs['session_name']?> - Session N°<?=$showSs['session_semester']?> | Année <?=$combinAnual?></th>
 							</tr>
 						</thead>
 						<thead class="<?=$bg_one_color?> text-white">
@@ -176,17 +188,6 @@ $tcredit+= $credit + $crs['credit'];
 $tnote+= $note + $crs['grade'];
 $tnotecredit+= $notecredit + $notecredi;
 
-
-/* --- CALCULE DES NOTES MAJEURS --- */
- 
-if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur")) {
-	$gradeMaj = $crs['grade'];
-	$nbrMaj++;
-}else{
-	$gradeMaj = 0;
-}
-
-	$tTMaj += $tMaj + $gradeMaj;
 
 /* --- CALCULE DES NOTES MAJEURS --- */
  

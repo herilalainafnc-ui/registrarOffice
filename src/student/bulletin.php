@@ -1,38 +1,43 @@
 
 <div class=" mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">	
 <?php 
-	/*::::::::::::::::::::::::::::::::::::::::*/
-	if ($level > 3) {
-		$init = 4;
-	}elseif($level <= 3) {
-		$init = 1;
-	}
+	// Récupérer toutes les sessions distinctes où l'étudiant a des notes validées (>=10)
+	$searchAllSessions = $dtb->query("SELECT DISTINCT n.session_id, s.session_name, s.session_semester, s.session_year 
+		FROM t_2023_notes n 
+		INNER JOIN t_2023_session s ON n.session_id = s.session_id 
+		WHERE n.student_id = '".$student_id."' AND n.ajout = '".$yes."' AND n.grade >= 10
+		ORDER BY s.session_year ASC, s.session_semester ASC");
 
-	for ($a=$init; $a <= $level; $a++) { 
-/*::::::::::::::::::::::::::::::::::::::::*/
+	$sessionCount = 0;
+	
+	while($showSs = $searchAllSessions->fetch()){
+		$sessionCount++;
+		$session_id = $showSs['session_id'];
+		$combinAnual = $showSs['session_year'];
+		
+		// Récupérer le yearlevel depuis les notes de cette session
+		$getYearlevel = $dtb->query("SELECT yearlevel FROM t_2023_notes WHERE student_id='".$student_id."' AND session_id='".$session_id."' AND ajout='".$yes."' AND grade >= 10 LIMIT 1");
+		$ylData = $getYearlevel->fetch();
+		$yearlevel = $ylData ? $ylData['yearlevel'] : 1;
+		
+		// Déterminer le niveau (Licence ou Master)
+		if ($yearlevel <= 3) {
+			$niveau_label = "Licence " . $yearlevel;
+		} else {
+			$niveau_label = "Master " . ($yearlevel - 3);
+		}
 ?>
 	<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
-<b>
-		<?php 
-		if($a<=3) {
-			echo "NIVEAU Licence ".$a;
-			$nbrA = $a+1;
-		}else{
-			echo "NIVEAU Master ".($a-3);
-			$nbrA = $a-2;
-		}
-		?>		
-</b>	
 
 <?php	
-		for ($s=1; $s <=2 ; $s++) { 
-			
-		
+	$cours = $dtb->query("SELECT * FROM t_2023_notes WHERE student_id ='".$student_id."' AND ajout='".$yes."' AND session_id='".$session_id."' AND grade >= 10 ORDER BY id");
+	
+	if ($cours->rowCount() > 0) {
  ?>
 		<table class="simpleTbl mb-1">
 			<thead>
 				<tr class="text-center bg-gradient-to-r from-cyan-500">
-					<th colspan="10">SEMESTRE <?=$s?></th>
+					<th colspan="10"><b><?=$niveau_label?></b> | <?=$showSs['session_name']?> - Session N°<?=$showSs['session_semester']?> | Année <?=$combinAnual?></th>
 				</tr>
 			</thead>
 			<thead class="<?=$bg_one_color?> text-white">
@@ -48,8 +53,6 @@
 			</thead>
 			<tbody class="<?=$bg_four_color?>">
 	<?php
-	$cours = $dtb->query("SELECT * FROM t_2023_notes WHERE student_id ='".$student_id."' AND grade>10 AND ajout = '".$yes."' AND yearlevel='".$a."' AND semester='".$s."' ORDER BY id");
-	
 	$nbr = 0;
 	$nbrMaj = 0;
 	$credit = 0;
@@ -60,7 +63,6 @@
 	$tGen = 0;
 	$tTGen = 0;
 
-	/**/
 	$nbrFinale = 0;
 	$tFinale = 0;
 	$tTFinale = 0;
@@ -68,17 +70,13 @@
 	$tMaj = 0;
 	$tTMaj = 0;
 	$tcredit = 0;
-	/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 	$tcreditMaj = 0;
-	/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 	$tnote = 0;
 	$tnotecredit = 0;
 	
-	if($cours->rowCount() > 0) {
-		while ($crs = $cours->fetch()) {
-			$note_id = $crs['id'];
-			$session_id = $crs['session_id'];
-			$annee_scolaire = $crs['annee_scolaire'];
+	while ($crs = $cours->fetch()) {
+		$note_id = $crs['id'];
+		$annee_scolaire = $crs['annee_scolaire'];
 	 ?>
 				<tr class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black">
 					<td class="bg-gradient-to-r from-orange-800 to-orange-400"><?=$crs['Sigle']?></td>
@@ -102,21 +100,7 @@ if ($crs['cours_category'] == 0){
 					<td><?=$crs['grade']?></td>
 					<td><?=$notecredi = $crs['credit'] * $crs['grade']?></td>
 					
-					<td class="<?php 
-if ($crs['grade'] < 10) {
-	echo "bg-red-500";
-}else{
-	echo "bg-green-500";
-}
-
-					 ?> text-center"><?php 
-if ($crs['grade'] < 10) {
-	echo "E";
-}elseif ($crs['grade'] == -2 OR $crs['grade'] >= 10){
-	echo "S";
-}
-
-							 ?></td>
+					<td class="bg-green-500 text-center" title="Succès">S</td>
 <?php 
 	if ($crs['cours_category'] == 1) {
 		$valmajeur = $crs['grade'];
@@ -131,25 +115,21 @@ if ($crs['grade'] < 10) {
 	<?php
 $credit = 0;
 $notes = 0;
-/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 $creditMaj = 0;
-/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-$tcredit+= $credit + $crs['credit'];
-/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur")) {
 
+$tcredit+= $credit + $crs['credit'];
+
+if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur")) {
 	$tcreditMaj+=$creditMaj+ $crs['credit'];
 	$nbrMaj++;
-
 }else{
 	$tcreditMaj+=$creditMaj+ 0;
 }
-/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+
 $tnote+= $note + $crs['grade'];
 $tnotecredit+= $notecredit + $notecredi;
 
 /* --- CALCULE DES NOTES GENERAL --- */
-
 if (($crs['cours_category'] == 0) OR ($crs['cours_category'] == "Général")) {
 	$gradeGen = $crs['grade'];
 	$nbrGen++;
@@ -159,35 +139,29 @@ if (($crs['cours_category'] == 0) OR ($crs['cours_category'] == "Général")) {
 	$tTGen += $tGen + $gradeGen;
 
 /* --- CALCULE DES NOTES MAJEURS --- */
- 
 if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur")) {
 	$gradeMaj = $notecredi;
-	$nbrMaj++;
 }else{
 	$gradeMaj = 0;
 }
-
 	$tTMaj += $tMaj + $gradeMaj;
 
 /* --- CALCULE DES NOTES FINALES --- */
- 
 if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($crs['cours_category'] == 0) OR ($crs['cours_category'] == "Général")) {
 	$gradeFinale = $crs['grade'];
 	$nbrFinale++;
 }else{
 	$gradeFinale = 0;
 }
-
 	$tTFinale += $tFinale + $gradeFinale;
 
-		$nbr++;
-		}
+	$nbr++;
 	}
 	 ?>			
 			</tbody>
 			<tfoot class="<?=$bg_one_color?> text-white">
 				<tr>
-					<th colspan="2"><?=$nbr?> cours</th>
+					<th colspan="2"><?=$nbr?> cours validés</th>
 					<th><?php if(!empty($tcredit)) { echo $tcredit;}?></th>
 					<th></th>
 					<th><?php if(($nbr-1)<1){echo 0;}else{echo round($tnote,2);}?></th>
@@ -196,7 +170,6 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 				</tr>
 
 <?php
-	
 	if(!empty($session_id)){
 		$searchPromotion = $dtb->query('SELECT * FROM t_2023_promotion_notes WHERE student_id = "'.$student_id.'" AND session_id = "'.$session_id.'"');
 		$showPromotion = $searchPromotion->fetch();
@@ -230,36 +203,26 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
  ?>
 				<tr>
 					<th colspan="4" class="text-right">Moyenne Majeur</th>
-					<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-					<th class="px-2"><?php if($nbrMaj != 0){echo round(($moyenMajSem = ($tTMaj/$tcreditMaj)),6);}else{echo 0;$moyenMajSem =0;}?></th>
-					<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+					<th class="px-2"><?php if($nbrMaj != 0 && $tcreditMaj != 0){echo round(($moyenMajSem = ($tTMaj/$tcreditMaj)),2);}else{echo 0;$moyenMajSem =0;}?></th>
 				</tr>
 				
-				<!--  -->
 				<tr>
 					<th colspan="4" class="text-right">Moyenne Générale</th>
-					<th class="px-2 bg-cyan-700"><?php if($nbr != 0){echo round(($moyenGenSem = $tnotecredit/$tcredit),6);}else{echo 0;$moyenGenSem =0;}?></th>
+					<th class="px-2 bg-cyan-700"><?php if($nbr != 0 && $tcredit != 0){echo round(($moyenGenSem = $tnotecredit/$tcredit),2);}else{echo 0;$moyenGenSem =0;}?></th>
 				</tr>
 
-
-				<!-- <tr>
-					<th colspan="4" class="text-right">Moyenne Générale</th>
-					<th><?php if($nbrGen != 0){echo $moyenGenSem = round(($tTGen/$nbrGen),2);}else{echo 0;}?></th>
-				</tr>
-				<tr>
-					<th colspan="4" class="text-right">Moyenne Majeur</th>
-					<th><?php if($nbrMaj != 0){echo $moyenMajSem = round(($tTMaj/$nbrMaj),2);}else{echo 0;}?></th>
-				</tr>
-				<tr>
-					<th colspan="4" class="text-right">Moyenne</th>
-					<th class="bg-cyan-700"><?php if($nbrFinale != 0){echo $moyenFinale = round(($tTFinale/$nbrFinale),2);}else{echo 0;$moyenFinale =0;}?></th>
-				</tr> -->
 			</tfoot>
 
 		</table>
 <?php
-		}
-	echo "</div>";
+	}
+?>
+	</div>
+<?php
+	}
+	
+	if($sessionCount == 0) {
+		echo '<div class="text-center text-slate-400 py-8"><i class="bi bi-inbox text-4xl"></i><p class="mt-2">Aucun cours validé trouvé</p></div>';
 	}
 ?>
 </div>

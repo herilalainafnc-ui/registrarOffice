@@ -32,11 +32,13 @@
 				</div>
 
 				<div class="w-6/12">
-					<label>Semestre</label>	
+					<label>Session</label>	
 					<select name="semester" id="semesterBulletin">
-						<option value="all">les Deux</option>
-						<option value="1">Semestre 1</option>
-						<option value="2">Semestre 2</option>
+						<option value="all">Toutes les sessions</option>
+						<option value="1">Session 1</option>
+						<option value="2">Session 2</option>
+						<option value="3">Session 3</option>
+						<option value="4">Session 4</option>
 					</select>
 				</div>
 
@@ -204,11 +206,13 @@ if (date('m')>7) {
 				</div>
 
 				<div class="w-6/12">
-					<label>Semestre</label>	
+					<label>Session</label>	
 					<select name="semester" id="semesterTranscriptSS">
-						<option value="all">les Deux</option>
-						<option value="1">Semestre 1</option>
-						<option value="2">Semestre 2</option>
+						<option value="all">Toutes les sessions</option>
+						<option value="1">Session 1</option>
+						<option value="2">Session 2</option>
+						<option value="3">Session 3</option>
+						<option value="4">Session 4</option>
 					</select>
 				</div>
 
@@ -216,7 +220,7 @@ if (date('m')>7) {
 			<div class="p-3">
 				<center>
 				<a href="#" id="cancelnotifTranscriptSS" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
-				<a href="./data.topdf.php?student_id=<?=$student_id?>&annee_scolaire=<?=$annee_scolaire?>&std_niveau=<?=$level?>&ptype=TranscriptSS&level=all&semester=all" id="showTranscriptSS" target="_blank" class="bg-cyan-800 p-2 rounded-md text-white mx-1">Afficher</a>
+				<a href="./data.topdf.php?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=TranscriptSS&level=all&semester=all" id="showTranscriptSS" target="_blank" class="bg-cyan-800 p-2 rounded-md text-white mx-1">Afficher</a>
 				</center>	
 			</div>
 		</div>
@@ -330,7 +334,13 @@ if (date('m')>7) {
 		$('#levelTranscriptSS').on('change',function(){
 			level = $(this).val();
 			semester = $('#semesterTranscriptSS').val();
-			$('#showTranscriptSS').attr('href','./data.topdf.php?student_id=<?=$student_id?>&annee_scolaire=<?=$annee_scolaire?>&std_niveau=<?=$level?>&ptype=TranscriptSS&level='+level+'&semester='+semester);
+			$('#showTranscriptSS').attr('href','./data.topdf.php?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=TranscriptSS&level='+level+'&semester='+semester);
+		});
+
+		$('#semesterTranscriptSS').on('change',function(){
+			semester = $(this).val();
+			level = $('#levelTranscriptSS').val();
+			$('#showTranscriptSS').attr('href','./data.topdf.php?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=TranscriptSS&level='+level+'&semester='+semester);
 		});
 
 		$('#semesterTranscript').on('change',function(){

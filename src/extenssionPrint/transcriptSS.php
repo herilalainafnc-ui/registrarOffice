@@ -1,20 +1,14 @@
 <?php
 	require('../init/.forPrint/top.forPrint.php'); 
-	$annee_scolaire = $_GET['annee_scolaire'];
-	$level = intval($_GET['level']);
-	$semester = $_GET['semester'];
+	$level = isset($_GET['level']) ? $_GET['level'] : 'all';
+	$semester = isset($_GET['semester']) ? $_GET['semester'] : 'all';
 	$student_id = $_GET['student_id'];
 	$yes = 1;
-	$initA = 1;
-	$initS = 1;
 	$printName = $student_id."-TRANSCRIPT_SESSION";
 
 	$searchStd = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'"');
-
 	$stdA = $searchStd->fetch();
-	
-	
-		?>
+?>
 <div class="mb-24">
 	<center>
 		<b class="text-2xl">Transcript par Session</b>
@@ -36,7 +30,13 @@
 				<b><?=strtoupper($stdA['student_nom'])." ".$stdA['student_prenom']?></b><br>
 				<b><?=$stdA['etude_envisage']?></b><br>
 				<b><?=$stdA['etude_option']?></b><br>
-				<b>L<?=$stdA['annee_etude']?></b><br>
+				<b><?php 
+					if($stdA['annee_etude'] <= 3) {
+						echo "Licence ".$stdA['annee_etude'];
+					} else {
+						echo "Master ".($stdA['annee_etude'] - 3);
+					}
+				?></b><br>
 				<b><?=$stdA['student_email']?></b>
 				<b>/ <?=$stdA['student_tel']?></b><br>
 				<b><?=$stdA['student_adresse']?></b>
@@ -48,15 +48,11 @@
 	</div><br>
 
 <?php
-	$anual = substr($annee_scolaire, 0, 4);
-
 	$workNote = 0;
 	$remarkAcad = 0;
 	$chapel = 0;
 	$gen = 0;
 	$maj = 0;
-	
-	/**/ 
 	$finale = 0;
 
 	$cumulWorkNote = 0;
@@ -64,250 +60,260 @@
 	$cumulChapel = 0;
 	$cumulGen = 0;
 	$cumulMaj = 0;
-	
-	/**/
 	$cumulFinale = 0;
+	$cumulCredit = 0;
+	$cumulNoteCredit = 0;
+	
+	// Récapitulatif général
+	$totalCoursValides = 0;
+	$totalCoursEchoues = 0;
+	$totalCreditsValides = 0;
+	$totalCreditsEchoues = 0;
+	$totalCours = 0;
 
-	$beginAnual = $anual - $level;
-
-		for ($i=1; $i <= ($level+1); $i++) {
-
-
-		$combinAnual = $beginAnual." - ".$beginAnual+1;
-
-			$searchSession = $dtb->query('SELECT * FROM t_2023_session WHERE session_year="'.$combinAnual.'"');
-			while($showSs = $searchSession->fetch()){
-				$session_id = $showSs['session_id'];
-
-				$cours = $dtb->query("SELECT * FROM t_2023_notes WHERE student_id ='".$student_id."' AND ajout='".$yes."' AND session_id='".$session_id."' ORDER BY id");
-
-				if ($cours->rowCount() > 0) {
-					?>
-					<b></b>
-					<table class="tbl mb-1" style="page-break-inside: avoid;">
-						<thead>
-							<tr class="text-center bg-slate-500 text-white">
-								<th colspan="10" id="semestre<?=$a.$s;?>"><?=$showSs['session_name']?> - Session N*<?=$showSs['session_semester']?> | Année <?=$combinAnual?></th>
-							</tr>
-						</thead>
-						<thead class="bg-slate-200">
-							<tr>
-								<th style="width: 100px">Sigle</th>
-								<th style="width: 400px">Titre du cours</th>
-								<th style="width: 50px">Crédits</th>
-								<th style="width: 50px">Catégorie</th>
-								<th style="width: 50px">Notes/20</th>
-								<th style="width: 50px">Crd*Not</th>
-								<th style="width: 30px">État</th>
-							</tr>
-						</thead>	
-					<?php
-$nbr = 0;
-$nbrMaj = 0;
-$credit = 0;
-$note = 0;
-$notecredit = 0;
-
-$nbrGen = 0;
-$tGen = 0;
-$tTGen = 0;
-
-/**/
-$nbrFinale = 0;
-$tFinale = 0;
-$tTFinale = 0;
-
-$tMaj = 0;
-$tTMaj = 0;
-$tcredit = 0;
-$tnote = 0;
-$tnotecredit = 0;				
-					while($crs=$cours->fetch()){
-						if (!empty($crs)) {
-							?>
-							<tbody>
-								
-				<tr id="note<?=$s.$nbr;?>">
-					<td><?=$crs['Sigle']?></td>
-					<td><?=$crs['title_cours']?></td>
-					<td><?=$crs['credit']?></td>
-					<td><?php 
-if ($crs['cours_category'] == 0){
-	echo "Général";
-}elseif ($crs['cours_category'] == 1) {
-	echo "Majeur";
-}elseif ($crs['cours_category'] == -1 OR $crs['cours_category'] == 2) {
-	echo "Selective";
-}elseif ($crs['cours_category'] == 3) {
-	echo "Additionnel";
-}elseif ($crs['cours_category'] == 5) {
-	echo "``";
-}else{
-	echo "-";
-}
-						 ?></td>
-					<td><?=$crs['grade']?></td>
-					<td><?=$notecredi = $crs['credit'] * $crs['grade']?></td>
-					
-					<td class="text-center"><?php 
-if ($crs['grade'] == -2 OR $crs['grade'] > 10) {
-	echo "S";
-}elseif($crs['grade'] < 10 and $crs['grade'] > 0){
-	echo "E";
-}elseif ($crs['grade'] == 0){
-	echo "";
-}
-
-							 ?></td>					
-
-<?php 
-	if ($crs['cours_category'] == 1) {
-		$valmajeur = $crs['grade'];
-		$ident = 1;
-	}else {
-		$valmajeur = 0;
-		$ident = 0;
+	// Construire la requête avec filtres optionnels
+	$sqlWhere = "WHERE n.student_id = '".$student_id."' AND n.ajout = '".$yes."'";
+	
+	// Filtre par niveau
+	if ($level != 'all' && is_numeric($level)) {
+		$sqlWhere .= " AND n.yearlevel = '".$level."'";
+	}
+	
+	// Filtre par semestre de session
+	if ($semester != 'all' && is_numeric($semester)) {
+		$sqlWhere .= " AND s.session_semester = '".$semester."'";
 	}
 
- ?>
-				</tr>
-</form>
-<?php
+	// Récupérer toutes les sessions distinctes où l'étudiant a des notes
+	$searchAllSessions = $dtb->query("SELECT DISTINCT n.session_id, s.session_name, s.session_semester, s.session_year 
+		FROM t_2023_notes n 
+		INNER JOIN t_2023_session s ON n.session_id = s.session_id 
+		".$sqlWhere." 
+		ORDER BY s.session_year ASC, s.session_semester ASC");
 
-$credit = 0;
-$notes = 0;
-$tcredit+= $credit + $crs['credit'];
-$tnote+= $note + $crs['grade'];
-$tnotecredit+= $notecredit + $notecredi;
+	$sessionCount = 0;
+	
+	while($showSs = $searchAllSessions->fetch()){
+		$sessionCount++;
+		$session_id = $showSs['session_id'];
+		$combinAnual = $showSs['session_year'];
+		
+		// Récupérer le yearlevel depuis les notes de cette session
+		$getYearlevel = $dtb->query("SELECT yearlevel FROM t_2023_notes WHERE student_id='".$student_id."' AND session_id='".$session_id."' AND ajout='".$yes."' LIMIT 1");
+		$ylData = $getYearlevel->fetch();
+		$yearlevel = $ylData ? $ylData['yearlevel'] : 1;
+		
+		// Déterminer le niveau (Licence ou Master)
+		if ($yearlevel <= 3) {
+			$niveau_label = "Licence " . $yearlevel;
+		} else {
+			$niveau_label = "Master " . ($yearlevel - 3);
+		}
 
+		$cours = $dtb->query("SELECT * FROM t_2023_notes WHERE student_id ='".$student_id."' AND ajout='".$yes."' AND session_id='".$session_id."' ORDER BY id");
 
-/* --- CALCULE DES NOTES MAJEURS --- */
- 
-if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur")) {
-	$gradeMaj = $crs['grade'];
-	$nbrMaj++;
-}else{
-	$gradeMaj = 0;
-}
-
-	$tTMaj += $tMaj + $gradeMaj;
-
-/* --- CALCULE DES NOTES MAJEURS --- */
- 
-if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur")) {
-	$gradeMaj = $crs['grade'];
-	$nbrMaj++;
-}else{
-	$gradeMaj = 0;
-}
-
-	$tTMaj += $tMaj + $gradeMaj;
-
-/* --- CALCULE DES NOTES FINALES --- */
- 
-if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($crs['cours_category'] == 0) OR ($crs['cours_category'] == "Général")) {
-	$gradeFinale = $crs['grade'];
-	$nbrFinale++;
-}else{
-	$gradeFinale = 0;
-}
-
-	$tTFinale += $tFinale + $gradeFinale;
-
-	 ?>		
-
-							</tbody>
-							<?php
-						}
-						$nbr++;
-					}
+		if ($cours->rowCount() > 0) {
+			?>
+			<table class="tbl mb-1" style="page-break-inside: avoid;">
+				<thead>
+					<tr class="text-center bg-slate-500 text-white">
+						<th colspan="10"><b><?=$niveau_label?></b> | <?=$showSs['session_name']?> - Session N°<?=$showSs['session_semester']?> | Année <?=$combinAnual?></th>
+					</tr>
+				</thead>
+				<thead class="bg-slate-200">
+					<tr>
+						<th style="width: 100px">Sigle</th>
+						<th style="width: 400px">Titre du cours</th>
+						<th style="width: 50px">Crédits</th>
+						<th style="width: 50px">Catégorie</th>
+						<th style="width: 50px">Notes/20</th>
+						<th style="width: 50px">Crd*Not</th>
+						<th style="width: 30px">État</th>
+					</tr>
+				</thead>	
+			<?php
+			$nbr = 0;
+			$nbrMaj = 0;
+			$tcredit = 0;
+			$tcreditMaj = 0;
+			$tnote = 0;
+			$tnotecredit = 0;
+			$tTMaj = 0;
+			
+			// Compteurs pour session
+			$coursValides = 0;
+			$coursEchoues = 0;
+			$creditsValides = 0;
+			$creditsEchoues = 0;
+			
+			while($crs = $cours->fetch()){
+				$notecredi = $crs['credit'] * $crs['grade'];
 				?>
-<tfoot>
+				<tbody>
+					<tr>
+						<td><?=$crs['Sigle']?></td>
+						<td><?=$crs['title_cours']?></td>
+						<td><?=$crs['credit']?></td>
+						<td><?php 
+							if ($crs['cours_category'] == 0){
+								echo "Général";
+							}elseif ($crs['cours_category'] == 1) {
+								echo "Majeur";
+							}elseif ($crs['cours_category'] == -1 OR $crs['cours_category'] == 2) {
+								echo "Selective";
+							}elseif ($crs['cours_category'] == 3) {
+								echo "Additionnel";
+							}elseif ($crs['cours_category'] == 5) {
+								echo "``";
+							}else{
+								echo "-";
+							}
+						?></td>
+						<td><?=$crs['grade']?></td>
+						<td><?=$notecredi?></td>
+						<td class="text-center"><?php 
+							if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
+								echo "S";
+								$coursValides++;
+								$creditsValides += $crs['credit'];
+							}elseif($crs['grade'] < 10 and $crs['grade'] > 0){
+								echo "E";
+								$coursEchoues++;
+								$creditsEchoues += $crs['credit'];
+							}elseif ($crs['grade'] == 0){
+								echo "";
+							}
+						?></td>					
+					</tr>
+				</tbody>
+				<?php
+				$tcredit += $crs['credit'];
+				$tnote += $crs['grade'];
+				$tnotecredit += $notecredi;
+				
+				// Calcul majeur (même logique que page web)
+				if ($crs['cours_category'] == 1) {
+					$tTMaj += $crs['grade'];
+					$nbrMaj++;
+				}
+				
+				$nbr++;
+			}
+			
+			// Calcul des moyennes (même formule que page web)
+			$moyenGenSem = ($tcredit > 0) ? round($tnotecredit / $tcredit, 2) : 0;
+			$moyenMajSem = ($nbrMaj > 0) ? round($tTMaj / $nbrMaj, 2) : 0;
+			
+			// Ajout aux totaux généraux
+			$totalCoursValides += $coursValides;
+			$totalCoursEchoues += $coursEchoues;
+			$totalCreditsValides += $creditsValides;
+			$totalCreditsEchoues += $creditsEchoues;
+			$totalCours += $nbr;
+			?>
+			<tfoot>
 				<tr>
 					<th colspan="2"><?=$nbr?> cours</th>
-					<th><?php if(!empty($tcredit)) { echo $tcredit;}?></th>
+					<th><?=$tcredit?></th>
 					<th></th>
-					<th class="px-2"><?php if(($nbr-1)<1){echo 0;}else{echo round($tnote,2);}?></th>
-					<th><?php if(($nbr-1)<1){echo 0;}else{echo round($tnotecredit,2);}?></th>
-					<th colspan="2"></th>
+					<th class="px-2"><?=round($tnote, 2)?></th>
+					<th><?=round($tnotecredit, 2)?></th>
+					<th></th>
 				</tr>
-
-<form method="post" action="../app/updatePromotionNote.php?id=<?=$id;?>&session_id=<?=$session_id?>&student_id=<?=$student_id;?>&nbr=<?=$s.$nbr;?>&a=<?=$a?>&s=<?=$s?>&annee_scolaire=<?=$annee_scolaire?>&user_id=<?=$rg_id?>" enctype="multipart/form-data" class="form-no-refrech">
-<?php
-	
-	if(!empty($session_id)){
-		$searchPromotion = $dtb->query('SELECT * FROM t_2023_promotion_notes WHERE student_id = "'.$student_id.'" AND session_id = "'.$session_id.'"');
-		$showPromotion = $searchPromotion->fetch();
-		if (!empty($showPromotion)) {
-			$grade_work_educ = $showPromotion['grade_work_educ'];
-			$grade_remark_acad = $showPromotion['grade_remark_acad'];
-			$grade_chapel_part = $showPromotion['grade_chapel_part'];
-		}else{
-			$grade_work_educ = "";
-			$grade_remark_acad = "";
-			$grade_chapel_part = "";
-		}
- ?>
-
+				<?php
+				if(!empty($session_id)){
+					$searchPromotion = $dtb->query('SELECT * FROM t_2023_promotion_notes WHERE student_id = "'.$student_id.'" AND session_id = "'.$session_id.'"');
+					$showPromotion = $searchPromotion->fetch();
+					$grade_work_educ = !empty($showPromotion) ? $showPromotion['grade_work_educ'] : "";
+					$grade_remark_acad = !empty($showPromotion) ? $showPromotion['grade_remark_acad'] : "";
+					$grade_chapel_part = !empty($showPromotion) ? $showPromotion['grade_chapel_part'] : "";
+				?>
 				<tr class="text-right">
 					<td colspan="4">Note de Work Education</td>
-					<td class="text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_work_educ" value="<?=$grade_work_educ?>"></td>
+					<td class="text-left"><?=$grade_work_educ?></td>
 				</tr>
-
 				<tr class="text-right">
 					<td colspan="4">Remarque académique</td>
-					<td class="text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_remark_acad" value="<?=$grade_remark_acad?>"></td>
+					<td class="text-left"><?=$grade_remark_acad?></td>
 				</tr>
-
 				<tr class="text-right">
 					<td colspan="4">Note de participation à l'exercice de chapelle et à la semaine de prière</td>
-					<td class="text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_chapel_part" value="<?=$grade_chapel_part?>"></td>
+					<td class="text-left"><?=$grade_chapel_part?></td>
 				</tr>
-
-				<button type="submit" class="hidden"></button>
-</form>		
-<?php 
-	}
- ?>
-				
-				<tr>
-					<th colspan="4" class="text-right">Moyenne Générale</th>
-					<th class="px-2"><?php if($nbrGen != 0){echo $moyenGenSem = round(($tTGen/$nbrGen),2);}else{echo 0;$moyenGenSem =0;}?></th>
-				</tr>
+				<?php 
+				}
+				?>
 				<tr>
 					<th colspan="4" class="text-right">Moyenne Majeur</th>
-					<th class="px-2"><?php if($nbrMaj != 0){echo $moyenMajSem = round(($tTMaj/$nbrMaj),2);}else{echo 0;}?></th>
+					<th class="px-2"><?=$moyenMajSem?></th>
 				</tr>
-				<!--  -->
 				<tr>
-					<th colspan="4" class="text-right">Moyenne</th>
-					<th class="px-2 bg-cyan-700 text-white"><?php if($nbrFinale != 0){echo $moyenFinale = round(($tTFinale/$nbrFinale),2);}else{echo 0;$moyenFinale =0;}?></th>
+					<th colspan="4" class="text-right">Moyenne Générale</th>
+					<th class="px-2 bg-cyan-700 text-white"><?=$moyenGenSem?></th>
+				</tr>
+				<!-- Récapitulatif de la session -->
+				<tr class="bg-slate-100">
+					<th colspan="7" class="text-left text-xs p-1">
+						<b>Récapitulatif :</b> 
+						<?=$nbr?> cours | 
+						<span class="text-green-700"><?=$coursValides?> validé(s) (<?=$creditsValides?> crédits)</span> | 
+						<span class="text-red-700"><?=$coursEchoues?> échoué(s) (<?=$creditsEchoues?> crédits)</span> | 
+						Total : <?=$tcredit?> crédits
+					</th>
 				</tr>
 			</tfoot>
-							
-					</table>
-				<?php
-				if (!empty($grade_work_educ) or !empty($grade_remark_acad) or !empty($grade_chapel_part)) {
-			$cumulWorkNote += $workNote + $grade_work_educ;
-			$cumulremarkAcad += $remarkAcad + $grade_remark_acad;
-			$cumulChapel += $chapel + $grade_chapel_part;
+			</table>
+			<?php
+			// Cumuls
+			if (!empty($grade_work_educ)) $cumulWorkNote += floatval($grade_work_educ);
+			if (!empty($grade_chapel_part)) $cumulChapel += floatval($grade_chapel_part);
+			$cumulMaj += $moyenMajSem;
+			$cumulGen += $moyenGenSem;
+			$cumulCredit += $tcredit;
+			$cumulNoteCredit += $tnotecredit;
 		}
-		
-		$cumulGen += $gen + $moyenGenSem;
-		$cumulMaj += $maj + $moyenMajSem;
-		
-		/**/
-		$cumulFinale += $finale + $moyenFinale;
-				}
-			}
-
-		$beginAnual++;
-		?>
-</div>
-		<?php
 	}
+	
+	if($sessionCount == 0) {
+		echo '<div class="text-center py-8"><p>Aucune session trouvée pour cet étudiant.</p></div>';
+	} else {
+		// Moyenne cumulative
+		$moyenneCumulative = ($cumulCredit > 0) ? round($cumulNoteCredit / $cumulCredit, 2) : 0;
+		$tauxReussite = ($totalCours > 0) ? round(($totalCoursValides / $totalCours) * 100, 1) : 0;
+?>
 
-	?>
+<!-- RÉCAPITULATIF GÉNÉRAL -->
+<div class='p-2 mb-4 rounded-md text-xs' style="border: 2px solid #334155; background: #f1f5f9;">
+	<b class="text-sm">RÉCAPITULATIF GÉNÉRAL</b>
+	<table class="mb-1 w-full" style="page-break-inside: avoid;">
+		<tbody>
+			<tr>
+				<td class="p-1 w-6/12">Nombre total de sessions</td>
+				<td class="px-2 w-6/12 font-bold"><?=$sessionCount?></td>
+			</tr>
+			<tr>
+				<td class="p-1 w-6/12">Nombre total de cours</td>
+				<td class="px-2 w-6/12 font-bold"><?=$totalCours?></td>
+			</tr>
+			<tr>
+				<td class="p-1 w-6/12 text-green-700">Cours validés (Succès)</td>
+				<td class="px-2 w-6/12 font-bold text-green-700"><?=$totalCoursValides?> cours (<?=$totalCreditsValides?> crédits)</td>
+			</tr>
+			<tr>
+				<td class="p-1 w-6/12 text-red-700">Cours échoués (Échec)</td>
+				<td class="px-2 w-6/12 font-bold text-red-700"><?=$totalCoursEchoues?> cours (<?=$totalCreditsEchoues?> crédits)</td>
+			</tr>
+			<tr>
+				<td class="p-1 w-6/12">Total des crédits</td>
+				<td class="px-2 w-6/12 font-bold"><?=$cumulCredit?> crédits</td>
+			</tr>
+			<tr>
+				<td class="p-1 w-6/12">Taux de réussite</td>
+				<td class="px-2 w-6/12 font-bold <?=($tauxReussite >= 50) ? 'text-green-700' : 'text-red-700'?>"><?=$tauxReussite?>%</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
 
 <div class='p-1 mb-4 rounded-md border-1 border-slate-600 text-xs'>
 	<b>MOYENNE CUMULATIVE</b>
@@ -315,35 +321,29 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 		<tbody>
 			<tr>
 				<td class="text-xs p-1 w-8/12 text-right">Note de Work Education cumulative</td>
-				<td class="text-xs px-2 w-2/12 text-bold"><?=round(($cumulWorkNote*20)/((($i-1)*2)*20),2);?></td>
+				<td class="text-xs px-2 w-2/12 text-bold"><?=($sessionCount > 0) ? round($cumulWorkNote / $sessionCount, 2) : 0?></td>
 			</tr>
-			<!-- <tr>
-				<td class="p-1 w-8/12 text-right">Nemarque académique cumulative</td>
-				<td class="px-2 w-2/12 text-bold"><?=round(($cumulremarkAcad*20)/((($i-1)*2)*20),2);?></td>
-			</tr> -->
 			<tr>
 				<td class="text-xs p-1 w-8/12 text-right">Note de participation à l'exercice de chapelle et à la semaine de prière cumulative</td>
-				<td class="text-xs px-2 w-2/12 text-bold"><?=round(($cumulChapel*20)/((($i-1)*2)*20),2);?></td>
+				<td class="text-xs px-2 w-2/12 text-bold"><?=($sessionCount > 0) ? round($cumulChapel / $sessionCount, 2) : 0?></td>
 			</tr>
 		</tbody>
 	</table>
 	<table class="mb-1 w-full" style="page-break-inside: avoid;">
 		<thead>
 			<tr>
-				<th class="text-xs p-1 w-8/12 text-right">Moyenne Générale Cumulative</th>
-				<th class="text-xs py-1 px-2 w-2/12"><?=round(($cumulGen*20)/((($i-1)*2)*20),2);?></th>
-			</tr>
-			<tr>
 				<th class="text-xs p-1 w-8/12 text-right">Moyenne Majeur Cumulative</th>
-				<th class="text-xs py-1 px-2 w-2/12"><?=round(($cumulMaj*20)/((($i-1)*2)*20),2);?></th>
+				<th class="text-xs py-1 px-2 w-2/12"><?=($sessionCount > 0) ? round($cumulMaj / $sessionCount, 2) : 0?></th>
 			</tr>
-			
-			<!--  -->
 			<tr>
-				<th class="text-xs p-1 w-8/12 text-right bg-cyan-700">Moyenne Cumulative</th>
-				<th class="text-xs py-1 px-2 w-2/12 bg-cyan-700  text-white"><?=round(($cumulFinale*20)/((($i-1)*2)*20),2);?></th>
+				<th class="text-xs p-1 w-8/12 text-right bg-cyan-700">Moyenne Générale Cumulative</th>
+				<th class="text-xs py-1 px-2 w-2/12 bg-cyan-700 text-white"><?=$moyenneCumulative?></th>
 			</tr>
 		</thead>
 	</table>
+</div>
+<?php
+	}
+?>
 </div>
 <?php require('../init/.forPrint/foot.forPrint.php'); ?>
