@@ -272,7 +272,7 @@
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-trophy-fill menu-icon"></i>
 				</div>
-				<span class="menu-title">Dean's List</span>
+				<span class="menu-title">Meilleurs Étudiants</span>
 			</a>
 		</div>
 		

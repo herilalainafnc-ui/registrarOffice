@@ -186,11 +186,12 @@
         $offset = ($page - 1) * $limit;
         
         // Compter le nombre total d'années disponibles
-        $countAnnees = $dtb->query('SELECT COUNT(DISTINCT annee_scolaire) as total FROM t_2023_notes WHERE annee_scolaire IS NOT NULL');
+        $countAnnees = $dtb->query('SELECT COUNT(DISTINCT session_year) as total FROM t_2023_session WHERE session_year IS NOT NULL');
         $totalAnnees = $countAnnees->fetch()['total'];
         $totalPages = ceil($totalAnnees / $limit);
         
-        $annees = $dtb->query("SELECT DISTINCT annee_scolaire FROM t_2023_notes WHERE annee_scolaire IS NOT NULL ORDER BY annee_scolaire DESC LIMIT $limit OFFSET $offset");
+        // Récupérer les années distinctes depuis t_2023_session
+        $annees = $dtb->query("SELECT DISTINCT session_year FROM t_2023_session WHERE session_year IS NOT NULL ORDER BY session_year DESC LIMIT $limit OFFSET $offset");
         $mentions_list = $dtb->query('SELECT DISTINCT filiere_description, filiere_sigle FROM filiere ORDER BY filiere_sigle');
         $all_mentions = $mentions_list->fetchAll(PDO::FETCH_ASSOC);
         
@@ -200,8 +201,12 @@
         ];
         
         while ($annee = $annees->fetch()) {
-            $annee_scolaire = $annee['annee_scolaire'];
+            $annee_scolaire = $annee['session_year'];
             if (empty($annee_scolaire)) continue;
+            
+            // Récupérer les sessions de cette année
+            $sessions = $dtb->query("SELECT session_id, session_name, session_semester FROM t_2023_session WHERE session_year = '".$annee_scolaire."' ORDER BY session_semester ASC");
+            $all_sessions = $sessions->fetchAll(PDO::FETCH_ASSOC);
         ?>
         
         <!-- Année Card -->
@@ -233,13 +238,17 @@
                     </div>
                     
                     <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                        <?php for ($sem = 1; $sem <= 2; $sem++): ?>
+                        <?php foreach ($all_sessions as $session): 
+                            $session_id = $session['session_id'];
+                            $session_name = $session['session_name'];
+                            $session_semester = $session['session_semester'];
+                        ?>
                         
-                        <!-- Semester Card -->
+                        <!-- Session Card -->
                         <div class="semester-card overflow-hidden">
                             <div class="semester-header px-4 py-3 flex items-center gap-2">
                                 <i class="bi bi-collection text-blue-400/80"></i>
-                                <span class="text-sm font-medium text-slate-300">Semestre <?= $sem ?></span>
+                                <span class="text-sm font-medium text-slate-300"><?= $session_name ?> (S<?= $session_semester ?>)</span>
                             </div>
                             
                             <div class="p-3 space-y-2">
@@ -250,6 +259,8 @@
                                     $etude_envisage = $mention['filiere_description'];
                                     $sigle = $mention['filiere_sigle'];
                                     
+                                    // Requête basée sur session_id comme dans transcriptSS.php
+                                    // Moyenne = SUM(credit * grade) / SUM(credit)
                                     $query = "
                                         SELECT 
                                             e.id,
@@ -258,11 +269,13 @@
                                             e.student_prenom,
                                             e.annee_etude,
                                             e.image_student,
+                                            SUM(n.credit) as total_credits,
+                                            SUM(n.credit * n.grade) as total_points,
                                             ROUND(SUM(n.credit * n.grade) / SUM(n.credit), 2) as moyenne
                                         FROM t_2023_notes n
                                         INNER JOIN tbl_2024_etudiant e ON n.student_id = e.student_id
-                                        WHERE n.annee_scolaire = :annee_scolaire
-                                        AND n.semester = :semester
+                                        WHERE n.session_id = :session_id
+                                        AND n.ajout = 1
                                         AND n.grade > 0
                                         AND n.remove = 0
                                         AND e.remove != 1
@@ -277,8 +290,7 @@
                                     
                                     $stmt = $dtb->prepare($query);
                                     $stmt->execute([
-                                        ':annee_scolaire' => $annee_scolaire,
-                                        ':semester' => $sem,
+                                        ':session_id' => $session_id,
                                         ':etude_envisage' => $etude_envisage,
                                         ':niveau_min' => $cycle['min'],
                                         ':niveau_max' => $cycle['max']
@@ -344,7 +356,7 @@
                             </div>
                         </div>
                         
-                        <?php endfor; ?>
+                        <?php endforeach; ?>
                     </div>
                 </div>
                 

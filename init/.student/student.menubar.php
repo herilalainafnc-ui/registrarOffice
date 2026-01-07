@@ -96,7 +96,7 @@ if(isset($_GET['page']) and $_GET['page'] == "transcriptSS") {
 } ?>">
 										
 										<i class="bi-newspaper"></i>
-												Transcript
+												Historique des notes
 									</div>
 								</a>
 								
@@ -118,7 +118,7 @@ if(isset($_GET['page']) and $_GET['page'] == "bulletin") {
 } ?>">
 										
 										<i class="bi-journal-album"></i>
-												Bulletin
+												Relevé de notes
 									</div>
 								</a>
 								<hr>
