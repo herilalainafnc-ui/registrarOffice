@@ -41,6 +41,14 @@
 								<div class="w-full bg-gradient-to-r from-orange-600 to-orange-500 px-2 text-white mb-1">
 									<b><i class="bi-person-dash-fill"></i> SUSPENDU</b>
 								</div>
+								<?php elseif(!empty($profil['retrait_universite']) && $profil['retrait_universite'] == 2): ?>
+								<div class="w-full bg-gradient-to-r from-blue-600 to-blue-500 px-2 text-white mb-1">
+									<b><i class="bi-door-open-fill"></i> RETRAIT MOMENTANÉ</b>
+								</div>
+								<?php elseif(!empty($profil['retrait_universite']) && $profil['retrait_universite'] == 3): ?>
+								<div class="w-full bg-gradient-to-r from-blue-800 to-blue-700 px-2 text-white mb-1">
+									<b><i class="bi-door-closed-fill"></i> RETRAIT DÉFINITIF</b>
+								</div>
 								<?php else: ?>
 								<div class="w-full bg-gradient-to-r from-cyan-500 px-2 text-white">
 									<b>
@@ -162,6 +170,22 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 								</a>
 								<?php endif; ?>
 
+								<?php if(!empty($profil['retrait_universite']) && $profil['retrait_universite'] >= 2): ?>
+								<a href="#" id="linkAnnulerRetrait">
+									<div class="w-full hover:bg-green-500 hover:text-slate-100 p-2 my-1 text-green-600 rounded-md">
+										<i class="bi-arrow-return-left"></i>
+												Annuler le retrait
+									</div>
+								</a>
+								<?php else: ?>
+								<a href="#" id="linkRetraitUniv">
+									<div class="w-full hover:bg-blue-500 hover:text-slate-100 p-2 my-1 text-blue-600 rounded-md">
+										<i class="bi-door-open-fill"></i>
+												Retrait de l'université
+									</div>
+								</a>
+								<?php endif; ?>
+
 								<a href="#" id="linkSupprStd">
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 text-red-600 rounded-md">
 										
@@ -253,6 +277,116 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 									<a href="#" id="cancelLeverSuspension" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-md hover:bg-slate-300">Annuler</a>
 									<button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
 										<i class="bi-person-check mr-1"></i> Confirmer la levée
+									</button>
+								</div>
+							</div>
+</form>
+						</div>
+
+							<!-- MODAL RETRAIT UNIVERSITÉ -->
+						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifRetraitUniv" style="backdrop-filter: blur(30px);">
+<form method="post" action="../app/.student/retrait-universite.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>">
+							<div class="w-[550px] <?=$bg_eight_color?> border-2 border-blue-500 mx-auto my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
+								<div class="p-3 bg-blue-500 text-white rounded-t-md">
+									<p class="text-lg font-bold"><i class="bi-door-open-fill mr-2"></i>Retrait de l'université</p>
+								</div>
+								<div class="p-4">
+									<p class="mb-3 text-sm text-slate-600">Vous êtes sur le point de retirer <b><?=strtoupper($profil['student_nom']).' '.$profil['student_prenom']?></b> de l'université.</p>
+									
+									<div class="mb-3">
+										<label class="block text-sm font-medium mb-1 text-slate-700">Type de retrait</label>
+										<select name="type_retrait" id="type_retrait" required class="w-full p-2 border border-slate-300 rounded-md">
+											<option value="">-- Choisir le type de retrait --</option>
+											<option value="momentane">Retrait momentané</option>
+											<option value="definitif">Retrait définitif</option>
+										</select>
+									</div>
+									
+									<div class="mb-3 p-3 bg-slate-100 border border-slate-200 rounded-md">
+										<label class="block text-sm font-medium mb-1 text-slate-700">Date d'entrée à l'université</label>
+										<input type="date" name="date_entree_universite" readonly class="w-full p-2 border border-slate-300 rounded-md bg-slate-50" value="<?=!empty($profil['date_entry']) ? date('Y-m-d', strtotime($profil['date_entry'])) : ''?>">
+										<p class="text-xs text-slate-500 mt-1">Date d'inscription initiale de l'étudiant</p>
+									</div>
+									
+									<div class="mb-3">
+										<label class="block text-sm font-medium mb-1 text-slate-700">Date de départ</label>
+										<input type="date" name="date_depart" required class="w-full p-2 border border-slate-300 rounded-md" value="<?=date('Y-m-d')?>">
+									</div>
+									
+									<div class="mb-3" id="divDateRetour" style="display:none;">
+										<label class="block text-sm font-medium mb-1 text-slate-700">Date probable de retour</label>
+										<input type="date" name="date_retour_probable" id="date_retour_probable" class="w-full p-2 border border-slate-300 rounded-md">
+										<p class="text-xs text-slate-500 mt-1">Obligatoire pour un retrait momentané</p>
+									</div>
+									
+									<div class="mb-3">
+										<label class="block text-sm font-medium mb-1 text-slate-700">Cause du départ</label>
+										<select name="cause_depart" id="cause_depart" required class="w-full p-2 border border-slate-300 rounded-md mb-2">
+											<option value="">-- Choisir la cause --</option>
+											<option value="raisons_personnelles">Raisons personnelles</option>
+											<option value="raisons_financieres">Raisons financières</option>
+											<option value="raisons_medicales">Raisons médicales</option>
+											<option value="transfert">Transfert vers autre établissement</option>
+											<option value="voyage">Voyage / Déplacement</option>
+											<option value="abandon">Abandon des études</option>
+											<option value="exclusion">Exclusion</option>
+											<option value="deces">Décès</option>
+											<option value="autre">Autre</option>
+										</select>
+										<textarea name="details_cause" rows="3" class="w-full p-2 border border-slate-300 rounded-md" placeholder="Détails supplémentaires sur la cause du départ..."></textarea>
+									</div>
+
+								</div>
+								<div class="flex p-3 border-t border-slate-200 justify-end gap-2">
+									<a href="#" id="cancelRetraitUniv" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-md hover:bg-slate-300">Annuler</a>
+									<button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+										<i class="bi-door-open mr-1"></i> Confirmer le retrait
+									</button>
+								</div>
+							</div>
+</form>
+						</div>
+
+							<!-- MODAL ANNULER RETRAIT -->
+						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifAnnulerRetrait" style="backdrop-filter: blur(30px);">
+<form method="post" action="../app/.student/annuler-retrait.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>">
+							<div class="w-[500px] <?=$bg_eight_color?> border-2 border-green-500 mx-auto my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
+								<div class="p-3 bg-green-500 text-white rounded-t-md">
+									<p class="text-lg font-bold"><i class="bi-arrow-return-left mr-2"></i>Annuler le retrait</p>
+								</div>
+								<div class="p-4">
+									<p class="mb-3 text-sm text-slate-600">Vous êtes sur le point d'annuler le retrait de <b><?=strtoupper($profil['student_nom']).' '.$profil['student_prenom']?></b> et de le réintégrer à l'université.</p>
+									
+									<?php if(!empty($profil['retrait_universite']) && $profil['retrait_universite'] >= 2): ?>
+									<div class="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
+										<p class="text-sm font-medium text-blue-800 mb-1">Informations du retrait :</p>
+										<p class="text-sm text-blue-700">
+											<strong>Type :</strong> <?=$profil['type_retrait'] == 'momentane' ? 'Retrait momentané' : 'Retrait définitif'?>
+										</p>
+										<p class="text-sm text-blue-700">
+											<strong>Cause :</strong> <?=ucfirst(str_replace('_', ' ', $profil['cause_depart'] ?? 'Non spécifiée'))?>
+										</p>
+										<?php if(!empty($profil['date_depart_universite'])): ?>
+										<p class="text-xs text-blue-600 mt-2">
+											Date de départ : <?=date('d/m/Y', strtotime($profil['date_depart_universite']))?>
+											<?php if(!empty($profil['date_retour_probable'])): ?>
+											| Retour prévu : <?=date('d/m/Y', strtotime($profil['date_retour_probable']))?>
+											<?php endif; ?>
+										</p>
+										<?php endif; ?>
+									</div>
+									<?php endif; ?>
+									
+									<div class="mb-3">
+										<label class="block text-sm font-medium mb-1 text-slate-700">Commentaire (optionnel)</label>
+										<textarea name="commentaire_retour" rows="2" class="w-full p-2 border border-slate-300 rounded-md" placeholder="Raison de l'annulation du retrait..."></textarea>
+									</div>
+
+								</div>
+								<div class="flex p-3 border-t border-slate-200 justify-end gap-2">
+									<a href="#" id="cancelAnnulerRetrait" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-md hover:bg-slate-300">Annuler</a>
+									<button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
+										<i class="bi-arrow-return-left mr-1"></i> Confirmer le retour
 									</button>
 								</div>
 							</div>
@@ -364,6 +498,35 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 				var dd = String(today.getDate()).padStart(2, '0');
 				$('#date_fin_suspension').val(yyyy + '-' + mm + '-' + dd);
 			}
+		});
+		
+		// Gestion du retrait de l'université
+		$('#linkRetraitUniv').click(function(){
+			$('#notifRetraitUniv').css({'display':'block'});
+		});
+		$('#cancelRetraitUniv').click(function(){
+			$('#notifRetraitUniv').css({'display':'none'});
+		});
+		
+		// Afficher/masquer la date de retour selon le type de retrait
+		$('#type_retrait').change(function(){
+			var typeRetrait = $(this).val();
+			if(typeRetrait === 'momentane') {
+				$('#divDateRetour').show();
+				$('#date_retour_probable').attr('required', true);
+			} else {
+				$('#divDateRetour').hide();
+				$('#date_retour_probable').attr('required', false);
+				$('#date_retour_probable').val('');
+			}
+		});
+		
+		// Gestion de l'annulation du retrait
+		$('#linkAnnulerRetrait').click(function(){
+			$('#notifAnnulerRetrait').css({'display':'block'});
+		});
+		$('#cancelAnnulerRetrait').click(function(){
+			$('#notifAnnulerRetrait').css({'display':'none'});
 		});
 	});
 </script>

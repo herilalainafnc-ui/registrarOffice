@@ -1019,7 +1019,7 @@ if (date('m')>7) {
 			<div class="p-3">
 				<center>
 				<a href="#" id="cancelnotifLogOut" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
-				<a href="../app/logout.php" id="btnnotifLogOut" class="bg-red-600 p-2 text-white rounded-md mx-1">Ce déconnecter</a>
+				<a href="../app/logout.php" id="btnnotifLogOut" class="bg-red-600 p-2 text-white rounded-md mx-1">Se déconnecter</a>
 				</center>
 			</div>
 			</form>

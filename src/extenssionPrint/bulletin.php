@@ -1,6 +1,8 @@
 
 <?php
 require('../init/.forPrint/top.forPrint.php');  
+require_once(__DIR__ . '/../services/DocumentVerification.php');
+
 $level = isset($_GET['level']) ? $_GET['level'] : 'all';
 $semester = isset($_GET['semester']) ? $_GET['semester'] : 'all';
 $student_id = $_GET['student_id'];
@@ -9,6 +11,11 @@ $printName = $student_id."-BULLETIN";
 
 $searchStd = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'"');
 $stdA = $searchStd->fetch();
+
+// Système anti-contrefaçon - Génération du code de vérification
+$docVerification = new DocumentVerification($dtb);
+$studentName = strtoupper($stdA['student_nom']) . " " . $stdA['student_prenom'];
+$verificationData = $docVerification->getOrCreateBulletinVerification($student_id, $studentName, $level, $semester);
 ?>
 
 <div class="mb-6">
@@ -285,6 +292,27 @@ $stdA = $searchStd->fetch();
 		</thead>
 	</table>
 </div>
+
+<!-- BLOC ANTI-CONTREFAÇON - QR CODE DE VÉRIFICATION -->
+<?php
+// Récapitulatif pour le QR code
+$recapQR = [
+    'sessions' => $sessionCount,
+    'cours' => $totalCoursValides,
+    'credits' => $totalCreditsValides,
+    'moyenne' => $moyenneCumulative
+];
+?>
+<?= $docVerification->getQRCodeHTML(
+    $verificationData['doc_code'], 
+    $verificationData['date_emission'],
+    $verificationData['student_name'],
+    $verificationData['student_id'],
+    $verificationData['doc_type'],
+    $verificationData['doc_hash'],
+    $recapQR
+) ?>
+
 <?php
 	}
 ?>

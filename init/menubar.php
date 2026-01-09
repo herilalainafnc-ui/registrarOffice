@@ -327,8 +327,8 @@
 			<span>Emploi du temps</span>
 		</div>
 		
-		<div class="menu-item">
-			<a href="./accueil.cours.php">
+		<div class="menu-item <?php if($page == "accueil.emploi-temps.php") { echo "active"; } ?>">
+			<a href="./accueil.emploi-temps.php">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-calendar3-week menu-icon"></i>
 				</div>
