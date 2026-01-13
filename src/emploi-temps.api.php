@@ -143,37 +143,41 @@ function checkConflicts() {
     $niveau = intval($_POST['niveau'] ?? 0);
     $parcours = $_POST['parcours'] ?? '';
     $exclude_id = intval($_POST['exclude_id'] ?? 0); // Pour édition
+    $type_seance = $_POST['type_seance'] ?? 'cours'; // Type de séance
     
     $conflicts = [];
     
-    // 1. Conflit de salle
-    $sql = "SELECT e.*, s.salle_code 
-            FROM t_2024_emploi_du_temps e 
-            LEFT JOIN t_2024_salles s ON e.salle_id = s.id
-            WHERE e.jour_semaine = :jour 
-            AND e.salle_id = :salle_id
-            AND e.statut = 'confirme'
-            AND (
-                (e.heure_debut < :heure_fin AND e.heure_fin > :heure_debut)
-            )";
-    if($exclude_id > 0) $sql .= " AND e.id != $exclude_id";
-    
-    $stmt = $dtb->prepare($sql);
-    $stmt->execute([
-        ':jour' => $jour,
-        ':salle_id' => $salle_id,
-        ':heure_debut' => $heure_debut,
-        ':heure_fin' => $heure_fin
-    ]);
-    $salleConflicts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    if(count($salleConflicts) > 0) {
-        foreach($salleConflicts as $c) {
-            $conflicts[] = [
-                'type' => 'salle',
-                'severity' => 'error',
-                'message' => "Conflit de salle: {$c['salle_code']} déjà occupée par {$c['cours_sigle']} ({$c['heure_debut']} - {$c['heure_fin']})"
-            ];
+    // 1. Conflit de salle (sauf pour les examens - plusieurs examens peuvent avoir lieu dans la même salle)
+    if($type_seance !== 'examen') {
+        $sql = "SELECT e.*, s.salle_code 
+                FROM t_2024_emploi_du_temps e 
+                LEFT JOIN t_2024_salles s ON e.salle_id = s.id
+                WHERE e.jour_semaine = :jour 
+                AND e.salle_id = :salle_id
+                AND e.statut = 'confirme'
+                AND e.type_seance != 'examen'
+                AND (
+                    (e.heure_debut < :heure_fin AND e.heure_fin > :heure_debut)
+                )";
+        if($exclude_id > 0) $sql .= " AND e.id != $exclude_id";
+        
+        $stmt = $dtb->prepare($sql);
+        $stmt->execute([
+            ':jour' => $jour,
+            ':salle_id' => $salle_id,
+            ':heure_debut' => $heure_debut,
+            ':heure_fin' => $heure_fin
+        ]);
+        $salleConflicts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        if(count($salleConflicts) > 0) {
+            foreach($salleConflicts as $c) {
+                $conflicts[] = [
+                    'type' => 'salle',
+                    'severity' => 'error',
+                    'message' => "Conflit de salle: {$c['salle_code']} déjà occupée par {$c['cours_sigle']} ({$c['heure_debut']} - {$c['heure_fin']})"
+                ];
+            }
         }
     }
     
@@ -500,30 +504,36 @@ function checkMoveConflictsInternal($exclude_id, $jour, $heure_debut, $heure_fin
     global $dtb;
     $conflicts = [];
     
-    // 1. Conflit de salle
-    $sql = "SELECT e.*, s.salle_code 
-            FROM t_2024_emploi_du_temps e 
-            LEFT JOIN t_2024_salles s ON e.salle_id = s.id
-            WHERE e.jour_semaine = :jour 
-            AND e.salle_id = :salle_id
-            AND e.statut = 'confirme'
-            AND e.id != :exclude_id
-            AND (e.heure_debut < :heure_fin AND e.heure_fin > :heure_debut)";
+    // Récupérer le type de séance de la séance qu'on déplace
+    $seanceType = $dtb->query("SELECT type_seance FROM t_2024_emploi_du_temps WHERE id = $exclude_id")->fetchColumn();
     
-    $stmt = $dtb->prepare($sql);
-    $stmt->execute([
-        ':jour' => $jour,
-        ':salle_id' => $salle_id,
-        ':exclude_id' => $exclude_id,
-        ':heure_debut' => $heure_debut,
-        ':heure_fin' => $heure_fin
-    ]);
-    
-    foreach($stmt->fetchAll() as $c) {
-        $conflicts[] = [
-            'type' => 'salle',
-            'message' => "Salle {$c['salle_code']} occupée par {$c['cours_sigle']}"
-        ];
+    // 1. Conflit de salle (sauf pour les examens - plusieurs examens peuvent avoir lieu dans la même salle)
+    if($seanceType !== 'examen') {
+        $sql = "SELECT e.*, s.salle_code 
+                FROM t_2024_emploi_du_temps e 
+                LEFT JOIN t_2024_salles s ON e.salle_id = s.id
+                WHERE e.jour_semaine = :jour 
+                AND e.salle_id = :salle_id
+                AND e.statut = 'confirme'
+                AND e.type_seance != 'examen'
+                AND e.id != :exclude_id
+                AND (e.heure_debut < :heure_fin AND e.heure_fin > :heure_debut)";
+        
+        $stmt = $dtb->prepare($sql);
+        $stmt->execute([
+            ':jour' => $jour,
+            ':salle_id' => $salle_id,
+            ':exclude_id' => $exclude_id,
+            ':heure_debut' => $heure_debut,
+            ':heure_fin' => $heure_fin
+        ]);
+        
+        foreach($stmt->fetchAll() as $c) {
+            $conflicts[] = [
+                'type' => 'salle',
+                'message' => "Salle {$c['salle_code']} occupée par {$c['cours_sigle']}"
+            ];
+        }
     }
     
     // 2. Conflit enseignant

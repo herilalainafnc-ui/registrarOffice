@@ -39,6 +39,7 @@
 			gap: 4px;
 			height: 100%;
 			width: 100%;
+			align-items: stretch;
 		}
 		
 		.course-card {
@@ -51,6 +52,8 @@
 			flex: 1;
 			min-width: 0;
 			overflow: hidden;
+			display: flex;
+			flex-direction: column;
 		}
 		.course-card:hover {
 			transform: scale(1.02);
@@ -79,6 +82,7 @@
 		.course-card[data-mention="DROI"] { background: linear-gradient(135deg, #ef4444, #dc2626); } /* Red */
 		
 		.course-card .sigle { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+		.course-card .course-title { font-weight: 700; font-size: 11px; line-height: 1.2; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 		.course-card .details { opacity: 0.9; font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 		.course-card .parcours-badge { 
 			background: rgba(255,255,255,0.2); 
@@ -150,6 +154,16 @@
 									<option value="1">Semestre 1</option>
 									<option value="2">Semestre 2</option>
 								</select>
+								<select id="filterTypeSeance" class="bg-slate-700 text-white text-xs px-3 py-1.5 rounded border border-slate-600">
+									<option value="">Tous types</option>
+									<option value="cours">Cours uniquement</option>
+									<option value="td">TD uniquement</option>
+									<option value="tp">TP uniquement</option>
+									<option value="examen">Examens uniquement</option>
+								</select>
+								<button onclick="openExportModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-4 py-1.5 rounded flex items-center gap-1">
+									<i class="bi bi-download"></i> Exporter
+								</button>
 							</div>
 						</div>
 						
@@ -239,8 +253,10 @@
 												data-semester="<?=$cours['semester']?>"
 												data-salle="<?=$cours['salle_id']?>"
 												data-teacher="<?=$cours['id_teacher']?>"
-												data-parcours="<?=$cours['parcours'] ?? ''?>">
-												<div class="sigle"><?=$cours['cours_sigle']?></div>
+												data-parcours="<?=$cours['parcours'] ?? ''?>"
+												data-type="<?=$cours['type_seance']?>"
+												style="height: <?=($cours['duree'] * 50) - 10?>px;">
+												<div class="course-title"><?=$cours['cours_title']?></div>
 												<div class="details"><i class="bi bi-geo-alt-fill"></i> <?=$cours['salle_code']?></div>
 												<div class="details"><?=$cours['mention']?> L<?=$cours['niveau']?></div>
 												<?php if(!empty($cours['parcours'])): ?>
@@ -295,7 +311,7 @@
 										default => 'bg-slate-600'
 									};
 								?>
-								<tr class="hover:bg-slate-600 course-row" data-mention="<?=$c['mention']?>" data-niveau="<?=$c['niveau']?>" data-semester="<?=$c['semester']?>">
+								<tr class="hover:bg-slate-600 course-row" data-mention="<?=$c['mention']?>" data-niveau="<?=$c['niveau']?>" data-semester="<?=$c['semester']?>" data-type="<?=$c['type_seance']?>">
 									<td class="bg-gradient-to-r from-cyan-800 to-cyan-600 font-semibold"><?=$c['cours_sigle']?></td>
 									<td><?=$c['cours_title']?></td>
 									<td><span class="<?=$typeBg?> px-2 py-0.5 rounded text-xs"><?=strtoupper($c['type_seance'])?></span></td>
@@ -475,6 +491,67 @@
 		</div>
 	</div>
 
+	<!-- Modal Exporter emploi du temps -->
+	<div id="exportModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+		<div class="bg-slate-800 rounded-lg w-full max-w-md mx-4">
+			<div class="p-4 border-b border-slate-700 flex justify-between items-center">
+				<h3 class="text-lg font-semibold text-white"><i class="bi bi-download text-emerald-500"></i> Exporter l'emploi du temps</h3>
+				<button onclick="closeExportModal()" class="text-slate-400 hover:text-white"><i class="bi bi-x-lg"></i></button>
+			</div>
+			
+			<div class="p-4">
+				<!-- Sélection de la mention -->
+				<div class="mb-4">
+					<label class="block text-slate-400 text-xs mb-1">Mention</label>
+					<select id="exportMention" class="w-full bg-slate-700 text-white text-sm px-3 py-2 rounded border border-slate-600">
+						<option value="">-- Toutes les mentions --</option>
+						<?php
+						$mentionsExport = $dtb->query("SELECT DISTINCT mention FROM t_2024_emploi_du_temps WHERE mention != '' ORDER BY mention");
+						while($me = $mentionsExport->fetch()) {
+							echo '<option value="'.$me['mention'].'">'.$me['mention'].'</option>';
+						}
+						?>
+					</select>
+				</div>
+				
+				<!-- Sélection du type de séance -->
+				<div class="mb-4">
+					<label class="block text-slate-400 text-xs mb-1">Type de séance</label>
+					<select id="exportType" class="w-full bg-slate-700 text-white text-sm px-3 py-2 rounded border border-slate-600">
+						<option value="">-- Tous les types --</option>
+						<option value="cours">Cours magistraux</option>
+						<option value="td">TD</option>
+						<option value="tp">TP</option>
+						<option value="examen">Examens</option>
+					</select>
+				</div>
+				
+				<!-- Sélection du niveau -->
+				<div class="mb-4">
+					<label class="block text-slate-400 text-xs mb-1">Niveau</label>
+					<select id="exportNiveau" class="w-full bg-slate-700 text-white text-sm px-3 py-2 rounded border border-slate-600">
+						<option value="">-- Tous les niveaux --</option>
+						<option value="1">L1</option>
+						<option value="2">L2</option>
+						<option value="3">L3</option>
+						<option value="4">M1</option>
+						<option value="5">M2</option>
+					</select>
+				</div>
+				
+				<!-- Boutons d'export -->
+				<div class="flex gap-3 mt-6">
+					<button onclick="exportScheduleToPDF()" class="flex-1 bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2.5 rounded flex items-center justify-center gap-2">
+						<i class="bi bi-file-earmark-pdf"></i> Exporter en PDF
+					</button>
+					<button onclick="exportScheduleToExcel()" class="flex-1 bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-2.5 rounded flex items-center justify-center gap-2">
+						<i class="bi bi-file-earmark-excel"></i> Exporter en Excel
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- Modal Modifier une séance -->
 	<div id="editModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
 		<div class="bg-slate-800 rounded-lg w-full max-w-2xl mx-4 max-h-[90vh] overflow-auto">
@@ -599,6 +676,455 @@
 			</form>
 		</div>
 	</div>
+
+	<!-- Données pour export -->
+	<?php
+	// Récupérer toutes les séances pour l'export
+	$allSeancesExport = $dtb->query("SELECT * FROM t_2024_emploi_du_temps ORDER BY FIELD(jour_semaine, 'Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'), heure_debut");
+	$seancesData = [];
+	while($s = $allSeancesExport->fetch()) {
+		$seancesData[] = [
+			'id' => $s['id'],
+			'cours_sigle' => $s['cours_sigle'],
+			'cours_title' => $s['cours_title'],
+			'type_seance' => $s['type_seance'],
+			'jour_semaine' => $s['jour_semaine'],
+			'heure_debut' => $s['heure_debut'],
+			'heure_fin' => $s['heure_fin'],
+			'salle_code' => $s['salle_code'],
+			'mention' => $s['mention'],
+			'niveau' => $s['niveau'],
+			'semester' => $s['semester'],
+			'parcours' => $s['parcours'] ?? ''
+		];
+	}
+	?>
+	<!-- jsPDF et SheetJS pour export -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+	<script>
+	// Données pour export
+	const allSeancesData = <?=json_encode($seancesData)?>;
+	const joursOrdre = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+	
+	// ==================== EXPORT MODAL ====================
+	function openExportModal() {
+		document.getElementById('exportModal').classList.remove('hidden');
+		document.getElementById('exportModal').classList.add('flex');
+		// Pré-remplir avec les filtres actuels
+		document.getElementById('exportMention').value = document.getElementById('filterMention').value;
+		document.getElementById('exportType').value = document.getElementById('filterTypeSeance').value;
+		document.getElementById('exportNiveau').value = document.getElementById('filterNiveau').value;
+	}
+	
+	function closeExportModal() {
+		document.getElementById('exportModal').classList.add('hidden');
+		document.getElementById('exportModal').classList.remove('flex');
+	}
+	
+	// Filtrer les séances selon les critères
+	function getFilteredSeances() {
+		const mention = document.getElementById('exportMention').value;
+		const type = document.getElementById('exportType').value;
+		const niveau = document.getElementById('exportNiveau').value;
+		
+		return allSeancesData.filter(s => {
+			if(mention && s.mention !== mention) return false;
+			if(type && s.type_seance !== type) return false;
+			if(niveau && s.niveau != niveau) return false;
+			return true;
+		});
+	}
+	
+	// Générer le titre du fichier
+	function getExportTitle() {
+		const mention = document.getElementById('exportMention').value;
+		const type = document.getElementById('exportType').value;
+		const niveau = document.getElementById('exportNiveau').value;
+		
+		let title = 'Emploi du temps';
+		if(mention) title += ' - ' + mention;
+		if(type) title += ' - ' + type.toUpperCase();
+		if(niveau) title += ' - L' + niveau;
+		
+		return title;
+	}
+	
+	// ==================== EXPORT PDF ====================
+	function exportScheduleToPDF() {
+		// Vérifier que jsPDF est chargé
+		if(typeof window.jspdf === 'undefined') {
+			showNotification('Erreur: jsPDF non chargé. Rechargez la page.', 'error');
+			return;
+		}
+		
+		const jsPDF = window.jspdf.jsPDF;
+		const seances = getFilteredSeances();
+		
+		if(seances.length === 0) {
+			showNotification('Aucune séance à exporter', 'error');
+			return;
+		}
+		
+		try {
+			// Trier par jour et heure
+			seances.sort((a, b) => {
+				const jourA = joursOrdre.indexOf(a.jour_semaine);
+				const jourB = joursOrdre.indexOf(b.jour_semaine);
+				if(jourA !== jourB) return jourA - jourB;
+				return a.heure_debut.localeCompare(b.heure_debut);
+			});
+			
+			const doc = new jsPDF('landscape', 'mm', 'a4');
+			const pageWidth = doc.internal.pageSize.getWidth();
+			const pageHeight = doc.internal.pageSize.getHeight();
+			
+			// En-tête avec fond bleu
+			doc.setFillColor(30, 64, 175);
+			doc.rect(0, 0, pageWidth, 30, 'F');
+			
+			doc.setFontSize(16);
+			doc.setTextColor(255, 255, 255);
+			doc.setFont(undefined, 'bold');
+			doc.text(getExportTitle(), 14, 12);
+			
+			doc.setFontSize(10);
+			doc.setFont(undefined, 'normal');
+			doc.text('Universite Adventiste de Zurcher - Annee scolaire 2025-2026', 14, 20);
+			doc.text('Genere le ' + new Date().toLocaleDateString('fr-FR'), 14, 26);
+			
+			doc.setTextColor(200, 200, 200);
+			doc.text('Total: ' + seances.length + ' seance(s)', pageWidth - 60, 20);
+			
+			let yPos = 38;
+			
+			// Créer une grille par jour
+			const seancesByJour = {};
+			seances.forEach(s => {
+				if(!seancesByJour[s.jour_semaine]) seancesByJour[s.jour_semaine] = [];
+				seancesByJour[s.jour_semaine].push(s);
+			});
+			
+			// Couleurs par type
+			const typeColors = {
+				'cours': [8, 145, 178],
+				'td': [124, 58, 237],
+				'tp': [5, 150, 105],
+				'examen': [217, 119, 6]
+			};
+			
+			// Colonnes du tableau
+			const cols = [
+				{ title: 'Horaire', width: 30, x: 14 },
+				{ title: 'Sigle', width: 25, x: 44 },
+				{ title: 'Titre du cours', width: 80, x: 69 },
+				{ title: 'Type', width: 20, x: 149 },
+				{ title: 'Salle', width: 25, x: 169 },
+				{ title: 'Niveau', width: 25, x: 194 },
+				{ title: 'Parcours', width: 30, x: 219 }
+			];
+			const rowHeight = 8;
+			const headerHeight = 10;
+			
+			// Fonction pour dessiner l'en-tête du tableau
+			function drawTableHeader(y) {
+				doc.setFillColor(51, 65, 85);
+				doc.rect(14, y, pageWidth - 28, headerHeight, 'F');
+				doc.setFontSize(8);
+				doc.setTextColor(255, 255, 255);
+				doc.setFont(undefined, 'bold');
+				cols.forEach(col => {
+					doc.text(col.title, col.x + 2, y + 7);
+				});
+				return y + headerHeight;
+			}
+			
+			// Fonction pour dessiner une ligne de données
+			function drawTableRow(y, data, typeSeance) {
+				// Fond alterné
+				const rowIndex = Math.floor((y - 38) / rowHeight);
+				if(rowIndex % 2 === 0) {
+					doc.setFillColor(241, 245, 249);
+					doc.rect(14, y, pageWidth - 28, rowHeight, 'F');
+				}
+				
+				doc.setFontSize(8);
+				doc.setTextColor(30, 41, 59);
+				doc.setFont(undefined, 'normal');
+				
+				// Dessiner chaque cellule
+				cols.forEach((col, idx) => {
+					let text = data[idx] || '';
+					// Tronquer si trop long
+					const maxChars = Math.floor(col.width / 2);
+					if(text.length > maxChars) {
+						text = text.substring(0, maxChars - 2) + '..';
+					}
+					
+					// Colorer la cellule Type
+					if(idx === 3 && typeColors[typeSeance]) {
+						doc.setFillColor(...typeColors[typeSeance]);
+						doc.rect(col.x, y, col.width, rowHeight, 'F');
+						doc.setTextColor(255, 255, 255);
+						doc.setFont(undefined, 'bold');
+					}
+					
+					doc.text(text, col.x + 2, y + 6);
+					
+					// Reset couleur
+					doc.setTextColor(30, 41, 59);
+					doc.setFont(undefined, 'normal');
+				});
+				
+				return y + rowHeight;
+			}
+			
+			// Pour chaque jour
+			joursOrdre.forEach(jour => {
+				const seancesDuJour = seancesByJour[jour];
+				if(!seancesDuJour || seancesDuJour.length === 0) return;
+				
+				// Calculer l'espace nécessaire
+				const espaceBesoin = headerHeight + (seancesDuJour.length * rowHeight) + 20;
+				
+				// Nouvelle page si nécessaire
+				if(yPos + espaceBesoin > pageHeight - 20) {
+					doc.addPage();
+					yPos = 15;
+				}
+				
+				// Titre du jour
+				doc.setFontSize(11);
+				doc.setTextColor(30, 64, 175);
+				doc.setFont(undefined, 'bold');
+				doc.text(jour, 14, yPos);
+				yPos += 5;
+				
+				// En-tête du tableau
+				yPos = drawTableHeader(yPos);
+				
+				// Lignes de données
+				seancesDuJour.forEach(s => {
+					const rowData = [
+						s.heure_debut.substring(0, 5) + ' - ' + s.heure_fin.substring(0, 5),
+						s.cours_sigle,
+						s.cours_title,
+						s.type_seance.toUpperCase(),
+						s.salle_code,
+						s.mention + ' L' + s.niveau,
+						s.parcours || '-'
+					];
+					yPos = drawTableRow(yPos, rowData, s.type_seance);
+				});
+				
+				// Bordure du tableau
+				doc.setDrawColor(200, 200, 200);
+				doc.rect(14, yPos - (seancesDuJour.length * rowHeight) - headerHeight, pageWidth - 28, (seancesDuJour.length * rowHeight) + headerHeight);
+				
+				yPos += 12;
+			});
+			
+			// Pied de page
+			const pageCount = doc.internal.getNumberOfPages();
+			for(let i = 1; i <= pageCount; i++) {
+				doc.setPage(i);
+				doc.setFontSize(8);
+				doc.setTextColor(128, 128, 128);
+				doc.text('Page ' + i + '/' + pageCount, pageWidth / 2, pageHeight - 10, { align: 'center' });
+			}
+			
+			// Nom du fichier
+			let filename = 'emploi_du_temps';
+			const mentionVal = document.getElementById('exportMention').value;
+			const typeVal = document.getElementById('exportType').value;
+			const niveauVal = document.getElementById('exportNiveau').value;
+			if(mentionVal) filename += '_' + mentionVal;
+			if(typeVal) filename += '_' + typeVal;
+			if(niveauVal) filename += '_L' + niveauVal;
+			filename += '.pdf';
+			
+			doc.save(filename);
+			showNotification('PDF exporte avec succes!', 'success');
+			closeExportModal();
+		
+		} catch(error) {
+			console.error('Erreur export PDF:', error);
+			showNotification('Erreur lors de l\'export PDF: ' + error.message, 'error');
+		}
+	}
+	
+	// ==================== EXPORT EXCEL ====================
+	function exportScheduleToExcel() {
+		const seances = getFilteredSeances();
+		
+		if(seances.length === 0) {
+			showNotification('Aucune séance à exporter', 'error');
+			return;
+		}
+		
+		// Trier par jour et heure
+		seances.sort((a, b) => {
+			const jourA = joursOrdre.indexOf(a.jour_semaine);
+			const jourB = joursOrdre.indexOf(b.jour_semaine);
+			if(jourA !== jourB) return jourA - jourB;
+			return a.heure_debut.localeCompare(b.heure_debut);
+		});
+		
+		// Créer le workbook
+		const wb = XLSX.utils.book_new();
+		
+		// Feuille 1: Liste complète
+		const wsData = [
+			['EMPLOI DU TEMPS - ' + getExportTitle().toUpperCase()],
+			['Université Adventiste de Zurcher - Année scolaire 2025-2026'],
+			['Généré le ' + new Date().toLocaleDateString('fr-FR')],
+			[''],
+			['Jour', 'Heure début', 'Heure fin', 'Sigle', 'Titre du cours', 'Type', 'Salle', 'Mention', 'Niveau', 'Parcours']
+		];
+		
+		seances.forEach(s => {
+			wsData.push([
+				s.jour_semaine,
+				s.heure_debut.substring(0, 5),
+				s.heure_fin.substring(0, 5),
+				s.cours_sigle,
+				s.cours_title,
+				s.type_seance.toUpperCase(),
+				s.salle_code,
+				s.mention,
+				'L' + s.niveau,
+				s.parcours || ''
+			]);
+		});
+		
+		const ws = XLSX.utils.aoa_to_sheet(wsData);
+		
+		// Largeur des colonnes
+		ws['!cols'] = [
+			{ wch: 12 },  // Jour
+			{ wch: 10 },  // Heure début
+			{ wch: 10 },  // Heure fin
+			{ wch: 12 },  // Sigle
+			{ wch: 40 },  // Titre
+			{ wch: 10 },  // Type
+			{ wch: 12 },  // Salle
+			{ wch: 10 },  // Mention
+			{ wch: 8 },   // Niveau
+			{ wch: 15 }   // Parcours
+		];
+		
+		// Fusion pour le titre
+		ws['!merges'] = [
+			{ s: { r: 0, c: 0 }, e: { r: 0, c: 9 } },
+			{ s: { r: 1, c: 0 }, e: { r: 1, c: 9 } },
+			{ s: { r: 2, c: 0 }, e: { r: 2, c: 9 } }
+		];
+		
+		XLSX.utils.book_append_sheet(wb, ws, 'Emploi du temps');
+		
+		// Feuille 2: Grille hebdomadaire
+		const heures = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
+		const grilleData = [
+			['GRILLE HEBDOMADAIRE'],
+			[''],
+			['Heure', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi']
+		];
+		
+		heures.forEach(heure => {
+			const heureInt = parseInt(heure.substring(0, 2));
+			const row = [heure];
+			
+			['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'].forEach(jour => {
+				// Trouver les séances qui couvrent cette heure
+				const seancesCeCreneaux = seances.filter(s => {
+					const debut = parseInt(s.heure_debut.substring(0, 2));
+					const fin = parseInt(s.heure_fin.substring(0, 2));
+					return s.jour_semaine === jour && heureInt >= debut && heureInt < fin;
+				});
+				
+				if(seancesCeCreneaux.length > 0) {
+					const textes = seancesCeCreneaux.map(s => 
+						`${s.cours_sigle} (${s.type_seance.toUpperCase()}) - ${s.salle_code}`
+					);
+					row.push(textes.join('\n'));
+				} else {
+					row.push('');
+				}
+			});
+			
+			grilleData.push(row);
+		});
+		
+		const wsGrille = XLSX.utils.aoa_to_sheet(grilleData);
+		wsGrille['!cols'] = [
+			{ wch: 8 },
+			{ wch: 30 },
+			{ wch: 30 },
+			{ wch: 30 },
+			{ wch: 30 },
+			{ wch: 30 }
+		];
+		wsGrille['!merges'] = [
+			{ s: { r: 0, c: 0 }, e: { r: 0, c: 5 } }
+		];
+		
+		XLSX.utils.book_append_sheet(wb, wsGrille, 'Grille hebdomadaire');
+		
+		// Feuille 3: Par jour (une feuille par jour)
+		joursOrdre.slice(0, 5).forEach(jour => {
+			const seancesDuJour = seances.filter(s => s.jour_semaine === jour);
+			if(seancesDuJour.length === 0) return;
+			
+			const jourData = [
+				[jour.toUpperCase()],
+				[''],
+				['Horaire', 'Sigle', 'Titre', 'Type', 'Salle', 'Mention/Niveau', 'Parcours']
+			];
+			
+			seancesDuJour.forEach(s => {
+				jourData.push([
+					s.heure_debut.substring(0, 5) + ' - ' + s.heure_fin.substring(0, 5),
+					s.cours_sigle,
+					s.cours_title,
+					s.type_seance.toUpperCase(),
+					s.salle_code,
+					s.mention + ' L' + s.niveau,
+					s.parcours || ''
+				]);
+			});
+			
+			const wsJour = XLSX.utils.aoa_to_sheet(jourData);
+			wsJour['!cols'] = [
+				{ wch: 15 },
+				{ wch: 12 },
+				{ wch: 40 },
+				{ wch: 10 },
+				{ wch: 12 },
+				{ wch: 15 },
+				{ wch: 15 }
+			];
+			wsJour['!merges'] = [
+				{ s: { r: 0, c: 0 }, e: { r: 0, c: 6 } }
+			];
+			
+			XLSX.utils.book_append_sheet(wb, wsJour, jour);
+		});
+		
+		// Nom du fichier
+		let filename = 'emploi_du_temps';
+		const mention = document.getElementById('exportMention').value;
+		const type = document.getElementById('exportType').value;
+		const niveau = document.getElementById('exportNiveau').value;
+		if(mention) filename += '_' + mention;
+		if(type) filename += '_' + type;
+		if(niveau) filename += '_L' + niveau;
+		filename += '.xlsx';
+		
+		XLSX.writeFile(wb, filename);
+		showNotification('Excel exporté avec succès!', 'success');
+		closeExportModal();
+	}
+	</script>
 
 	<script>
 	// ==================== DRAG AND DROP ====================
@@ -739,7 +1265,7 @@
 	
 	// ==================== FILTRES ====================
 	// Filtres tableau
-	document.querySelectorAll('#filterMention, #filterNiveau, #filterSemester').forEach(el => {
+	document.querySelectorAll('#filterMention, #filterNiveau, #filterSemester, #filterTypeSeance').forEach(el => {
 		el.addEventListener('change', applyFilters);
 	});
 	
@@ -747,13 +1273,15 @@
 		const mention = document.getElementById('filterMention').value;
 		const niveau = document.getElementById('filterNiveau').value;
 		const semester = document.getElementById('filterSemester').value;
+		const typeSeance = document.getElementById('filterTypeSeance').value;
 		
 		document.querySelectorAll('.course-card').forEach(card => {
 			let show = true;
 			if(mention && card.dataset.mention !== mention) show = false;
 			if(niveau && card.dataset.niveau !== niveau) show = false;
 			if(semester && card.dataset.semester !== semester) show = false;
-			card.style.display = show ? 'block' : 'none';
+			if(typeSeance && card.dataset.type !== typeSeance) show = false;
+			card.style.display = show ? 'flex' : 'none';
 		});
 		
 		document.querySelectorAll('.course-row').forEach(row => {
@@ -761,6 +1289,7 @@
 			if(mention && row.dataset.mention !== mention) show = false;
 			if(niveau && row.dataset.niveau !== niveau) show = false;
 			if(semester && row.dataset.semester !== semester) show = false;
+			if(typeSeance && row.dataset.type !== typeSeance) show = false;
 			row.style.display = show ? '' : 'none';
 		});
 	}
