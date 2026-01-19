@@ -44,12 +44,13 @@
 
 	if (isset($_POST['search']) AND !empty($_POST['search'])) {
 			$input = htmlspecialchars($_POST['search']);
-			$recupcours = $dtb->query('SELECT * FROM t_2023_cours WHERE Sigle LIKE "%'.$input.'%" OR title LIKE "%'.$input.'%" OR dep_desc LIKE "%'.$input.'%" OR nb_crd LIKE "%'.$input.'%" OR title_english LIKE "%'.$input.'%" AND remove != 1 ORDER BY title limit 200');	
+			// Requête sécurisée avec DB::searchCours
+			$coursResults = DB::searchCours($input, 200);
 		}else{
-			$recupcours = $dtb->query('SELECT * FROM t_2023_cours WHERE remove != 1 ORDER BY title limit 200');
+			$coursResults = DB::select('SELECT * FROM t_2023_cours WHERE remove != 1 ORDER BY title LIMIT 200');
 		}
 	$cours_nb = 1;
-	while ($cours_list = $recupcours->fetch()) {
+	foreach ($coursResults as $cours_list) {
  ?>								
 								<tr id="cours_<?=$cours_nb?>" class="hover:bg-slate-600 hover:text-slate-800">	
 									<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['Sigle']?></div></a></td>
@@ -57,8 +58,8 @@
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['dep_desc']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
 if($cours_list['parcours'] == "all") { echo "Tronc comun";}else{
-	$findParcours = $dtb->query('SELECT * FROM filiere_parcours WHERE shortcode = "'.$cours_list['parcours'].'"');
-	$showParcours = $findParcours->fetch();
+	// Requête sécurisée
+	$showParcours = DB::selectOne('SELECT * FROM filiere_parcours WHERE shortcode = :code', ['code' => $cours_list['parcours']]);
 	if(!empty($showParcours)) {
 		echo $showParcours['description'];
 	}
@@ -90,8 +91,8 @@ if ($cours_list['category'] == 0){
 										} ?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['semester']?></div></a></td>
 									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
-$findTeach = $dtb->query('SELECT * FROM teacher WHERE uid = "'.$cours_list['id_teacher'].'"');
-$showTeach = $findTeach->fetch();
+// Requête sécurisée
+$showTeach = DB::selectOne('SELECT * FROM teacher WHERE uid = :uid', ['uid' => $cours_list['id_teacher']]);
 if(!empty($showTeach)) {
 	echo strtoupper($showTeach['name'])." ".$showTeach['lastName'];
 }

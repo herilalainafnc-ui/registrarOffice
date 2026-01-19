@@ -2,15 +2,14 @@
 	$path = $_SERVER['PHP_SELF'];
 	$page = basename($path);
 	
-	$infinit_pseudo = $_SESSION['infinit_pseudo'] ;
-	$infinit_password = $_SESSION['infinit_password'];
-
-
-	if($infinit_pseudo !='' && $infinit_password !=''){
-
-		$rg_utilisateur = $dtb->query("SELECT * FROM compt_utilisateur WHERE pseudo='".$infinit_pseudo."' AND password='".$infinit_password."' AND etat=1 limit 1");
-		$rg_user = $rg_utilisateur->fetch();
-
+	// Utiliser le middleware pour récupérer l'utilisateur courant
+	// Le middleware est déjà initialisé dans head.php
+	$rg_user = currentUser();
+	
+	if ($rg_user) {
+		// Variables pour compatibilité avec l'ancien code
+		$infinit_pseudo = $rg_user['pseudo'];
+		$infinit_password = $rg_user['password'];
 		$rg_id = $rg_user['id'];
 		$rg_name = $rg_user['nom'];
 		$rg_last_name = $rg_user['prenom'];
@@ -18,13 +17,10 @@
 		$rg_photos = $rg_user['photos'];
 		$privilege = $rg_user['privilege'];
 		$rg_level = $rg_user['level'];
-
-		/*if ($page != 'inscription.php' AND $privilege == 'visitor') {
-			header('location:../inscription/inscription.php');
-		}*/
-
-	}else{
-		header('location:./index.php');
+	} else {
+		// Redirection gérée par le middleware, mais au cas où
+		header('Location: ./index.php');
+		exit;
 	}
  ?>
 

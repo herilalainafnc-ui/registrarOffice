@@ -1,12 +1,34 @@
 <?php 
+/**
+ * Ajout d'un nouvel utilisateur
+ * SÉCURISÉ: Vérification des privilèges + CSRF
+ */
 
-require ('../../data/backdb.php');
+require('../../data/backdb.php');
+require('../../data/middleware.php');
 
-	$nom = $_POST['nom'];
-	$prenom = $_POST['prenom'];
-	$mail = $_POST['mail'];
-	$pseudo = $_POST['pseudo'];
-	$post = $_POST['post'];
+// Initialiser le middleware
+initMiddleware($dtb);
+
+// SÉCURITÉ: Vérifier que l'utilisateur est admin ou registrar
+if (!isRegistrar()) {
+    http_response_code(403);
+    die('Accès refusé: privilèges insuffisants');
+}
+
+// SÉCURITÉ: Vérifier le token CSRF
+require_csrf();
+
+// Log de l'action
+Middleware::logSecurityEvent('user_create_attempt', [
+    'by_user' => $_SESSION['user_id'] ?? null
+]);
+
+	$nom = trim($_POST['nom']);
+	$prenom = trim($_POST['prenom']);
+	$mail = trim($_POST['mail']);
+	$pseudo = trim($_POST['pseudo']);
+	$post = trim($_POST['post'] ?? '');
 	
 	$passwordBrut = $_POST['password'];
 	$salt = 'fixing_password';
@@ -21,7 +43,7 @@ require ('../../data/backdb.php');
 	$etat = 1;
 	$photosname = $prenom.$extension_photos;
 	
-	$level = $_POST['level'];
+	$level = (int)$_POST['level'];
 
 
 	if ($level == 1) {
@@ -32,6 +54,9 @@ require ('../../data/backdb.php');
 		$privilege = "user";
 	}elseif($level == 4) {
 		$privilege = "visitor";
+	} else {
+		$privilege = "visitor";
+		$level = 4;
 	}
 
 	$theme = 'Blue';

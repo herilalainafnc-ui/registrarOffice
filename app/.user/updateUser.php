@@ -1,13 +1,37 @@
 <?php 
-	require '../../data/backdb.php';
-	
-	$id = $_GET['id'];
-	$nom = $_POST['nom'.$id];
-	$prenom = $_POST['prenom'.$id];
-	$post = $_POST['post'.$id];
-	$mail = $_POST['mail'.$id];
-	$level = $_POST['level'.$id];
-	$pseudo = $_POST['pseudo'.$id];
+/**
+ * Mise à jour d'un utilisateur
+ * SÉCURISÉ: Vérification des privilèges + CSRF
+ */
+
+require('../../data/backdb.php');
+require('../../data/middleware.php');
+
+// Initialiser le middleware
+initMiddleware($dtb);
+
+// SÉCURITÉ: Vérifier que l'utilisateur est admin ou registrar
+if (!isRegistrar()) {
+    http_response_code(403);
+    die('Accès refusé: privilèges insuffisants');
+}
+
+// SÉCURITÉ: Vérifier le token CSRF
+require_csrf();
+
+// Log de l'action
+Middleware::logSecurityEvent('user_update_attempt', [
+    'by_user' => $_SESSION['user_id'] ?? null,
+    'target_user' => $_GET['id'] ?? null
+]);
+
+	$id = (int)$_GET['id'];
+	$nom = trim($_POST['nom'.$id] ?? '');
+	$prenom = trim($_POST['prenom'.$id] ?? '');
+	$post = trim($_POST['post'.$id] ?? '');
+	$mail = trim($_POST['mail'.$id] ?? '');
+	$level = (int)($_POST['level'.$id] ?? 4);
+	$pseudo = trim($_POST['pseudo'.$id] ?? '');
 	
 	if (isset($_POST['etat'.$id])) {
 		$etat = 1;
@@ -15,7 +39,7 @@
 		$etat = 0;
 	}
 
-	$passwordBrut = $_POST['password'.$id];
+	$passwordBrut = $_POST['password'.$id] ?? '';
 	$salt = 'fixing_password';
 	
 	$password = hash('sha256', $passwordBrut. $salt);
@@ -29,12 +53,14 @@
 		$privilege = "user";
 	}elseif($level == 4) {
 		$privilege = "visitor";
+	} else {
+		$privilege = "visitor";
 	}
 
-	$updateUser_user = $_GET['rg_id'];
+	$updateUser_user = (int)$_GET['rg_id'];
 	$date_entry = date('Y-m-d');
 	
-	$oldPhotos = $_POST['oldPhotos'.$id];
+	$oldPhotos = $_POST['oldPhotos'.$id] ?? '';
 
 	$inputPhotos = 'photos'.$id;
 

@@ -1,0 +1,4 @@
+# Ignorer tous les fichiers de log sauf ce fichier
+*
+!.gitignore
+!README.md

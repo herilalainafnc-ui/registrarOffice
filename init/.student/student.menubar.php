@@ -118,7 +118,7 @@ if(isset($_GET['page']) and $_GET['page'] == "information") {
 									</div>
 								</a>
 		
-								<a href="?id=<?=$id;?>&page=transcriptSS">
+								<a href="?id=<?=$id;?>&page=transcriptSS" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
 if(isset($_GET['page']) and $_GET['page'] == "transcriptSS") {
 	echo "bg-cyan-700 text-white";
@@ -129,7 +129,7 @@ if(isset($_GET['page']) and $_GET['page'] == "transcriptSS") {
 									</div>
 								</a>
 								
-								<a href="?id=<?=$id;?>&page=newCours">
+								<a href="?id=<?=$id;?>&page=newCours" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
 if(isset($_GET['page']) and $_GET['page'] == "newCours") {
 	echo "bg-cyan-700 text-white";
@@ -140,7 +140,7 @@ if(isset($_GET['page']) and $_GET['page'] == "newCours") {
 									</div>
 								</a>
 		
-								<a href="?id=<?=$id;?>&page=bulletin">
+								<a href="?id=<?=$id;?>&page=bulletin" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
 if(isset($_GET['page']) and $_GET['page'] == "bulletin") {
 	echo "bg-cyan-700 text-white";
@@ -151,7 +151,7 @@ if(isset($_GET['page']) and $_GET['page'] == "bulletin") {
 									</div>
 								</a>
 								
-								<a href="?id=<?=$id;?>&page=histNotes">
+								<a href="?id=<?=$id;?>&page=histNotes" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
 if(isset($_GET['page']) and $_GET['page'] == "histNotes") {
 	echo "bg-cyan-700 text-white";
@@ -162,7 +162,7 @@ if(isset($_GET['page']) and $_GET['page'] == "histNotes") {
 									</div>
 								</a>
 								<hr>
-								<a href="?id=<?=$id;?>&page=diplome&langue=FR">
+								<a href="?id=<?=$id;?>&page=diplome&langue=FR" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
 if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 	echo "bg-cyan-700 text-white";
@@ -188,7 +188,7 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 									</div>
 								</a>
 								<?php else: ?>
-								<a href="#" id="linkSuspendStd">
+								<a href="#" id="linkSuspendStd" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
 									<div class="w-full hover:bg-orange-500 hover:text-slate-100 p-2 my-1 text-orange-600 rounded-md">
 										<i class="bi-person-dash-fill"></i>
 												Suspendre
@@ -204,7 +204,7 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 									</div>
 								</a>
 								<?php else: ?>
-								<a href="#" id="linkRetraitUniv">
+								<a href="#" id="linkRetraitUniv" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
 									<div class="w-full hover:bg-blue-500 hover:text-slate-100 p-2 my-1 text-blue-600 rounded-md">
 										<i class="bi-door-open-fill"></i>
 												Retrait de l'université
@@ -212,7 +212,7 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 								</a>
 								<?php endif; ?>
 
-								<a href="#" id="linkSupprStd">
+								<a href="#" id="linkSupprStd" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 text-red-600 rounded-md">
 										
 										<i class="bi-trash3"></i>
@@ -463,6 +463,7 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 							</div>
 
 						</div>
+
 
 <script type="text/javascript">
 	$(document).ready(function(){

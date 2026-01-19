@@ -7,7 +7,15 @@
 		})();
 	</script>
 	<?php 
-	session_start();
+	// Charger le middleware de sécurité (gère automatiquement la session)
+	require_once('../data/backdb.php');
+	require_once('../data/middleware.php');
+	
+	// Initialiser le middleware avec la connexion DB
+	initMiddleware($dtb);
+	
+	// Vérifier l'authentification (redirige vers login si non connecté)
+	requireAuth('../src/index.php');
 
 	/*:::::::::::::::::::::::: SESSION COLORS - BLEU NUIT ::::::::::::::::::::::::*/
 
@@ -65,7 +73,7 @@
 	/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
 	 ?>
 
-	<?php require('../data/backdb.php');?>
+	<!-- backdb.php déjà inclus via middleware -->
 
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">

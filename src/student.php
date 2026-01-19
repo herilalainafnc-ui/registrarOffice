@@ -20,11 +20,12 @@
 					<div class="flex w-full">
 						<!-- <div class="<?=$bg_one_color?> my-1 mx-0.5 w-3/12 p-2 text-slate-100 overflow-auto hidden" id="stdSearch-result" style="height: calc(100vh - 157px);"></div> -->
 <?php
-	$id = $_GET['id'];
-	$retrouve = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE id ='".$id."' LIMIT 1");
+	$id = (int)$_GET['id']; // Cast en int pour sécurité
+	
+	// Requête sécurisée avec DB::selectOne
+	$profil = DB::selectOne("SELECT * FROM tbl_2024_etudiant WHERE id = :id LIMIT 1", ['id' => $id]);
 
-if($retrouve->rowCount() > 0) {
-$profil = $retrouve->fetch();
+if($profil) {
 $student_id = $profil['student_id'];
 $student_nom = $profil['student_nom'];
 $student_prenom = $profil['student_prenom'];
@@ -41,18 +42,18 @@ $date_entry = $profil['date_entry'];
 $yes = 1;
 
 
-	$searchMention = $dtb->query('SELECT * FROM filiere WHERE filiere_description = "'.$etude_envisage.'"');
-	$showMention=$searchMention->fetch();
-	$etude_envisage_ang = $showMention['filiere_description_ang'];
+	// Requête sécurisée
+	$showMention = DB::selectOne('SELECT * FROM filiere WHERE filiere_description = :desc', ['desc' => $etude_envisage]);
+	$etude_envisage_ang = $showMention ? $showMention['filiere_description_ang'] : '';
 
 
-		$searchParcours = $dtb->query('SELECT * FROM filiere_parcours WHERE description = "'.$etude_option.'"');
-		$showParcours=$searchParcours->fetch();
-		if(!empty($showParcours)){
-			$etude_option_ang = $showParcours['description_ang'];	
-		}else{
+	// Requête sécurisée
+	$showParcours = DB::selectOne('SELECT * FROM filiere_parcours WHERE description = :desc', ['desc' => $etude_option]);
+	if(!empty($showParcours)){
+		$etude_option_ang = $showParcours['description_ang'];	
+	}else{
 		$etude_option_ang = '';
-		}
+	}
 
 						require('../init/.student/student.menubar.php');
  ?>					
@@ -71,9 +72,9 @@ $yes = 1;
 									 
 										 <p class="toolInactive text-xs">Dernière modification<br>le <?=$profil['last_change_datetime']?>
 										 par <?php 
-							$findUserModif = $dtb->query('SELECT * FROM compt_utilisateur WHERE id = "'.$profil['last_change_user_id'].'"');
-							$showUserModif = $findUserModif->fetch();
-							echo $showUserModif['prenom'];
+							// Requête sécurisée
+							$showUserModif = DB::findUser($profil['last_change_user_id']);
+							echo $showUserModif ? $showUserModif['prenom'] : 'Inconnu';
 										  ?>
 										</p>
 									 

@@ -1,39 +1,42 @@
 <?php 
-session_start();
+/**
+ * Page de connexion - Infinit Registrar
+ * Mise à jour avec middleware sécurisé
+ */
+
 require('../data/backdb.php');
+require('../data/middleware.php');
 
-/* SESSION LOG */
-if ((isset($_COOKIE['infinit_pseudo']) && isset($_COOKIE['infinit_password'])) && (!empty($_COOKIE['infinit_pseudo']) && !empty($_COOKIE['infinit_password']))) {
-    $_SESSION['infinit_pseudo'] = $_COOKIE['infinit_pseudo'];
-    $_SESSION['infinit_password'] = $_COOKIE['infinit_password'];
+// Initialiser le middleware avec la connexion DB
+initMiddleware($dtb);
+
+// Variable pour les erreurs
+$loginError = false;
+
+// Si déjà connecté, rediriger vers l'accueil
+if (isLoggedIn()) {
+    header('Location: ./accueil.php');
+    exit;
 }
 
-if(isset($_SESSION['infinit_pseudo']) && isset($_SESSION['infinit_password'])) {
-    if(!empty($_SESSION['infinit_pseudo']) && !empty($_SESSION['infinit_password'])) {
-        header('location:./accueil.php');
-    }
-}
-
-if(!empty($_POST)) {
-    if(isset($_POST['infinit_pseudo']) && isset($_POST['infinit_password'])) {
-        $infinit_pseudo = $_POST['infinit_pseudo'];
-        $salt = 'fixing_password';
-        $infinit_password = hash('sha256', $_POST['infinit_password']. $salt);
+// Traitement du formulaire de connexion
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
+    if (isset($_POST['infinit_pseudo']) && isset($_POST['infinit_password'])) {
         
-        if(isset($_POST['infinit_souvenir']) && !empty($_POST['infinit_souvenir'])) {
-            setcookie('infinit_pseudo', $infinit_pseudo, time()+20*24*60*60, null, null, false, true);
-            setcookie('infinit_password', $infinit_password, time()+20*24*60*60, null, null, false, true);
-        }
+        $pseudo = trim($_POST['infinit_pseudo']);
+        $password = $_POST['infinit_password'];
+        $remember = isset($_POST['infinit_souvenir']) && !empty($_POST['infinit_souvenir']);
         
-        $req = $dtb->query("SELECT * FROM compt_utilisateur WHERE pseudo='".$infinit_pseudo."' AND password='".$infinit_password."' AND etat=1 limit 1");
-        
-        if($req->rowCount() > 0) {
-            $req = $req->fetch();
-            $_SESSION['infinit_pseudo'] = $infinit_pseudo;
-            $_SESSION['infinit_password'] = $infinit_password;
-            header('location: ./accueil.php');
+        // Authentification sécurisée via le middleware
+        if (Middleware::authenticate($pseudo, $password, $remember)) {
+            // Log de connexion réussie
+            Middleware::logSecurityEvent('login_success', ['pseudo' => $pseudo]);
+            header('Location: ./accueil.php');
+            exit;
         } else {
-            header('location: ./index.php');
+            // Log de tentative échouée
+            Middleware::logSecurityEvent('login_failed', ['pseudo' => $pseudo]);
+            $loginError = true;
         }
     }
 }
@@ -337,8 +340,15 @@ if(!empty($_POST)) {
                 <p class="login-subtitle">Veuillez vous connecter pour continuer</p>
             </div>
 
+            <?php if ($loginError): ?>
+            <div class="alert alert-danger" style="background: rgba(220, 53, 69, 0.2); border: 1px solid #dc3545; color: #ff6b6b; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;">
+                <i class="bi bi-exclamation-circle"></i> Identifiants incorrects. Veuillez réessayer.
+            </div>
+            <?php endif; ?>
+
             <!-- Login Form -->
             <form method="post" action="">
+                <?= csrf_field() ?>
                 <div class="form-group">
                     <label for="pseudo">Nom d'utilisateur</label>
                     <div class="input-wrapper">

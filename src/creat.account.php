@@ -2,6 +2,10 @@
 <html>
 <head>
 	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
+	<?php 
+	// SÉCURITÉ: Cette page est réservée aux administrateurs et registraires
+	requireLevel(ROLE_REGISTRAR, './accueil.php');
+	?>
 	<title>Utilisateur</title>
 </head>
 <body class="<?=$bg_three_color?> sm:text-xs lg:text-sm">
@@ -128,11 +132,11 @@
 
 		<div class="w-[700px] bg-slate-300 border-2 border-slate-700 mx-auto my-[1%] opacity-100 drop-shadow-2xl">
 <?php 
-	$showUser = $dtb->query("SELECT * FROM compt_utilisateur WHERE id = '".$user_id."' limit 1");
-	
-	$user = $showUser->fetch();
+	// Requête sécurisée
+	$user = DB::find('compt_utilisateur', $user_id);
  ?>
 <form method="post" action="../app/.user/updateUser.php?rg_id=<?=$rg_id;?>&id=<?=$user_id?>" enctype="multipart/form-data">
+			<?= csrf_field() ?>
 			<div class="p-2 text-black flex">
 				<div class="w-7/12">
 					<b>Mettre à jour <?=$user['nom']?> <?=$user['prenom']?>.</b>	
@@ -264,6 +268,7 @@
 		<div class="w-[700px] bg-slate-300 border-2 border-slate-700 mx-auto my-[1%] opacity-100 drop-shadow-2xl">
 
 <form id="formToAddUser" method="post" action="../app/.user/add.user.php?id=<?=$rg_id?>" enctype="multipart/form-data">
+			<?= csrf_field() ?>
 			<div class="p-2 text-black flex">
 				<div class="w-7/12">
 					<b>Ajouter un utilisateur.</b>	
