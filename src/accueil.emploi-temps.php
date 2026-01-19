@@ -186,7 +186,7 @@
 						$heures = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
 						
 						// Récupérer les cours avec leurs durées
-						$query = $dtb->query("SELECT * FROM t_2024_emploi_du_temps WHERE statut = 'confirme'");
+						$query = $dtb->query("SELECT e.*, s.salle_nom FROM t_2024_emploi_du_temps e LEFT JOIN t_2024_salles s ON e.salle_id = s.id WHERE e.statut = 'confirme'");
 						$coursData = [];
 						while($c = $query->fetch()) {
 							$hDebut = intval(substr($c['heure_debut'], 0, 2));
@@ -257,7 +257,7 @@
 												data-type="<?=$cours['type_seance']?>"
 												style="height: <?=($cours['duree'] * 50) - 10?>px;">
 												<div class="course-title"><?=$cours['cours_title']?></div>
-												<div class="details"><i class="bi bi-geo-alt-fill"></i> <?=$cours['salle_code']?></div>
+												<div class="details"><i class="bi bi-geo-alt-fill"></i> <?=$cours['salle_nom']?></div>
 												<div class="details"><?=$cours['mention']?> L<?=$cours['niveau']?></div>
 												<?php if(!empty($cours['parcours'])): ?>
 												<div class="parcours-badge"><?=$cours['parcours']?></div>
@@ -302,7 +302,7 @@
 							</thead>
 							<tbody>
 								<?php
-								$allCours = $dtb->query("SELECT * FROM t_2024_emploi_du_temps ORDER BY FIELD(jour_semaine, 'Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'), heure_debut");
+								$allCours = $dtb->query("SELECT e.*, s.salle_nom FROM t_2024_emploi_du_temps e LEFT JOIN t_2024_salles s ON e.salle_id = s.id ORDER BY FIELD(e.jour_semaine, 'Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'), e.heure_debut");
 								while($c = $allCours->fetch()):
 									$typeBg = match($c['type_seance']) {
 										'cours' => 'bg-cyan-700',
@@ -317,7 +317,7 @@
 									<td><span class="<?=$typeBg?> px-2 py-0.5 rounded text-xs"><?=strtoupper($c['type_seance'])?></span></td>
 									<td><?=$c['jour_semaine']?></td>
 									<td><?=substr($c['heure_debut'],0,5)?> - <?=substr($c['heure_fin'],0,5)?></td>
-									<td><i class="bi bi-geo-alt"></i> <?=$c['salle_code']?></td>
+									<td><i class="bi bi-geo-alt"></i> <?=$c['salle_nom']?></td>
 									<td><?=$c['mention']?></td>
 									<td>L<?=$c['niveau']?></td>
 									<td class="text-center">
@@ -352,11 +352,18 @@
 				<div class="grid grid-cols-2 gap-4">
 					<!-- Sélection du cours -->
 					<div class="col-span-2">
-						<label class="block text-slate-400 text-xs mb-1">Cours *</label>
-						<select id="coursSelect" name="cours_id" required class="w-full bg-slate-700 text-white text-sm px-3 py-2 rounded border border-slate-600">
-							<option value="">-- Sélectionner un cours --</option>
-						</select>
-						<div class="flex gap-2 mt-2">
+						<label class="block text-slate-400 text-xs mb-1">Cours * <span class="text-slate-500">(700+ cours disponibles)</span></label>
+						
+						<!-- Champ de recherche -->
+						<div class="relative mb-2">
+							<i class="bi bi-search absolute left-3 top-2.5 text-slate-400"></i>
+							<input type="text" id="searchCours" placeholder="Rechercher par sigle, titre ou mot-clé..." 
+								class="w-full bg-slate-700 text-white text-sm pl-9 pr-3 py-2 rounded border border-slate-600 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
+								autocomplete="off">
+							<span id="searchCoursCount" class="absolute right-3 top-2.5 text-xs text-slate-500"></span>
+						</div>
+						
+						<div class="flex gap-2 mb-2">
 							<select id="filterCourseMention" class="bg-slate-600 text-white text-xs px-2 py-1 rounded">
 								<option value="">Filtre mention</option>
 								<?php
@@ -374,7 +381,14 @@
 								<option value="4">M1</option>
 								<option value="5">M2</option>
 							</select>
+							<button type="button" id="resetFilters" class="bg-slate-600 hover:bg-slate-500 text-white text-xs px-2 py-1 rounded" title="Réinitialiser">
+								<i class="bi bi-x-lg"></i>
+							</button>
 						</div>
+						<select id="coursSelect" name="cours_id" required class="w-full bg-slate-700 text-white text-sm px-3 py-2 rounded border border-slate-600" size="8" style="height: auto;">
+							<option value="">-- Sélectionner un cours --</option>
+						</select>
+						<p class="text-slate-500 text-xs mt-1"><i class="bi bi-info-circle"></i> Tapez au moins 2 caractères pour rechercher</p>
 					</div>
 					
 					<!-- Parcours concerné -->
@@ -680,7 +694,7 @@
 	<!-- Données pour export -->
 	<?php
 	// Récupérer toutes les séances pour l'export
-	$allSeancesExport = $dtb->query("SELECT * FROM t_2024_emploi_du_temps ORDER BY FIELD(jour_semaine, 'Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'), heure_debut");
+	$allSeancesExport = $dtb->query("SELECT e.*, s.salle_nom FROM t_2024_emploi_du_temps e LEFT JOIN t_2024_salles s ON e.salle_id = s.id ORDER BY FIELD(e.jour_semaine, 'Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'), e.heure_debut");
 	$seancesData = [];
 	while($s = $allSeancesExport->fetch()) {
 		$seancesData[] = [
@@ -691,7 +705,7 @@
 			'jour_semaine' => $s['jour_semaine'],
 			'heure_debut' => $s['heure_debut'],
 			'heure_fin' => $s['heure_fin'],
-			'salle_code' => $s['salle_code'],
+			'salle_nom' => $s['salle_nom'],
 			'mention' => $s['mention'],
 			'niveau' => $s['niveau'],
 			'semester' => $s['semester'],
@@ -910,7 +924,7 @@
 						s.cours_sigle,
 						s.cours_title,
 						s.type_seance.toUpperCase(),
-						s.salle_code,
+						s.salle_nom,
 						s.mention + ' L' + s.niveau,
 						s.parcours || '-'
 					];
@@ -990,7 +1004,7 @@
 				s.cours_sigle,
 				s.cours_title,
 				s.type_seance.toUpperCase(),
-				s.salle_code,
+				s.salle_nom,
 				s.mention,
 				'L' + s.niveau,
 				s.parcours || ''
@@ -1044,7 +1058,7 @@
 				
 				if(seancesCeCreneaux.length > 0) {
 					const textes = seancesCeCreneaux.map(s => 
-						`${s.cours_sigle} (${s.type_seance.toUpperCase()}) - ${s.salle_code}`
+						`${s.cours_sigle} (${s.type_seance.toUpperCase()}) - ${s.salle_nom}`
 					);
 					row.push(textes.join('\n'));
 				} else {
@@ -1087,7 +1101,7 @@
 					s.cours_sigle,
 					s.cours_title,
 					s.type_seance.toUpperCase(),
-					s.salle_code,
+					s.salle_nom,
 					s.mention + ' L' + s.niveau,
 					s.parcours || ''
 				]);
@@ -1359,7 +1373,7 @@
 		const select = document.getElementById('editSalle');
 		select.innerHTML = '<option value="">-- Sélectionner --</option>';
 		salles.forEach(s => {
-			select.innerHTML += `<option value="${s.id}">${s.salle_code}</option>`;
+			select.innerHTML += `<option value="${s.id}">${s.salle_nom}</option>`;
 		});
 	}
 	
@@ -1419,28 +1433,98 @@
 	});
 	
 	// ==================== MODAL AJOUT ====================
-	// Charger les cours
+	// Cache pour tous les cours
+	let allCoursCache = null;
+	
+	// Charger tous les cours une seule fois
+	async function loadAllCours() {
+		if(allCoursCache) return allCoursCache;
+		
+		const response = await fetch('./emploi-temps.api.php?action=get_cours');
+		allCoursCache = await response.json();
+		return allCoursCache;
+	}
+	
+	// Charger et filtrer les cours
 	async function loadCours() {
 		const mention = document.getElementById('filterCourseMention').value;
 		const niveau = document.getElementById('filterCourseNiveau').value;
+		const search = document.getElementById('searchCours').value.trim().toLowerCase();
 		
-		const params = new URLSearchParams({action: 'get_cours'});
-		if(mention) params.append('mention', mention);
-		if(niveau) params.append('niveau', niveau);
+		// Charger tous les cours
+		const allCours = await loadAllCours();
 		
-		const response = await fetch('./emploi-temps.api.php?' + params);
-		const cours = await response.json();
+		// Filtrer localement
+		let filteredCours = allCours.filter(c => {
+			let match = true;
+			if(mention && c.dep_desc !== mention) match = false;
+			if(niveau && c.yearlevel != niveau) match = false;
+			if(search.length >= 2) {
+				const searchStr = `${c.Sigle} ${c.title} ${c.dep_desc}`.toLowerCase();
+				if(!searchStr.includes(search)) match = false;
+			}
+			return match;
+		});
+		
+		// Trier par pertinence si recherche active
+		if(search.length >= 2) {
+			filteredCours.sort((a, b) => {
+				// Priorité aux sigles qui commencent par la recherche
+				const aStartsWithSigle = a.Sigle.toLowerCase().startsWith(search) ? 0 : 1;
+				const bStartsWithSigle = b.Sigle.toLowerCase().startsWith(search) ? 0 : 1;
+				if(aStartsWithSigle !== bStartsWithSigle) return aStartsWithSigle - bStartsWithSigle;
+				
+				// Puis par titre qui commence par la recherche
+				const aStartsWithTitle = a.title.toLowerCase().startsWith(search) ? 0 : 1;
+				const bStartsWithTitle = b.title.toLowerCase().startsWith(search) ? 0 : 1;
+				return aStartsWithTitle - bStartsWithTitle;
+			});
+		}
 		
 		const select = document.getElementById('coursSelect');
+		const countSpan = document.getElementById('searchCoursCount');
+		
+		// Afficher le nombre de résultats
+		countSpan.textContent = `${filteredCours.length} cours`;
+		
+		// Limiter l'affichage à 100 résultats pour la performance
+		const displayCours = filteredCours.slice(0, 100);
+		
 		select.innerHTML = '<option value="">-- Sélectionner un cours --</option>';
-		cours.forEach(c => {
-			select.innerHTML += `<option value="${c.id}">${c.Sigle} - ${c.title} (${c.dep_desc} L${c.yearlevel})</option>`;
+		displayCours.forEach(c => {
+			const option = document.createElement('option');
+			option.value = c.id;
+			option.textContent = `${c.Sigle} - ${c.title} (${c.dep_desc} L${c.yearlevel})`;
+			select.appendChild(option);
 		});
+		
+		// Message si plus de 100 résultats
+		if(filteredCours.length > 100) {
+			const option = document.createElement('option');
+			option.disabled = true;
+			option.textContent = `... et ${filteredCours.length - 100} autres (affinez votre recherche)`;
+			select.appendChild(option);
+		}
 	}
+	
+	// Debounce pour la recherche
+	let searchTimeout = null;
+	document.getElementById('searchCours').addEventListener('input', function() {
+		clearTimeout(searchTimeout);
+		searchTimeout = setTimeout(loadCours, 300);
+	});
 	
 	// Filtres cours
 	document.getElementById('filterCourseMention').addEventListener('change', loadCours);
 	document.getElementById('filterCourseNiveau').addEventListener('change', loadCours);
+	
+	// Bouton reset filtres
+	document.getElementById('resetFilters').addEventListener('click', function() {
+		document.getElementById('searchCours').value = '';
+		document.getElementById('filterCourseMention').value = '';
+		document.getElementById('filterCourseNiveau').value = '';
+		loadCours();
+	});
 	
 	// Quand on sélectionne un cours, charger les parcours de sa mention
 	document.getElementById('coursSelect').addEventListener('change', async function() {
@@ -1480,7 +1564,7 @@
 		const select = document.getElementById('salleSelect');
 		select.innerHTML = '<option value="">-- Sélectionner --</option>';
 		salles.forEach(s => {
-			select.innerHTML += `<option value="${s.id}">${s.salle_code}</option>`;
+			select.innerHTML += `<option value="${s.id}">${s.salle_nom}</option>`;
 		});
 	}
 	

@@ -12,7 +12,7 @@ $session_id = $showSessionOnSS['session_id'];
 // Définir l'année scolaire actuelle
 $annee_scolaire = "2025 - 2026";
 // Compter le nombre d'étudiants abonnés pour l'année scolaire (unique students from tbl_2024_etudiant)
-$countAbonnesQ = $dtb->query('SELECT COUNT(*) AS total_abonnes FROM tbl_2024_etudiant WHERE abonment = 1 AND annee_scolaire = "'.$annee_scolaire.'"');
+$countAbonnesQ = $dtb->query('SELECT COUNT(*) AS total_abonnes FROM tbl_2024_etudiant WHERE abonment = 1 AND annee_scolaire = "'.$annee_scolaire.'" AND (graduated IS NULL OR graduated != 1)');
 $countAbonnesR = $countAbonnesQ->fetch();
 $totalAbonnesAnnee = intval($countAbonnesR['total_abonnes']);
  ?>
@@ -61,7 +61,7 @@ $thorizontal = 0;
             SUM(CASE WHEN e.abonment = 0 AND e.sex = 1 THEN 1 ELSE 0 END) AS NonAbonnee_H,
             SUM(CASE WHEN e.abonment = 0 AND e.sex = 0 THEN 1 ELSE 0 END) AS NonAbonnee_F
         FROM tbl_2024_etudiant e
-        WHERE e.etude_envisage = "'.$mention.'" AND e.annee_scolaire = "'.$annee_scolaire.'"');		$row = $result->fetch();
+        WHERE e.etude_envisage = "'.$mention.'" AND e.annee_scolaire = "'.$annee_scolaire.'" AND (e.graduated IS NULL OR e.graduated != 1)');		$row = $result->fetch();
 
 		// Normaliser
 		$row['Abonnee_H'] = isset($row['Abonnee_H']) ? intval($row['Abonnee_H']) : 0;

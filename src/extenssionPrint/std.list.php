@@ -24,6 +24,14 @@
 	
 		echo "abonnée";	
 	
+	}elseif($exportation == "adventiste"){
+	
+		echo "Adventistes";	
+	
+	}elseif($exportation == "non_adventiste"){
+	
+		echo "Non-Adventistes";	
+	
 	}
 
 echo " <br><em class='text-xs'>".$session_name."  ".$session_year."</em>";
@@ -82,6 +90,11 @@ if(empty($_POST['cours'])){
 				<td style="width: 70px;" class="border-r px-1">Sexe</td>
 				<td style="width: 70px;" class="border-r px-1">Résidence</td>
 					<?php 
+				}elseif ($exportation == "adventiste" OR $exportation == "non_adventiste") {
+					?>
+				<td style="width: 70px;" class="border-r px-1">Sexe</td>
+				<td style="width: 100px;" class="border-r px-1">Religion</td>
+					<?php 
 				}else{
  				 ?>
  				<td class="border-r px-1">Adresse Email</td>
@@ -116,6 +129,10 @@ if(empty($_POST['cours'])){
 			$sql .= " AND ins.status = 'Interne'";
 		} elseif ($exportation == "abnment") {
 			$sql .= " AND ins.abonment_std = 1";
+		} elseif ($exportation == "adventiste") {
+			$sql .= " AND (std.religion = 'Adventiste' OR std.religion = 'Adventiste du Septieme-jour')";
+		} elseif ($exportation == "non_adventiste") {
+			$sql .= " AND std.religion != 'Adventiste' AND std.religion != 'Adventiste du Septieme-jour'";
 		}
 		
 		// Filtre nouveaux étudiants
@@ -192,6 +209,19 @@ if(empty($_POST['cours'])){
 				<td style="width: 70px;" class="border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?php if ($showStd['sex'] == 1){ echo "Masculin";}else{ echo "Feminin";}?></td>
 				
 				<td style="width: 70px;" class="border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?=$status?></td>
+					<?php 
+					if(!empty($_POST['signature'])){
+						echo '<td style="width: 100px;" class="border-r"></td>';
+					}
+					if(!empty($_POST['remarque'])){
+						echo '<td style="width: 120px;" class="border-r"></td>';
+					}
+				}elseif ($exportation == "adventiste" OR $exportation == "non_adventiste") {
+					?>
+				
+				<td style="width: 70px;" class="border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?php if ($showStd['sex'] == 1){ echo "Masculin";}else{ echo "Feminin";}?></td>
+				
+				<td style="width: 100px;" class="border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?=$showStd['religion']?></td>
 					<?php 
 					if(!empty($_POST['signature'])){
 						echo '<td style="width: 100px;" class="border-r"></td>';

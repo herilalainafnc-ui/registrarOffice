@@ -89,7 +89,7 @@ while ($annee = $annees->fetch()) {
                                 AND e.annee_etude >= :niveau_min
                                 AND e.annee_etude <= :niveau_max
                                 GROUP BY n.student_id
-                                HAVING SUM(n.credit) > 0
+                                HAVING SUM(n.credit) >= 25 AND ROUND(SUM(n.credit * n.grade) / SUM(n.credit), 2) >= 17
                                 ORDER BY moyenne DESC
                                 LIMIT 1
                             ";

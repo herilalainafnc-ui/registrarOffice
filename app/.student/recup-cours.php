@@ -1,16 +1,70 @@
 <?php 
 require ('../../data/backdb.php');
 
-echo "<br>".$student_id = $_GET['student_id'];
-echo "<br>".$id = $_GET['id'];
-echo "<br>".$as = $_GET['as'];
-echo "<br>".$idSupprCours = $_GET['idSupprCours'];
+// Fuseau horaire Madagascar (UTC+3)
+date_default_timezone_set('Indian/Antananarivo');
+
+$student_id = $_GET['student_id'];
+$id = $_GET['id'];
+$as = $_GET['as'];
+$idSupprCours = $_GET['idSupprCours'];
 $ajout = 1;
 $remove = 0;
-$retrait_date = date('Y-m-d')." ".date('h:i:s');
-$last_change_datetime = date('Y-m-d')." ".date('h:i:s');
-echo "<br>".$last_change_user_id = $_GET['user_id'];
+$retrait_date = date('Y-m-d H:i:s');
+$last_change_datetime = date('Y-m-d H:i:s');
+$last_change_user_id = $_GET['user_id'];
+$ip_address = $_SERVER['REMOTE_ADDR'] ?? null;
 
+	// Récupérer les informations actuelles de la note pour l'historique
+	$getCurrentNote = $dtb->prepare('SELECT * FROM t_2023_notes WHERE id = :note_id');
+	$getCurrentNote->execute(array('note_id' => $idSupprCours));
+	$currentNote = $getCurrentNote->fetch();
+
+	// Enregistrer dans l'historique des modifications de notes (restauration)
+	if ($currentNote) {
+		$insertHistory = $dtb->prepare('INSERT INTO t_notes_modification_history (
+			note_id,
+			student_id,
+			session_id,
+			cours_sigle,
+			cours_titre,
+			old_grade,
+			new_grade,
+			action_type,
+			action_by,
+			action_date,
+			ip_address,
+			commentaire
+		) VALUES (
+			:note_id,
+			:student_id,
+			:session_id,
+			:cours_sigle,
+			:cours_titre,
+			:old_grade,
+			:new_grade,
+			:action_type,
+			:action_by,
+			:action_date,
+			:ip_address,
+			:commentaire
+		)');
+
+		$insertHistory->execute(array(
+			'note_id' => $idSupprCours,
+			'student_id' => $currentNote['student_id'],
+			'session_id' => $currentNote['session_id'],
+			'cours_sigle' => $currentNote['Sigle'],
+			'cours_titre' => $currentNote['title_cours'],
+			'old_grade' => $currentNote['grade'],
+			'new_grade' => $currentNote['grade'],
+			'action_type' => 'restauration',
+			'action_by' => $last_change_user_id,
+			'action_date' => $last_change_datetime,
+			'ip_address' => $ip_address,
+			'commentaire' => 'Cours restauré dans la liste'
+		));
+	}
 
 	$updatenote = $dtb->prepare("UPDATE t_2023_notes SET 
 		retrait_date=:retrait_date,

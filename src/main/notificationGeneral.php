@@ -19,6 +19,8 @@
 				      				<option value="general">Liste d'étudiant générale</option>
 				      				<option value="internat">Liste d'étudiant interne</option>
 				      				<option value="abnment">Liste d'étudiant abonnée</option>
+				      				<option value="adventiste">Liste d'étudiant Adventiste</option>
+				      				<option value="non_adventiste">Liste d'étudiant Non-Adventiste</option>
 
 				      			</select>	
 				      		</div>

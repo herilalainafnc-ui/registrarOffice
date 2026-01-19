@@ -1,5 +1,6 @@
 <?php 
 	require('../../data/backdb.php');
+	require('student_history_helper.php');
 
 	$id = $_GET['id'];
 	$user_id = $_GET['user_id'];
@@ -13,6 +14,8 @@
 	$getStudent = $dtb->prepare('SELECT * FROM tbl_2024_etudiant WHERE student_id = :student_id');
 	$getStudent->execute(array('student_id' => $student_id));
 	$student = $getStudent->fetch();
+	
+	$ancien_statut_retrait = $student['retrait_universite'];
 
 	// Remettre l'étudiant comme actif
 	$updateStudent = $dtb->prepare('UPDATE tbl_2024_etudiant SET 
@@ -26,6 +29,9 @@
 		'date_action' => $date_action,
 		'student_id' => $student_id
 	));
+
+	// Enregistrer dans l'historique des modifications étudiantes
+	logStudentModification($dtb, $student_id, $id, 'retrait_universite', $ancien_statut_retrait, '0', $user_id, 'annulation_retrait', $commentaire);
 
 	// Enregistrer dans l'historique des retraits
 	$insertHistory = $dtb->prepare('INSERT INTO t_retrait_history (

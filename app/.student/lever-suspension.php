@@ -1,5 +1,6 @@
 <?php 
 	require('../../data/backdb.php');
+	require('student_history_helper.php');
 
 	$id = $_GET['id'];
 	$user_id = $_GET['user_id'];
@@ -21,6 +22,9 @@
 		'date_action' => $date_action,
 		'student_id' => $student_id
 	));
+
+	// Enregistrer dans l'historique des modifications étudiantes
+	logStudentModification($dtb, $student_id, $id, 'suspended', '1', '0', $user_id, 'levee_suspension', $commentaire);
 
 	// Enregistrer dans l'historique des suspensions
 	$insertHistory = $dtb->prepare('INSERT INTO t_suspension_history (

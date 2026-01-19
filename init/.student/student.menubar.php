@@ -83,14 +83,29 @@ if($profil['annee_etude'] == 0) {
 								<b><?=strtoupper($profil['student_nom']) ?> <?=$profil['student_prenom'] ?></b><br>
 								<em><?=$profil['etude_envisage']." - ".$profil['etude_option'] ?></em><br>
 								<b>Année <?=$profil['annee_scolaire']?></b><br>
-								<p class="text-[11px] text-green-600" style="line-height: 12px;">Modifié par <?php 
-								$user_modif_id  = $profil['last_change_user_id'];
-$findUser = $dtb->query('SELECT * FROM compt_utilisateur WHERE id = "'.$user_modif_id.'"');
-$showUser = $findUser->fetch();
-if (!empty($showUser)) {
-	echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];	
-}
-								 ?></p>
+								<a href="?id=<?=$id;?>&page=histInfos" class="text-[11px] text-green-600 hover:text-green-400" style="line-height: 12px;">
+									<i class="bi-clock-history"></i> Modifié par <?php 
+								// Récupérer la dernière modification depuis l'historique
+								$findLastModif = $dtb->query("SELECT h.action_by, h.action_date, u.prenom, u.nom 
+									FROM t_student_modification_history h 
+									LEFT JOIN compt_utilisateur u ON h.action_by = u.id 
+									WHERE h.student_id = '".$student_id."' 
+									ORDER BY h.action_date DESC LIMIT 1");
+								$lastModif = $findLastModif->fetch();
+								
+								if (!empty($lastModif) && !empty($lastModif['prenom'])) {
+									echo "<b>[".$lastModif['prenom']."]</b><br>".date('Y-m-d H:i', strtotime($lastModif['action_date']));
+								} elseif (!empty($profil['last_change_user_id'])) {
+									// Fallback sur l'ancienne méthode si pas d'historique
+									$user_modif_id = $profil['last_change_user_id'];
+									$findUser = $dtb->query('SELECT * FROM compt_utilisateur WHERE id = "'.$user_modif_id.'"');
+									$showUser = $findUser->fetch();
+									if (!empty($showUser)) {
+										echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];	
+									}
+								}
+								 ?>
+								</a>
 						</div><hr>
 						<div class="w-full text-md">
 								<a href="?id=<?=$id;?>&page=information">
@@ -133,6 +148,17 @@ if(isset($_GET['page']) and $_GET['page'] == "bulletin") {
 										
 										<i class="bi-journal-album"></i>
 												Relevé de notes
+									</div>
+								</a>
+								
+								<a href="?id=<?=$id;?>&page=histNotes">
+									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
+if(isset($_GET['page']) and $_GET['page'] == "histNotes") {
+	echo "bg-cyan-700 text-white";
+} ?>">
+										
+										<i class="bi-clock-history"></i>
+												Audit notes
 									</div>
 								</a>
 								<hr>

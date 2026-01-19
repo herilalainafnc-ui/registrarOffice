@@ -54,7 +54,7 @@ $result = $dtb->query('SELECT *,
            SUM(CASE WHEN (status = "Externe" OR status = "") AND sex = 1 THEN 1 ELSE 0 END) AS Externe_H,
            SUM(CASE WHEN (status = "Externe" OR status = "") AND sex = 0 THEN 1 ELSE 0 END) AS Externe_F
 
-    FROM tbl_2024_etudiant WHERE etude_envisage = "'.$mention.'" AND annee_scolaire = "'.$yearScoolNow.'" ORDER BY etude_envisage');
+    FROM tbl_2024_etudiant WHERE etude_envisage = "'.$mention.'" AND annee_scolaire = "'.$yearScoolNow.'" AND (graduated IS NULL OR graduated != 1) ORDER BY etude_envisage');
 
 
            $row = $result->fetch();

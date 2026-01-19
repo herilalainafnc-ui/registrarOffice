@@ -93,6 +93,10 @@ $yes = 1;
 										echo strtoupper($sdt_page);
 									}elseif($sdt_page == "courssupprim") {
 										echo "COURS RETIRÉ";
+									}elseif($sdt_page == "histNotes") {
+										echo "AUDIT DES MODIFICATIONS DE NOTES";
+									}elseif($sdt_page == "histInfos") {
+										echo "HISTORIQUE DES MODIFICATIONS";
 									}
 								}
 
@@ -120,6 +124,10 @@ $yes = 1;
 										require('./student/diplome.php');
 									}elseif($sdt_page == "courssupprim") {
 										require('./student/courssupprim.php');
+									}elseif($sdt_page == "histNotes") {
+										require('./student/historique-notes.php');
+									}elseif($sdt_page == "histInfos") {
+										require('./student/historique-infos.php');
 									}
 								}
 							?>

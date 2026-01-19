@@ -69,20 +69,22 @@ $session_id = $showSessionOnSS['session_id'];
 		$mention = $mt['filiere_description'];
 
 $result = $dtb->query('SELECT *,
-		SUM(CASE WHEN niveau_std = 0 AND new_student = 1 THEN 1 ELSE 0 END) AS RM_N,
-		SUM(CASE WHEN niveau_std = 0 AND new_student = 0 THEN 1 ELSE 0 END) AS RM_A,
-		SUM(CASE WHEN niveau_std = 1 AND new_student = 1 THEN 1 ELSE 0 END) AS Licence1_N,
-		SUM(CASE WHEN niveau_std = 1 AND new_student = 0 THEN 1 ELSE 0 END) AS Licence1_A,
-		SUM(CASE WHEN niveau_std = 2 AND new_student = 1 THEN 1 ELSE 0 END) AS Licence2_N,
-		SUM(CASE WHEN niveau_std = 2 AND new_student = 0 THEN 1 ELSE 0 END) AS Licence2_A,
-		SUM(CASE WHEN niveau_std = 3 AND new_student = 1 THEN 1 ELSE 0 END) AS Licence3_N,
-		SUM(CASE WHEN niveau_std = 3 AND new_student = 0 THEN 1 ELSE 0 END) AS Licence3_A,
-		SUM(CASE WHEN niveau_std = 4 AND new_student = 1 THEN 1 ELSE 0 END) AS Master1_N,
-		SUM(CASE WHEN niveau_std = 4 AND new_student = 0 THEN 1 ELSE 0 END) AS Master1_A,
-		SUM(CASE WHEN niveau_std = 5 AND new_student = 1 THEN 1 ELSE 0 END) AS Master2_N,
-		SUM(CASE WHEN niveau_std = 5 AND new_student = 0 THEN 1 ELSE 0 END) AS Master2_A
+		SUM(CASE WHEN ins.niveau_std = 0 AND ins.new_student = 1 THEN 1 ELSE 0 END) AS RM_N,
+		SUM(CASE WHEN ins.niveau_std = 0 AND ins.new_student = 0 THEN 1 ELSE 0 END) AS RM_A,
+		SUM(CASE WHEN ins.niveau_std = 1 AND ins.new_student = 1 THEN 1 ELSE 0 END) AS Licence1_N,
+		SUM(CASE WHEN ins.niveau_std = 1 AND ins.new_student = 0 THEN 1 ELSE 0 END) AS Licence1_A,
+		SUM(CASE WHEN ins.niveau_std = 2 AND ins.new_student = 1 THEN 1 ELSE 0 END) AS Licence2_N,
+		SUM(CASE WHEN ins.niveau_std = 2 AND ins.new_student = 0 THEN 1 ELSE 0 END) AS Licence2_A,
+		SUM(CASE WHEN ins.niveau_std = 3 AND ins.new_student = 1 THEN 1 ELSE 0 END) AS Licence3_N,
+		SUM(CASE WHEN ins.niveau_std = 3 AND ins.new_student = 0 THEN 1 ELSE 0 END) AS Licence3_A,
+		SUM(CASE WHEN ins.niveau_std = 4 AND ins.new_student = 1 THEN 1 ELSE 0 END) AS Master1_N,
+		SUM(CASE WHEN ins.niveau_std = 4 AND ins.new_student = 0 THEN 1 ELSE 0 END) AS Master1_A,
+		SUM(CASE WHEN ins.niveau_std = 5 AND ins.new_student = 1 THEN 1 ELSE 0 END) AS Master2_N,
+		SUM(CASE WHEN ins.niveau_std = 5 AND ins.new_student = 0 THEN 1 ELSE 0 END) AS Master2_A
 
- FROM t_2024_inscription_session WHERE etude_mention = "'.$filiere_sigle.'" AND session_id = "'.$session_id.'" ORDER BY etude_mention');
+ FROM t_2024_inscription_session ins
+ INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id
+ WHERE ins.etude_mention = "'.$filiere_sigle.'" AND ins.session_id = "'.$session_id.'" AND (std.graduated IS NULL OR std.graduated != 1) ORDER BY ins.etude_mention');
 
            $row = $result->fetch();
 

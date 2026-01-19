@@ -1,6 +1,7 @@
 <?php 
 
 require '../../data/backdb.php';
+require 'student_history_helper.php';
 	
 	$last_change_user_id = $_GET['rg_id'];
 	$id = $_GET['id'];
@@ -32,6 +33,10 @@ require '../../data/backdb.php';
 	}
 
 	$etude_envisage = $_GET['etude_envisage'];
+
+// Récupérer les anciennes données pour l'historique
+$getOldData = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE id = '".$id."'");
+$oldStudentData = $getOldData->fetch(PDO::FETCH_ASSOC);
 
 $findInfiliere = $dtb->query('SELECT * FROM filiere WHERE filiere_description = "'.$etude_envisage.'"');
 $showInfiliere = $findInfiliere->fetch();
@@ -226,7 +231,7 @@ if (!empty($answering)) {
 		sponsor_adresse=:sponsor_adresse,
 		sponsor_tel=:sponsor_tel,
 		annee_scolaire=:annee_scolaire,
-		/*last_change_user_id=:last_change_user_id,*/
+		last_change_user_id=:last_change_user_id,
 		last_change_datetime=:last_change_datetime,
 		status=:status,
 		graduated=:graduated,
@@ -266,7 +271,7 @@ if (!empty($answering)) {
 	$updateStudent->bindParam(':sponsor_adresse',$sponsor_adresse,PDO::PARAM_STR);
 	$updateStudent->bindParam(':sponsor_tel',$sponsor_tel,PDO::PARAM_STR);
 	$updateStudent->bindParam(':annee_scolaire',$annee_scolaire,PDO::PARAM_STR);
-	/*$updateStudent->bindParam(':last_change_user_id',$last_change_user_id,PDO::PARAM_INT);*/
+	$updateStudent->bindParam(':last_change_user_id',$last_change_user_id,PDO::PARAM_INT);
 	$updateStudent->bindParam(':last_change_datetime',$last_change_datetime,PDO::PARAM_STR);
 	$updateStudent->bindParam(':status',$status,PDO::PARAM_STR);
 	$updateStudent->bindParam(':graduated',$graduated,PDO::PARAM_STR);
@@ -282,6 +287,49 @@ if (!empty($answering)) {
 	$updateStudent->bindParam(':id',$id,PDO::PARAM_INT);
 
 	$updateStudent->execute();
+
+	// ========== ENREGISTREMENT DE L'HISTORIQUE DES MODIFICATIONS ==========
+	$newStudentData = [
+		'student_nom' => $student_nom,
+		'student_prenom' => $student_prenom,
+		'etude_option' => $etude_option,
+		'student_tel' => $student_tel,
+		'sex' => $sex,
+		'student_email' => $student_email,
+		'annee_etude' => $annee_etude,
+		'dateNaissance' => $dateNaissance,
+		'nationalite' => $nationalite,
+		'student_adresse' => $student_adresse,
+		'student_region' => $student_region,
+		'lieuNaissance' => $lieuNaissance,
+		'num_cin' => $num_cin,
+		'cin_date_delivre' => $cin_date_delivre,
+		'father_name' => $father_name,
+		'father_prof' => $father_prof,
+		'parent_tel' => $parent_tel,
+		'mother_name' => $mother_name,
+		'mother_prof' => $mother_prof,
+		'parent_adresse' => $parent_adresse,
+		'sponsor_nom' => $sponsor_nom,
+		'sponsor_prenom' => $sponsor_prenom,
+		'sponsor_adresse' => $sponsor_adresse,
+		'sponsor_tel' => $sponsor_tel,
+		'annee_scolaire' => $annee_scolaire,
+		'status' => $status,
+		'graduated' => $graduated,
+		'situationf' => $situationf,
+		'nb_enfant' => $nb_enfant,
+		'nom_conjoint' => $nom_conjoint,
+		'abonment' => $abonment,
+		'new_student' => $new_student,
+		'cin_region' => $cin_region,
+		'religion' => $religion,
+		'num_visa' => $num_visa
+	];
+	
+	// Enregistrer toutes les modifications
+	logStudentModifications($dtb, $oldStudentData, $newStudentData, $student_id, $id, $last_change_user_id, 'modification');
+	// ========== FIN HISTORIQUE ==========
 	
 
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/

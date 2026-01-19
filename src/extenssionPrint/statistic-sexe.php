@@ -75,7 +75,7 @@ $result = $dtb->query('SELECT *,
            SUM(CASE WHEN annee_etude = 5 AND sex = 1 THEN 1 ELSE 0 END) AS Master2_H,
            SUM(CASE WHEN annee_etude = 5 AND sex = 0 THEN 1 ELSE 0 END) AS Master2_F
 
-    FROM tbl_2024_etudiant WHERE etude_envisage = "'.$mention.'" AND annee_scolaire = "'.$yearScoolNow.'" ORDER BY etude_envisage');
+    FROM tbl_2024_etudiant WHERE etude_envisage = "'.$mention.'" AND annee_scolaire = "'.$yearScoolNow.'" AND (graduated IS NULL OR graduated != 1) ORDER BY etude_envisage');
 
 
            $row = $result->fetch();

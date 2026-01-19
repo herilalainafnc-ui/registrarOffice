@@ -267,12 +267,21 @@
 			</a>
 		</div>
 
+		<div class="menu-item <?php if($page == "deans-list.php") { echo "active"; } ?>">
+			<a href="./deans-list.php">
+				<div class="menu-icon-wrapper">
+					<i class="bi bi-star-fill menu-icon"></i>
+				</div>
+				<span class="menu-title">Dean's List</span>
+			</a>
+		</div>
+
 		<div class="menu-item <?php if($page == "meilleurs-etudiants.php") { echo "active"; } ?>">
 			<a href="./meilleurs-etudiants.php">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-trophy-fill menu-icon"></i>
 				</div>
-				<span class="menu-title">Meilleurs Étudiants</span>
+				<span class="menu-title">Top Student</span>
 			</a>
 		</div>
 		

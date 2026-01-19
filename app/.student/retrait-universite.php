@@ -1,5 +1,6 @@
 <?php 
 	require('../../data/backdb.php');
+	require('student_history_helper.php');
 
 	$id = $_GET['id'];
 	$user_id = $_GET['user_id'];
@@ -47,6 +48,16 @@
 		'date_action2' => $date_action,
 		'student_id' => $student_id
 	));
+
+	// Enregistrer dans l'historique des modifications étudiantes
+	$commentaire_retrait = "Type: $type_retrait - Cause: $cause_depart" . (!empty($details_cause) ? " - $details_cause" : "");
+	logStudentModification($dtb, $student_id, $id, 'retrait_universite', '0', $statut_retrait, $user_id, 'retrait', $commentaire_retrait);
+	logStudentModification($dtb, $student_id, $id, 'type_retrait', null, $type_retrait, $user_id, 'retrait');
+	logStudentModification($dtb, $student_id, $id, 'date_depart_universite', null, $date_depart, $user_id, 'retrait');
+	logStudentModification($dtb, $student_id, $id, 'cause_depart', null, $cause_depart, $user_id, 'retrait');
+	if ($date_retour_probable) {
+		logStudentModification($dtb, $student_id, $id, 'date_retour_probable', null, $date_retour_probable, $user_id, 'retrait');
+	}
 
 	// Enregistrer dans l'historique des retraits
 	$insertHistory = $dtb->prepare('INSERT INTO t_retrait_history (
