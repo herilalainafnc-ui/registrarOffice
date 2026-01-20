@@ -47,7 +47,7 @@
 		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 		
 			<div class="p-2 text-black">
-				<b>Exporter la liste des étudiants dans ce cours.</b>
+				<b>Liste des étudiants dans ce cours.</b>
 			</div>
 			<div class="p-2">
 				<div class="flex mb-3">

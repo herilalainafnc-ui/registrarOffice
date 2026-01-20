@@ -117,12 +117,15 @@ if(empty($_POST['cours'])){
 		$anneescolaire = $_POST['anneescolaire'];
 		
 		// Construction de la requête de base
+		// Exclure les étudiants: diplômés (graduated=1), suspendus (suspended=1), retirés (retrait_universite=2 ou 3)
 		$sql = "SELECT ins.*, std.annee_etude as real_niveau, std.graduated 
 				FROM t_2024_inscription_session ins 
 				INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id 
 				WHERE ins.session_id = '".$session_id."' 
 				AND ins.etude_mention = '".$etude_mention."'
-				AND (std.graduated IS NULL OR std.graduated != 1)";
+				AND (std.graduated IS NULL OR std.graduated != 1)
+				AND (std.suspended IS NULL OR std.suspended != 1)
+				AND (std.retrait_universite IS NULL OR std.retrait_universite = 0)";
 		
 		// Filtre par type d'exportation
 		if ($exportation == "internat") {
