@@ -1,3 +1,3 @@
 <?php
-  header("location:./src/");
+  header("location:./landing/");
 ?>

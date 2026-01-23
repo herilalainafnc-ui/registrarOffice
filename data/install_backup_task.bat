@@ -14,7 +14,7 @@ REM Supprimer l'ancienne tâche si elle existe
 schtasks /delete /tn "Backup_Registrar_DB" /f >nul 2>&1
 
 REM Créer la nouvelle tâche planifiée
-schtasks /create /tn "Backup_Registrar_DB" /tr "C:\xampp\htdocs\a.registrar\data\backup_database.bat" /sc daily /st 17:15 /ru SYSTEM /rl HIGHEST /f
+schtasks /create /tn "Backup_Registrar_DB" /tr "\"C:\xampp\htdocs\a.registrar\data\backup_database.bat\"" /sc daily /st 17:15 /ru SYSTEM /rl HIGHEST /f
 
 if %errorlevel% equ 0 (
     echo.

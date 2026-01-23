@@ -130,7 +130,7 @@ while ($annee = $annees->fetch()) {
                             
                             <!-- Info -->
                             <div class="flex-grow min-w-0">
-                                <a href="./student.php?id=<?= $student['id'] ?>&page=information" 
+                                <a href="./student?id=<?= $student['id'] ?>&page=information" 
                                    class="text-sm font-medium text-slate-200 hover:text-blue-400 transition-colors truncate block">
                                     <?= strtoupper($student['student_nom']) ?> <?= ucfirst(strtolower($student['student_prenom'])) ?>
                                 </a>

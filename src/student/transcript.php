@@ -1,4 +1,4 @@
-<div class=" mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">	
+﻿<div class=" mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">	
 <?php 
 	$level = $profil['annee_etude'];
 
@@ -109,7 +109,7 @@ $cours = $dtb->query("SELECT * FROM t_2023_notes WHERE student_id ='".$student_i
 		$annee_scolaire = $crs['annee_scolaire'];
 		$id_cours = $crs['id_cours'];
 	 ?>
-<form method="post" action="../app/.student/updatenote.php?id=<?=$id;?>&nbr=<?=$s.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$a.$s?>&user_id=<?=$rg_id?>" class="form-no-refrech<?=$nbr.$a.$s?>">			
+<form method="post" action="../app/.student/updatenote?id=<?=$id;?>&nbr=<?=$s.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$a.$s?>&user_id=<?=$rg_id?>" class="form-no-refrech<?=$nbr.$a.$s?>">			
 				<tr id="note<?=$s.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black ">
 					<td class="bg-gradient-to-r from-orange-800 to-orange-400 text-white"><?=$crs['Sigle']?></td>
 					<td><?=$crs['title_cours']?></td>
@@ -193,7 +193,7 @@ if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 
 							<ul class="dropdown-menu absolute border <?=$bg_six_color?> text-black p-0 rounded-0 text-xs">
 
-								<li><a href="../app/.student/del-cours.momentanee.php?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$a.$s?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>&id_cours=<?=$id_cours?>">		<p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Retirer</p>
+								<li><a href="../app/.student/del-cours.momentanee?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$a.$s?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>&id_cours=<?=$id_cours?>">		<p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Retirer</p>
 								</a></li>
 
 							</ul>
@@ -219,7 +219,7 @@ if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 				$('.form-no-refrech<?=$nbr.$a.$s?>').on('submit',function(e){
 					e.preventDefault();
 					
-					var url = '../app/.student/updatenote.php?id=<?=$id;?>&nbr=<?=$s.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$a.$s?>&user_id=<?=$rg_id?>';
+					var url = '../app/.student/updatenote?id=<?=$id;?>&nbr=<?=$s.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$a.$s?>&user_id=<?=$rg_id?>';
 
 					var data = $(this).serialize();
 
@@ -329,7 +329,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 					<th class="px-2" colspan="2"></th>
 				</tr>
 
-<form method="post" action="../app/.student/updatePromotionNote.php?id=<?=$id;?>&session_id=<?=$session_id?>&student_id=<?=$student_id;?>&nbr=<?=$s.$nbr;?>&a=<?=$a?>&s=<?=$s?>&annee_scolaire=<?=$annee_scolaire?>&user_id=<?=$rg_id?>" enctype="multipart/form-data" class="form-no-refrech">
+<form method="post" action="../app/.student/updatePromotionNote?id=<?=$id;?>&session_id=<?=$session_id?>&student_id=<?=$student_id;?>&nbr=<?=$s.$nbr;?>&a=<?=$a?>&s=<?=$s?>&annee_scolaire=<?=$annee_scolaire?>&user_id=<?=$rg_id?>" enctype="multipart/form-data" class="form-no-refrech">
 <?php
 	
 	if(!empty($session_id)){

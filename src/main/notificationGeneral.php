@@ -7,7 +7,7 @@
 			<div class="p-2 text-black">
 				<b>Exporter la liste d'étudiant.</b>
 			</div>
-			<form method="post" action="./data.topdf.php?ptype=listeStd" target="_blank">
+			<form method="post" action="./data.topdf?ptype=listeStd" target="_blank">
 			<div class="p-2">
 					<b class="toolInactive">Types d'exoprtation.</b>
 				      	<div class="flex mb-3">
@@ -197,7 +197,7 @@ if (date('m')>7) {
 			<div class="p-2 text-black">
 				<b>Exporter la liste de cours.</b>
 			</div>
-			<form method="post" action="./data.topdf.php?ptype=listeCours" target="_blank">
+			<form method="post" action="./data.topdf?ptype=listeCours" target="_blank">
 			<div class="p-2">
 	      			<b class="toolInactive">Listes.</b>
 				      	<div class="flex mb-3">
@@ -290,7 +290,7 @@ if (date('m')>7) {
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifListFOP" style="backdrop-filter: blur(3px);">
 
 		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
-			<form method="post" action="./data.topdf_paysage.php?ptype=foplist" target="_blank">
+			<form method="post" action="./data.topdf_paysage?ptype=foplist" target="_blank">
 			<div class="p-2 text-black">
 				<b>Exporter la requête FOP.</b>
 			</div>
@@ -355,7 +355,7 @@ if (date('m')>7) {
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifMesupres" style="backdrop-filter: blur(3px);">
 
 		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
-			<form method="post" action="./data.topdf_paysage.php?ptype=mesupres" target="_blank">
+			<form method="post" action="./data.topdf_paysage?ptype=mesupres" target="_blank">
 			<div class="p-2 text-black">
 				<b>Exporter la requête MESUPRES.</b>
 			</div>
@@ -423,7 +423,7 @@ if (date('m')>7) {
 
 		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 			
-			<form method="post" action="./genPDF/gen.mail_csv.php" target="_blank">
+			<form method="post" action="./genPDF/gen.mail_csv" target="_blank">
 			<div class="p-2 text-black">
 				<b>Exporter les adresses mail (CSV).</b>
 			</div>
@@ -501,7 +501,7 @@ if (date('m')>7) {
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifStatistic" style="backdrop-filter: blur(3px);">
 
 		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
-			<form method="post" action="./data.topdf.php?ptype=Statistique" target="_blank">
+			<form method="post" action="./data.topdf?ptype=Statistique" target="_blank">
 			<div class="p-2 text-black">
 				<b>Exporter la statistique générale.</b>
 			</div>
@@ -560,7 +560,7 @@ if (date('m')>7) {
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifTicketMail" style="backdrop-filter: blur(3px);">
 
 		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
-			<form method="post" action="./data.topdf.php?ptype=ticketMail" target="_blank">
+			<form method="post" action="./data.topdf?ptype=ticketMail" target="_blank">
 			<div class="p-2 text-black">
 				<b>Exporter le Ticket par Email.</b>
 			</div>
@@ -638,7 +638,7 @@ if (date('m')>7) {
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifFinance" style="backdrop-filter: blur(3px);">
 
 		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
-			<form method="post" action="./data.topdf_paysage.php?ptype=Finance" target="_blank">
+			<form method="post" action="./data.topdf_paysage?ptype=Finance" target="_blank">
 			<div class="p-2 text-black">
 				<b>Exporter le financement lors de l'inscrition de...</b>
 			</div>
@@ -752,7 +752,7 @@ if (date('m')>7) {
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifworkedSlip" style="backdrop-filter: blur(3px);">
 
 		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
-			<form method="post" action="./data.topdf.php?ptype=workedSlip" target="_blank">
+			<form method="post" action="./data.topdf?ptype=workedSlip" target="_blank">
 			<div class="p-2 text-black">
 				<b>Exporter les (worked slip).</b>
 			</div>
@@ -829,7 +829,7 @@ if (date('m')>7) {
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifworked" style="backdrop-filter: blur(3px);">
 
 		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
-			<form method="post" action="./data.topdf.php?ptype=worked" target="_blank">
+			<form method="post" action="./data.topdf?ptype=worked" target="_blank">
 			<div class="p-2 text-black">
 				<b>Exporter la liste (worked) de manière groupée.</b>
 			</div>
@@ -903,7 +903,7 @@ if (date('m')>7) {
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifBadgeGr" style="backdrop-filter: blur(3px);">
 
 		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
-			<form method="post" action="./data.topdf.php?ptype=BadgeGr" target="_blank">
+			<form method="post" action="./data.topdf?ptype=BadgeGr" target="_blank">
 			<div class="p-2 text-black">
 				<b>Exporter les badges en groupe.</b>
 			</div>
@@ -1011,7 +1011,7 @@ if (date('m')>7) {
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifLogOut" style="backdrop-filter: blur(3px);">
 
 		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
-			<form method="post" action="./data.topdf.php?ptype=ticketMail" target="_blank">
+			<form method="post" action="./data.topdf?ptype=ticketMail" target="_blank">
 			<div class="p-2 text-black">
 				<b>Alert.</b>
 			</div>
@@ -1021,7 +1021,7 @@ if (date('m')>7) {
 			<div class="p-3">
 				<center>
 				<a href="#" id="cancelnotifLogOut" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
-				<a href="../app/logout.php" id="btnnotifLogOut" class="bg-red-600 p-2 text-white rounded-md mx-1">Se déconnecter</a>
+				<a href="../app/logout" id="btnnotifLogOut" class="bg-red-600 p-2 text-white rounded-md mx-1">Se déconnecter</a>
 				</center>
 			</div>
 			</form>

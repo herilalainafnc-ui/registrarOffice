@@ -4,6 +4,9 @@
 	backdrop-filter: blur(8px);
 	border-bottom: 1px solid rgba(51, 65, 85, 0.5);
 }
+.std-toolbar::-webkit-scrollbar {
+	display: none;
+}
 .std-toolbar-btn {
 	display: flex;
 	flex-direction: column;
@@ -93,7 +96,7 @@
 }
 </style>
 
-<div class="std-toolbar w-full flex items-center gap-1 px-2 py-1.5 <?=$txt_one_color?> overflow-x-auto" style="scrollbar-width: none;">
+<div class="std-toolbar w-full flex items-center gap-1 px-2 py-1.5 <?=$txt_one_color?> overflow-x-auto overflow-y-hidden" style="scrollbar-width: none; -ms-overflow-style: none;">
 	
 
 	<!-- Check list -->

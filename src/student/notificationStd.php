@@ -46,7 +46,7 @@
 			<div class="p-3">
 				<center>
 				<a href="#" id="cancelnotifBulletin" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
-				<a href="./data.topdf.php?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=Bulletin&level=all&semester=all" id="showBulletin" target="_blank" class="bg-cyan-800 p-2 rounded-md text-white mx-1">Afficher</a>	
+				<a href="./data.topdf?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=Bulletin&level=all&semester=all" id="showBulletin" target="_blank" class="bg-cyan-800 p-2 rounded-md text-white mx-1">Afficher</a>	
 				</center>
 			</div>
 		</div>
@@ -57,7 +57,7 @@
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifFichInsc" style="backdrop-filter: blur(3px);">
 
 		<div class="w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
-<form method="post" action="./data.topdf.php?ptype=Fiche_inscription
+<form method="post" action="./data.topdf?ptype=Fiche_inscription
 	&id=<?=$id?>
 	&student_id=<?=$student_id?>
 	&student_nom=<?=$student_nom?>
@@ -169,7 +169,7 @@ if (date('m')>7) {
 			<div class="p-3">
 				<center>
 				<a href="#" id="cancelnotifTranscript" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
-				<a href="./data.topdf.php?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=Transcript&level=all&semester=all" id="showTranscript" target="_blank" class="bg-cyan-800 p-2 rounded-md text-white mx-1">Afficher</a>
+				<a href="./data.topdf?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=Transcript&level=all&semester=all" id="showTranscript" target="_blank" class="bg-cyan-800 p-2 rounded-md text-white mx-1">Afficher</a>
 				</center>	
 			</div>
 		</div>
@@ -220,7 +220,7 @@ if (date('m')>7) {
 			<div class="p-3">
 				<center>
 				<a href="#" id="cancelnotifTranscriptSS" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
-				<a href="./data.topdf.php?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=TranscriptSS&level=all&semester=all" id="showTranscriptSS" target="_blank" class="bg-cyan-800 p-2 rounded-md text-white mx-1">Afficher</a>
+				<a href="./data.topdf?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=TranscriptSS&level=all&semester=all" id="showTranscriptSS" target="_blank" class="bg-cyan-800 p-2 rounded-md text-white mx-1">Afficher</a>
 				</center>	
 			</div>
 		</div>
@@ -251,7 +251,7 @@ if (date('m')>7) {
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifSupprStd" style="backdrop-filter: blur(3px);">
 
 		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
-			<form method="post" action="./data.topdf.php?ptype=ticketMail" target="_blank">
+			<form method="post" action="./data.topdf?ptype=ticketMail" target="_blank">
 			<div class="p-2 text-black">
 				<b>Alert.</b>
 			</div>
@@ -261,7 +261,7 @@ if (date('m')>7) {
 			<div class="p-3">
 				<center>
 				<a href="#" id="cancelnotifSupprStd" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
-				<a href="../app/.student/delStd.php?id=<?=$id?>&rg_id=<?=$rg_id?>" id="btnnotifSupprStd" class="bg-red-600 p-2 text-white rounded-md mx-1">Supprimer</a>
+				<a href="../app/.student/delStd?id=<?=$id?>&rg_id=<?=$rg_id?>" id="btnnotifSupprStd" class="bg-red-600 p-2 text-white rounded-md mx-1">Supprimer</a>
 				</center>
 			</div>
 			</form>
@@ -316,37 +316,37 @@ if (date('m')>7) {
 		$('#levelBulletin').on('change',function(){
 			level = $(this).val();
 			semester = $('#semesterBulletin').val();
-			$('#showBulletin').attr('href','./data.topdf.php?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=Bulletin&level='+level+'&semester='+semester);
+			$('#showBulletin').attr('href','./data.topdf?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=Bulletin&level='+level+'&semester='+semester);
 		});
 
 		$('#semesterBulletin').on('change',function(){
 			semester = $(this).val();
 			level = $('#levelBulletin').val();
-			$('#showBulletin').attr('href','./data.topdf.php?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=Bulletin&level='+level+'&semester='+semester);
+			$('#showBulletin').attr('href','./data.topdf?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=Bulletin&level='+level+'&semester='+semester);
 		});
 
 		$('#levelTranscript').on('change',function(){
 			level = $(this).val();
 			semester = $('#semesterTranscript').val();
-			$('#showTranscript').attr('href','./data.topdf.php?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=Transcript&level='+level+'&semester='+semester);
+			$('#showTranscript').attr('href','./data.topdf?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=Transcript&level='+level+'&semester='+semester);
 		});
 
 		$('#levelTranscriptSS').on('change',function(){
 			level = $(this).val();
 			semester = $('#semesterTranscriptSS').val();
-			$('#showTranscriptSS').attr('href','./data.topdf.php?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=TranscriptSS&level='+level+'&semester='+semester);
+			$('#showTranscriptSS').attr('href','./data.topdf?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=TranscriptSS&level='+level+'&semester='+semester);
 		});
 
 		$('#semesterTranscriptSS').on('change',function(){
 			semester = $(this).val();
 			level = $('#levelTranscriptSS').val();
-			$('#showTranscriptSS').attr('href','./data.topdf.php?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=TranscriptSS&level='+level+'&semester='+semester);
+			$('#showTranscriptSS').attr('href','./data.topdf?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=TranscriptSS&level='+level+'&semester='+semester);
 		});
 
 		$('#semesterTranscript').on('change',function(){
 			semester = $(this).val();
 			level = $('#levelTranscript').val();
-			$('#showTranscript').attr('href','./data.topdf.php?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=Transcript&level='+level+'&semester='+semester);
+			$('#showTranscript').attr('href','./data.topdf?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=Transcript&level='+level+'&semester='+semester);
 		});
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 		

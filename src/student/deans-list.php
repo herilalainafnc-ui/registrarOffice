@@ -610,7 +610,7 @@
                                             <!-- Info -->
                                             <div class="flex-grow min-w-0">
                                                 <div class="flex items-center gap-2">
-                                                    <a href="./student.php?id=<?= $student['id'] ?>&page=information" 
+                                                    <a href="./student?id=<?= $student['id'] ?>&page=information" 
                                                        class="text-sm font-medium text-slate-200 hover:text-blue-400 transition-colors truncate">
                                                         <?= strtoupper($student['student_nom']) ?> <?= ucfirst(strtolower($student['student_prenom'])) ?>
                                                     </a>

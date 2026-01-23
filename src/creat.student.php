@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
@@ -9,11 +9,11 @@
 		
 		<!-- TOP BAR --><?php require('../init/topbar.php');?>
 
-		<div class="w-full flex">
+		<div class="w-full flex flex-col lg:flex-row">
 			
 			<!-- BARRE DE MENU --><?php require('../init/menubar.php');?>
 
-			<div class="sm:w-full lg:w-10/12 flex flex-col" style="height: calc(100vh - 56px);">
+			<div class="w-full lg:w-10/12 flex flex-col" style="height: calc(100vh - 56px);">
 			<!-- BARRE D'OUTILS --><?php require('../init/toolbar.php');?>
 
 <form id="form-inscription" enctype="multipart/form-data" class="flex flex-col flex-1 overflow-hidden">
@@ -695,7 +695,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 			var annee_etude = $('#annee_etude').val();
 
 			$.ajax({
-				url:"./services/parcours.live.php",
+				url:"./services/parcours.live",
 				method:"POST",
 				data:{mention:mention},
 
@@ -705,7 +705,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 			});
 
 			$.ajax({
-				url:"./services/matricule.live.php",
+				url:"./services/matricule.live",
 				method:"POST",
 				data:{mention:mention, annee_etude:annee_etude},
 
@@ -720,7 +720,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 			var annee_etude = $(this).val();
 
 			$.ajax({
-				url:"./services/matricule.live.php",
+				url:"./services/matricule.live",
 				method:"POST",
 				data:{mention:mention, annee_etude:annee_etude},
 

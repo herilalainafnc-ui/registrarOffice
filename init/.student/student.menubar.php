@@ -1,4 +1,66 @@
-<div class="my-1 px-2 mx-0.5 lg:w-4/12 xl:w-3/12 bg-slate-300 overflow-auto" style="height:calc(100vh - 160px);">
+<style>
+/* Student Menubar Responsive Styles */
+@media (max-width: 1023px) {
+	.student-profile-sidebar {
+		width: 100% !important;
+		max-height: 220px !important;
+		overflow-y: auto !important;
+	}
+	
+	.student-profile-sidebar .flex.my-2 {
+		flex-wrap: wrap;
+	}
+	
+	.student-profile-sidebar .w-\[75px\] {
+		width: 60px !important;
+	}
+	
+	.student-menu-items {
+		display: flex !important;
+		flex-wrap: wrap !important;
+		gap: 4px;
+	}
+	
+	.student-menu-items > a {
+		width: calc(50% - 4px) !important;
+	}
+	
+	.student-menu-items > a > div {
+		padding: 6px 8px !important;
+		font-size: 12px !important;
+	}
+	
+	.student-menu-items > a > div i {
+		font-size: 14px !important;
+	}
+}
+
+@media (max-width: 640px) {
+	.student-profile-sidebar {
+		max-height: 180px !important;
+	}
+	
+	.student-profile-sidebar .w-\[75px\] {
+		width: 50px !important;
+	}
+	
+	.student-menu-items > a {
+		width: 100% !important;
+	}
+	
+	.student-menu-items > a > div {
+		padding: 4px 6px !important;
+		font-size: 11px !important;
+	}
+	
+	/* Hide some info on mobile */
+	.student-profile-sidebar .text-sm {
+		font-size: 11px !important;
+	}
+}
+</style>
+
+<div class="student-profile-sidebar my-1 px-2 mx-0.5 lg:w-4/12 xl:w-3/12 bg-slate-300 overflow-auto" style="height:calc(100vh - 160px);">
 						
 						<div class="flex my-2 relative">
 
@@ -107,7 +169,7 @@ if($profil['annee_etude'] == 0) {
 								 ?>
 								</a>
 						</div><hr>
-						<div class="w-full text-md">
+						<div class="student-menu-items w-full text-md">
 								<a href="?id=<?=$id;?>&page=information">
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
 if(isset($_GET['page']) and $_GET['page'] == "information") {
@@ -225,9 +287,9 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 
 
 							<!-- MODAL SUSPENSION -->
-						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifSuspendStd" style="backdrop-filter: blur(30px);">
+						<div class="fixed inset-0 z-40 hidden overflow-y-auto" id="notifSuspendStd" style="backdrop-filter: blur(30px);">
 <form method="post" action="../app/.student/suspendre.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>">
-							<div class="w-[500px] <?=$bg_eight_color?> border-2 border-orange-500 mx-auto my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
+							<div class="w-[95%] max-w-[500px] <?=$bg_eight_color?> border-2 border-orange-500 mx-auto my-[3%] lg:my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
 								<div class="p-3 bg-orange-500 text-white rounded-t-md">
 									<p class="text-lg font-bold"><i class="bi-exclamation-triangle-fill mr-2"></i>Suspendre l'étudiant</p>
 								</div>
@@ -273,9 +335,9 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 						</div>
 
 							<!-- MODAL LEVER SUSPENSION -->
-						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifLeverSuspension" style="backdrop-filter: blur(30px);">
+						<div class="fixed inset-0 z-40 hidden overflow-y-auto" id="notifLeverSuspension" style="backdrop-filter: blur(30px);">
 <form method="post" action="../app/.student/lever-suspension.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>">
-							<div class="w-[500px] <?=$bg_eight_color?> border-2 border-green-500 mx-auto my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
+							<div class="w-[95%] max-w-[500px] <?=$bg_eight_color?> border-2 border-green-500 mx-auto my-[3%] lg:my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
 								<div class="p-3 bg-green-500 text-white rounded-t-md">
 									<p class="text-lg font-bold"><i class="bi-person-check-fill mr-2"></i>Lever la suspension</p>
 								</div>
@@ -310,9 +372,9 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 						</div>
 
 							<!-- MODAL RETRAIT UNIVERSITÉ -->
-						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifRetraitUniv" style="backdrop-filter: blur(30px);">
+						<div class="fixed inset-0 z-40 hidden overflow-y-auto" id="notifRetraitUniv" style="backdrop-filter: blur(30px);">
 <form method="post" action="../app/.student/retrait-universite.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>">
-							<div class="w-[550px] <?=$bg_eight_color?> border-2 border-blue-500 mx-auto my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
+							<div class="w-[95%] max-w-[550px] <?=$bg_eight_color?> border-2 border-blue-500 mx-auto my-[3%] lg:my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
 								<div class="p-3 bg-blue-500 text-white rounded-t-md">
 									<p class="text-lg font-bold"><i class="bi-door-open-fill mr-2"></i>Retrait de l'université</p>
 								</div>
@@ -374,9 +436,9 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 						</div>
 
 							<!-- MODAL ANNULER RETRAIT -->
-						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifAnnulerRetrait" style="backdrop-filter: blur(30px);">
+						<div class="fixed inset-0 z-40 hidden overflow-y-auto" id="notifAnnulerRetrait" style="backdrop-filter: blur(30px);">
 <form method="post" action="../app/.student/annuler-retrait.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>">
-							<div class="w-[500px] <?=$bg_eight_color?> border-2 border-green-500 mx-auto my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
+							<div class="w-[95%] max-w-[500px] <?=$bg_eight_color?> border-2 border-green-500 mx-auto my-[3%] lg:my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
 								<div class="p-3 bg-green-500 text-white rounded-t-md">
 									<p class="text-lg font-bold"><i class="bi-arrow-return-left mr-2"></i>Annuler le retrait</p>
 								</div>
@@ -421,9 +483,9 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 
 							<!-- MODIF IMAGE -->
 
-						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifModifIMG" style="backdrop-filter: blur(30px);">
+						<div class="fixed inset-0 z-40 hidden overflow-y-auto" id="notifModifIMG" style="backdrop-filter: blur(30px);">
 <form method="post" action="../app/.student/updtateImgStd.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>" enctype="multipart/form-data">
-							<div class="w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+							<div class="w-[95%] max-w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[3%] lg:my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
 								<div class="p-2">
 									<p>Modifier l'image d'étudiant</p>
 								</div>
@@ -447,9 +509,9 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 
 <!-- AFFICHE IMAGE -->
 
-						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifAffichIMG" style="backdrop-filter: blur(30px);">
+						<div class="fixed inset-0 z-40 hidden overflow-y-auto" id="notifAffichIMG" style="backdrop-filter: blur(30px);">
 
-							<div class="w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+							<div class="w-[95%] max-w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[3%] lg:my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
 								
 								<div class="p-2">
 									<div class="w-full h-[400px]" style="background-image: url('../app/photosetudiants/<?=$profil['image_student']?>');background-position: center; background-size: cover;background-repeat: no-repeat;">

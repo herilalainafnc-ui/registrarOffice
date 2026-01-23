@@ -15,11 +15,11 @@
 		<!-- NOTIFICATION MANAGER --><?php require('../src/main/notificationGeneral.php');?>
 		<!-- NOTIFICATION MANAGER --><?php require('../src/main/bigNotif.php');?>
 
-		<div class="w-full flex">
+		<div class="w-full flex flex-col lg:flex-row">
 			
 			<!-- BARRE DE MENU --><?php require('../init/menubar.php');?>
 
-			<div class="w-10/12">
+			<div class="w-full lg:w-10/12">
 	
 			
 				<div class="back" style="height: calc(100vh - 152px);">
@@ -135,7 +135,7 @@
 	// Requête sécurisée
 	$user = DB::find('compt_utilisateur', $user_id);
  ?>
-<form method="post" action="../app/.user/updateUser.php?rg_id=<?=$rg_id;?>&id=<?=$user_id?>" enctype="multipart/form-data">
+<form method="post" action="../app/.user/updateUser?rg_id=<?=$rg_id;?>&id=<?=$user_id?>" enctype="multipart/form-data">
 			<?= csrf_field() ?>
 			<div class="p-2 text-black flex">
 				<div class="w-7/12">
@@ -267,7 +267,7 @@
 
 		<div class="w-[700px] bg-slate-300 border-2 border-slate-700 mx-auto my-[1%] opacity-100 drop-shadow-2xl">
 
-<form id="formToAddUser" method="post" action="../app/.user/add.user.php?id=<?=$rg_id?>" enctype="multipart/form-data">
+<form id="formToAddUser" method="post" action="../app/.user/add.user?id=<?=$rg_id?>" enctype="multipart/form-data">
 			<?= csrf_field() ?>
 			<div class="p-2 text-black flex">
 				<div class="w-7/12">

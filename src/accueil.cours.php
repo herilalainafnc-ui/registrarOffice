@@ -9,11 +9,11 @@
 		
 		<!-- TOP BAR --><?php require('../init/topbar.php');?>
 
-		<div class="w-full flex">
+		<div class="w-full flex flex-col lg:flex-row">
 			
 			<!-- BARRE DE MENU --><?php require('../init/menubar.php');?>
 
-			<div class="sm:w-full lg:w-10/12 flex flex-col" style="height: calc(100vh - 56px);">
+			<div class="w-full lg:w-10/12 flex flex-col" style="height: calc(100vh - 56px);">
 			<!-- BARRE D'OUTILS --><?php require('../init/toolbar.php');?>
 			
 				<div class="w-full px-0.5 flex flex-1 overflow-hidden">
@@ -53,10 +53,10 @@
 	foreach ($coursResults as $cours_list) {
  ?>								
 								<tr id="cours_<?=$cours_nb?>" class="hover:bg-slate-600 hover:text-slate-800">	
-									<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['Sigle']?></div></a></td>
-									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['title']?></div></a></td>
-									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['dep_desc']?></div></a></td>
-									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
+									<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><a href="./cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['Sigle']?></div></a></td>
+									<td><a href="./cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['title']?></div></a></td>
+									<td><a href="./cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['dep_desc']?></div></a></td>
+									<td><a href="./cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
 if($cours_list['parcours'] == "all") { echo "Tronc comun";}else{
 	// Requête sécurisée
 	$showParcours = DB::selectOne('SELECT * FROM filiere_parcours WHERE shortcode = :code', ['code' => $cours_list['parcours']]);
@@ -65,8 +65,8 @@ if($cours_list['parcours'] == "all") { echo "Tronc comun";}else{
 	}
 }
 								?></div></a></td>
-									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['nb_crd']?></div></a></td>
-									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
+									<td><a href="./cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['nb_crd']?></div></a></td>
+									<td><a href="./cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php
 if ($cours_list['category'] == 0){
 	echo "Général";
 }elseif ($cours_list['category'] == 1) {
@@ -81,16 +81,16 @@ if ($cours_list['category'] == 0){
 	echo "-";
 }
 								?></div></a></td>
-									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php
-										if ($cours_list['yearlevel']==0) {
-											echo "Remise à niveau";
-										}elseif($cours_list['yearlevel']>0 AND $cours_list['yearlevel']<=3) {
-											echo "Licence ".$cours_list['yearlevel'];
-										}else{
-											echo "Master ".($cours_list['yearlevel']-3);
-										} ?></div></a></td>
-									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['semester']?></div></a></td>
-									<td><a href="./cours.php?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
+									<td><a href="./cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php
+												if ($cours_list['yearlevel']==0) {
+													echo "Remise à niveau";
+												}elseif($cours_list['yearlevel']>0 AND $cours_list['yearlevel']<=3) {
+													echo "Licence ".$cours_list['yearlevel'];
+												}else{
+													echo "Master ".($cours_list['yearlevel']-3);
+												} ?></div></a></td>
+									<td><a href="./cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['semester']?></div></a></td>
+									<td><a href="./cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php
 // Requête sécurisée
 $showTeach = DB::selectOne('SELECT * FROM teacher WHERE uid = :uid', ['uid' => $cours_list['id_teacher']]);
 if(!empty($showTeach)) {

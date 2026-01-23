@@ -4,7 +4,7 @@
 									<?php 		            
 if(($rg_user['privilege'] == 'administrator') OR ($rg_user['privilege_2'] == 'administrator') OR ($rg_user['privilege_3'] == 'administrator') OR ($rg_user['privilege_4'] == 'administrator') OR ($rg_user['privilege'] == 'registrar') OR ($rg_user['privilege_2'] == 'registrar') OR ($rg_user['privilege_3'] == 'registrar') OR ($rg_user['privilege_4'] == 'registrar')) {
 ?>
-						<form  method="post" action="../app/.utilisateur/add.user.php" enctype="multipart/form-data">
+						<form  method="post" action="../app/.utilisateur/add.user" enctype="multipart/form-data">
 <?php
 }else{
 	echo "";
@@ -57,7 +57,7 @@ if(($rg_user['privilege'] == 'administrator') OR ($rg_user['privilege_2'] == 'ad
 								</div>
 								<br><hr><br>
  								<div class="w-full grid grid-cols-2 gap-2 mt-2">
-		 							<a href="./settings.php" class="px-5 py-2 bg-slate-500 rounded-md">Annuler</a>
+		 							<a href="./settings" class="px-5 py-2 bg-slate-500 rounded-md">Annuler</a>
 									<button type="submit" class="px-5 py-2 bg-cyan-700 rounded-md">Enregistrer</button>
 								</div>
  						</div>	

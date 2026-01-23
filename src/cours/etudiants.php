@@ -1,4 +1,4 @@
-<div class=" mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">
+﻿<div class=" mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">
 <?php 
 $year = date('Y')+1;
 for ($i=0; $i < 4 ; $i++) { 
@@ -38,7 +38,7 @@ while ($cours_table = $cors->fetch()) {
 $idcours = $cours_table['id'];
  ?>
 
-<form method="post" action="../app/completnotes.php?id=<?=$id?>&idcours=<?=$idcours?>" class="form-no-refrech">
+<form method="post" action="../app/completnotes?id=<?=$id?>&idcours=<?=$idcours?>" class="form-no-refrech">
 					<tr>
 						<td class="bg-gradient-to-r from-orange-800 to-orange-400"><?=$cours_table['student_id']?></td>
 						<td class="c<?=$nbr.$i;?>"><?php
@@ -70,7 +70,7 @@ if($apotr){
 								<a href="#" class="btn nav-link" type="button" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="bi-three-dots-vertical"></span></a>
 								<ul class="dropdown-menu">
 							        <li>
-<a class="dropdown-item" href="actions/dell-listcours.incours.php?idSupprCours=<?=$idcours?>&id=<?=$id?>"><span class="bi-trash3-fill" style="color: red;"></span> Supprimer cet étudiant</a></li>
+<a class="dropdown-item" href="actions/dell-listcours.incours?idSupprCours=<?=$idcours?>&id=<?=$id?>"><span class="bi-trash3-fill" style="color: red;"></span> Supprimer cet étudiant</a></li>
 					          		</ul>
 							</div>
 						</td>
@@ -80,7 +80,7 @@ if($apotr){
 			$(document).ready(function(){
 				$('.form-no-refrech').on('submit',function(e){
 					e.preventDefault();
-					var url = 'actions/completnotes.php';
+					var url = 'actions/completnotes';
 					var data = $(this).serialize();
 
 					$.post(url,data,function(response){

@@ -1,4 +1,4 @@
-
+﻿
 <?php 
 	/*::::::::::::::::::::::: VÉRIFICATION SUSPENSION ::::::::::::::::::::::*/
 	
@@ -169,7 +169,7 @@
  ?>
 
  <!-- DEBUT DU FORMULAIRE -->
- <form action="../app/.student/checkCours.php?id=<?=$id?>&student_id=<?=$student_id?>&page=newCours&user_id=<?=$rg_id?>
+ <form action="../app/.student/checkCours?id=<?=$id?>&student_id=<?=$student_id?>&page=newCours&user_id=<?=$rg_id?>
 &etude_envisage=<?=$profil['etude_envisage']?>
 &status=<?=$profil['status']?>
 &new_student=<?=$profil['new_student']?>
@@ -479,7 +479,7 @@ $tcredit+= $credit + $crs['nb_crd'];
 
 			 e.preventDefault();
 
-			var url = '../app/.student/checkCours.php?id=<?=$id?>&student_id=<?=$student_id?>&page=newCours&user_id=<?=$rg_id?>
+			var url = '../app/.student/checkCours?id=<?=$id?>&student_id=<?=$student_id?>&page=newCours&user_id=<?=$rg_id?>
 &etude_envisage=<?=$profil['etude_envisage']?>
 &status=<?=$profil['status']?>
 &new_student=<?=$profil['new_student']?>

@@ -209,6 +209,15 @@
 		border-bottom: 1px solid #1a3a5c !important;
 	}
 	
+	/* Topbar sticky on mobile */
+	@media (max-width: 1023px) {
+		.topbar-bleu-nuit {
+			position: sticky !important;
+			top: 0 !important;
+			z-index: 1001 !important;
+		}
+	}
+	
 	/* Logo text gradient */
 	.logo-text-gradient {
 		background: linear-gradient(135deg, #4e9ede, #8eb8d4);
@@ -228,7 +237,7 @@
 <div class="flex items-center justify-between w-full h-14 topbar-bleu-nuit text-[#e8f1f8] px-3">
 	
 	<!-- Logo Section -->
-	<div class="flex items-center gap-3 lg:w-2/12">
+	<div class="hidden md:flex items-center gap-3 lg:w-2/12">
 		<a href="../src/" class="logo-container flex items-center gap-2">
 			<div class="w-8 h-8 bg-gradient-to-br from-[#4e9ede] to-[#1a3a5c] rounded-lg p-1 shadow-md">
 				<img src="../file/logo-coldbloud.png" class="w-full h-full">
@@ -245,7 +254,7 @@
 			<?php 
 			if($page == "accueil.php" OR $page == "student.php") {
 			 ?>
-			<form method="post" action="accueil.php" class="search-wrapper w-full max-w-md">
+			<form method="post" action="accueil" class="search-wrapper w-full max-w-md">
 				<input id="std-search" type="text" name="search" 
 					   placeholder="Rechercher un étudiant..." 
 					   class="topbar-search-input h-10 px-2 pl-10 text-sm border border-slate-600 <?=$bg_two_color?> text-slate-100 w-full rounded-lg focus:outline-none placeholder-slate-400">
@@ -254,7 +263,7 @@
 			<?php 
 			}elseif($page == "accueil.cours.php" OR $page == "cours.php") {
 			?>
-			<form method="post" action="accueil.cours.php" class="search-wrapper w-full max-w-md">
+			<form method="post" action="accueil.cours" class="search-wrapper w-full max-w-md">
 				<input id="cours-search" type="text" name="search" 
 					   placeholder="Rechercher un cours..." 
 					   class="topbar-search-input h-10 px-2 pl-10 text-sm border border-slate-600 <?=$bg_two_color?> text-slate-100 w-full rounded-lg focus:outline-none placeholder-slate-400">
@@ -263,7 +272,7 @@
 			<?php 
 			}elseif($page == "accueil.prof.php" OR $page == "prof.php") {
 			?>
-			<form method="post" action="accueil.cours.php" class="search-wrapper w-full max-w-md">
+			<form method="post" action="accueil.prof" class="search-wrapper w-full max-w-md">
 				<input id="prof-search" type="text" name="search" 
 					   placeholder="Rechercher un enseignant..." 
 					   class="topbar-search-input h-10 px-2 pl-10 text-sm border border-slate-600 <?=$bg_two_color?> text-slate-100 w-full rounded-lg focus:outline-none placeholder-slate-400">
@@ -485,7 +494,7 @@
 				$('#all-std').css({'display':'none'});
 
 				$.ajax({
-					url:"../init/.student/std-livesearch.php",
+					url:"../init/.student/std-livesearch",
 					method:"POST",
 					data:{input:input},
 
@@ -509,7 +518,7 @@
 				$('#all-cours').css({'display':'none'});
 
 				$.ajax({
-					url:"../init/.cours/cours-livesearch.php",
+					url:"../init/.cours/cours-livesearch",
 					method:"POST",
 					data:{input:input},
 
@@ -533,7 +542,7 @@
 				$('#all-prof').css({'display':'none'});
 
 				$.ajax({
-					url:"../init/.prof/prof-livesearch.php",
+					url:"../init/.prof/prof-livesearch",
 					method:"POST",
 					data:{input:input},
 

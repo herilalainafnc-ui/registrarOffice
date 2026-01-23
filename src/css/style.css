@@ -139,3 +139,38 @@ select option{
     .contenu td{
         height: 35px;  
     }
+
+/* ==========================================================================
+   RESPONSIVE TABLE WRAPPER
+   ========================================================================== */
+.table-responsive-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile table adjustments */
+@media (max-width: 768px) {
+    .simpleTbl,
+    .simpleTblLight,
+    .classicTbl {
+        font-size: 11px;
+    }
+    
+    .simpleTbl th,
+    .simpleTbl td {
+        padding: 3px 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .simpleTbl,
+    .simpleTblLight {
+        font-size: 10px;
+    }
+    
+    .simpleTbl th,
+    .simpleTbl td {
+        padding: 2px 3px;
+    }
+}

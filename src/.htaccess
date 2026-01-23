@@ -1,0 +1,24 @@
+RewriteEngine On
+
+# Désactiver l'ajout automatique de slash pour les dossiers
+DirectorySlash Off
+
+# Désactiver l'affichage du contenu des dossiers
+Options -Indexes
+
+# Empêcher l'accès direct aux fichiers .php (redirection 301)
+RewriteCond %{THE_REQUEST} /([^.]+)\.php [NC]
+RewriteRule ^ /%1 [R=301,L,NE]
+
+# Si c'est un dossier ET qu'un fichier .php du même nom existe, servir le .php
+# Ex: /student?id=1 -> student.php?id=1 (même si dossier student/ existe)
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)/?$ $1.php [L,QSA]
+
+# Servir les fichiers .php sans l'extension (cas standard)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L,QSA]
+

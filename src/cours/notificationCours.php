@@ -1,4 +1,4 @@
-<!-- FOR REMISE NOTE -->
+﻿<!-- FOR REMISE NOTE -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifRemiseNotes" style="backdrop-filter: blur(3px);">
 
 		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
@@ -105,7 +105,7 @@
 			<div class="p-3">
 				<center>
 				<a href="#" id="cancelnotifCours-suppr" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
-				<a href="../app/.cours/del.cours.php?id=<?=$id?>&rg_id=<?=$rg_id?>" id="btnCours-suppr" class="bg-red-600 p-2 text-white rounded-md mx-1">Supprimer</a>
+				<a href="../app/.cours/del.cours?id=<?=$id?>&rg_id=<?=$rg_id?>" id="btnCours-suppr" class="bg-red-600 p-2 text-white rounded-md mx-1">Supprimer</a>
 				</center>
 			</div>
 			
@@ -126,7 +126,7 @@
 			var yearRemiseNotes = $(this).val();
 			
 			$('#btnRemiseNotes').attr('class','bg-cyan-700 p-2 rounded-md mx-1');
-			$('#btnRemiseNotes').attr('href','./data.topdf.php?cours_id=<?=$id?>&yearRemiseNotes='+yearRemiseNotes+'&ptype=RemiseNotes');
+			$('#btnRemiseNotes').attr('href','./data.topdf?cours_id=<?=$id?>&yearRemiseNotes='+yearRemiseNotes+'&ptype=RemiseNotes');
 
 		});
 
@@ -144,10 +144,10 @@
 			var yearForCours = $(this).val();
 			
 			$('#btnListStdInThisCours').attr('class','bg-cyan-700 p-2 rounded-md ml-1');
-			$('#btnListStdInThisCours').attr('href','./data.topdf.php?cours_id=<?=$id?>&yearForCours='+yearForCours+'&ptype=ListStdInThisCours');
+			$('#btnListStdInThisCours').attr('href','./data.topdf?cours_id=<?=$id?>&yearForCours='+yearForCours+'&ptype=ListStdInThisCours');
 
 			$('#btnListStdInThisCoursGenPDF').attr('class','bg-red-700 p-2 rounded-md ml-1');
-			$('#btnListStdInThisCoursGenPDF').attr('href','./gen.pdf.php?cours_id=<?=$id?>&yearForCours='+yearForCours+'&ptype=ListStdInThisCours');
+			$('#btnListStdInThisCoursGenPDF').attr('href','./gen.pdf?cours_id=<?=$id?>&yearForCours='+yearForCours+'&ptype=ListStdInThisCours');
 		});
 
 		$('#cancelnotifListStdInThisCours').click(function(){
@@ -164,7 +164,7 @@
 			
 			$.each($("#definitive:checked"),function() {
 
-				$('#btnCours-suppr').attr('href','../app/.cours/del.cours.definitive.php?id=<?=$id?>');
+				$('#btnCours-suppr').attr('href','../app/.cours/del.cours.definitive?id=<?=$id?>');
 
 			});
 

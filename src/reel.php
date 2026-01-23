@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <?php require '../init/head.php'; ?>
@@ -6,7 +6,7 @@
         $(document).ready(function() {
             function fetchData() {
                 $.ajax({
-                    url: '../data/data.php',
+                    url: '../data/data',
                     method: 'GET',
                     success: function(response) {
                         $('#content').text(response.message);

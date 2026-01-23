@@ -3,21 +3,39 @@
 <head>
 	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
 	<title>Student</title>
+	<style>
+		/* Mobile - remove nested scrolls */
+		@media (max-width: 1023px) {
+			.student-content-wrapper {
+				max-height: none !important;
+				height: auto !important;
+				overflow: visible !important;
+			}
+			.student-main-container {
+				height: auto !important;
+				overflow: visible !important;
+			}
+			.student-flex-container {
+				overflow: visible !important;
+				height: auto !important;
+			}
+		}
+	</style>
 </head>
 <body class="<?=$bg_three_color?> sm:text-xs lg:text-sm">
 	<div class="h-screen w-full <?=$bg_three_color?>">
 		
 		<!-- TOP BAR --><?php require('../init/topbar.php');?>
 
-		<div class="w-full flex">
+		<div class="w-full flex flex-col lg:flex-row">
 			
 			<!-- BARRE DE MENU --><?php require('../init/menubar.php');?>
 
-			<div class="sm:w-full lg:w-10/12 flex flex-col" style="height: calc(100vh - 56px);">
+			<div class="student-main-container w-full lg:w-10/12 flex flex-col" style="height: calc(100vh - 56px);">
 			<!-- BARRE D'OUTILS --><?php require('../init/toolbar.php');?>
 				
-				<div class="w-full px-0.5 flex-1 overflow-hidden">
-					<div class="flex w-full">
+				<div class="student-flex-container w-full px-0.5 flex-1 overflow-hidden">
+					<div class="flex flex-col lg:flex-row w-full">
 						<!-- <div class="<?=$bg_one_color?> my-1 mx-0.5 w-3/12 p-2 text-slate-100 overflow-auto hidden" id="stdSearch-result" style="height: calc(100vh - 157px);"></div> -->
 <?php
 	$id = (int)$_GET['id']; // Cast en int pour sécurité
@@ -59,9 +77,9 @@ $yes = 1;
  ?>					
 					
 
-						<div class="my-1 mx-0.5 sm:w-10/12 lg:w-9/12 xxl:w-7/12 <?=$bg_one_color?> <?=$txt_one_color?>" style="max-height: calc(100vh - 160px);">
-							<div class="h-[70px] p-2 flex">
-								<div class="sm:w-2/12 lg:w-4/12 px-1">
+						<div class="student-content-wrapper my-1 mx-0.5 w-full lg:w-9/12 xxl:w-7/12 <?=$bg_one_color?> <?=$txt_one_color?> overflow-auto" style="max-height: calc(100vh - 160px);">
+							<div class="min-h-[70px] p-2 flex flex-wrap lg:flex-nowrap">
+								<div class="w-full lg:w-4/12 px-1 mb-2 lg:mb-0">
 									<a class="sm:text-xs lg:text-lg mt-3"><?php 
 
 									if (isset($_GET['page']) AND !empty($_GET['page'])) {

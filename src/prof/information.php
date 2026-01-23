@@ -1,4 +1,4 @@
-
+﻿
 <style>
 	/* ===== SHADCN-INSPIRED MODERN STYLES ===== */
 	.info-card {
@@ -209,7 +209,7 @@
 	}
 </style>
 
-<form method="post" action="../app/.prof/updateProf.php?id=<?=$teacher_id?>&rg_id=<?=$rg_id?>" class="form-no-refrech">
+<form method="post" action="../app/.prof/updateProf?id=<?=$teacher_id?>&rg_id=<?=$rg_id?>" class="form-no-refrech">
 <div class="w-full grid gap-4 grid-cols-1 lg:grid-cols-2 mt-3">
 
 	<div class='info-card'>
@@ -329,7 +329,7 @@
 		$('.form-no-refrech').on('submit',function (e) {
 			e.preventDefault();
 
-			var url = '../app/.prof/updateProf.php?id=<?=$teacher_id?>&rg_id=<?=$rg_id?>';
+			var url = '../app/.prof/updateProf?id=<?=$teacher_id?>&rg_id=<?=$rg_id?>';
 			var data = $(this).serialize();
 
 			$.post(url,data,function(response){

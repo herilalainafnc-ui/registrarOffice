@@ -9,11 +9,11 @@
 		
 		<!-- TOP BAR --><?php require('../init/topbar.php');?>
 
-		<div class="w-full flex">
+		<div class="w-full flex flex-col lg:flex-row">
 			
 			<!-- BARRE DE MENU --><?php require('../init/menubar.php');?>
 
-			<div class="sm:w-full lg:w-10/12 flex flex-col" style="height: calc(100vh - 56px);">
+			<div class="w-full lg:w-10/12 flex flex-col" style="height: calc(100vh - 56px);">
 			<!-- BARRE D'OUTILS --><?php require('../init/toolbar.php');?>
 			
 				<div class="w-full px-0.5 flex flex-1 overflow-hidden">
@@ -49,12 +49,12 @@
 	while ($prof_list = $recupprof->fetch()) {
  ?>								
 								<tr id="prof_<?=$prof_nb?>" class="hover:bg-slate-600 hover:text-slate-800">	
-									<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><a href="./prof.php?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=$prof_list['teacher_id']?></div></a></td>
-									<td><a href="./prof.php?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=strtoupper($prof_list['name'])?></div></a></td>
-									<td><a href="./prof.php?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=$prof_list['lastName']?></div></a></td>
-									<td><a href="./prof.php?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=$prof_list['address']?></div></a></td>
-									<td><a href="./prof.php?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=$prof_list['phone']?></div></a></td>
-									<td><a href="./prof.php?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=$prof_list['email']?></div></a></td>
+									<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><a href="./prof?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=$prof_list['teacher_id']?></div></a></td>
+									<td><a href="./prof?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=strtoupper($prof_list['name'])?></div></a></td>
+									<td><a href="./prof?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=$prof_list['lastName']?></div></a></td>
+									<td><a href="./prof?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=$prof_list['address']?></div></a></td>
+									<td><a href="./prof?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=$prof_list['phone']?></div></a></td>
+									<td><a href="./prof?id=<?=$prof_list['teacher_id']?>&page=information"><div class="w-full"><?=$prof_list['email']?></div></a></td>
 									
 								</tr>
 

@@ -1,0 +1,16 @@
+RewriteEngine On
+
+# Empêcher l'accès direct aux fichiers .php (redirection 301)
+RewriteCond %{THE_REQUEST} /([^.]+)\.php [NC]
+RewriteRule ^ /%1 [R=301,L,NE]
+
+# Prioriser les fichiers .php même si un dossier du même nom existe
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L,QSA]
+
+# Servir les fichiers .php sans l'extension (cas standard)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L,QSA]

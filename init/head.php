@@ -98,16 +98,32 @@
 
 	<link rel="stylesheet" type="text/css" href="./css/style.css">
 	<link rel="stylesheet" type="text/css" href="./css/button.css">
+	<link rel="stylesheet" type="text/css" href="./css/responsive.css">
 
 	<!-- ===== GLOBAL THEME STYLES ===== -->
 	<style>
-		/* Prevent body scroll - app should be contained */
+		/* Prevent body scroll on desktop - app should be contained */
 		html, body {
 			margin: 0;
 			padding: 0;
-			overflow: hidden;
 			height: 100vh;
 			max-height: 100vh;
+		}
+		
+		/* Allow scroll on mobile */
+		@media (min-width: 1024px) {
+			html, body {
+				overflow: hidden;
+			}
+		}
+		
+		@media (max-width: 1023px) {
+			html, body {
+				overflow-x: hidden;
+				overflow-y: auto;
+				height: auto;
+				max-height: none;
+			}
 		}
 		
 		/* Transition for smooth theme change */

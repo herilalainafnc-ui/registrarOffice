@@ -25,7 +25,7 @@
         </div>
         <div class="sm:w-5/12 text-right lg:w-4/12 pr-4">
             
-            <form action="data.toxlsx.php" method="post" id="exportForm">
+            <form action="data.toxlsx" method="post" id="exportForm">
                 
                 <input type="hidden" name="htmlContent" id="htmlContent" value="">
                 

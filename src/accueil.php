@@ -9,11 +9,11 @@
 		
 		<!-- TOP BAR --><?php require('../init/topbar.php');?>
 
-		<div class="w-full flex">
+		<div class="w-full flex flex-col lg:flex-row">
 			
 			<!-- BARRE DE MENU --><?php require('../init/menubar.php');?>
 
-			<div class="sm:w-full lg:w-10/12 flex flex-col" style="height: calc(100vh - 56px);">
+			<div class="w-full lg:w-10/12 flex flex-col" style="height: calc(100vh - 56px);">
 			<!-- BARRE D'OUTILS --><?php require('../init/toolbar.php');?>
 			
 				<div class="w-full px-0.5 flex flex-1 overflow-hidden">
@@ -50,15 +50,15 @@
  ?>								
 								<tr id="std_<?=$sdt_nb?>" class="hover:bg-slate-600 text-slate-100">	
 									<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"
-									><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['student_id']?></div></a></td>
-									<td class="relative"><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=strtoupper($sdt_list['student_nom'])?>
+									><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['student_id']?></div></a></td>
+									<td class="relative"><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=strtoupper($sdt_list['student_nom'])?>
 									<?php if($sdt_list['new_student'] == 1){ echo "&nbsp;&nbsp;&nbsp;<span class='badge bg-slate-900 border-1 border-slate-700 text-slate-500 absolute top-[1px]'>Nouveau</span>";} ?>
 									</div></a></td>
-									<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['student_prenom']?></div></a></td>
-									<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['etude_envisage']?></div></a></td>
-									<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['etude_option']?></div></a></td>
-									<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['annee_scolaire']?></div></a></td>
-									<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?php
+									<td><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['student_prenom']?></div></a></td>
+									<td><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['etude_envisage']?></div></a></td>
+									<td><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['etude_option']?></div></a></td>
+									<td><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['annee_scolaire']?></div></a></td>
+									<td><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?php
 										if ($sdt_list['annee_etude']==0) {
 											echo "Remise à niveau";
 										}elseif($sdt_list['annee_etude'] > 0 AND $sdt_list['annee_etude'] < 4) {

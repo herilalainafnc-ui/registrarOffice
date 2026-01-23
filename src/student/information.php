@@ -1,4 +1,4 @@
-
+﻿
 <style>
 	/* ===== SHADCN-INSPIRED MODERN STYLES ===== */
 	.info-card {
@@ -229,7 +229,7 @@
 	}
 </style>
 
-<form method="post" action="../app/.student/updateStd.php?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>&etude_envisage=<?=$etude_envisage?>" class="form-no-refrech" target="_blank">
+<form method="post" action="../app/.student/updateStd?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>&etude_envisage=<?=$etude_envisage?>" class="form-no-refrech" target="_blank">
 <div class="w-full grid gap-4 grid-cols-1 lg:grid-cols-2 mt-3 p-3 overflow-auto" style="max-height: calc(100vh - 246px);">
 
 	<div class='info-card'>
@@ -806,7 +806,7 @@ $y = $y - 1;
 			
 			e.preventDefault();
 
-			var url = '../app/.student/updateStd.php?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>&etude_envisage=<?=$etude_envisage?>';
+			var url = '../app/.student/updateStd?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>&etude_envisage=<?=$etude_envisage?>';
 			
 			alert("Modification bien effectuée.");
 			
@@ -850,7 +850,7 @@ $y = $y - 1;
 					var new_student = '<?=$new_student?>';
 					
 
-					var financeUrl = '../app/.student/updateFinance.php?status=' + status +
+					var financeUrl = '../app/.student/updateFinance?status=' + status +
                          '&etude_envisage=' + etude_envisage + 
                          '&student_id=' + student_id + 
                          '&session_id=' + session_id + 

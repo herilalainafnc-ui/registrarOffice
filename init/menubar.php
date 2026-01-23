@@ -172,25 +172,31 @@
 		position: fixed;
 		bottom: 20px;
 		right: 20px;
-		width: 48px;
-		height: 48px;
+		width: 56px;
+		height: 56px;
 		background: #4e9ede;
-		border-radius: 8px;
-		z-index: 1000;
+		border-radius: 50%;
+		z-index: 1001;
 		cursor: pointer;
 		align-items: center;
 		justify-content: center;
 		transition: all 0.15s ease;
 		border: none;
+		box-shadow: 0 4px 15px rgba(78, 158, 222, 0.4);
 	}
 	
 	.mobile-menu-toggle:hover {
 		background: #3d8ed0;
+		transform: scale(1.05);
+	}
+	
+	.mobile-menu-toggle:active {
+		transform: scale(0.95);
 	}
 	
 	.mobile-menu-toggle i {
 		color: white;
-		font-size: 20px;
+		font-size: 24px;
 	}
 	
 	/* Mobile Sidebar Overlay */
@@ -204,35 +210,62 @@
 		background: rgba(10, 22, 40, 0.85);
 		z-index: 998;
 		opacity: 0;
-		transition: opacity 0.2s ease;
+		visibility: hidden;
+		transition: opacity 0.3s ease, visibility 0.3s ease;
 	}
 	
 	.sidebar-overlay.active {
 		opacity: 1;
+		visibility: visible;
 	}
 	
-	/* Responsive Styles */
-	@media (max-width: 1023px) {
+	/* Desktop Styles - Sidebar visible in flow */
+	@media (min-width: 1024px) {
 		.sidebar-menu {
-			position: fixed;
-			top: 56px;
-			left: -280px;
-			width: 260px;
-			height: calc(100vh - 56px) !important;
-			z-index: 999;
-			transition: left 0.2s ease;
-		}
-		
-		.sidebar-menu.active {
-			left: 0;
+			position: relative !important;
+			left: 0 !important;
+			display: block !important;
+			transform: translateX(0) !important;
 		}
 		
 		.mobile-menu-toggle {
-			display: flex;
+			display: none !important;
 		}
 		
 		.sidebar-overlay {
-			display: block;
+			display: none !important;
+		}
+	}
+	
+	/* Mobile Styles - Sidebar hidden by default, slides in */
+	@media (max-width: 1023px) {
+		.sidebar-menu {
+			position: fixed !important;
+			top: 56px !important;
+			left: 0 !important;
+			transform: translateX(-100%) !important;
+			width: 270px !important;
+			height: calc(100vh - 56px) !important;
+			z-index: 999 !important;
+			transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+			display: block !important;
+			overflow-y: auto !important;
+			box-shadow: none !important;
+			visibility: hidden;
+		}
+		
+		.sidebar-menu.active {
+			transform: translateX(0) !important;
+			box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3) !important;
+			visibility: visible;
+		}
+		
+		.mobile-menu-toggle {
+			display: flex !important;
+		}
+		
+		.sidebar-overlay {
+			display: block !important;
 		}
 	}
 </style>
@@ -241,7 +274,7 @@
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 <!-- Sidebar Menu -->
-<div class="xl:w-2/12 lg:w-3/12 sidebar-menu hidden lg:block" id="sidebarMenu" style="height: calc(100vh - 56px);">
+<div class="xl:w-2/12 lg:w-3/12 sidebar-menu" id="sidebarMenu" style="height: calc(100vh - 56px);">
 	
 	<nav class="py-2">
 		<!-- Etudiants Section -->
@@ -250,7 +283,7 @@
 		</div>
 		
 		<div class="menu-item <?php if($page == "accueil.php" OR $page == "student.php") { echo "active"; } ?>">
-			<a href="./accueil.php">
+			<a href="./accueil">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-people-fill menu-icon"></i>
 				</div>
@@ -259,7 +292,7 @@
 		</div>
 
 		<div class="menu-item <?php if($page == "creat.student.php") { echo "active"; } ?> <?php if($rg_user['level'] > 2) { echo "toolInactive"; } ?>">
-			<a href="./creat.student.php">
+			<a href="./creat.student">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-person-plus-fill menu-icon"></i>
 				</div>
@@ -268,7 +301,7 @@
 		</div>
 
 		<div class="menu-item <?php if($page == "deans-list.php") { echo "active"; } ?>">
-			<a href="./deans-list.php">
+			<a href="./deans-list">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-star-fill menu-icon"></i>
 				</div>
@@ -277,7 +310,7 @@
 		</div>
 
 		<div class="menu-item <?php if($page == "meilleurs-etudiants.php") { echo "active"; } ?>">
-			<a href="./meilleurs-etudiants.php">
+			<a href="./meilleurs-etudiants">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-trophy-fill menu-icon"></i>
 				</div>
@@ -291,7 +324,7 @@
 		</div>
 		
 		<div class="menu-item <?php if($page == "accueil.prof.php" OR $page == "prof.php") { echo "active"; } ?>">
-			<a href="./accueil.prof.php">
+			<a href="./accueil.prof">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-person-lines-fill menu-icon"></i>
 				</div>
@@ -314,7 +347,7 @@
 		</div>
 		
 		<div class="menu-item <?php if($page == "accueil.cours.php" OR $page == "cours.php") { echo "active"; } ?>">
-			<a href="./accueil.cours.php">
+			<a href="./accueil.cours">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-list-columns-reverse menu-icon"></i>
 				</div>
@@ -337,7 +370,7 @@
 		</div>
 		
 		<div class="menu-item <?php if($page == "accueil.emploi-temps.php") { echo "active"; } ?>">
-			<a href="./accueil.emploi-temps.php">
+			<a href="./accueil.emploi-temps">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-calendar3-week menu-icon"></i>
 				</div>
@@ -351,7 +384,7 @@
 		</div>
 		
 		<div class="menu-item <?php if($page == "settings.php") { echo "active"; } ?>">
-			<a href="./settings.php">
+			<a href="./settings">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-sliders menu-icon"></i>
 				</div>
@@ -373,31 +406,67 @@
 		const mobileToggle = document.getElementById('mobileMenuToggle');
 		const sidebar = document.getElementById('sidebarMenu');
 		const overlay = document.getElementById('sidebarOverlay');
-		const toggleIcon = mobileToggle.querySelector('i');
 		
-		function toggleMenu() {
-			sidebar.classList.toggle('active');
-			overlay.classList.toggle('active');
-			toggleIcon.classList.toggle('bi-list');
-			toggleIcon.classList.toggle('bi-x-lg');
+		if (!mobileToggle || !sidebar || !overlay) {
+			console.error('Menu elements not found');
+			return;
 		}
 		
-		mobileToggle.addEventListener('click', toggleMenu);
-		overlay.addEventListener('click', toggleMenu);
+		const toggleIcon = mobileToggle.querySelector('i');
 		
+		function openMenu() {
+			sidebar.classList.add('active');
+			overlay.classList.add('active');
+			if (toggleIcon) {
+				toggleIcon.classList.remove('bi-list');
+				toggleIcon.classList.add('bi-x-lg');
+			}
+			document.body.style.overflow = 'hidden';
+		}
+		
+		function closeMenu() {
+			sidebar.classList.remove('active');
+			overlay.classList.remove('active');
+			if (toggleIcon) {
+				toggleIcon.classList.add('bi-list');
+				toggleIcon.classList.remove('bi-x-lg');
+			}
+			document.body.style.overflow = '';
+		}
+		
+		function toggleMenu() {
+			if (sidebar.classList.contains('active')) {
+				closeMenu();
+			} else {
+				openMenu();
+			}
+		}
+		
+		mobileToggle.addEventListener('click', function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			toggleMenu();
+		});
+		
+		overlay.addEventListener('click', function(e) {
+			e.preventDefault();
+			closeMenu();
+		});
+		
+		// Close menu when clicking a link
 		const menuLinks = sidebar.querySelectorAll('.menu-item a');
 		menuLinks.forEach(link => {
 			link.addEventListener('click', function() {
-				if (window.innerWidth < 1024) toggleMenu();
+				if (window.innerWidth < 1024) {
+					closeMenu();
+				}
 			});
 		});
 		
+		// Handle window resize
 		window.addEventListener('resize', function() {
 			if (window.innerWidth >= 1024) {
-				sidebar.classList.remove('active');
-				overlay.classList.remove('active');
-				toggleIcon.classList.add('bi-list');
-				toggleIcon.classList.remove('bi-x-lg');
+				closeMenu();
 			}
 		});
 	});

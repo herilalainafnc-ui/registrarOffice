@@ -10,6 +10,7 @@
 		border-bottom: 1px solid #1a3a5c;
 		min-height: 72px;
 		transition: background 0.2s ease, border-color 0.2s ease;
+		margin-bottom: 0;
 	}
 	
 	/* ===== LIGHT MODE TOOLBAR ===== */
@@ -178,38 +179,43 @@
 		color: #e8f1f8;
 	}
 	
-	/* Responsive Toolbar */
-	@media (max-width: 1024px) {
+	/* Responsive Toolbar - Fixed at bottom on mobile */
+	@media (max-width: 1023px) {
+		.toolbar-container {
+			position: fixed !important;
+			bottom: 0 !important;
+			left: 0 !important;
+			right: 0 !important;
+			width: 100% !important;
+			padding: 8px 4px;
+			min-height: auto;
+			overflow-x: auto;
+			-webkit-overflow-scrolling: touch;
+			/* Hide scrollbar while keeping scroll functionality */
+			-ms-overflow-style: none;
+			scrollbar-width: none;
+			margin-bottom: 0;
+			z-index: 1000;
+			background: #0a1628;
+			border-top: 1px solid #1a3a5c;
+			border-bottom: none;
+			box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+		}
+		
+		.toolbar-container::-webkit-scrollbar {
+			display: none;
+		}
+		
 		.toolbar-section {
 			border-right: none;
-			border-bottom: 1px solid #1a3a5c;
+			border-bottom: none;
+			flex-shrink: 0;
 		}
 		
 		.tool-btn {
-			min-height: 58px;
-			padding: 8px 6px;
-		}
-		
-		.tool-icon {
-			width: 32px;
-			height: 32px;
-			font-size: 16px;
-		}
-		
-		.tool-label {
-			font-size: 9px;
-		}
-	}
-	
-	@media (max-width: 640px) {
-		.toolbar-container {
-			min-height: auto;
-		}
-		
-		.tool-btn {
-			min-height: 52px;
-			padding: 6px 4px;
-			gap: 4px;
+			min-height: 50px;
+			padding: 4px 6px;
+			min-width: 50px;
 		}
 		
 		.tool-icon {
@@ -219,7 +225,75 @@
 		}
 		
 		.tool-label {
-			font-size: 8px;
+			font-size: 7px;
+			line-height: 1.1;
+		}
+	}
+	
+	@media (max-width: 768px) {
+		.toolbar-container {
+			flex-wrap: nowrap !important;
+			overflow-x: auto !important;
+			padding: 6px 4px;
+			gap: 2px;
+			justify-content: flex-start;
+		}
+		
+		.toolbar-section {
+			width: auto !important;
+			flex-shrink: 0;
+			padding: 0 2px;
+		}
+		
+		.tool-btn {
+			min-height: 50px;
+			min-width: 52px;
+			padding: 4px 6px;
+			gap: 3px;
+		}
+		
+		.tool-icon {
+			width: 26px;
+			height: 26px;
+			font-size: 13px;
+		}
+		
+		.tool-label {
+			font-size: 7px;
+			white-space: nowrap;
+		}
+	}
+	
+	@media (max-width: 480px) {
+		.toolbar-container {
+			padding: 4px 2px;
+		}
+		
+		.toolbar-section {
+			padding: 0 1px;
+		}
+		
+		.tool-btn {
+			min-height: 46px;
+			min-width: 46px;
+			padding: 3px 4px;
+			gap: 2px;
+		}
+		
+		.tool-icon {
+			width: 24px;
+			height: 24px;
+			font-size: 12px;
+		}
+		
+		.tool-label {
+			font-size: 6px;
+			display: none; /* Cache les labels sur très petits écrans */
+		}
+		
+		/* Affiche uniquement les icônes sur très petits écrans */
+		.tool-btn {
+			min-height: 40px;
 		}
 	}
 	
@@ -248,10 +322,10 @@
 	}
 </style>
 
-<div class="toolbar-container w-full py-2 flex flex-wrap <?=$txt_one_color?>">
+<div class="toolbar-container w-full py-2 flex flex-nowrap overflow-x-auto <?=$txt_one_color?>">
 	
 	<!-- SECTION 1: Export & Stats -->	
-	<div class="toolbar-section sm:w-full md:w-4/12 lg:w-3/12 flex px-1">
+	<div class="toolbar-section flex-shrink-0 flex px-1">
 		
 		<a href="#" id="<?php 
 		if($page == "accueil.php" OR $page == "student.php" OR $page=="inscription.php") {
@@ -297,7 +371,7 @@
 	</div>
 
 	<!-- SECTION 2: Mail & Communication -->	
-	<div class="toolbar-section sm:w-full md:w-3/12 lg:w-2/12 flex px-1">
+	<div class="toolbar-section flex-shrink-0 flex px-1">
 
 		<a href="#" id="exportMesupres" class="tool-btn text-xs flex-1 <?php 
 		if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
@@ -332,9 +406,9 @@
 	</div>
 
 	<!-- SECTION 3: Inscription & Work -->	
-	<div class="toolbar-section sm:w-full md:w-3/12 lg:w-2/12 flex px-1">
+	<div class="toolbar-section flex-shrink-0 flex px-1">
 		
-		<a target='_blank' href="../inscription/inscription.php" class="tool-btn text-xs flex-1 <?php 
+		<a target='_blank' href="../inscription/inscription" class="tool-btn text-xs flex-1 <?php 
 		if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 			echo "toolInactive";
 		} ?><?php if($rg_user['level'] <=4) { echo "";}else{ echo " toolInactive";}?>">
@@ -367,7 +441,7 @@
 	</div>
 
 	<!-- SECTION 4: Sort, Filter & Search -->	
-	<div class="toolbar-section sm:w-full md:w-3/12 lg:w-2/12 flex px-1">
+	<div class="toolbar-section flex-shrink-0 flex px-1">
 		
 		<!-- Sort Dropdown -->
 		<a href="#" class="tool-btn tool-sort text-xs flex-1 <?php 
@@ -499,7 +573,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 	</div>
 
 	<!-- SECTION 5: Badge & Media -->	
-	<div class="toolbar-section sm:w-full md:w-3/12 lg:w-2/12 flex px-1">
+	<div class="toolbar-section flex-shrink-0 flex px-1">
 		
 		<a href="#" id="badgeGr" class="tool-btn text-xs flex-1 <?php 
 		if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
@@ -534,7 +608,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 	</div>
 
 	<!-- SECTION 6: Settings -->	
-	<div class="toolbar-section hidden lg:flex w-1/12 px-1">
+	<div class="toolbar-section flex-shrink-0 flex px-1">
 		
 		<a href="./settings.php" class="tool-btn tool-settings text-xs flex-1">
 			<div class="tool-icon">

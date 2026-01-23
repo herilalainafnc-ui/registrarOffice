@@ -1,5 +1,5 @@
-
-<form method="post" action="../app/.cours/updateCours.php?id=<?=$id?>&rg_id=<?=$rg_id?>" class="form-no-refrech">
+﻿
+<form method="post" action="../app/.cours/updateCours?id=<?=$id?>&rg_id=<?=$rg_id?>" class="form-no-refrech">
 <div class="w-full grid gap-2 sm:grid-cols-1 lg:grid-cols-2 overflow-auto mt-3">
 
 	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
@@ -224,7 +224,7 @@ elseif($profil['lab'] == 5){echo 'Labo recherche';}
 		$('.form-no-refrech').on('submit',function (e) {
 			e.preventDefault();
 
-			var url = '../app/.cours/updateCours.php?id=<?=$id?>&rg_id=<?=$rg_id?>';
+			var url = '../app/.cours/updateCours?id=<?=$id?>&rg_id=<?=$rg_id?>';
 			var data = $(this).serialize();
 
 			$.post(url,data,function(response){

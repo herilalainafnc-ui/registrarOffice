@@ -53,11 +53,11 @@
 		<!-- NOTIFICATION MANAGER --><?php require('../src/main/notificationGeneral.php');?>
 		<!-- NOTIFICATION MANAGER --><?php require('../src/main/bigNotif.php');?>
 
-		<div class="w-full flex">
+		<div class="w-full flex flex-col lg:flex-row">
 			
 			<!-- BARRE DE MENU --><?php require('../init/menubar.php');?>
 
-			<div class="sm:w-full lg:w-10/12 flex flex-col" style="height: calc(100vh - 56px);">
+			<div class="w-full lg:w-10/12 flex flex-col" style="height: calc(100vh - 56px);">
 			
 				<div class="back flex-1 overflow-hidden">
 					
@@ -74,7 +74,7 @@ while($f_list = $filiere->fetch()) {
 		for ($i=1; $i < 3; $i++) {
 
 		?>
-<form method="post" action="finance/save_finance.php?filiere=<?=$filiere_sigle?>&semester=<?=$i?>" id="formFor<?=$filiere_sigle?>_semester<?=$i?>">
+<form method="post" action="finance/save_finance?filiere=<?=$filiere_sigle?>&semester=<?=$i?>" id="formFor<?=$filiere_sigle?>_semester<?=$i?>">
 <div id="pach_<?=$filiere_sigle?>_<?=$i?>" class="mt-2">
 	<table class="tableFnc mb-2" id="semestre<?=$i?>_<?=$f_list['filiere_sigle']?>">
 		<thead class="bg-slate-200">

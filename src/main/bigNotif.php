@@ -1,8 +1,8 @@
-<!-- AJOUT DE COURS -->
+﻿<!-- AJOUT DE COURS -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="bigNotifCours" style="backdrop-filter: blur(3px);">
 
 		<div class="w-[700px] bg-slate-300 border-2 border-slate-700 mx-auto my-[1%] opacity-100 drop-shadow-2xl">
-			<form method="post" action="../app/.cours/addCours.php" enctype="multipart/form-data" class="form-no-refrech-cours">
+			<form method="post" action="../app/.cours/addCours" enctype="multipart/form-data" class="form-no-refrech-cours">
 			<div class="p-2 text-black">
 				<b>Ajouter un cours.</b>
 			</div>
@@ -293,7 +293,7 @@ while($tch = $teach->fetch()){
 				var mentionSelect = $(this).val();
 					
 					$.ajax({
-					url:"./services/parcours.live.addCours.php",
+					url:"./services/parcours.live.addCours",
 					method:"POST",
 					data:{mentionSelect:mentionSelect},
 
@@ -344,7 +344,7 @@ while($tch = $teach->fetch()){
 		$('.form-no-refrech-cours').on('submit',function (e) {
 			e.preventDefault();
 
-			var url = '../app/.cours/addCours.php';
+			var url = '../app/.cours/addCours';
 			var data = $(this).serialize();
 			
 			$.post(url,data,function(response){
