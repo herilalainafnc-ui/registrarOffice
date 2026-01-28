@@ -3,6 +3,20 @@
 <head>
 	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
 	<title>Cours</title>
+	<?php
+	// Vérification d'accès pour étudiants
+	require_once('../data/middleware.php');
+	initMiddleware($dtb);
+	
+	// Les étudiants sont redirigés vers leur tableau de bord
+	if (isStudent() && !isAdmin() && !isRegistrar()) {
+		header('Location: ./student.dashboard.php');
+		exit;
+	}
+	
+	// Les professeurs voient uniquement leurs cours (filtré dans le live-search)
+	$isTeacherView = isTeacher() && !isAdmin() && !isRegistrar();
+	?>
 </head>
 <body class="<?=$bg_three_color?> sm:text-xs lg:text-sm">
 	<div class="h-screen w-full <?=$bg_three_color?>">

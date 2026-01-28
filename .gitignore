@@ -5,6 +5,7 @@
 /app/Motors/
 /dash/
 /data/backdb.php
+/data/config.local.php
 /file/
 /framework/
 /node_modulesC/

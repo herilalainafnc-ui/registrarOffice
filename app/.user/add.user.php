@@ -45,18 +45,33 @@ Middleware::logSecurityEvent('user_create_attempt', [
 	
 	$level = (int)$_POST['level'];
 
+	// Récupérer les liaisons étudiant/professeur
+	$teacher_uid = !empty($_POST['teacher_uid']) ? (int)$_POST['teacher_uid'] : null;
+	$student_id = !empty($_POST['student_id']) ? trim($_POST['student_id']) : null;
+	$user_type = 'staff';
 
 	if ($level == 1) {
 		$privilege = "administrator";
+		$user_type = 'admin';
 	}elseif($level == 2) {
 		$privilege = "registrar";
+		$user_type = 'staff';
 	}elseif($level == 3) {
 		$privilege = "user";
+		$user_type = 'staff';
 	}elseif($level == 4) {
 		$privilege = "visitor";
+		$user_type = 'staff';
+	}elseif($level == 5) {
+		$privilege = "teacher";
+		$user_type = 'teacher';
+	}elseif($level == 6) {
+		$privilege = "student";
+		$user_type = 'student';
 	} else {
 		$privilege = "visitor";
 		$level = 4;
+		$user_type = 'staff';
 	}
 
 	$theme = 'Blue';
@@ -75,7 +90,11 @@ Middleware::logSecurityEvent('user_create_attempt', [
 			privilege,
 			photos,
 			etat,
-			theme
+			theme,
+			level,
+			user_type,
+			teacher_uid,
+			student_id
 		) VALUES(
 			:nom,
 			:prenom,
@@ -86,7 +105,11 @@ Middleware::logSecurityEvent('user_create_attempt', [
 			:privilege,
 			:photos,
 			:etat,
-			:theme
+			:theme,
+			:level,
+			:user_type,
+			:teacher_uid,
+			:student_id
 )");$insertuser->execute(array(
 			'nom' => $nom,
 			'prenom' => $prenom,
@@ -97,7 +120,11 @@ Middleware::logSecurityEvent('user_create_attempt', [
 			'privilege' => $privilege,
 			'photos' => $photosname,
 			'etat' => $etat,
-			'theme' => $theme
+			'theme' => $theme,
+			'level' => $level,
+			'user_type' => $user_type,
+			'teacher_uid' => $teacher_uid,
+			'student_id' => $student_id
 ));
 	
 

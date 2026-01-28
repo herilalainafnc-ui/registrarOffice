@@ -42,31 +42,31 @@
 
         <div class="gallery-grid">
             <div class="gallery-item">
-                <img src="https://zurcher.edu.mg/wp-content/uploads/2026/01/Design-sans-titre-6.jpg" alt="Bâtiment principal">
-                <div class="gallery-overlay">
-                    <h4 class="gallery-title">Bâtiment Principal</h4>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <img src="https://zurcher.edu.mg/wp-content/uploads/2026/01/b.jpg" alt="Salle de classe">
-                <div class="gallery-overlay">
-                    <h4 class="gallery-title">Salles de Classe</h4>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2070&auto=format&fit=crop" alt="Bibliothèque">
+                <img src="https://zurcher.edu.mg/wp-content/uploads/2026/01/Design-sans-titre-6.jpg" alt="Bibliothèque">
                 <div class="gallery-overlay">
                     <h4 class="gallery-title">Bibliothèque</h4>
                 </div>
             </div>
             <div class="gallery-item">
-                <img src="https://zurcher.edu.mg/wp-content/uploads/2026/01/Design-sans-titre-1.jpg" alt="Espace étudiant">
+                <img src="https://torohay.xyz/wp-content/uploads/2013/10/Universite-Adventiste-Zurcher-examen.jpg" alt="Salle de classe">
                 <div class="gallery-overlay">
-                    <h4 class="gallery-title">Espace Étudiant</h4>
+                    <h4 class="gallery-title">Salles de Classe</h4>
                 </div>
             </div>
             <div class="gallery-item">
-                <img src="https://zurcher.edu.mg/wp-content/uploads/2026/01/EA.jpg" alt="Campus verdoyant">
+                <img src="https://images.squarespace-cdn.com/content/v1/5f3e4a9122b8c82e172c098d/fb2604bf-a166-4e20-999e-5717fed6dbba/photo+2.jpg" alt="Entrée">
+                <div class="gallery-overlay">
+                    <h4 class="gallery-title">Entrée</h4>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj-9t2xM38iklA2brDmBkrPIAZj-YITurhUDyCrOK6JvvLYUfkTJYEmt9t41YihnNeq9j9scw4PkJ6PCVViMMaCwwMf9AfxK2e-hZ-1A4_RYFr_pRFMyQsWJCYrL9EarFpGoY3Q/s280/DSCF8124.JPG" alt="Chapelle">
+                <div class="gallery-overlay">
+                    <h4 class="gallery-title">Chapelle</h4>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://zurcher.edu.mg/wp-content/uploads/2025/11/INS5133-scaled.jpg" alt="Campus verdoyant">
                 <div class="gallery-overlay">
                     <h4 class="gallery-title">Espaces Verts</h4>
                 </div>

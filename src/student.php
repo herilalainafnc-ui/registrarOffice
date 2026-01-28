@@ -3,6 +3,32 @@
 <head>
 	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
 	<title>Student</title>
+	<?php
+	// Vérification d'accès pour professeurs et étudiants
+	require_once('../data/middleware.php');
+	initMiddleware($dtb);
+	
+	$requestedStudentId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+	
+	// Si c'est un étudiant, vérifier qu'il accède à ses propres données
+	if (isStudent()) {
+		$studentIdFromSession = getStudentId();
+		$checkStudent = DB::selectOne("SELECT student_id FROM tbl_2024_etudiant WHERE id = :id", ['id' => $requestedStudentId]);
+		if (!$checkStudent || $checkStudent['student_id'] !== $studentIdFromSession) {
+			header('Location: ./student.dashboard.php');
+			exit;
+		}
+	}
+	
+	// Si c'est un professeur, vérifier qu'il a accès à cet étudiant
+	if (isTeacher() && !isAdmin() && !isRegistrar()) {
+		$checkStudent = DB::selectOne("SELECT student_id FROM tbl_2024_etudiant WHERE id = :id", ['id' => $requestedStudentId]);
+		if ($checkStudent && !teacherCanAccessStudent($checkStudent['student_id'])) {
+			header('Location: ./teacher.dashboard.php?error=access_denied');
+			exit;
+		}
+	}
+	?>
 	<style>
 		/* Mobile - remove nested scrolls */
 		@media (max-width: 1023px) {

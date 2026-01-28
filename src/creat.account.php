@@ -210,6 +210,8 @@
 			<option value="2" <?php if($user['level'] == 2 ) { echo 'selected';}?>>Registraire</option>
 			<option value="3" <?php if($user['level'] == 3 ) { echo 'selected';}?>>Utilisateur</option>
 			<option value="4" <?php if($user['level'] == 4 ) { echo 'selected';}?>>Visiteur</option>
+			<option value="5" <?php if($user['level'] == 5 ) { echo 'selected';}?>>Professeur</option>
+			<option value="6" <?php if($user['level'] == 6 ) { echo 'selected';}?>>Étudiant</option>
 		</select>
 	</div>
 	<div class="w-full/12 mb-2">
@@ -315,13 +317,36 @@
 	<hr><br>
 	<div class="w-full/12 mb-2">
 		<label>Privilège</label><br>
-		<select class="input w-full" type="number" name="level">
+		<select id="levelSelect" class="input w-full" type="number" name="level">
 			<option value="1">Administrateur</option>
 			<option value="2">Registraire</option>
 			<option value="3" selected>Utilisateur</option>
 			<option value="4">Visiteur</option>
+			<option value="5">Professeur</option>
+			<option value="6">Étudiant</option>
 		</select>
 	</div>
+
+	<!-- Champs pour liaison Professeur -->
+	<div id="teacherLinkSection" class="w-full/12 mb-2 hidden">
+		<label>Lier au professeur</label><br>
+		<select class="input w-full" name="teacher_uid">
+			<option value="">-- Sélectionner un professeur --</option>
+			<?php
+			$teachers = $dtb->query("SELECT uid, name, lastName FROM teacher WHERE remove != 1 ORDER BY lastName, name");
+			while($teacher = $teachers->fetch()) {
+				echo '<option value="'.$teacher['uid'].'">'.$teacher['lastName'].' '.$teacher['name'].'</option>';
+			}
+			?>
+		</select>
+	</div>
+
+	<!-- Champs pour liaison Étudiant -->
+	<div id="studentLinkSection" class="w-full/12 mb-2 hidden">
+		<label>Matricule de l'étudiant</label><br>
+		<input type="text" class="input w-full" name="student_id" placeholder="Ex: STD-2024-001">
+	</div>
+
 	<div class="w-full/12 mb-2">
 		<label>Pseudo</label><br>
 		<input id="pseudo" class="input w-full requierd-prof-2" type="text" name="pseudo">
@@ -416,6 +441,23 @@ if ($('#nom').val() != "" && $('#prenom').val() != "" && $('#pseudo').val() != "
 }						
 		});
 		
+
+		// Afficher/masquer les sections de liaison selon le niveau sélectionné
+		$('#levelSelect').on('change', function(){
+			var level = $(this).val();
+			
+			// Masquer toutes les sections
+			$('#teacherLinkSection').addClass('hidden');
+			$('#studentLinkSection').addClass('hidden');
+			
+			if (level == '5') {
+				// Professeur - afficher la liaison professeur
+				$('#teacherLinkSection').removeClass('hidden');
+			} else if (level == '6') {
+				// Étudiant - afficher la liaison étudiant
+				$('#studentLinkSection').removeClass('hidden');
+			}
+		});
 
 	});
 

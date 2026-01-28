@@ -31,7 +31,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
         if (Middleware::authenticate($pseudo, $password, $remember)) {
             // Log de connexion réussie
             Middleware::logSecurityEvent('login_success', ['pseudo' => $pseudo]);
-            header('Location: ./accueil.php');
+            
+            // Redirection basée sur le type d'utilisateur
+            $user = Middleware::getCurrentUser();
+            $userLevel = (int)($user['level'] ?? 4);
+            $userType = $user['user_type'] ?? 'staff';
+            
+            if ($userLevel === 6 || $userType === 'student') {
+                // Étudiant -> tableau de bord étudiant
+                header('Location: ./student.dashboard.php');
+            } elseif ($userLevel === 5 || $userType === 'teacher') {
+                // Professeur -> tableau de bord enseignant
+                header('Location: ./teacher.dashboard.php');
+            } else {
+                // Admin, Registrar, User, Visitor -> page principale
+                header('Location: ./accueil.php');
+            }
             exit;
         } else {
             // Log de tentative échouée

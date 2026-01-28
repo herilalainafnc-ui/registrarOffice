@@ -129,7 +129,7 @@
                     • Copie de la carte d'identité nationale<br>
                     • 4 photos d'identité récentes<br>
                     • Certificat médical<br>
-                    • Lettre de motivation
+                    • Lettre de recommandation
                 </p>
             </div>
 
@@ -142,7 +142,6 @@
                 <h3 class="card-title">Critères d'Éligibilité</h3>
                 <p class="card-text">
                     • Être titulaire du Baccalauréat ou équivalent<br>
-                    • Moyenne générale minimale de 10/20<br>
                     • Bonne moralité et engagement éthique<br>
                     • Capacité à respecter les valeurs adventistes<br>
                     • Motivation pour le domaine d'études choisi
@@ -157,11 +156,10 @@
                 </div>
                 <h3 class="card-title">Frais de Scolarité</h3>
                 <p class="card-text">
-                    • Frais d'inscription : 50 000 Ar<br>
+                    • Frais d'inscription : 250 000 Ar<br>
                     • Frais de scolarité annuels : variables selon la filière<br>
                     • Possibilité de paiement échelonné<br>
-                    • Bourses disponibles pour les étudiants méritants<br>
-                    • Réductions pour les familles adventistes
+                    • Remboursements disponibles pour les étudiants méritants<br>
                 </p>
             </div>
 
@@ -173,11 +171,10 @@
                 </div>
                 <h3 class="card-title">Calendrier</h3>
                 <p class="card-text">
-                    • Ouverture des candidatures : Janvier<br>
-                    • Date limite de dépôt : Août<br>
-                    • Tests d'entrée : Septembre<br>
-                    • Publication des résultats : Septembre<br>
-                    • Rentrée académique : Octobre
+                    • Ouverture des candidatures : Dès maintenant<br>
+                    • Tests d'entrée : 09 et 10 mars 2026<br>
+                    • Inscription et réinscription : 09 - 13 mars 2026<br>
+                    • Prochaine Rentrée : 16 mars 2026
                 </p>
             </div>
         </div>
@@ -201,8 +198,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="email">Adresse email *</label>
-                    <input type="email" id="email" name="email" class="form-input" placeholder="votre.email@exemple.com" required>
+                    <label class="form-label" for="email">Adresse email </label>
+                    <input type="email" id="email" name="email" class="form-input" placeholder="votre.email@exemple.com">
                 </div>
 
                 <div class="form-group">
@@ -227,7 +224,7 @@
 
                 <div class="form-group">
                     <label class="form-label" for="bac_year">Année d'obtention du BAC</label>
-                    <input type="text" id="bac_year" name="bac_year" class="form-input" placeholder="Ex: 2025">
+                    <input type="text" id="bac_year" name="bac_year" class="form-input" placeholder="Ex: 2025" required>
                 </div>
 
                 <div class="form-group">

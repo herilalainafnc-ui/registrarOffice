@@ -1,6 +1,11 @@
 <?php 
-	require('../../data/backdb.php');	
+	require('../../data/backdb.php');
+	require_once('../../data/middleware.php');
+	initMiddleware($dtb);
 
+	// Vérifier si c'est un professeur (pour filtrer ses cours uniquement)
+	$isTeacherView = isTeacher() && !isAdmin() && !isRegistrar();
+	$teacherUid = $isTeacherView ? getTeacherUid() : null;
  ?>
 <table class="simpleTbl">
 	<thead class="bg-slate-500 text-white">
@@ -24,7 +29,13 @@ if (isset($_POST['trie'])) {
 		
 	$trie = $_POST['trie'];
 	
-	$recupcours = $dtb->query('SELECT * FROM t_2023_cours WHERE remove != 1 ORDER BY '.$trie.' limit 800');
+	// Filtrer par professeur si nécessaire
+	if ($isTeacherView && $teacherUid) {
+		$recupcours = $dtb->prepare('SELECT * FROM t_2023_cours WHERE remove != 1 AND id_teacher = :teacher_uid ORDER BY '.$trie.' LIMIT 800');
+		$recupcours->execute(['teacher_uid' => $teacherUid]);
+	} else {
+		$recupcours = $dtb->query('SELECT * FROM t_2023_cours WHERE remove != 1 ORDER BY '.$trie.' limit 800');
+	}
 }
 	$cours_nb = 1;
 	while ($cours_list = $recupcours->fetch()) {

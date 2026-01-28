@@ -126,6 +126,10 @@ $date = 'h_'.date($h.'-i-s').' date_'.date('d-m-Y');
             require ('./extenssionPrint/worked.Slip.php');
             $scale = 3;
             $quality = 3;
+        }elseif($ptype == "filesSlip"){
+            require ('./extenssionPrint/files.checking.slip.php');
+            $scale = 3;
+            $quality = 3;
         }elseif($ptype == "worked"){
             require ('./extenssionPrint/worked.php');
             $scale = 1;

@@ -1,6 +1,6 @@
 <?php
 $mention = $_POST['types'];
-$annee_scolaire = $_POST['yearworkedSlip'];
+$annee_scolaire = $_POST['yearFilesSlip'];
 $date_begin = $_POST['date_begin'];
 $date_end = $_POST['date_end'];
 
@@ -14,7 +14,7 @@ $show_niveau = isset($_POST['show_niveau']);
 $single_student_id = isset($_POST['single_student_id']) ? trim($_POST['single_student_id']) : '';
 
 $verification_base = date('Ymd') . $annee_scolaire;
-$printName = "WORKED_SLIP_ETUDIANT";
+$printName = "FILES_CHECKING_SLIP_ETUDIANT";
 
 // Exclusions
 $exclusion = " 
@@ -53,7 +53,7 @@ if ($mention == "TOUT") {
         margin: 0;
         padding: 0;
     }
-    .worked-slip-card {
+    .files-slip-card {
         page-break-inside: avoid;
     }
 }
@@ -70,7 +70,7 @@ if ($mention == "TOUT") {
 }
 
 /* ====== CARD ====== */
-.worked-slip-card {
+.files-slip-card {
     border: 1px solid #000;
     padding: 5px;
     box-sizing: border-box;
@@ -80,7 +80,7 @@ if ($mention == "TOUT") {
 }
 
 /* Watermark */
-.worked-slip-card::before {
+.files-slip-card::before {
     content: 'UAZ OFFICIAL';
     position: absolute;
     top: 50%;
@@ -88,7 +88,7 @@ if ($mention == "TOUT") {
     transform: translate(-50%, -50%) rotate(-25deg);
     font-size: 26px;
     font-weight: bold;
-    color: rgba(0, 90, 160, 0.06);
+    color: rgba(0, 128, 0, 0.06);
     white-space: nowrap;
     z-index: 0;
 }
@@ -105,11 +105,11 @@ if ($mention == "TOUT") {
     right: 6px;
     width: 34px;
     height: 34px;
-    border: 2px solid rgba(0, 90, 160, 0.35);
+    border: 2px solid rgba(0, 128, 0, 0.35);
     border-radius: 50%;
     font-size: 6px;
     font-weight: bold;
-    color: rgba(0, 90, 160, 0.6);
+    color: rgba(0, 128, 0, 0.6);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -160,17 +160,17 @@ foreach ($mentions_list as $current_mention) {
         ));
 ?>
 
-<div class="worked-slip-card">
+<div class="files-slip-card">
     <div class="slip-content">
 
         <div class="official-stamp">
-            UAZ<br>WORK<br>EDU
+            UAZ<br>FILES<br>OK
         </div>
 
         <center>
             <b style="font-size:12px;">
                 UNIVERSITE ADVENTISTE ZURCHER<br>
-                Department Work Education Clearance Slip
+                File's Checking Clearance Slip
             </b>
         </center>
 
@@ -187,7 +187,7 @@ foreach ($mentions_list as $current_mention) {
         </div>
 
         <div style="text-align:center; font-size:8px;">
-            Work Education terminé et peut faire les examens.
+            Les dossiers de l'étudiant au bureau académique sont en ordre et peut faire les examens.
         </div>
 
         <hr style="margin:3px 0;">

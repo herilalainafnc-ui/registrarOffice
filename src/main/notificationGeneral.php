@@ -813,11 +813,148 @@ if (date('m')>7) {
 				    	<input type="date" name="date_end" class="input w-full">
 				    </div>
 				</div>
+				<hr><br>
+				<b class="text-slate-500">Champs à afficher sur le slip :</b>
+				<div class="flex mb-3 flex-wrap">
+					<div class="w-6/12 p-1">
+						<input type="checkbox" name="show_matricule" id="show_matricule" checked>
+						<label for="show_matricule">Matricule</label>
+					</div>
+					<div class="w-6/12 p-1">
+						<input type="checkbox" name="show_nom" id="show_nom" checked>
+						<label for="show_nom">Nom et prénoms</label>
+					</div>
+					<div class="w-6/12 p-1">
+						<input type="checkbox" name="show_mention" id="show_mention" checked>
+						<label for="show_mention">Mention</label>
+					</div>
+					<div class="w-6/12 p-1">
+						<input type="checkbox" name="show_niveau" id="show_niveau" checked>
+						<label for="show_niveau">Niveau</label>
+					</div>
+				</div>
+				<hr>
+				<b class="text-slate-500">Exporter pour un seul étudiant :</b>
+				<div class="flex mb-3">
+					<div class="w-3/12 text-right pr-2">
+						<label for="single_student_id">Matricule</label>
+					</div>
+					<div class="w-9/12">
+						<input type="text" name="single_student_id" id="single_student_id" class="input w-full" placeholder="Laisser vide pour exporter tout">
+					</div>
+				</div>
 			</div>
 			<div class="p-3">
 				<center>
 				<a href="#" id="cancelnotifworkedSlip" class="bg-slate-400 p-2 rounded-md">Annuler</a>
-				<input id="btnworkedSlip" type="submit" class="bg-slate-400 p-2 rounded-md mx-1 toolInactive" value="Afficher">
+				<input id="btnworkedSlip" type="submit" class="bg-cyan-800 p-2 rounded-md mx-1 text-white" value="Afficher">
+				</center>
+			</div>
+			</form>
+		</div>
+
+	</div>
+
+<!-- FOR FILES CHECKING SLIP -->
+	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notiffilesSlip" style="backdrop-filter: blur(3px);">
+
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
+			<form method="post" action="./data.topdf?ptype=filesSlip" target="_blank">
+			<div class="p-2 text-black">
+				<b>Exporter les (File's Checking Slip).</b>
+			</div>
+			<div class="p-2">
+				<div class="flex mb-3">
+						<div class="w-3/12 text-right pr-2">
+					      	<label for="typesFiles">Mention</label>
+					    </div>
+					    <div class="w-9/12">
+							<select id="typesFiles" name="types" class="input w-full">
+					  			<option value="TOUT">Tout</option>
+		<?php 
+					$voir = $dtb->query("SELECT * FROM filiere");
+					while ($affiche = $voir->fetch()) {?>
+										
+								<option><?=$affiche['filiere_description'];?></option>
+
+		<?php	
+			}
+		 ?>	
+				  			</select>	
+					    </div>
+				</div>
+				<div class="flex mb-3">
+				    	<div class="w-3/12 text-right pr-2">
+					      	<label for="yearFilesSlip">Année</label>
+					    </div>
+					    <div class="w-9/12">
+					    	<select name="yearFilesSlip" id="yearFilesSlip" class="input w-full">
+								<?php
+								$y = date('Y');
+								for ($i=0; $i <= 8; $i++) { 
+									
+									$as = $y." - ".($y+1);
+								?>
+								<option><?=$as?></option>
+								<?php
+								$y = $y - 1;
+								}
+								 ?>
+							</select>
+					    </div>
+				</div>
+				<hr><br>
+				<div class="flex mb-3">
+					<div class="w-3/12 text-right pr-2">
+				      	<label for="date_begin_files">Début d'éxamen</label>
+				    </div>
+				    <div class="w-9/12">
+				    	<input id="date_begin_files" type="date" name="date_begin" class="input w-full">
+				    </div>
+				</div>
+				<div class="flex mb-3">
+					<div class="w-3/12 text-right pr-2">
+				      	<label for="date_end_files">Fin d'éxamen</label>
+				    </div>
+				    <div class="w-9/12">
+				    	<input id="date_end_files" type="date" name="date_end" class="input w-full">
+				    </div>
+				</div>
+				<hr><br>
+				<b class="text-slate-500">Champs à afficher sur le slip :</b>
+				<div class="flex mb-3 flex-wrap">
+					<div class="w-6/12 p-1">
+						<input type="checkbox" name="show_matricule" id="show_matricule_files" checked>
+						<label for="show_matricule_files">Matricule</label>
+					</div>
+					<div class="w-6/12 p-1">
+						<input type="checkbox" name="show_nom" id="show_nom_files" checked>
+						<label for="show_nom_files">Nom et prénoms</label>
+					</div>
+					<div class="w-6/12 p-1">
+						<input type="checkbox" name="show_mention" id="show_mention_files" checked>
+						<label for="show_mention_files">Mention</label>
+					</div>
+					<div class="w-6/12 p-1">
+						<input type="checkbox" name="show_niveau" id="show_niveau_files" checked>
+						<label for="show_niveau_files">Niveau</label>
+					</div>
+				</div>
+				<hr>
+				<b class="text-slate-500">Exporter pour un seul étudiant :</b>
+				<div class="flex mb-3">
+					<div class="w-3/12 text-right pr-2">
+						<label for="single_student_id_files">Matricule</label>
+					</div>
+					<div class="w-9/12">
+						<input type="text" name="single_student_id" id="single_student_id_files" class="input w-full" placeholder="Laisser vide pour exporter tout">
+					</div>
+				</div>
+			</div>
+			<div class="p-3">
+				<center>
+				<a href="#" id="cancelnotiffilesSlip" class="bg-slate-400 p-2 rounded-md">Annuler</a>
+				<input id="btnfilesSlip" type="submit" class="bg-cyan-800 p-2 rounded-md mx-1 text-white" value="Afficher">
 				</center>
 			</div>
 			</form>
@@ -1219,6 +1356,15 @@ if (date('m')>7) {
 		});
 		$('#cancelnotifworkedSlip').click(function(){
 			$('#notifworkedSlip').css({'display':'none'});
+		});
+		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+		$('#filesSlip').click(function(){
+			$('#notiffilesSlip').css({'display':'block'});
+		});
+	
+		$('#cancelnotiffilesSlip').click(function(){
+			$('#notiffilesSlip').css({'display':'none'});
 		});
 		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 

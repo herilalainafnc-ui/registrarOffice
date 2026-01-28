@@ -437,6 +437,16 @@
 			</div>
 			<span class="tool-label">Worked<br>Slips</span>
 		</a>
+
+		<a href="#" id="filesSlip" class="tool-btn text-xs flex-1 <?php 
+		if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
+			echo "toolInactive";
+		} ?><?php if($rg_user['level'] <=4) { echo "";}else{ echo " toolInactive";}?>">
+			<div class="tool-icon">
+				<i class="bi bi-folder-check"></i>
+			</div>
+			<span class="tool-label">Files<br>Slips</span>
+		</a>
 		
 	</div>
 

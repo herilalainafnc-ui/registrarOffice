@@ -3,6 +3,27 @@
 <head>
 	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
 	<title>Cours</title>
+	<?php
+	// Vérification d'accès pour professeurs
+	require_once('../data/middleware.php');
+	initMiddleware($dtb);
+	
+	$requestedCourseId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+	
+	// Les étudiants ne peuvent pas accéder à cette page
+	if (isStudent() && !isAdmin() && !isRegistrar()) {
+		header('Location: ./student.dashboard.php');
+		exit;
+	}
+	
+	// Si c'est un professeur, vérifier qu'il a accès à ce cours
+	if (isTeacher() && !isAdmin() && !isRegistrar()) {
+		if (!teacherCanAccessCourse($requestedCourseId)) {
+			header('Location: ./teacher.dashboard.php?error=access_denied');
+			exit;
+		}
+	}
+	?>
 </head>
 <body class="<?=$bg_three_color?> sm:text-xs lg:text-sm">
 	<div class="h-screen w-full <?=$bg_three_color?>">

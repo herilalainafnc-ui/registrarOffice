@@ -15,6 +15,12 @@
  * @date 2026-01-19
  */
 
+// Protection contre les inclusions multiples
+if (defined('MIDDLEWARE_LOADED')) {
+    return;
+}
+define('MIDDLEWARE_LOADED', true);
+
 // Empêcher l'accès direct
 if (!defined('APP_ROOT')) {
     define('APP_ROOT', dirname(__DIR__));
@@ -27,16 +33,18 @@ if (!defined('APP_ROOT')) {
  */
 
 // Niveaux de privilèges (du plus élevé au plus bas)
-define('ROLE_ADMINISTRATOR', 1);
-define('ROLE_REGISTRAR', 2);
-define('ROLE_USER', 3);
-define('ROLE_VISITOR', 4);
+if (!defined('ROLE_ADMINISTRATOR')) define('ROLE_ADMINISTRATOR', 1);
+if (!defined('ROLE_REGISTRAR')) define('ROLE_REGISTRAR', 2);
+if (!defined('ROLE_USER')) define('ROLE_USER', 3);
+if (!defined('ROLE_VISITOR')) define('ROLE_VISITOR', 4);
+if (!defined('ROLE_TEACHER')) define('ROLE_TEACHER', 5);
+if (!defined('ROLE_STUDENT')) define('ROLE_STUDENT', 6);
 
 // Durée de vie du cookie "Se souvenir de moi" (20 jours)
-define('REMEMBER_ME_DURATION', 20 * 24 * 60 * 60);
+if (!defined('REMEMBER_ME_DURATION')) define('REMEMBER_ME_DURATION', 20 * 24 * 60 * 60);
 
 // Durée de vie du token CSRF (1 heure)
-define('CSRF_TOKEN_LIFETIME', 3600);
+if (!defined('CSRF_TOKEN_LIFETIME')) define('CSRF_TOKEN_LIFETIME', 3600);
 
 /**
  * =============================================================================
@@ -362,7 +370,288 @@ class Middleware {
     public static function isRegistrar() {
         return self::hasPrivilege('administrator') || self::hasPrivilege('registrar');
     }
-    
+
+    /**
+     * ==========================================================================
+     * RÔLES ÉTUDIANT ET PROFESSEUR
+     * ==========================================================================
+     */
+
+    /**
+     * Vérifie si l'utilisateur est un professeur
+     */
+    public static function isTeacher() {
+        $user = self::getCurrentUser();
+        if (!$user) return false;
+        
+        return ($user['user_type'] ?? '') === 'teacher' || 
+               self::hasPrivilege('teacher') ||
+               (int)($user['level'] ?? 0) === 5;
+    }
+
+    /**
+     * Vérifie si l'utilisateur est un étudiant
+     */
+    public static function isStudent() {
+        $user = self::getCurrentUser();
+        if (!$user) return false;
+        
+        return ($user['user_type'] ?? '') === 'student' || 
+               self::hasPrivilege('student') ||
+               (int)($user['level'] ?? 0) === 6;
+    }
+
+    /**
+     * Récupère l'ID du professeur lié à l'utilisateur courant
+     */
+    public static function getTeacherUid() {
+        $user = self::getCurrentUser();
+        if (!$user || !self::isTeacher()) return null;
+        
+        return $user['teacher_uid'] ?? null;
+    }
+
+    /**
+     * Récupère l'ID étudiant lié à l'utilisateur courant
+     */
+    public static function getStudentId() {
+        $user = self::getCurrentUser();
+        if (!$user || !self::isStudent()) return null;
+        
+        return $user['student_id'] ?? null;
+    }
+
+    /**
+     * Vérifie si le professeur a accès à un cours spécifique
+     */
+    public static function teacherCanAccessCourse($courseId) {
+        if (self::isAdmin() || self::isRegistrar()) return true;
+        if (!self::isTeacher()) return false;
+        
+        $teacherUid = self::getTeacherUid();
+        if (!$teacherUid || !self::$dtb) return false;
+        
+        $stmt = self::$dtb->prepare(
+            "SELECT COUNT(*) FROM t_2023_cours WHERE id = :course_id AND id_teacher = :teacher_uid"
+        );
+        $stmt->execute(['course_id' => $courseId, 'teacher_uid' => $teacherUid]);
+        
+        return $stmt->fetchColumn() > 0;
+    }
+
+    /**
+     * Vérifie si le professeur a accès à un étudiant (inscrit à ses cours)
+     */
+    public static function teacherCanAccessStudent($studentId, $anneeScolaire = null) {
+        if (self::isAdmin() || self::isRegistrar()) return true;
+        if (!self::isTeacher()) return false;
+        
+        $teacherUid = self::getTeacherUid();
+        if (!$teacherUid || !self::$dtb) return false;
+        
+        // Récupérer les étudiants via t_2023_notes (cours enseignés par le professeur)
+        $query = "SELECT COUNT(DISTINCT n.student_id) 
+                  FROM t_2023_notes n
+                  INNER JOIN t_2023_cours c ON n.id_cours = c.id
+                  WHERE c.id_teacher = :teacher_uid 
+                  AND n.student_id = :student_id
+                  AND n.ajout = 1";
+        
+        $params = ['teacher_uid' => $teacherUid, 'student_id' => $studentId];
+        
+        if ($anneeScolaire) {
+            $query .= " AND n.annee_scolaire = :annee_scolaire";
+            $params['annee_scolaire'] = $anneeScolaire;
+        }
+        
+        $stmt = self::$dtb->prepare($query);
+        $stmt->execute($params);
+        
+        return $stmt->fetchColumn() > 0;
+    }
+
+    /**
+     * Récupère la liste des cours enseignés par le professeur
+     */
+    public static function getTeacherCourses($anneeScolaire = null) {
+        if (!self::isTeacher() || !self::$dtb) return [];
+        
+        $teacherUid = self::getTeacherUid();
+        if (!$teacherUid) return [];
+        
+        $query = "SELECT * FROM t_2023_cours WHERE id_teacher = :teacher_uid AND remove != 1";
+        $params = ['teacher_uid' => $teacherUid];
+        
+        if ($anneeScolaire) {
+            $query .= " AND annee_scolaire = :annee_scolaire";
+            $params['annee_scolaire'] = $anneeScolaire;
+        }
+        
+        $query .= " ORDER BY title";
+        
+        $stmt = self::$dtb->prepare($query);
+        $stmt->execute($params);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Récupère la liste des étudiants inscrits aux cours du professeur
+     */
+    public static function getTeacherStudents($anneeScolaire = null) {
+        if (!self::isTeacher() || !self::$dtb) return [];
+        
+        $teacherUid = self::getTeacherUid();
+        if (!$teacherUid) return [];
+        
+        $query = "SELECT DISTINCT e.* 
+                  FROM tbl_2024_etudiant e
+                  INNER JOIN t_2023_notes n ON e.student_id = n.student_id
+                  INNER JOIN t_2023_cours c ON n.id_cours = c.id
+                  WHERE c.id_teacher = :teacher_uid
+                  AND n.ajout = 1";
+        
+        $params = ['teacher_uid' => $teacherUid];
+        
+        if ($anneeScolaire) {
+            $query .= " AND e.annee_scolaire = :annee_scolaire";
+            $params['annee_scolaire'] = $anneeScolaire;
+        }
+        
+        $query .= " ORDER BY e.student_nom, e.student_prenom";
+        
+        $stmt = self::$dtb->prepare($query);
+        $stmt->execute($params);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Vérifie si l'étudiant peut accéder à ses propres informations
+     */
+    public static function studentCanAccessOwnData($studentId) {
+        if (self::isAdmin() || self::isRegistrar()) return true;
+        if (!self::isStudent()) return false;
+        
+        return self::getStudentId() === $studentId;
+    }
+
+    /**
+     * Récupère les informations de l'étudiant connecté
+     */
+    public static function getStudentInfo() {
+        if (!self::isStudent() || !self::$dtb) return null;
+        
+        $studentId = self::getStudentId();
+        if (!$studentId) return null;
+        
+        $stmt = self::$dtb->prepare(
+            "SELECT * FROM tbl_2024_etudiant WHERE student_id = :student_id ORDER BY annee_scolaire DESC LIMIT 1"
+        );
+        $stmt->execute(['student_id' => $studentId]);
+        
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Récupère les cours de l'étudiant connecté
+     */
+    public static function getStudentCourses($anneeScolaire = null, $semestre = null) {
+        if (!self::isStudent() || !self::$dtb) return [];
+        
+        $studentId = self::getStudentId();
+        if (!$studentId) return [];
+        
+        $query = "SELECT n.Sigle, n.title_cours as title, n.credit as nb_crd, 
+                         n.grade as note, n.grade as note_final,
+                         n.annee_scolaire, n.semester, n.yearlevel,
+                         c.id_teacher, c.dep_desc
+                  FROM t_2023_notes n
+                  LEFT JOIN t_2023_cours c ON n.id_cours = c.id
+                  WHERE n.student_id = :student_id
+                  AND n.ajout = 1";
+        
+        $params = ['student_id' => $studentId];
+        
+        if ($anneeScolaire) {
+            $query .= " AND n.annee_scolaire = :annee_scolaire";
+            $params['annee_scolaire'] = $anneeScolaire;
+        }
+        
+        if ($semestre) {
+            $query .= " AND n.semester = :semestre";
+            $params['semestre'] = $semestre;
+        }
+        
+        $query .= " ORDER BY n.title_cours";
+        
+        $stmt = self::$dtb->prepare($query);
+        $stmt->execute($params);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Récupère les notes de l'étudiant connecté
+     */
+    public static function getStudentNotes($anneeScolaire = null) {
+        if (!self::isStudent() || !self::$dtb) return [];
+        
+        $studentId = self::getStudentId();
+        if (!$studentId) return [];
+        
+        $query = "SELECT n.Sigle, n.title_cours as title, n.credit as nb_crd, 
+                         n.grade as note, n.grade as note_final,
+                         n.annee_scolaire, n.semester, n.yearlevel
+                  FROM t_2023_notes n
+                  WHERE n.student_id = :student_id
+                  AND n.ajout = 1";
+        
+        $params = ['student_id' => $studentId];
+        
+        if ($anneeScolaire) {
+            $query .= " AND n.annee_scolaire = :annee_scolaire";
+            $params['annee_scolaire'] = $anneeScolaire;
+        }
+        
+        $query .= " ORDER BY n.annee_scolaire DESC, n.semester, n.title_cours";
+        
+        $stmt = self::$dtb->prepare($query);
+        $stmt->execute($params);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Exige que l'utilisateur soit professeur, sinon redirige
+     */
+    public static function requireTeacher($redirectUrl = null) {
+        if (!self::isTeacher() && !self::isAdmin() && !self::isRegistrar()) {
+            if ($redirectUrl) {
+                header("Location: $redirectUrl");
+            } else {
+                http_response_code(403);
+                die('<h1>403 - Accès Refusé</h1><p>Cette page est réservée aux enseignants.</p>');
+            }
+            exit;
+        }
+    }
+
+    /**
+     * Exige que l'utilisateur soit étudiant, sinon redirige
+     */
+    public static function requireStudent($redirectUrl = null) {
+        if (!self::isStudent() && !self::isAdmin() && !self::isRegistrar()) {
+            if ($redirectUrl) {
+                header("Location: $redirectUrl");
+            } else {
+                http_response_code(403);
+                die('<h1>403 - Accès Refusé</h1><p>Cette page est réservée aux étudiants.</p>');
+            }
+            exit;
+        }
+    }
+
     /**
      * Exige un niveau minimum, sinon redirige
      */
@@ -562,93 +851,245 @@ class Middleware {
  * =============================================================================
  */
 
+if (!function_exists('initMiddleware')) {
 /**
  * Initialise le middleware (à appeler après la connexion DB)
  */
 function initMiddleware($dtb) {
     Middleware::init($dtb);
 }
+}
 
+if (!function_exists('isLoggedIn')) {
 /**
  * Vérifie si l'utilisateur est connecté
  */
 function isLoggedIn() {
     return Middleware::isAuthenticated();
 }
+}
 
+if (!function_exists('currentUser')) {
 /**
  * Récupère l'utilisateur courant
  */
 function currentUser() {
     return Middleware::getCurrentUser();
 }
+}
 
+if (!function_exists('requireAuth')) {
 /**
  * Exige une authentification
  */
 function requireAuth($redirect = './index.php') {
     Middleware::requireAuth($redirect);
 }
+}
 
+if (!function_exists('requireLevel')) {
 /**
  * Exige un niveau minimum
  */
 function requireLevel($level, $redirect = null) {
     Middleware::requireLevel($level, $redirect);
 }
+}
 
+if (!function_exists('csrf_field')) {
 /**
  * Génère le champ CSRF
  */
 function csrf_field() {
     return Middleware::csrfField();
 }
+}
 
+if (!function_exists('csrf_token')) {
 /**
  * Récupère le token CSRF
  */
 function csrf_token() {
     return Middleware::getCSRFToken();
 }
+}
 
+if (!function_exists('verify_csrf')) {
 /**
  * Vérifie le token CSRF
  */
 function verify_csrf($token = null) {
     return Middleware::verifyCSRFToken($token);
 }
+}
 
+if (!function_exists('require_csrf')) {
 /**
  * Exige un token CSRF valide
  */
 function require_csrf() {
     Middleware::requireCSRF();
 }
+}
 
+if (!function_exists('e')) {
 /**
  * Échappe une valeur HTML
  */
 function e($value) {
     return Middleware::escape($value);
 }
+}
 
+if (!function_exists('hasLevel')) {
 /**
  * Vérifie si l'utilisateur a le niveau requis
  */
 function hasLevel($level) {
     return Middleware::hasMinLevel($level);
 }
+}
 
+if (!function_exists('isAdmin')) {
 /**
  * Vérifie si l'utilisateur est admin
  */
 function isAdmin() {
     return Middleware::isAdmin();
 }
+}
 
+if (!function_exists('isRegistrar')) {
 /**
  * Vérifie si l'utilisateur est registrar ou admin
  */
 function isRegistrar() {
     return Middleware::isRegistrar();
+}
+}
+
+if (!function_exists('isTeacher')) {
+/**
+ * Vérifie si l'utilisateur est un professeur
+ */
+function isTeacher() {
+    return Middleware::isTeacher();
+}
+}
+
+if (!function_exists('isStudent')) {
+/**
+ * Vérifie si l'utilisateur est un étudiant
+ */
+function isStudent() {
+    return Middleware::isStudent();
+}
+}
+
+if (!function_exists('getTeacherUid')) {
+/**
+ * Récupère l'ID du professeur lié
+ */
+function getTeacherUid() {
+    return Middleware::getTeacherUid();
+}
+}
+
+if (!function_exists('getStudentId')) {
+/**
+ * Récupère l'ID de l'étudiant lié
+ */
+function getStudentId() {
+    return Middleware::getStudentId();
+}
+}
+
+if (!function_exists('teacherCanAccessCourse')) {
+/**
+ * Vérifie si le prof peut accéder à un cours
+ */
+function teacherCanAccessCourse($courseId) {
+    return Middleware::teacherCanAccessCourse($courseId);
+}
+}
+
+if (!function_exists('teacherCanAccessStudent')) {
+/**
+ * Vérifie si le prof peut accéder à un étudiant
+ */
+function teacherCanAccessStudent($studentId, $anneeScolaire = null) {
+    return Middleware::teacherCanAccessStudent($studentId, $anneeScolaire);
+}
+}
+
+if (!function_exists('studentCanAccessOwnData')) {
+/**
+ * Vérifie si l'étudiant accède à ses propres données
+ */
+function studentCanAccessOwnData($studentId) {
+    return Middleware::studentCanAccessOwnData($studentId);
+}
+}
+
+if (!function_exists('requireTeacher')) {
+/**
+ * Exige que l'utilisateur soit professeur
+ */
+function requireTeacher($redirect = null) {
+    Middleware::requireTeacher($redirect);
+}
+}
+
+if (!function_exists('requireStudent')) {
+/**
+ * Exige que l'utilisateur soit étudiant
+ */
+function requireStudent($redirect = null) {
+    Middleware::requireStudent($redirect);
+}
+}
+
+if (!function_exists('getTeacherCourses')) {
+/**
+ * Récupère les cours du professeur connecté
+ */
+function getTeacherCourses($anneeScolaire = null) {
+    return Middleware::getTeacherCourses($anneeScolaire);
+}
+}
+
+if (!function_exists('getTeacherStudents')) {
+/**
+ * Récupère les étudiants du professeur connecté
+ */
+function getTeacherStudents($anneeScolaire = null) {
+    return Middleware::getTeacherStudents($anneeScolaire);
+}
+}
+
+if (!function_exists('getStudentInfo')) {
+/**
+ * Récupère les infos de l'étudiant connecté
+ */
+function getStudentInfo() {
+    return Middleware::getStudentInfo();
+}
+}
+
+if (!function_exists('getStudentCourses')) {
+/**
+ * Récupère les cours de l'étudiant connecté
+ */
+function getStudentCourses($anneeScolaire = null, $semestre = null) {
+    return Middleware::getStudentCourses($anneeScolaire, $semestre);
+}
+}
+
+if (!function_exists('getStudentNotes')) {
+/**
+ * Récupère les notes de l'étudiant connecté
+ */
+function getStudentNotes($anneeScolaire = null) {
+    return Middleware::getStudentNotes($anneeScolaire);
+}
 }

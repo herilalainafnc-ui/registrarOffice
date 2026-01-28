@@ -1,8 +1,8 @@
 <?php
-// Connexion directe pour l'API
+// Connexion centralisée pour l'API
+require_once __DIR__ . '/../data/config.php';
 try {
-    $dtb = new PDO('mysql:host=localhost;dbname=registrar_db', 'root', '');
-    $dtb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $dtb = getDbConnection();
 } catch(PDOException $e) {
     die(json_encode(['error' => 'Connexion DB échouée']));
 }
