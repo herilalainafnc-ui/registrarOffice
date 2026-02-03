@@ -32,21 +32,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
             // Log de connexion réussie
             Middleware::logSecurityEvent('login_success', ['pseudo' => $pseudo]);
             
-            // Redirection basée sur le type d'utilisateur
+            // Redirection vers la page de chargement avec les infos utilisateur
             $user = Middleware::getCurrentUser();
             $userLevel = (int)($user['level'] ?? 4);
             $userType = $user['user_type'] ?? 'staff';
             
+            // Déterminer la destination finale
             if ($userLevel === 6 || $userType === 'student') {
-                // Étudiant -> tableau de bord étudiant
-                header('Location: ./student.dashboard.php');
+                $destination = './student.dashboard.php';
             } elseif ($userLevel === 5 || $userType === 'teacher') {
-                // Professeur -> tableau de bord enseignant
-                header('Location: ./teacher.dashboard.php');
+                $destination = './teacher.dashboard.php';
             } else {
-                // Admin, Registrar, User, Visitor -> page principale
-                header('Location: ./accueil.php');
+                $destination = './accueil.php';
             }
+            
+            // Stocker la destination dans la session
+            $_SESSION['login_redirect'] = $destination;
+            
+            // Rediriger vers la page de chargement
+            header('Location: ./loading.php');
             exit;
         } else {
             // Log de tentative échouée

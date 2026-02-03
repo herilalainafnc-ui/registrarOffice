@@ -3,6 +3,23 @@
 <head>
     <?php require('../init/head.php');?>
     <title>Espace Enseignant</title>
+    <style>
+        /* Animation d'entrée slide-in */
+        body {
+            animation: slideInFromRight 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        @keyframes slideInFromRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
 </head>
 <body class="<?=$bg_three_color?> sm:text-xs lg:text-sm">
 <?php

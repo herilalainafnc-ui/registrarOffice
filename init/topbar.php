@@ -188,11 +188,12 @@
 	
 	.search-icon {
 		position: absolute;
-		left: 10px;
+		left: 12px;
 		top: 50%;
 		transform: translateY(-50%);
 		color: #5a8aa8;
 		pointer-events: none;
+		font-size: 14px;
 	}
 	
 	.search-wrapper {
@@ -200,7 +201,7 @@
 	}
 	
 	.search-wrapper input {
-		padding-left: 35px;
+		padding-left: 40px !important;
 	}
 	
 	/* Topbar background */
