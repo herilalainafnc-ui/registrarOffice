@@ -1,13 +1,14 @@
 <?php 
 	require('../../data/backdb.php');
 
-	$student_id = $_POST['student_id'];
+	$student_id = $_POST['student_id'] ?? '';
 
 	$y = date('Y');
 
-	$findStudent_Session = $dtb->query('SELECT * FROM t_2024_inscription_session WHERE student_id="'.$student_id.'" ORDER BY id DESC');
-
-		$show_stape = $findStudent_Session->fetch();
+	// Requête préparée pour éviter l'injection SQL
+	$stmt = $dtb->prepare('SELECT * FROM t_2024_inscription_session WHERE student_id = :student_id ORDER BY id DESC');
+	$stmt->execute(['student_id' => $student_id]);
+	$show_stape = $stmt->fetch();
 
 if (!empty($show_stape)) {
 	

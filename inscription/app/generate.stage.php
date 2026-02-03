@@ -2,11 +2,12 @@
 
 	require('../../data/backdb.php');
 
-	$student_id = $_GET['student_id'];
-	$stage = $_GET['stage'];
+	$student_id = $_GET['student_id'] ?? '';
+	$stage = $_GET['stage'] ?? '';
 
-	// Vérification si l'étudiant est suspendu
-	$checkSuspension = $dtb->query('SELECT suspended, date_fin_suspension FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'"');
+	// Vérification si l'étudiant est suspendu avec requête préparée
+	$checkSuspension = $dtb->prepare('SELECT suspended, date_fin_suspension FROM tbl_2024_etudiant WHERE student_id = :student_id');
+	$checkSuspension->execute(['student_id' => $student_id]);
 	$suspensionData = $checkSuspension->fetch();
 	
 	if ($suspensionData && $suspensionData['suspended'] == 1) {
@@ -19,7 +20,10 @@
 
 	$y = date('Y');
 
-	$findStudent_Session = $dtb->query('SELECT * FROM t_2024_inscription_session WHERE student_id="'.$student_id.'" ORDER BY id DESC');
+	// Requête préparée pour éviter l'injection SQL
+	$stmtSession = $dtb->prepare('SELECT * FROM t_2024_inscription_session WHERE student_id = :student_id ORDER BY id DESC');
+	$stmtSession->execute(['student_id' => $student_id]);
+	$findStudent_Session = $stmtSession;
 
 		$show_stage = $findStudent_Session->fetch();
 

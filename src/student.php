@@ -30,20 +30,45 @@
 	}
 	?>
 	<style>
-		/* Mobile - remove nested scrolls */
+		/* Mobile - full page scroll */
 		@media (max-width: 1023px) {
-			.student-content-wrapper {
+			.student-content-wrapper,
+			.student-main-container,
+			.student-flex-container,
+			.student-profile-sidebar {
 				max-height: none !important;
 				height: auto !important;
 				overflow: visible !important;
 			}
-			.student-main-container {
-				height: auto !important;
-				overflow: visible !important;
-			}
+		}
+		
+		/* Desktop - single scroll, full height containers */
+		@media (min-width: 1024px) {
 			.student-flex-container {
-				overflow: visible !important;
-				height: auto !important;
+				display: flex !important;
+				flex-direction: row !important;
+				height: 100% !important;
+				overflow: hidden !important;
+			}
+			.student-flex-container > .flex {
+				height: 100% !important;
+				overflow: hidden !important;
+			}
+			.student-profile-sidebar {
+				height: 100% !important;
+				overflow-y: auto !important;
+				overflow-x: hidden !important;
+				flex-shrink: 0 !important;
+			}
+			.student-content-wrapper {
+				height: 100% !important;
+				overflow-y: auto !important;
+				overflow-x: hidden !important;
+				flex-grow: 1 !important;
+			}
+			/* Hide scrollbar for sidebar, keep for content */
+			.student-profile-sidebar::-webkit-scrollbar {
+				width: 0px !important;
 			}
 		}
 	</style>
@@ -60,8 +85,8 @@
 			<div class="student-main-container w-full lg:w-10/12 flex flex-col" style="height: calc(100vh - 56px);">
 			<!-- BARRE D'OUTILS --><?php require('../init/toolbar.php');?>
 				
-				<div class="student-flex-container w-full px-0.5 flex-1 overflow-hidden">
-					<div class="flex flex-col lg:flex-row w-full">
+				<div class="student-flex-container w-full px-0.5 flex-1">
+					<div class="flex flex-col lg:flex-row w-full h-full">
 						<!-- <div class="<?=$bg_one_color?> my-1 mx-0.5 w-3/12 p-2 text-slate-100 overflow-auto hidden" id="stdSearch-result" style="height: calc(100vh - 157px);"></div> -->
 <?php
 	$id = (int)$_GET['id']; // Cast en int pour sécurité
@@ -103,7 +128,7 @@ $yes = 1;
  ?>					
 					
 
-						<div class="student-content-wrapper my-1 mx-0.5 w-full lg:w-9/12 xxl:w-7/12 <?=$bg_one_color?> <?=$txt_one_color?> overflow-auto" style="max-height: calc(100vh - 160px);">
+						<div class="student-content-wrapper my-1 mx-0.5 w-full lg:w-9/12 xxl:w-7/12 <?=$bg_one_color?> <?=$txt_one_color?> pb-8">
 							<div class="min-h-[70px] p-2 flex flex-wrap lg:flex-nowrap">
 								<div class="w-full lg:w-4/12 px-1 mb-2 lg:mb-0">
 									<a class="sm:text-xs lg:text-lg mt-3"><?php 

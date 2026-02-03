@@ -80,7 +80,6 @@
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -89,16 +88,43 @@
 
 
 <!-- TAILWIND CSS -->
-	<script src="https://cdn.tailwindcss.com"></script>
 	<script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
-
-	<!-- <link rel="stylesheet" href="./dist/tailwind.css"> -->
 <!-- ------------ -->
 
 
 	<link rel="stylesheet" type="text/css" href="./css/style.css">
 	<link rel="stylesheet" type="text/css" href="./css/button.css">
 	<link rel="stylesheet" type="text/css" href="./css/responsive.css">
+
+	<!-- ===== GLOBAL UTILITY STYLES ===== -->
+	<style>
+		/* Spin animation for loading indicators */
+		.animate-spin {
+			animation: spin 1s linear infinite;
+		}
+		@keyframes spin {
+			from { transform: rotate(0deg); }
+			to { transform: rotate(360deg); }
+		}
+		
+		/* Pulse animation */
+		.animate-pulse {
+			animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+		}
+		@keyframes pulse {
+			0%, 100% { opacity: 1; }
+			50% { opacity: .5; }
+		}
+		
+		/* Fade in animation */
+		.animate-fadeIn {
+			animation: fadeIn 0.3s ease-out;
+		}
+		@keyframes fadeIn {
+			from { opacity: 0; transform: translateY(-10px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+	</style>
 
 	<!-- ===== GLOBAL THEME STYLES ===== -->
 	<style>
@@ -126,9 +152,18 @@
 			}
 		}
 		
-		/* Transition for smooth theme change */
-		*, *::before, *::after {
-			transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+		/* Transition for smooth theme change - only main containers */
+		body,
+		.h-screen,
+		.topbar-bleu-nuit,
+		.menubar-bleu-nuit,
+		.toolbar-container,
+		.footer-bleu-nuit,
+		.info-card,
+		table,
+		thead,
+		.dropdown-menu {
+			transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 		}
 		
 		/* ===== LIGHT MODE - Body & Main Containers ===== */
@@ -199,6 +234,13 @@
 		[data-theme="light"] .text-cyan-400,
 		[data-theme="light"] .text-cyan-500 {
 			color: #0891b2 !important;
+		}
+		
+		/* Badge "Nouveau" - style fixe (non affecté par le thème) */
+		.nouveau-badge {
+			background-color: rgb(15, 23, 42) !important;
+			border-color: rgb(51, 65, 85) !important;
+			color: rgb(100, 116, 139) !important;
 		}
 		
 		/* ===== LIGHT MODE - Borders ===== */
@@ -377,23 +419,26 @@
 </head>
 <script>
         $(document).ready(function() {
-            function fetchData() {
-                $.ajax({
-                    url: '../data/data.php',
-                    method: 'GET',
-                    success: function(response) {
-                        $('#content').text(response.message);
-                    },
-                    error: function() {
-                        console.error('Erreur lors de la récupération des données.');
-                    }
-                });
+            // Affichage de la date et heure en temps réel
+            function updateDateTime() {
+                const now = new Date();
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                };
+                const dateTimeStr = now.toLocaleDateString('fr-FR', options);
+                $('#content').text(dateTimeStr);
             }
 
-            // Appel initial pour charger les données
-            fetchData();
+            // Appel initial
+            updateDateTime();
 
-            // Mettre à jour les données toutes les 5 secondes
-            setInterval(fetchData, 1000);
+            // Mettre à jour chaque seconde
+            setInterval(updateDateTime, 1000);
         });
     </script>

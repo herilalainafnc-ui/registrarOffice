@@ -255,28 +255,34 @@
 			if($page == "accueil.php" OR $page == "student.php") {
 			 ?>
 			<form method="post" action="accueil" class="search-wrapper w-full max-w-md">
+				<i class="bi bi-search search-icon"></i>
 				<input id="std-search" type="text" name="search" 
 					   placeholder="Rechercher un étudiant..." 
+					   autocomplete="off"
 					   class="topbar-search-input h-10 px-2 pl-10 text-sm border border-slate-600 <?=$bg_two_color?> text-slate-100 w-full rounded-lg focus:outline-none placeholder-slate-400">
-				<button type="submit" style="display: none" onclick="surligne();"></button>
+				<button type="submit" style="display: none"></button>
 			</form>
 			<?php 
 			}elseif($page == "accueil.cours.php" OR $page == "cours.php") {
 			?>
 			<form method="post" action="accueil.cours" class="search-wrapper w-full max-w-md">
+				<i class="bi bi-search search-icon"></i>
 				<input id="cours-search" type="text" name="search" 
 					   placeholder="Rechercher un cours..." 
+					   autocomplete="off"
 					   class="topbar-search-input h-10 px-2 pl-10 text-sm border border-slate-600 <?=$bg_two_color?> text-slate-100 w-full rounded-lg focus:outline-none placeholder-slate-400">
-				<button type="submit" style="display: none" onclick="surligne();"></button>
+				<button type="submit" style="display: none"></button>
 			</form>
 			<?php 
 			}elseif($page == "accueil.prof.php" OR $page == "prof.php") {
 			?>
 			<form method="post" action="accueil.prof" class="search-wrapper w-full max-w-md">
+				<i class="bi bi-search search-icon"></i>
 				<input id="prof-search" type="text" name="search" 
 					   placeholder="Rechercher un enseignant..." 
+					   autocomplete="off"
 					   class="topbar-search-input h-10 px-2 pl-10 text-sm border border-slate-600 <?=$bg_two_color?> text-slate-100 w-full rounded-lg focus:outline-none placeholder-slate-400">
-				<button type="submit" style="display: none" onclick="surligne();"></button>
+				<button type="submit" style="display: none"></button>
 			</form>
 			<?php 
 			}
@@ -479,6 +485,12 @@
 				html.setAttribute('data-theme', newTheme);
 				localStorage.setItem('theme', newTheme);
 				
+				// Show toast notification
+				if (typeof Toast !== 'undefined') {
+					const themeName = newTheme === 'dark' ? 'Mode sombre' : 'Mode clair';
+					Toast.info('Thème changé : ' + themeName, { title: 'Apparence', duration: 2000 });
+				}
+				
 				// Dispatch event for other components to react
 				window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: newTheme } }));
 			});
@@ -486,6 +498,30 @@
 	})();
 
 	$(document).ready(function() {
+		// Logout with confirmation
+		$('.logOut').click(function(e) {
+			e.preventDefault();
+			
+			if (typeof Toast !== 'undefined') {
+				Toast.confirm("Êtes-vous sûr de vouloir vous déconnecter ?", {
+					title: "Déconnexion",
+					confirmText: "Se déconnecter",
+					cancelText: "Annuler"
+				}).then(function(confirmed) {
+					if (confirmed) {
+						const loadingId = Toast.loading("Déconnexion en cours...");
+						setTimeout(function() {
+							window.location.href = '../app/logout.php';
+						}, 500);
+					}
+				});
+			} else {
+				if (confirm("Êtes-vous sûr de vouloir vous déconnecter ?")) {
+					window.location.href = '../app/logout.php';
+				}
+			}
+		});
+
 		$('#std-search').keyup(function() {
 			var input = $(this).val();
 			if(input != ''){
@@ -497,9 +533,16 @@
 					url:"../init/.student/std-livesearch",
 					method:"POST",
 					data:{input:input},
-
+					beforeSend: function() {
+						$('#stdSearch-result').html('<div class="flex items-center justify-center py-10"><i class="bi bi-arrow-repeat animate-spin text-2xl text-cyan-400 mr-3"></i> Recherche en cours...</div>');
+					},
 					success:function(data){
 						$("#stdSearch-result").html(data);
+					},
+					error:function(xhr, status, error){
+						Toast.error("Erreur lors de la recherche. Veuillez réessayer.");
+						$('#stdSearch-result').css({'display':'none'});
+						$('#all-std').css({'display':'block'});
 					}
 				});
 
@@ -521,9 +564,16 @@
 					url:"../init/.cours/cours-livesearch",
 					method:"POST",
 					data:{input:input},
-
+					beforeSend: function() {
+						$('#coursSearch-result').html('<div class="flex items-center justify-center py-10"><i class="bi bi-arrow-repeat animate-spin text-2xl text-cyan-400 mr-3"></i> Recherche en cours...</div>');
+					},
 					success:function(data){
 						$("#coursSearch-result").html(data);
+					},
+					error:function(xhr, status, error){
+						Toast.error("Erreur lors de la recherche. Veuillez réessayer.");
+						$('#coursSearch-result').css({'display':'none'});
+						$('#all-cours').css({'display':'block'});
 					}
 				});
 
@@ -545,9 +595,16 @@
 					url:"../init/.prof/prof-livesearch",
 					method:"POST",
 					data:{input:input},
-
+					beforeSend: function() {
+						$('#profSearch-result').html('<div class="flex items-center justify-center py-10"><i class="bi bi-arrow-repeat animate-spin text-2xl text-cyan-400 mr-3"></i> Recherche en cours...</div>');
+					},
 					success:function(data){
 						$("#profSearch-result").html(data);
+					},
+					error:function(xhr, status, error){
+						Toast.error("Erreur lors de la recherche. Veuillez réessayer.");
+						$('#profSearch-result').css({'display':'none'});
+						$('#all-prof').css({'display':'block'});
 					}
 				});
 

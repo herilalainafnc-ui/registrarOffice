@@ -3,8 +3,9 @@
 @media (max-width: 1023px) {
 	.student-profile-sidebar {
 		width: 100% !important;
-		max-height: 220px !important;
-		overflow-y: auto !important;
+		max-height: none !important;
+		height: auto !important;
+		overflow: visible !important;
 	}
 	
 	.student-profile-sidebar .flex.my-2 {
@@ -36,10 +37,6 @@
 }
 
 @media (max-width: 640px) {
-	.student-profile-sidebar {
-		max-height: 180px !important;
-	}
-	
 	.student-profile-sidebar .w-\[75px\] {
 		width: 50px !important;
 	}
@@ -60,7 +57,7 @@
 }
 </style>
 
-<div class="student-profile-sidebar my-1 px-2 mx-0.5 lg:w-4/12 xl:w-3/12 bg-slate-300 overflow-auto" style="height:calc(100vh - 160px);">
+<div class="student-profile-sidebar my-1 px-2 mx-0.5 lg:w-4/12 xl:w-3/12 bg-slate-300 pb-4">
 						
 						<div class="flex my-2 relative">
 

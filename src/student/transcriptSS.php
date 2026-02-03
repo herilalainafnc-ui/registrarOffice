@@ -98,7 +98,7 @@ $tnotecredit = 0;
 						if (!empty($crs)) {
 							?>
 							<tbody class="<?=$bg_four_color?>">
-								<form method="post" action="../app/.student/updatenote?id=<?=$id;?>&nbr=<?=$sessionCount.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$sessionCount?>&user_id=<?=$rg_id?>">			
+								<form method="post" action="../app/.student/updatenote?id=<?=$id;?>&nbr=<?=$sessionCount.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$sessionCount?>&user_id=<?=$rg_id?>" class="form-update-note">			
 				<tr id="note<?=$sessionCount.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black">
 					<td class="bg-gradient-to-r from-orange-800 to-orange-400"><?=$crs['Sigle']?></td>
 					<td><?=$crs['title_cours']?></td>
@@ -157,7 +157,10 @@ if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 
 								<li><p class="px-2 py-1">Session ID : <?=$session_id?></p></li>
 								<hr>
-								<li><a href="../app/.student/del-cours.momentanee?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$sessionCount?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>">		<p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Supprimer</p>
+								<li><a href="#" class="btn-delete-cours" 
+									data-url="../app/.student/del-cours.momentanee.php?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$sessionCount?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>"
+									data-cours="<?=$crs['title_cours']?>">
+									<p class="px-2 py-1 hover:bg-red-600 hover:text-white"><i class="bi-trash"></i> Supprimer</p>
 								</a></li>
 
 
@@ -341,3 +344,138 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 	</table>
 </div>
 </div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	
+	// Gestion de la mise à jour des notes individuelles
+	$('.form-update-note').on('submit', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var url = form.attr('action');
+		var data = form.serialize();
+		
+		$.post(url, data, function(response) {
+			if (typeof Toast !== 'undefined') {
+				Toast.success('Note mise à jour avec succès!');
+			} else {
+				alert('Note mise à jour!');
+			}
+		}).fail(function() {
+			if (typeof Toast !== 'undefined') {
+				Toast.error('Erreur lors de la mise à jour de la note');
+			} else {
+				alert('Erreur!');
+			}
+		});
+	});
+	
+	// Gestion de la mise à jour des notes de promotion (Work Education, Chapel, etc.)
+	$('.form-no-refrech').on('submit', function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var url = form.attr('action');
+		var data = form.serialize();
+		
+		$.post(url, data, function(response) {
+			if (typeof Toast !== 'undefined') {
+				Toast.success('Notes de promotion mises à jour!');
+			} else {
+				alert('Notes mises à jour!');
+			}
+		}).fail(function() {
+			if (typeof Toast !== 'undefined') {
+				Toast.error('Erreur lors de la mise à jour');
+			} else {
+				alert('Erreur!');
+			}
+		});
+	});
+	
+	// Gestion de la suppression de cours avec confirmation
+	$('.btn-delete-cours').on('click', function(e) {
+		e.preventDefault();
+		var btn = $(this);
+		var url = btn.data('url');
+		var coursName = btn.data('cours');
+		
+		// Confirmation avant suppression
+		if (typeof Toast !== 'undefined' && typeof Toast.confirm === 'function') {
+			Toast.confirm('Voulez-vous vraiment supprimer "' + coursName + '" du transcript?', {
+				title: 'Supprimer ce cours?',
+				confirmText: 'Supprimer',
+				cancelText: 'Annuler'
+			}).then(function(confirmed) {
+				if (confirmed) {
+					// Proceed with deletion
+					$.ajax({
+						url: url,
+						type: 'GET',
+						dataType: 'json',
+						beforeSend: function(xhr) {
+							xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+						},
+						success: function(response) {
+							if (response && response.success) {
+								Toast.success(response.message || 'Cours supprimé avec succès!');
+								setTimeout(function() {
+									window.location.reload();
+								}, 800);
+							} else {
+								Toast.error(response.message || 'Erreur lors de la suppression');
+							}
+						},
+						error: function(xhr, status, error) {
+							console.error('Erreur AJAX:', status, error, xhr.responseText);
+							var msg = 'Erreur lors de la suppression';
+							try {
+								var resp = JSON.parse(xhr.responseText);
+								if (resp && resp.message) msg = resp.message;
+							} catch(e) {
+								if (xhr.responseText) msg += ': ' + xhr.responseText.substring(0, 100);
+							}
+							Toast.error(msg);
+						}
+					});
+				}
+			});
+		} else {
+			// Fallback to standard confirm
+			if (confirm('Voulez-vous vraiment supprimer "' + coursName + '" du transcript?')) {
+				$.ajax({
+					url: url,
+					type: 'GET',
+					dataType: 'json',
+					beforeSend: function(xhr) {
+						xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+					},
+					success: function(response) {
+						if (response && response.success) {
+							alert('Cours supprimé!');
+							window.location.reload();
+						} else {
+							alert(response.message || 'Erreur lors de la suppression');
+						}
+					},
+					error: function(xhr, status, error) {
+						console.error('Erreur AJAX:', status, error, xhr.responseText);
+						alert('Erreur lors de la suppression: ' + error);
+					}
+				});
+			}
+		}
+	});
+	
+	// Auto-save on input change (debounced)
+	var saveTimeout;
+	$('.form-update-note input, .form-no-refrech input').on('change', function() {
+		var form = $(this).closest('form');
+		
+		clearTimeout(saveTimeout);
+		saveTimeout = setTimeout(function() {
+			form.submit();
+		}, 500);
+	});
+	
+});
+</script>

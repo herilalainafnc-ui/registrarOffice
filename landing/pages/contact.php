@@ -1,3 +1,97 @@
+<?php
+// Configuration email
+$destinataire = "registraroffice@zurcher.edu.mg";
+$success = false;
+$error = "";
+
+// Traitement du formulaire
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Récupération et nettoyage des données
+    $name = htmlspecialchars(trim($_POST['name'] ?? ''));
+    $email = htmlspecialchars(trim($_POST['email'] ?? ''));
+    $phone = htmlspecialchars(trim($_POST['phone'] ?? ''));
+    $subject_value = htmlspecialchars(trim($_POST['subject'] ?? ''));
+    $message = htmlspecialchars(trim($_POST['message'] ?? ''));
+    
+    // Mapping des sujets
+    $subjects = [
+        'admission' => 'Renseignements sur les admissions',
+        'formation' => 'Questions sur les formations',
+        'frais' => 'Frais de scolarité et bourses',
+        'campus' => 'Vie sur le campus',
+        'partenariat' => 'Proposition de partenariat',
+        'autre' => 'Autre demande'
+    ];
+    $subject_text = $subjects[$subject_value] ?? 'Demande de contact';
+    
+    // Validation
+    if (empty($name) || empty($email) || empty($subject_value) || empty($message)) {
+        $error = "Veuillez remplir tous les champs obligatoires.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "L'adresse email n'est pas valide.";
+    } else {
+        // Construction du message
+        $email_subject = "[Contact UAZ] " . $subject_text;
+        
+        $email_body = "
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: #1a365d; color: white; padding: 20px; text-align: center; }
+                .content { padding: 20px; background: #f9f9f9; }
+                .field { margin-bottom: 15px; }
+                .label { font-weight: bold; color: #1a365d; }
+                .footer { text-align: center; padding: 15px; font-size: 12px; color: #666; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h2>Nouveau Message de Contact</h2>
+                </div>
+                <div class='content'>
+                    <div class='field'>
+                        <span class='label'>Nom :</span> {$name}
+                    </div>
+                    <div class='field'>
+                        <span class='label'>Email :</span> {$email}
+                    </div>
+                    <div class='field'>
+                        <span class='label'>Téléphone :</span> " . ($phone ?: 'Non renseigné') . "
+                    </div>
+                    <div class='field'>
+                        <span class='label'>Sujet :</span> {$subject_text}
+                    </div>
+                    <div class='field'>
+                        <span class='label'>Message :</span><br>
+                        " . nl2br($message) . "
+                    </div>
+                </div>
+                <div class='footer'>
+                    Message envoyé depuis le site web de l'UAZ - " . date('d/m/Y à H:i') . "
+                </div>
+            </div>
+        </body>
+        </html>";
+        
+        // Headers
+        $headers = "MIME-Version: 1.0\r\n";
+        $headers .= "Content-type: text/html; charset=UTF-8\r\n";
+        $headers .= "From: {$name} <{$email}>\r\n";
+        $headers .= "Reply-To: {$email}\r\n";
+        $headers .= "X-Mailer: PHP/" . phpversion();
+        
+        // Envoi du mail
+        if (mail($destinataire, $email_subject, $email_body, $headers)) {
+            $success = true;
+        } else {
+            $error = "Une erreur s'est produite lors de l'envoi. Veuillez réessayer.";
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -129,7 +223,20 @@
             <div class="form-container">
                 <h3 style="font-family: 'Oswald', sans-serif; font-size: 24px; margin-bottom: 24px;">Envoyez-nous un message</h3>
                 
-                <form action="#" method="POST">
+                <?php if ($success): ?>
+                <div class="alert alert-success" style="background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <strong>✓ Message envoyé avec succès !</strong><br>
+                    Nous vous répondrons dans les plus brefs délais.
+                </div>
+                <?php endif; ?>
+                
+                <?php if ($error): ?>
+                <div class="alert alert-error" style="background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <strong>✗ Erreur :</strong> <?php echo $error; ?>
+                </div>
+                <?php endif; ?>
+                
+                <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
                     <div class="form-group">
                         <label class="form-label" for="name">Nom complet *</label>
                         <input type="text" id="name" name="name" class="form-input" placeholder="Votre nom et prénom" required>

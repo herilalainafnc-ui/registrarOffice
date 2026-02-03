@@ -14,12 +14,8 @@
 	}
 </style>
 <div class="w-full h-6 footer-bleu-nuit py-0.5 px-2 flex">
-	<div class="w-3/12 px-4" id="<?php
-	/*if ($page == "accueil.php" OR $page =="student.php") {echo 'compterStd';}
-	elseif ($page == "accueil.cours.php" OR $page =="cours.php") {echo 'compterCours';}
-	elseif ($page == "accueil.prof.php" OR $page =="prof.php") {echo 'compterProf';}*/
-	?>">
-		
+	<div class="w-3/12 px-4" id="footerInfo">
+		<!-- Dynamic footer info -->
 	</div>
 	<div class="w-3/12 px-4">
 		
@@ -32,60 +28,31 @@
 	</div>
 </div>
 
+<!-- Include Toast Notification System -->
+<?php require('../init/toast.php'); ?>
+
+<!-- Include Keyboard Shortcuts -->
+<?php require('../init/shortcuts.php'); ?>
+
+<!-- Include Page Loader -->
+<?php require('../init/loader.php'); ?>
+
 <script type="text/javascript">
 	$(document).ready(function() {
-		
-		var	sdt_nb = <?=$sdt_nb-1?>;		
-		
-		$('#compterStd').text('Affichage limité à '+sdt_nb+' étudiants.');
+		// Update footer info based on current page
+		<?php if(isset($sdt_nb)): ?>
+		var sdt_nb = <?=$sdt_nb - 1?>;
+		$('#footerInfo').text('Affichage limité à ' + sdt_nb + ' étudiants.');
+		<?php endif; ?>
 
-		$('.triage').click(function() {
-			
-			var sdt_nbLivesearch = <?=$sdt_nbLivesearch-1?>;
+		<?php if(isset($cours_nb)): ?>
+		var cours_nb = <?=$cours_nb - 1?>;
+		$('#footerInfo').text('Affichage : ' + cours_nb + ' cours.');
+		<?php endif; ?>
 
-			$.ajax({
-				url:"#",
-				method:"POST",
-				data:{sdt_nbLivesearch:sdt_nbLivesearch},
-
-				success:function(data){
-
-					$('#compterStd').text('Résultat : '+data+' étudiants.');
-				}
-			});
-
-		});
-
-		$('#std-search').keyup(function(){
-			
-			var sdt_nbLivesearch = <?=$sdt_nbLivesearch-1?>;
-
-			$.ajax({
-				url:"#",
-				method:"POST",
-				data:{sdt_nbLivesearch:sdt_nbLivesearch},
-
-				success:function(data){
-					
-					$('.compterStd').text('Résultat : '+data+' étudiants.');
-				}
-			});
-		});
-
-		$('.filter').click(function() {
-			var sdt_nbLive = <?=$sdt_nbLive-1?>;
-
-			$.ajax({
-				url:"#",
-				method:"POST",
-				data:{sdt_nbLive:sdt_nbLive},
-
-				success:function(data){
-					
-					$('.compterStd').text('Résultat : '+data+' étudiants.');
-				}
-			});
-		});
-		
+		<?php if(isset($prof_nb)): ?>
+		var prof_nb = <?=$prof_nb - 1?>;
+		$('#footerInfo').text('Affichage : ' + prof_nb + ' professeurs.');
+		<?php endif; ?>
 	});
 </script>

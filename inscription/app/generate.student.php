@@ -1,21 +1,22 @@
 <?php 
+	header('Content-Type: application/json');
 	
-	require('../../data/backdb.php');
+	try {
+		require('../../data/backdb.php');
 
-	$semesterSession = $_POST['semesterSession'];
-	$annee_scolaire = $_POST['annee_scolaire'];
-	$student_id = $_GET['student_id'];
-	$graduated = $_GET['graduated'];
+		$semesterSession = $_POST['semesterSession'];
+		$annee_scolaire = $_POST['annee_scolaire'];
+		$student_id = $_GET['student_id'];
+		$graduated = $_GET['graduated'] ?? '';
 
 	if ($graduated == "") {
 		$graduated = 0;
 	}
 
-
 	$remove = 0;
 
-	$findStudent = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'" LIMIT 1');
-
+	$findStudent = $dtb->prepare('SELECT * FROM tbl_2024_etudiant WHERE student_id = :student_id LIMIT 1');
+	$findStudent->execute(['student_id' => $student_id]);
 	$showStudent = $findStudent->fetch();
 
 	$idS = $showStudent['id'];
@@ -42,7 +43,8 @@
 	$updateStd->execute();
 
 	
-	$findMention = $dtb->query('SELECT * FROM filiere WHERE filiere_description ="'.$showStudent['etude_envisage'].'"');
+	$findMention = $dtb->prepare('SELECT * FROM filiere WHERE filiere_description = :etude_envisage');
+	$findMention->execute(['etude_envisage' => $showStudent['etude_envisage']]);
 	$showMention = $findMention->fetch();
 	
 	$etude_mention = $showMention['filiere_sigle'];
@@ -62,42 +64,72 @@
 	$date_entry = date('Y-m-d');
 	
 
-	$findSession = $dtb->query('SELECT * FROM t_2023_session WHERE session_name ="'.$semesterSession.'" AND session_year ="'.$annee_scolaire.'" LIMIT 1');
-	
+	$findSession = $dtb->prepare('SELECT * FROM t_2023_session WHERE session_name = :session_name AND session_year = :session_year LIMIT 1');
+	$findSession->execute(['session_name' => $semesterSession, 'session_year' => $annee_scolaire]);
 	$showSession = $findSession->fetch();
 
 	$session_id = $showSession['session_id'];
 	$nbr_semester = $showSession['session_semester'];
 	$annee_scolaire = $showSession['session_year'];
 
-	$verification_Old_status = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id ="'.$student_id.'" LIMIT 1');
-
+	$verification_Old_status = $dtb->prepare('SELECT * FROM tbl_2024_etudiant WHERE student_id = :student_id LIMIT 1');
+	$verification_Old_status->execute(['student_id' => $student_id]);
 	$show_Old_status = $verification_Old_status->fetch();
 
 	$graduated = $show_Old_status['graduated'];
 
-	echo "<br>status = ".$status;
-	echo "<br>etude_mention = ".$etude_mention;
-	echo "<br>level = ".$level;
-	echo "<br>nbr_semester = ".$nbr_semester;
+	// Variables de configuration (pas d'echo pour le JSON)
+	$debug_info = [
+		'status' => $status,
+		'etude_mention' => $etude_mention,
+		'level' => $level
+	];
 
-	$verification_finance_licence = $dtb->query('SELECT * FROM t_2024_finance_detail_licence
-	 WHERE 
-	 std_status = "'.$status.'" 
-	 AND std_mention = "'.$etude_mention.'" 
-	 AND level = "'.$level.'" 
-	 AND semester = "'.$nbr_semester.'" 
-	 ');
+	// ============================================================
+	// IMPORTANT: Vérifier si une inscription existe déjà pour cette année scolaire
+	// Si oui, supprimer l'ancienne pour la remplacer par la nouvelle
+	// ============================================================
+	$checkExisting = $dtb->prepare('SELECT id, session_id FROM t_2024_inscription_session WHERE student_id = :student_id AND annee_scolaire = :annee_scolaire');
+	$checkExisting->execute(['student_id' => $student_id, 'annee_scolaire' => $annee_scolaire]);
+	$existingSession = $checkExisting->fetch();
+	
+	if ($existingSession) {
+		$old_session_id = $existingSession['session_id'];
+		
+		// Supprimer l'ancienne inscription session
+		$deleteOldSession = $dtb->prepare('DELETE FROM t_2024_inscription_session WHERE student_id = :student_id AND annee_scolaire = :annee_scolaire');
+		$deleteOldSession->execute(['student_id' => $student_id, 'annee_scolaire' => $annee_scolaire]);
+		
+		// Supprimer l'ancienne entrée finance liée à l'ancienne session
+		$deleteOldFinance = $dtb->prepare('DELETE FROM t_2024_etudiant_finace WHERE student_id = :student_id AND session_id = :session_id');
+		$deleteOldFinance->execute(['student_id' => $student_id, 'session_id' => $old_session_id]);
+		
+		// Supprimer les cours liés à l'ancienne session
+		$deleteOldCours = $dtb->prepare('DELETE FROM t_2024_cours_finance WHERE student_id = :student_id AND session_id = :session_id');
+		$deleteOldCours->execute(['student_id' => $student_id, 'session_id' => $old_session_id]);
+		
+		// Supprimer les notes liées à l'ancienne session
+		$deleteOldNotes = $dtb->prepare('DELETE FROM t_2023_notes WHERE student_id = :student_id AND session_id = :session_id');
+		$deleteOldNotes->execute(['student_id' => $student_id, 'session_id' => $old_session_id]);
+	}
 
+	$verification_finance_licence = $dtb->prepare('SELECT * FROM t_2024_finance_detail_licence
+	 WHERE std_status = :status AND std_mention = :mention AND level = :level AND semester = :semester');
+	$verification_finance_licence->execute([
+		'status' => $status,
+		'mention' => $etude_mention,
+		'level' => $level,
+		'semester' => $nbr_semester
+	]);
 	$result_finance = $verification_finance_licence->fetch();
 
-		echo "<br>Frais generaux = ".$cout_fraix_generaux = floatval($result_finance['frais_generaux']);		
+		$cout_fraix_generaux = floatval($result_finance['frais_generaux']);		
 		$nbr_day = intval($result_finance['nb_jours_semestre']);
 		$cout_costume = $result_finance['frais_costume'];
 
 	if ($graduated == 1) {
 	
-		echo "<br>frais_graduation = ".$cout_frais_graduation = floatval($result_finance['frais_graduation']);
+		$cout_frais_graduation = floatval($result_finance['frais_graduation']);
 	
 	}else{
 
@@ -195,4 +227,17 @@
 		'date_entry' => $date_entry
 	));
 
- ?>
+	echo json_encode([
+		'success' => true,
+		'message' => 'Session créée avec succès',
+		'session_id' => $session_id,
+		'data' => $debug_info
+	]);
+
+	} catch (Exception $e) {
+		echo json_encode([
+			'success' => false,
+			'message' => 'Erreur: ' . $e->getMessage()
+		]);
+	}
+?>

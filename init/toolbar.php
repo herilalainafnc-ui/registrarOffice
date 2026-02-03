@@ -659,9 +659,17 @@ while ($showSignMention = $findSignMention->fetch()) {
 				url:"../init/.student/std-live.php",
 				method:"POST",
 				data:{trie:trie},
-
+				beforeSend: function() {
+					$('#stdTriage-result').html('<div class="flex items-center justify-center py-10"><i class="bi bi-arrow-repeat animate-spin text-2xl text-cyan-400 mr-3"></i> Tri en cours...</div>');
+				},
 				success:function(data){
 					$("#stdTriage-result").html(data);
+					Toast.success("Liste triée avec succès");
+				},
+				error:function(xhr, status, error){
+					Toast.error("Erreur lors du tri. Veuillez réessayer.");
+					$('#stdTriage-result').css({'display':'none'});
+					$('#all-std').css({'display':'block'});
 				}
 			});
 		});
@@ -679,9 +687,17 @@ while ($showSignMention = $findSignMention->fetch()) {
 				url:"../init/.cours/cours-live.php",
 				method:"POST",
 				data:{trie:trie},
-
+				beforeSend: function() {
+					$('#coursTriage-result').html('<div class="flex items-center justify-center py-10"><i class="bi bi-arrow-repeat animate-spin text-2xl text-cyan-400 mr-3"></i> Tri en cours...</div>');
+				},
 				success:function(data){
 					$("#coursTriage-result").html(data);
+					Toast.success("Liste triée avec succès");
+				},
+				error:function(xhr, status, error){
+					Toast.error("Erreur lors du tri. Veuillez réessayer.");
+					$('#coursTriage-result').css({'display':'none'});
+					$('#all-cours').css({'display':'block'});
 				}
 			});
 		});
@@ -700,9 +716,17 @@ while ($showSignMention = $findSignMention->fetch()) {
 				url:"../init/.prof/prof-live.php",
 				method:"POST",
 				data:{trie:trie},
-
+				beforeSend: function() {
+					$('#profTriage-result').html('<div class="flex items-center justify-center py-10"><i class="bi bi-arrow-repeat animate-spin text-2xl text-cyan-400 mr-3"></i> Tri en cours...</div>');
+				},
 				success:function(data){
 					$("#profTriage-result").html(data);
+					Toast.success("Liste triée avec succès");
+				},
+				error:function(xhr, status, error){
+					Toast.error("Erreur lors du tri. Veuillez réessayer.");
+					$('#profTriage-result').css({'display':'none'});
+					$('#all-prof').css({'display':'block'});
 				}
 			});
 		});
@@ -725,9 +749,17 @@ while ($showSignMention = $findSignMention->fetch()) {
 				url:"../init/.student/std-livesearch.php",
 				method:"POST",
 				data:{filter:filter , channel:channel},
-
+				beforeSend: function() {
+					$('#stdSearch-result').html('<div class="flex items-center justify-center py-10"><i class="bi bi-arrow-repeat animate-spin text-2xl text-cyan-400 mr-3"></i> Filtrage en cours...</div>');
+				},
 				success:function(data){
 					$("#stdSearch-result").html(data);
+					Toast.success("Filtrage appliqué");
+				},
+				error:function(xhr, status, error){
+					Toast.error("Erreur lors du filtrage. Veuillez réessayer.");
+					$('#stdSearch-result').css({'display':'none'});
+					$('#all-std').css({'display':'block'});
 				}
 			});
 		});
@@ -749,9 +781,17 @@ while ($showSignMention = $findSignMention->fetch()) {
 				url:"../init/.cours/cours-livesearch.php",
 				method:"POST",
 				data:{filter:filter , channel:channel},
-
+				beforeSend: function() {
+					$('#coursSearch-result').html('<div class="flex items-center justify-center py-10"><i class="bi bi-arrow-repeat animate-spin text-2xl text-cyan-400 mr-3"></i> Filtrage en cours...</div>');
+				},
 				success:function(data){
 					$("#coursSearch-result").html(data);
+					Toast.success("Filtrage appliqué");
+				},
+				error:function(xhr, status, error){
+					Toast.error("Erreur lors du filtrage. Veuillez réessayer.");
+					$('#coursSearch-result').css({'display':'none'});
+					$('#all-cours').css({'display':'block'});
 				}
 			});
 		});
@@ -773,9 +813,17 @@ while ($showSignMention = $findSignMention->fetch()) {
 				url:"../init/.prof/prof-livesearch.php",
 				method:"POST",
 				data:{filter:filter , channel:channel},
-
+				beforeSend: function() {
+					$('#profSearch-result').html('<div class="flex items-center justify-center py-10"><i class="bi bi-arrow-repeat animate-spin text-2xl text-cyan-400 mr-3"></i> Filtrage en cours...</div>');
+				},
 				success:function(data){
 					$("#profSearch-result").html(data);
+					Toast.success("Filtrage appliqué");
+				},
+				error:function(xhr, status, error){
+					Toast.error("Erreur lors du filtrage. Veuillez réessayer.");
+					$('#profSearch-result').css({'display':'none'});
+					$('#all-prof').css({'display':'block'});
 				}
 			});
 		});

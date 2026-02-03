@@ -113,8 +113,10 @@ $verificationData = $docVerification->getOrCreateBulletinVerification($student_i
 			<table class="tbl mb-0 text-[10px]" style="page-break-inside: avoid;">
 				<thead>
 					<tr class="text-center bg-slate-500 text-white text-[10px]">
-						<th colspan="10" class="py-0"><b><?=$niveau_label?></b> | <?=$showSs['session_name']?> - N°<?=$showSs['session_semester']?> | <?=$combinAnual?></th>
+						<th colspan="10" class="py-0"> <?=$showSs['session_name']?> | <?=$combinAnual?></th>
 					</tr>
+					<!-- <b><?=$niveau_label?></b> | -->
+					 <!-- - N°<?=$showSs['session_semester']?>   -->
 				</thead>
 				<thead class="bg-slate-200">
 					<tr>
@@ -227,6 +229,7 @@ $verificationData = $docVerification->getOrCreateBulletinVerification($student_i
 				</tr>
 			</tfoot>
 			</table>
+			<br>
 			<?php
 			// Cumuls
 			if (!empty($grade_work_educ)) $cumulWorkNote += floatval($grade_work_educ);

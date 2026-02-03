@@ -1,8 +1,9 @@
 <?php 
 	require ('../../data/backdb.php');
 
-	$id = $_GET['id'];
-	$student_id = $_GET['student_id'];
+	// Utiliser $_REQUEST pour supporter GET et POST
+	$id = $_REQUEST['id'] ?? $_GET['id'] ?? null;
+	$student_id = $_REQUEST['student_id'] ?? $_GET['student_id'] ?? null;
 
 	// Vérification si l'étudiant est suspendu
 	$checkSuspension = $dtb->query('SELECT suspended, date_fin_suspension FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'"');
@@ -34,32 +35,32 @@
 	}
 
 	$annee_scolaire = $_POST['annee_scolaire'];
-	$page = $_GET['page'];
-	$user_id_entry = $_GET['user_id'];
+	$page = $_REQUEST['page'] ?? $_GET['page'] ?? null;
+	$user_id_entry = $_REQUEST['user_id'] ?? $_GET['user_id'] ?? null;
 	$date_entry = date('Y-m-d');
 	$ajout = '1';
 
 /*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
-	$etude_envisage = $_GET['etude_envisage'];
+	$etude_envisage = $_REQUEST['etude_envisage'] ?? $_GET['etude_envisage'] ?? null;
 
 	$findInfiliere = $dtb->query('SELECT * FROM filiere WHERE filiere_description = "'.$etude_envisage.'"');
 	$showInfiliere = $findInfiliere->fetch();
 	$etude_envisage_sign = $showInfiliere['filiere_sigle'];
 
-	$status = $_GET['status'];
-	$new_student = $_GET['new_student'];
-	$graduated = $_GET['graduated'];
-	$student_adresse = $_GET['student_adresse'];
-	$etude_option = $_GET['etude_option'];
-	$annee_etude = $_GET['annee_etude'];
-	$sponsor_nom = $_GET['sponsor_nom'];
-	$sponsor_prenom = $_GET['sponsor_prenom'];
-	$sponsor_tel = $_GET['sponsor_tel'];
-	$sponsor_adresse = $_GET['sponsor_adresse'];
-	$situationf = $_GET['situationf'];
-	$nom_conjoint = $_GET['nom_conjoint'];
-	$nb_enfant = $_GET['nb_enfant'];
-	$abonment = $_GET['abonment'];
+	$status = $_REQUEST['status'] ?? $_GET['status'] ?? null;
+	$new_student = $_REQUEST['new_student'] ?? $_GET['new_student'] ?? null;
+	$graduated = $_REQUEST['graduated'] ?? $_GET['graduated'] ?? null;
+	$student_adresse = $_REQUEST['student_adresse'] ?? $_GET['student_adresse'] ?? null;
+	$etude_option = $_REQUEST['etude_option'] ?? $_GET['etude_option'] ?? null;
+	$annee_etude = $_REQUEST['annee_etude'] ?? $_GET['annee_etude'] ?? null;
+	$sponsor_nom = $_REQUEST['sponsor_nom'] ?? $_GET['sponsor_nom'] ?? null;
+	$sponsor_prenom = $_REQUEST['sponsor_prenom'] ?? $_GET['sponsor_prenom'] ?? null;
+	$sponsor_tel = $_REQUEST['sponsor_tel'] ?? $_GET['sponsor_tel'] ?? null;
+	$sponsor_adresse = $_REQUEST['sponsor_adresse'] ?? $_GET['sponsor_adresse'] ?? null;
+	$situationf = $_REQUEST['situationf'] ?? $_GET['situationf'] ?? null;
+	$nom_conjoint = $_REQUEST['nom_conjoint'] ?? $_GET['nom_conjoint'] ?? null;
+	$nb_enfant = $_REQUEST['nb_enfant'] ?? $_GET['nb_enfant'] ?? 0;
+	$abonment = $_REQUEST['abonment'] ?? $_GET['abonment'] ?? 0;
 
 /*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
 
@@ -203,8 +204,18 @@
 
 		foreach($_POST['checklist'] as $i){
 			
+			// Vérifier si le cours existe déjà pour cet étudiant (éviter les doublons)
+			$checkExisting = $dtb->prepare('SELECT id FROM t_2023_notes WHERE id_cours = :id_cours AND student_id = :student_id AND ajout = 1 AND remove = 0');
+			$checkExisting->execute(['id_cours' => $i, 'student_id' => $student_id]);
+			
+			if ($checkExisting->fetch()) {
+				// Le cours existe déjà, passer au suivant
+				continue;
+			}
+			
 			$grade = 0;
-				$recherche = $dtb->query("SELECT * FROM t_2023_cours WHERE id ='".$i."'");
+				$recherche = $dtb->prepare("SELECT * FROM t_2023_cours WHERE id = :id");
+				$recherche->execute(['id' => $i]);
 				
 				$affiche = $recherche->fetch();
 					$cours_id = $affiche['id'];

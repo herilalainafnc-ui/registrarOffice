@@ -176,113 +176,139 @@ while($tch = $teach->fetch()){
 
 
 <!-- AJOUT DE PROF -->
-	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="bigNotifProf" style="backdrop-filter: blur(3px);">
-
-		<div class="w-[700px] bg-slate-300 border-2 border-slate-700 mx-auto my-[1%] opacity-100 drop-shadow-2xl">
-			<form id="formToAddProf" enctype="multipart/form-data">
-			<div class="p-2 text-black flex">
-				<div class="w-7/12">
-					<b>Ajouter un enseignant.</b>	
-				</div>
-				<div class="w-5/12 text-right">
-					<p><em class="text-red-500" id="alert-prof"></em></p>	
-				</div>
-			</div>
-			<div class="p-2 flex gap-2">
-				<!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
-<div class="w-7/12">
-	<div class="w-full/12 mb-2">
-		<label>Nom</label><br>
-		<input class="input w-full requierd-prof-1" type="text" name="name">
-	</div>
-	<div class="w-full/12 mb-2">
-		<label>Prénom</label><br>
-		<input class="input w-full" type="text" name="lastName">
-	</div>
-	<div class="w-full flex gap-1 mb-2">
-		<div class="w-5/12">
-			<label>Date de naissance</label><br>
-			<input class="input w-full" type="date" name="birthday">
-		</div>
-		<div class="w-7/12">
-			<label>Lieu de naissance</label><br>
-			<input class="input w-full" type="text" name="lieuN">
-		</div>	
-	</div>
-
-	<div class="w-full/12 mb-2">
-		<label>Adresse</label><br>
-		<input class="input w-full requierd-prof-2" type="text" name="address">
-	</div>
-
-	<div class="w-full flex gap-1 mb-2">
-		<div class="w-6/12">
-			<label>Genre</label><br>
-			<select class="input w-full" type="number" name="sex">
-				<option value="1">Masculin</option>
-				<option value="0">Féminin</option>
-			</select>
-		</div>
-		<div class="w-6/12">
-			<label>Groupe de sang</label><br>
-			<input class="input w-full" type="text" name="blood_group">
-		</div>	
-	</div>
-
-</div>
-<div class="w-5/12">
-	<div class="w-full mb-2">
-		<label class="text-sm" for="teacher_image">Photos</label><br>
-
-		<label for="teacher_image">
-			<div class="bg-slate-600 rounded-md h-20 w-20 text-center py-3">
-				<i class="bi-image text-4xl text-white"></i>
-			</div>
-		</label>
-		<input type="file" accept=".jpg, .png" name="teacher_image" id="teacher_image" class="hidden">
+	<div class="fixed inset-0 z-50 hidden" id="bigNotifProf">
+		<!-- Overlay -->
+		<div class="fixed inset-0 bg-black/60 backdrop-blur-sm" id="overlayAddProf"></div>
 		
-	</div>
-
-	<div class="w-full/12 mb-2">
-		<label>Téléphone</label><br>
-		<input class="input w-full requierd-prof-3" type="text" name="phone">
-	</div>
-
-	<div class="w-full/12 mb-2">
-		<label>Email</label><br>
-		<input class="input w-full requierd-prof-4" type="text" name="email">
-	</div>
-
-
-	<div class="w-full/12 mb-2">
-		<label>Dilplôme</label><br>
-		<input class="input w-full requierd-prof-5" type="text" name="diplome">
-	</div>
-
-	<div class="w-full/12 mb-2">
-		<label>Réligion</label><br>
-		<select class="input w-full" type="number" name="religion">
-			<option>Adventiste</option>
-			<option>Non Adventiste</option>
-		</select>
-	</div>
-
-	<div class="w-full/12 mb-2">
-		<label>Position</label><br>
-		<input class="input w-full requierd-prof-6" type="text" name="position">
-	</div>
-</div>	
-				<!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
+		<!-- Modal Container -->
+		<div class="fixed inset-0 overflow-y-auto">
+			<div class="flex min-h-full items-center justify-center p-4">
+				<div class="relative w-full max-w-2xl bg-[#0f172a] border border-slate-700/50 rounded-xl shadow-2xl shadow-black/20">
+					
+					<!-- Header -->
+					<div class="flex items-center justify-between p-5 border-b border-slate-700/50">
+						<div class="flex items-center gap-3">
+							<div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+								<i class="bi-person-plus-fill text-cyan-400"></i>
+							</div>
+							<div>
+								<h2 class="text-lg font-semibold text-slate-100">Ajouter un enseignant</h2>
+								<p class="text-xs text-slate-500">Remplissez les informations du professeur</p>
+							</div>
+						</div>
+						<button type="button" id="closeAddProf" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-slate-200 transition-colors">
+							<i class="bi-x-lg text-sm"></i>
+						</button>
+					</div>
+					
+					<!-- Body -->
+					<form id="formToAddProf" enctype="multipart/form-data">
+						<div class="p-5">
+							<p class="text-red-400 text-sm mb-4 hidden" id="alert-prof"></p>
+							
+							<div class="flex gap-5">
+								<!-- Left Column -->
+								<div class="flex-1 space-y-4">
+									<div>
+										<label class="block text-sm font-medium text-slate-300 mb-1.5">Nom <span class="text-red-400">*</span></label>
+										<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all requierd-prof-1" type="text" name="name" placeholder="Nom de famille">
+									</div>
+									
+									<div>
+										<label class="block text-sm font-medium text-slate-300 mb-1.5">Prénom</label>
+										<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all" type="text" name="lastName" placeholder="Prénom">
+									</div>
+									
+									<div class="grid grid-cols-2 gap-3">
+										<div>
+											<label class="block text-sm font-medium text-slate-300 mb-1.5">Date de naissance</label>
+											<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all" type="date" name="birthday">
+										</div>
+										<div>
+											<label class="block text-sm font-medium text-slate-300 mb-1.5">Lieu de naissance</label>
+											<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all" type="text" name="lieuN" placeholder="Ville">
+										</div>
+									</div>
+									
+									<div>
+										<label class="block text-sm font-medium text-slate-300 mb-1.5">Adresse <span class="text-red-400">*</span></label>
+										<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all requierd-prof-2" type="text" name="address" placeholder="Adresse complète">
+									</div>
+									
+									<div class="grid grid-cols-2 gap-3">
+										<div>
+											<label class="block text-sm font-medium text-slate-300 mb-1.5">Genre</label>
+											<select class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all" name="sex">
+												<option value="1">Masculin</option>
+												<option value="0">Féminin</option>
+											</select>
+										</div>
+										<div>
+											<label class="block text-sm font-medium text-slate-300 mb-1.5">Groupe sanguin</label>
+											<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all" type="text" name="blood_group" placeholder="Ex: A+">
+										</div>
+									</div>
+								</div>
+								
+								<!-- Right Column -->
+								<div class="w-[220px] space-y-4">
+									<div>
+										<label class="block text-sm font-medium text-slate-300 mb-1.5">Photo</label>
+										<label for="teacher_image" class="cursor-pointer group">
+											<div class="w-24 h-24 bg-slate-800 border-2 border-dashed border-slate-600 rounded-xl flex flex-col items-center justify-center gap-1 group-hover:border-cyan-500/50 group-hover:bg-slate-800/80 transition-all">
+												<i class="bi-camera text-2xl text-slate-500 group-hover:text-cyan-400 transition-colors"></i>
+												<span class="text-xs text-slate-500 group-hover:text-slate-400">Ajouter</span>
+											</div>
+										</label>
+										<input type="file" accept=".jpg, .png" name="teacher_image" id="teacher_image" class="hidden">
+									</div>
+									
+									<div>
+										<label class="block text-sm font-medium text-slate-300 mb-1.5">Téléphone <span class="text-red-400">*</span></label>
+										<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all requierd-prof-3" type="text" name="phone" placeholder="034 00 000 00">
+									</div>
+									
+									<div>
+										<label class="block text-sm font-medium text-slate-300 mb-1.5">Email <span class="text-red-400">*</span></label>
+										<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all requierd-prof-4" type="email" name="email" placeholder="email@exemple.com">
+									</div>
+									
+									<div>
+										<label class="block text-sm font-medium text-slate-300 mb-1.5">Diplôme <span class="text-red-400">*</span></label>
+										<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all requierd-prof-5" type="text" name="diplome" placeholder="Master, Doctorat...">
+									</div>
+									
+									<div>
+										<label class="block text-sm font-medium text-slate-300 mb-1.5">Religion</label>
+										<select class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all" name="religion">
+											<option>Adventiste</option>
+											<option>Non Adventiste</option>
+										</select>
+									</div>
+									
+									<div>
+										<label class="block text-sm font-medium text-slate-300 mb-1.5">Position <span class="text-red-400">*</span></label>
+										<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all requierd-prof-6" type="text" name="position" placeholder="Professeur, Assistant...">
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<!-- Footer -->
+						<div class="flex items-center justify-end gap-3 p-5 border-t border-slate-700/50 bg-slate-900/50 rounded-b-xl">
+							<button type="button" id="cancelnotifAddProf" class="px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors">
+								Annuler
+							</button>
+							<button type="button" id="btnAddProf" class="px-4 py-2 text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-500 rounded-lg transition-colors flex items-center gap-2">
+								<i class="bi-check-lg"></i>
+								Enregistrer
+							</button>
+						</div>
+					</form>
+					
+				</div>
 			</div>
-			<div class="p-3">
-				<center>
-					<a href="#" id="cancelnotifAddProf" class="bg-slate-400 p-2 rounded-md">Annuler</a>
-					<input id="btnAddProf" type="button" class="bg-cyan-800 p-2 rounded-md text-white mx-1" value="Enregistrer">
-				</center>
-			</div>
-			</form>
 		</div>
-
 	</div>
 
 
@@ -358,7 +384,7 @@ while($tch = $teach->fetch()){
 			$('#bigNotifProf').css({'display':'block'});
 		});
 		
-		$('#cancelnotifAddProf').click(function(){
+		$('#cancelnotifAddProf, #closeAddProf, #overlayAddProf').click(function(){
 			$('#bigNotifProf').css({'display':'none'});
 		});
 		

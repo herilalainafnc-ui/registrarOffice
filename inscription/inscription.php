@@ -36,8 +36,11 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 		
 		}
 		
-
-		$recupsdt = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE (student_id LIKE "%'.$search.'%" OR student_nom LIKE "%'.$search.'%" OR student_prenom LIKE "%'.$search.'%") AND remove != 1 limit 1');
+		// Utiliser des requêtes préparées pour éviter l'injection SQL
+		$searchParam = '%' . $search . '%';
+		$stmt = $dtb->prepare('SELECT * FROM tbl_2024_etudiant WHERE (student_id LIKE :search1 OR student_nom LIKE :search2 OR student_prenom LIKE :search3) AND remove != 1 LIMIT 1');
+		$stmt->execute(['search1' => $searchParam, 'search2' => $searchParam, 'search3' => $searchParam]);
+		$recupsdt = $stmt;
 
 ?>
 
@@ -208,37 +211,18 @@ echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];
 							<div class="absolute bottom-0 w-11/12 m-2 text-center">
 								<div class="gap-2 grid grid-cols-2 text-white">
 									<a href="#" id="downStage" class="px-5 py-2 bg-slate-700 rounded-md toolInactive">Retour</a>
-									<a href="#" id="upStage" data-stage="1" class="px-5 py-2 rounded-md
-<?php 
-
-	$findStudent_Session = $dtb->query('SELECT * FROM t_2024_inscription_session WHERE student_id="'.$student_id.'" ORDER BY id DESC');
-
-	$showStudent_Session = $findStudent_Session->fetch();
-
-	$session_id = $showStudent_Session['session_id'];
-
-	$y = date('Y');
-
-	$aSem = $y." - ".($y+1);
-	$aSem_ = ($y-1)." - ".$y;
-
-	if (date('m') >= 7) {
-		if ($showStudent_Session['annee_scolaire'] != $aSem) {
-			echo "bg-slate-700 toolInactive";
-		}else{
-			echo "bg-cyan-700";
-		}
-	}elseif (date('m') < 7) {
-		if ($showStudent_Session['annee_scolaire'] != $aSem_) {
-		echo "bg-slate-700 toolInactive";
-		}else{
-			echo "bg-cyan-700";
-		}
-	}
-	
-?>">Suivant</a>
+									<a href="#" id="upStage" data-stage="1" class="px-5 py-2 rounded-md bg-slate-700 toolInactive">Suivant</a>
 								</div>
 							</div>
+<?php 
+	// Récupérer les infos de session pour les autres usages dans la page
+	$findStudent_Session = $dtb->query('SELECT * FROM t_2024_inscription_session WHERE student_id="'.$student_id.'" ORDER BY id DESC');
+	$showStudent_Session = $findStudent_Session->fetch();
+	$session_id = isset($showStudent_Session['session_id']) ? $showStudent_Session['session_id'] : '';
+	$y = date('Y');
+	$aSem = $y." - ".($y+1);
+	$aSem_ = ($y-1)." - ".$y;
+?>
 						</div>
 
 <!-- ::::::::::::::::::::::::::::::: MAIN CONTENT :::::::::::::::::::::::::::::::: -->
@@ -253,7 +237,7 @@ echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];
 
 					<form method="post" action="./app/generate.student.php?student_id=<?=$student_id?>&graduated=<?=$graduated?>" class="session-no-refrech">
 
-										<select name="semesterSession" class="w-full bg-slate-800 rounded-lg my-2">
+										<select name="semesterSession" id="semesterSelect" class="w-full bg-slate-800 rounded-lg my-2">
 											<option <?php if (date('m') >= 7) { echo "selected"; } ?>>Premier semestre</option>
 											<option>Semestre d'été</option>
 											<option <?php if (date('m') < 7) { echo "selected"; } ?>>Deuxième semestre</option>
@@ -261,7 +245,7 @@ echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];
 										</select>
 
 
-										<select class="w-full bg-slate-800 rounded-lg my-2" name="annee_scolaire">
+										<select class="w-full bg-slate-800 rounded-lg my-2" name="annee_scolaire" id="yearSelect">
 						<?php
 						
 						for ($i=0; $i <= 8; $i++) { 
@@ -278,56 +262,103 @@ echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];
 						}
 						 ?>
 										</select>
-										<button id="submitSession" type="submit" class="my-2 px-5 py-2 
-<?php 
-if (date('m') >= 7) {
-	if ($showStudent_Session['annee_scolaire'] == $aSem) {
-		echo "bg-slate-800 toolInactive";
-	} else{
-		echo "bg-cyan-700";
-	}
-}elseif (date('m') < 7) {
-	if ($showStudent_Session['annee_scolaire'] != $aSem_) {
-	echo "bg-slate-800 toolInactive";
-	}else{
-		echo "bg-cyan-700";
-	}
-}
-
-?>
-										 rounded-md">Enregistrer</button><br>
-<?php 
-if (date('m') >= 7) {
-	if (!empty($showStudent_Session['annee_scolaire'])) {
-		if ($showStudent_Session['annee_scolaire'] == $aSem) {
-			echo "<em class='text-green-500'>La session a déjà été créée. Vous pouvez passé à l'étape suivante.</em>";
-		}else{
-			echo "<em class='text-slate-500'>Veuillez enregistrer la session avant de passer à l'étape suivante.</em>";
-		}	
-	}else{
-		echo "<em class='text-slate-500'>Veuillez enregistrer la session avant de passer à l'étape suivante.</em>";
-	}
-	
-
-}elseif (date('m') < 7) {
-	if (!empty($showStudent_Session['annee_scolaire'])) {
-		if ($showStudent_Session['annee_scolaire'] != $aSem_) {
-			echo "<em class='text-green-500'>La session a déjà été créée. Vous pouvez passé à l'étape suivante.</em>";
-		}else{
-			echo "<em class='text-slate-500'>Veuillez enregistrer la session avant de passer à l'étape suivante.</em>";
-		}
-	}else{
-		echo "<em class='text-slate-500'>Veuillez enregistrer la session avant de passer à l'étape suivante.</em>";
-	}	
-	
-}
-?>
+										<button id="submitSession" type="submit" class="my-2 px-5 py-2 bg-cyan-700 rounded-md">Enregistrer</button><br>
+										<em id="sessionMessage" class="text-slate-500">Vérification...</em>
 					</form>
 
 									</div>
 
 								</div>
 							</div>
+
+<script>
+// Vérification dynamique de la session
+function checkSessionExists() {
+	const semester = document.getElementById('semesterSelect').value;
+	const year = document.getElementById('yearSelect').value;
+	const studentId = '<?=$student_id?>';
+	
+	const submitBtn = document.getElementById('submitSession');
+	const message = document.getElementById('sessionMessage');
+	const upStageBtn = document.getElementById('upStage');
+	
+	// État de chargement
+	message.textContent = 'Vérification...';
+	message.className = 'text-slate-400';
+	
+	$.ajax({
+		url: './app/check.session.php',
+		type: 'POST',
+		data: {
+			student_id: studentId,
+			semester: semester,
+			year: year
+		},
+		success: function(response) {
+			// Mettre à jour currentSessionId si disponible
+			if (response.session_id) {
+				currentSessionId = response.session_id;
+			}
+			
+			if (response.exists) {
+				// Session existe déjà - désactiver Enregistrer, activer Suivant
+				submitBtn.className = 'my-2 px-5 py-2 bg-slate-800 toolInactive rounded-md';
+				submitBtn.disabled = true;
+				upStageBtn.className = 'px-5 py-2 rounded-md bg-cyan-700';
+				upStageBtn.classList.remove('toolInactive');
+				message.textContent = 'La session a déjà été créée. Vous pouvez passer à l\'étape suivante.';
+				message.className = 'text-green-500';
+			} else if (response.will_replace) {
+				// Une autre session existe pour cette année - avertir et permettre le remplacement
+				submitBtn.className = 'my-2 px-5 py-2 bg-orange-600 rounded-md';
+				submitBtn.disabled = false;
+				upStageBtn.className = 'px-5 py-2 rounded-md bg-slate-700 toolInactive';
+				message.innerHTML = '<i class="bi bi-exclamation-triangle-fill"></i> ' + response.message;
+				message.className = 'text-orange-400';
+			} else {
+				// Session n'existe pas - activer Enregistrer, désactiver Suivant
+				submitBtn.className = 'my-2 px-5 py-2 bg-cyan-700 rounded-md';
+				submitBtn.disabled = false;
+				upStageBtn.className = 'px-5 py-2 rounded-md bg-slate-700 toolInactive';
+				message.textContent = response.message || 'Veuillez enregistrer la session avant de passer à l\'étape suivante.';
+				message.className = 'text-slate-500';
+			}
+		},
+		error: function() {
+			message.textContent = 'Erreur de vérification. Veuillez réessayer.';
+			message.className = 'text-red-500';
+		}
+	});
+}
+
+// Écouter les changements sur les selects
+$(document).ready(function() {
+	checkSessionExists(); // Vérification initiale
+	
+	$('#semesterSelect, #yearSelect').on('change', function() {
+		checkSessionExists();
+		// Mettre à jour l'affichage de la session dans la sidebar
+		updateSessionDisplay();
+	});
+});
+
+// Mettre à jour l'affichage de la session dans la sidebar
+function updateSessionDisplay() {
+	$.ajax({
+		url: "./stages/session.php",
+		method: "POST",
+		data: {
+			student_id: '<?=$student_id?>',
+			session_id: currentSessionId,
+			semester: $('#semesterSelect').val(),
+			year: $('#yearSelect').val()
+		},
+		success: function(data) {
+			$("#session").html(data);
+		}
+	});
+}
+</script>
 
 							<div id="contentInformation" class="stage_1 hidden">
 								<?php require ('../src/student/information.php'); ?>
@@ -343,22 +374,10 @@ if (date('m') >= 7) {
 							
 							<div id="contentFicheinscription" class="stage_4 hidden">
 								<div class="w-full text-center pt-20">
-									<a target="_blank" href="../src/data.topdf.php?ptype=Fiche_inscription
-									&id=<?=$id?>
-									&session_id=<?=$session_id?>
-									&student_id=<?=$student_id?>
-									&student_nom=<?=$student_nom?>
-									&student_prenom=<?=$student_prenom?>
-									&etude_envisage=<?=$etude_envisage?>
-									&level=<?=$level?>
-									&student_tel=<?=$student_tel?>
-									&image_student=<?=$image_student?>
-									" id="ficheInscription" 
-
-										class="text-[40px] leading-tight active:bg-cyan-700 p-1">
-										<div class="w-5/12 m-auto p-3 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-lg border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all">
-									
-											<center>
+									<a target="_blank" href="#" id="linkFicheInscription"
+										data-base-url="../src/data.topdf.php?ptype=Fiche_inscription&id=<?=$id?>&student_id=<?=$student_id?>&student_nom=<?=$student_nom?>&student_prenom=<?=$student_prenom?>&etude_envisage=<?=$etude_envisage?>&level=<?=$level?>&student_tel=<?=$student_tel?>&image_student=<?=$image_student?>"
+											class="text-[40px] leading-tight active:bg-cyan-700 p-1">
+											<div class="w-5/12 m-auto p-3 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-lg border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all">
 											<i class="bi-file-text-fill text-[180px] text-green-300"></i><br>
 													Voir le fiche d'inscription
 											</center>
@@ -419,18 +438,38 @@ if (date('m') >= 7) {
 </html>
 
 <script type="text/javascript">
+	// Variable globale pour stocker le session_id actuel (mis à jour dynamiquement)
+	var currentSessionId = '<?=$session_id?>';
+	
 	$(document).ready(function(){
 
 		$('.session-no-refrech').on('submit',function(submitSS){
 			submitSS.preventDefault();
 
-			var url = './app/generate.student.php?student_id=<?=$student_id?>';
+			var url = './app/generate.student.php?student_id=<?=$student_id?>&graduated=<?=$graduated ?? 0?>';
 			var data = $(this).serialize();
+			
+			var submitBtn = $('#submitSession');
+			submitBtn.prop('disabled', true).text('Enregistrement...');
 
-			$.post(url,data,function(response){
+			$.post(url, data, function(response){
+				// Parser la réponse JSON si possible
+				var result = response;
+				if (typeof response === 'string') {
+					try { result = JSON.parse(response); } catch(e) { result = { success: true }; }
+				}
+				
+				// IMPORTANT: Mettre à jour la variable globale currentSessionId
+				if (result.session_id) {
+					currentSessionId = result.session_id;
+					console.log('Session ID mis à jour:', currentSessionId);
+				}
 
 				$('#upStage').attr('class','px-5 py-2 bg-cyan-700 rounded-md');
+				$('#upStage').removeClass('toolInactive');
 				$('#submitSession').attr('class','my-2 px-5 py-2 bg-slate-800 rounded-md toolInactive');
+				$('#submitSession').prop('disabled', true).text('Enregistrer');
+				$('#sessionMessage').text('La session a déjà été créée. Vous pouvez passer à l\'étape suivante.').attr('class', 'text-green-500');
 				
 				var	student_id = '<?=$student_id?>';
 
@@ -448,14 +487,25 @@ if (date('m') >= 7) {
 				$.ajax({
 						url:"./stages/session.php",
 						method:"POST",
-						data:{student_id:student_id},
+						data:{
+							student_id: student_id,
+							session_id: currentSessionId,
+							semester: $('#semesterSelect').val(),
+							year: $('#yearSelect').val()
+						},
 
 						success:function(data){
 							
 							$("#session").html(data);
+							// Afficher un message de succès
+							Toast.success('Session enregistrée avec succès!');
 						}
 					});
 
+			}).fail(function(){
+				submitBtn.prop('disabled', false).text('Enregistrer');
+				$('#sessionMessage').text('Erreur lors de l\'enregistrement').attr('class', 'text-red-500');
+				Toast.error('Erreur lors de l\'enregistrement de la session');
 			});
 
 		});
@@ -476,7 +526,12 @@ if (date('m') >= 7) {
 		$.ajax({
 				url:"./stages/session.php",
 				method:"POST",
-				data:{student_id:student_id},
+				data:{
+					student_id: student_id,
+					session_id: currentSessionId,
+					semester: $('#semesterSelect').val(),
+					year: $('#yearSelect').val()
+				},
 
 				success:function(data){
 					
@@ -533,7 +588,8 @@ if (date('m') >= 7) {
 
 				$.post(url,function(response){});
 
-				var session_id = $("#session_id").text();
+				// Utiliser la variable globale currentSessionId (toujours à jour)
+				var session_id = currentSessionId || $("#session_id").text();
 
 				$("input[name='session_id']").attr('value', session_id);
 
@@ -554,23 +610,37 @@ if (date('m') >= 7) {
 
 				$('#stageMark_2').attr('class','text-xs p-1');
 
-				var session_id = $("#session_id").text();
+				// Utiliser la variable globale currentSessionId (toujours à jour)
+				var session_id = currentSessionId || $("#session_id").text();
 				
 				var url = './app/generate.stage.php?student_id=<?=$student_id?>&session_id='+session_id+'&stage=3';
 
 				$.post(url,function(response){});
 
-				var id = '<?=$id?>';
-				
-				/*$.ajax({
-					url:"./stages/new.cours.php",
-					method:"POST",
-					data:{id:id},
-
-					success:function(data){
-						$("#contentNewcours").html(data);
+				// Rafraîchir la liste des cours pour refléter les changements (suppression à l'étape 4)
+				$('#contentNewcours').css('opacity', '0.5');
+				$.ajax({
+					url: '../src/student/new.cours.php',
+					method: 'GET',
+					cache: false,
+					data: {
+						student_id: '<?=$student_id?>',
+						id: '<?=$id?>',
+						session_id: session_id,
+						_t: Date.now() // Éviter le cache
+					},
+					success: function(data) {
+						$('#contentNewcours').html(data).css('opacity', '1');
+						// Réattacher les événements si nécessaire
+						if (typeof bindFormEvents === 'function') {
+							bindFormEvents();
+						}
+					},
+					error: function() {
+						$('#contentNewcours').css('opacity', '1');
+						Toast.error('Erreur lors du rafraîchissement de la liste des cours');
 					}
-				});*/
+				});
 
             }else if (stage == 4 ) {
 				
@@ -596,7 +666,8 @@ if (date('m') >= 7) {
             
 
             	var student_id = '<?=$student_id?>';
-            	var session_id = $("#session_id").text();
+            	// Utiliser la variable globale currentSessionId (toujours à jour)
+            	var session_id = currentSessionId || $("#session_id").text();
             	
             	$.ajax({
 					url:"./stages/mode.payement.php",
@@ -629,6 +700,12 @@ if (date('m') >= 7) {
 				$('#intFicheinscription').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 bg-cyan-500');	
 
             	$('#stageMark_4').attr('class','text-xs p-1');
+            	
+            	// Mettre à jour le lien de la fiche d'inscription avec le bon session_id
+            	var linkFiche = $('#linkFicheInscription');
+            	var baseUrl = linkFiche.data('base-url');
+            	var session_id = currentSessionId || $("#session_id").text();
+            	linkFiche.attr('href', baseUrl + '&session_id=' + session_id);
             	
             	var url = './app/generate.stage.php?student_id=<?=$student_id?>&stage=5';
 
@@ -700,7 +777,7 @@ if (date('m') >= 7) {
 
             }else if(stage == 7) {
 
-	       		alert('This student is successfully registered. You must finish here!');
+	       		Toast.success('Inscription terminée avec succès! L\'étudiant est maintenant inscrit.');
 	       		$(this).attr('class', 'px-5 py-2 bg-slate-700 rounded-md toolInactive');
 	       		$('#downStage').attr('class', 'px-5 py-2 bg-slate-700 rounded-md toolInactive');
 
@@ -770,3 +847,6 @@ if (date('m') >= 7) {
 
 	});
 </script>
+<?php require('../init/toast.php'); ?>
+</body>
+</html>

@@ -1,3 +1,115 @@
+<?php
+// Configuration email
+$destinataire = "registraroffice@zurcher.edu.mg";
+$success = false;
+$error = "";
+
+// Traitement du formulaire de pré-inscription
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Récupération et nettoyage des données
+    $fullname = htmlspecialchars(trim($_POST['fullname'] ?? ''));
+    $email = htmlspecialchars(trim($_POST['email'] ?? ''));
+    $phone = htmlspecialchars(trim($_POST['phone'] ?? ''));
+    $mention_value = htmlspecialchars(trim($_POST['mention'] ?? ''));
+    $bac_year = htmlspecialchars(trim($_POST['bac_year'] ?? ''));
+    $message = htmlspecialchars(trim($_POST['message'] ?? ''));
+    
+    // Mapping des mentions
+    $mentions = [
+        'theologie' => 'Théologie',
+        'gestion' => 'Gestion',
+        'informatique' => 'Informatique',
+        'sciences-infirmieres' => 'Sciences Infirmières',
+        'education' => 'Éducation',
+        'communication' => 'Communication',
+        'etudes-anglophones' => 'Études Anglophones',
+        'droit' => 'Droit'
+    ];
+    $mention_text = $mentions[$mention_value] ?? 'Non spécifié';
+    
+    // Validation
+    if (empty($fullname) || empty($phone) || empty($mention_value)) {
+        $error = "Veuillez remplir tous les champs obligatoires.";
+    } elseif (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "L'adresse email n'est pas valide.";
+    } else {
+        // Construction du message
+        $email_subject = "[Pré-inscription UAZ] Nouvelle demande - " . $mention_text;
+        
+        $email_body = "
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: #1a365d; color: white; padding: 20px; text-align: center; }
+                .content { padding: 20px; background: #f9f9f9; }
+                .field { margin-bottom: 15px; padding: 10px; background: white; border-radius: 5px; }
+                .label { font-weight: bold; color: #1a365d; display: block; margin-bottom: 5px; }
+                .value { color: #333; }
+                .highlight { background: #e8f4fd; border-left: 4px solid #1a365d; }
+                .footer { text-align: center; padding: 15px; font-size: 12px; color: #666; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h2>📚 Nouvelle Demande de Pré-inscription</h2>
+                    <p style='margin: 0;'>Année académique 2025-2026</p>
+                </div>
+                <div class='content'>
+                    <div class='field highlight'>
+                        <span class='label'>Mention souhaitée :</span>
+                        <span class='value' style='font-size: 18px; font-weight: bold;'>{$mention_text}</span>
+                    </div>
+                    <div class='field'>
+                        <span class='label'>Nom complet :</span>
+                        <span class='value'>{$fullname}</span>
+                    </div>
+                    <div class='field'>
+                        <span class='label'>Téléphone :</span>
+                        <span class='value'>{$phone}</span>
+                    </div>
+                    <div class='field'>
+                        <span class='label'>Email :</span>
+                        <span class='value'>" . ($email ?: 'Non renseigné') . "</span>
+                    </div>
+                    <div class='field'>
+                        <span class='label'>Année d'obtention du BAC :</span>
+                        <span class='value'>" . ($bac_year ?: 'Non renseigné') . "</span>
+                    </div>
+                    <div class='field'>
+                        <span class='label'>Motivation :</span>
+                        <span class='value'>" . ($message ? nl2br($message) : 'Non renseignée') . "</span>
+                    </div>
+                </div>
+                <div class='footer'>
+                    Demande reçue le " . date('d/m/Y à H:i') . " depuis le site web de l'UAZ
+                </div>
+            </div>
+        </body>
+        </html>";
+        
+        // Headers
+        $headers = "MIME-Version: 1.0\r\n";
+        $headers .= "Content-type: text/html; charset=UTF-8\r\n";
+        if (!empty($email)) {
+            $headers .= "From: {$fullname} <{$email}>\r\n";
+            $headers .= "Reply-To: {$email}\r\n";
+        } else {
+            $headers .= "From: UAZ Website <noreply@zurcher.edu.mg>\r\n";
+        }
+        $headers .= "X-Mailer: PHP/" . phpversion();
+        
+        // Envoi du mail
+        if (mail($destinataire, $email_subject, $email_body, $headers)) {
+            $success = true;
+        } else {
+            $error = "Une erreur s'est produite lors de l'envoi. Veuillez réessayer.";
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -191,7 +303,22 @@
         </div>
 
         <div class="form-container">
-            <form action="#" method="POST">
+            <?php if ($success): ?>
+            <div class="alert alert-success" style="background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 20px; border-radius: 8px; margin-bottom: 25px; text-align: center;">
+                <div style="font-size: 48px; margin-bottom: 10px;">🎉</div>
+                <strong style="font-size: 18px;">Pré-inscription envoyée avec succès !</strong><br><br>
+                Merci pour votre intérêt pour l'Université Adventiste Zurcher.<br>
+                Notre équipe vous contactera prochainement pour la suite du processus.
+            </div>
+            <?php endif; ?>
+            
+            <?php if ($error): ?>
+            <div class="alert alert-error" style="background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;">
+                <strong>✗ Erreur :</strong> <?php echo $error; ?>
+            </div>
+            <?php endif; ?>
+            
+            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
                 <div class="form-group">
                     <label class="form-label" for="fullname">Nom complet *</label>
                     <input type="text" id="fullname" name="fullname" class="form-input" placeholder="Votre nom et prénom" required>

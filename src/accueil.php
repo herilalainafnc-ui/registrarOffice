@@ -1,22 +1,23 @@
+<?php
+// Vérification d'accès AVANT tout output HTML
+require_once('../data/backdb.php');
+require_once('../data/middleware.php');
+initMiddleware($dtb);
+
+// Les étudiants sont redirigés vers leur tableau de bord
+if (isStudent() && !isAdmin() && !isRegistrar()) {
+	header('Location: ./student.dashboard.php');
+	exit;
+}
+
+// Les professeurs voient uniquement leurs étudiants (filtré dans le live-search)
+$isTeacherView = isTeacher() && !isAdmin() && !isRegistrar();
+?>
 <!DOCTYPE html>
 <html>
 <head>
 	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
 	<title>Home</title>
-	<?php
-	// Vérification d'accès pour étudiants et professeurs
-	require_once('../data/middleware.php');
-	initMiddleware($dtb);
-	
-	// Les étudiants sont redirigés vers leur tableau de bord
-	if (isStudent() && !isAdmin() && !isRegistrar()) {
-		header('Location: ./student.dashboard.php');
-		exit;
-	}
-	
-	// Les professeurs voient uniquement leurs étudiants (filtré dans le live-search)
-	$isTeacherView = isTeacher() && !isAdmin() && !isRegistrar();
-	?>
 </head>
 <body class="<?=$bg_three_color?> sm:text-xs lg:text-sm">
 	<div class="h-screen w-full <?=$bg_three_color?>">
@@ -52,26 +53,29 @@
 							</thead>
 							<tbody>
 <?php
-
+try {
 	if (isset($_POST['search']) AND !empty($_POST['search'])) {
-			$input = htmlspecialchars($_POST['search']);
-			$recupsdt = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id LIKE "%'.$input.'%" OR student_nom LIKE "%'.$input.'%" OR student_prenom LIKE "%'.$input.'%" OR sex LIKE "%'.$input.'%" OR student_email LIKE "%'.$input.'%" OR student_tel LIKE "%'.$input.'%" OR religion LIKE "%'.$input.'%" AND remove != 1 ORDER BY id DESC limit 800');	
-		}else{
-			$recupsdt = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE remove != 1 ORDER BY id DESC limit 200');
-		}
+		$input = htmlspecialchars($_POST['search']);
+		// Use prepared statement for security
+		$stmt = $dtb->prepare('SELECT * FROM tbl_2024_etudiant WHERE (student_id LIKE :search OR student_nom LIKE :search OR student_prenom LIKE :search OR sex LIKE :search OR student_email LIKE :search OR student_tel LIKE :search OR religion LIKE :search) AND remove != 1 ORDER BY id DESC LIMIT 800');
+		$stmt->execute(['search' => '%'.$input.'%']);
+		$recupsdt = $stmt;
+	} else {
+		$recupsdt = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE remove != 1 ORDER BY id DESC LIMIT 200');
+	}
 	$sdt_nb = 1;
 	while ($sdt_list = $recupsdt->fetch()) {
  ?>								
-								<tr id="std_<?=$sdt_nb?>" class="hover:bg-slate-600 text-slate-100">	
+								<tr id="std_<?=$sdt_nb?>" class="hover:bg-slate-600 text-slate-100 transition-colors duration-150">	
 									<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"
-									><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['student_id']?></div></a></td>
-									<td class="relative"><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=strtoupper($sdt_list['student_nom'])?>
-									<?php if($sdt_list['new_student'] == 1){ echo "&nbsp;&nbsp;&nbsp;<span class='badge bg-slate-900 border-1 border-slate-700 text-slate-500 absolute top-[1px]'>Nouveau</span>";} ?>
+									><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=htmlspecialchars($sdt_list['student_id'])?></div></a></td>
+									<td class="relative"><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=strtoupper(htmlspecialchars($sdt_list['student_nom']))?>
+									<?php if($sdt_list['new_student'] == 1){ echo "&nbsp;&nbsp;&nbsp;<span class='badge nouveau-badge border-1 absolute top-[1px]'>Nouveau</span>";} ?>
 									</div></a></td>
-									<td><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['student_prenom']?></div></a></td>
-									<td><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['etude_envisage']?></div></a></td>
-									<td><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['etude_option']?></div></a></td>
-									<td><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['annee_scolaire']?></div></a></td>
+									<td><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=htmlspecialchars($sdt_list['student_prenom'])?></div></a></td>
+									<td><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=htmlspecialchars($sdt_list['etude_envisage'])?></div></a></td>
+									<td><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=htmlspecialchars($sdt_list['etude_option'])?></div></a></td>
+									<td><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=htmlspecialchars($sdt_list['annee_scolaire'])?></div></a></td>
 									<td><a href="./student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?php
 										if ($sdt_list['annee_etude']==0) {
 											echo "Remise à niveau";
@@ -87,6 +91,9 @@
 <?php
 	$sdt_nb++;
 	}
+} catch (PDOException $e) {
+	echo '<tr><td colspan="7" class="text-center text-red-400 py-4"><i class="bi bi-exclamation-triangle mr-2"></i>Erreur de chargement des données. Veuillez réessayer.</td></tr>';
+}
  ?>								
 
 							</tbody>

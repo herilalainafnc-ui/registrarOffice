@@ -2,10 +2,13 @@
 
 	require('../../data/backdb.php');
 
-	$student_id = $_POST['student_id'];
-	$session_id = $_POST['session_id'];
+	$student_id = $_POST['student_id'] ?? '';
+	$session_id = $_POST['session_id'] ?? '';
 	
-	$recupsdt = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id ="'.$student_id.'" AND remove != 1 limit 1');
+	// Utiliser des requêtes préparées pour éviter l'injection SQL
+	$stmt = $dtb->prepare('SELECT * FROM tbl_2024_etudiant WHERE student_id = :student_id AND remove != 1 LIMIT 1');
+	$stmt->execute(['student_id' => $student_id]);
+	$recupsdt = $stmt;
 
 	$profil = $recupsdt->fetch();
 	
@@ -45,7 +48,10 @@
 
 
 
-	$findCoursFinance = $dtb->query('SELECT * FROM t_2024_cours_finance WHERE student_id="'.$student_id.'" AND session_id="'.$session_id.'" AND remove != 1');
+	// Requête préparée pour cours finance
+	$stmtCours = $dtb->prepare('SELECT * FROM t_2024_cours_finance WHERE student_id = :student_id AND session_id = :session_id AND remove != 1');
+	$stmtCours->execute(['student_id' => $student_id, 'session_id' => $session_id]);
+	$findCoursFinance = $stmtCours;
 		$nbr = 0;
 		$tCredit = 0;
 		$tCout = 0;
@@ -151,6 +157,7 @@ if ($showCat['category'] == 0){
 							var coutLab = $('#cout_lab').text();
 							var nbr = '<?=$nbr?>';
 							var credit = '<?=$showCF['cours_credit']?>';
+							var btn = $(this);
 
 							var delUrl = "app/retrait.cours.php?cours_id="+cours_id+
 							"&student_id="+student_id+
@@ -158,39 +165,54 @@ if ($showCat['category'] == 0){
 							"&cours_cout="+coutCours+
 							"&lab_cout="+coutLab;
 
+							// Désactiver le bouton pendant le traitement
+							btn.prop('disabled', true).addClass('opacity-50');
+
 							$.get(delUrl, function(response) {
 					        	
-					        	$('#coursSupprime<?=$nbr?>').css({'display':'none'});
+					        	$('#coursSupprime<?=$nbr?>').fadeOut(300);
 					        	
-					        	var coutCours = '<?=$showCF['cours_cout']?>';
+					        	var coutCours = parseInt('<?=$showCF['cours_cout']?>') || 0;
+					        	var coutLabCours = parseInt('<?=$showCF['lab_cout']?>') || 0;
 
-					        	var totalCours = $('#totalCours').text();
-					        	var montant = $('#montant').text();
-								var tranchable = $('#tranchable').text();
+					        	// Utiliser data-value pour les valeurs brutes (pas les valeurs formatées)
+					        	var totalCours = parseInt($('#totalCours').data('value')) || 0;
+					        	var totalLab = parseInt($('#totalLab').data('value')) || 0;
+					        	var montant = parseInt($('#montant').data('value')) || 0;
+								var tranchable = parseInt($('#tranchable').data('value')) || 0;
 
-								var tCredit = $('#tCredit').text();
-								var nbCours = $('#nbCours').text();
+								var tCredit = parseInt($('#tCredit').data('value')) || parseInt($('#tCredit').text()) || 0;
+								var nbCours = parseInt($('#nbCours').text()) || 0;
 					        	
-					        	var restTotal = parseInt(totalCours) - parseInt(coutCours);
-					        	var restMontant = parseInt(montant) - parseInt(coutCours);
-					        	var restTranchable = parseInt(tranchable) - parseInt(coutCours);
+					        	// Calculer les nouvelles valeurs
+					        	var restTotalCours = totalCours - coutCours;
+					        	var restTotalLab = totalLab - coutLabCours;
+					        	var restMontant = montant - coutCours - coutLabCours;
+					        	var restTranchable = tranchable - coutCours - coutLabCours;
 					        	
-					        	var restCredit = parseInt(tCredit) - parseInt(credit);
-					        	var restnbCours = parseInt(nbCours) - 1;
+					        	var restCredit = tCredit - parseInt(credit);
+					        	var restnbCours = nbCours - 1;
 					        	
-					        	$('#totalCours').text(restTotal);
-					        	$('#montant').text(restMontant);
-					        	$('#tranchable').text(restTranchable);
+					        	// Mettre à jour les valeurs affichées ET les data-value
+					        	$('#totalCours').text(restTotalCours.toLocaleString('fr-FR')).data('value', restTotalCours);
+					        	$('#totalLab').text(restTotalLab).data('value', restTotalLab);
+					        	$('#montant').text(restMontant.toLocaleString('fr-FR')).data('value', restMontant);
+					        	$('#tranchable').text(restTranchable.toLocaleString('fr-FR')).data('value', restTranchable);
 
-					        	$('#tCredit').text(restCredit);
+					        	$('#tCredit').text(restCredit).data('value', restCredit);
 					        	$('#nbCours').text(restnbCours);
 
+					        	// Mettre à jour les options de paiement
+					        	$('.paie100').text(restTranchable.toLocaleString('fr-FR'));
+					        	$('.paie50').text(Math.round((restTranchable*50)/100).toLocaleString('fr-FR'));
+					        	$('.paie40').text(Math.round((restTranchable*40)/100).toLocaleString('fr-FR'));
+					        	$('.paie30').text(Math.round((restTranchable*30)/100).toLocaleString('fr-FR'));
+					        	$('.paie25').text(Math.round((restTranchable*25)/100).toLocaleString('fr-FR'));
 
-					        	$('.paie100').text(restTranchable);
-					        	$('.paie50').text((restTranchable*50)/100);
-					        	$('.paie40').text((restTranchable*40)/100);
-					        	$('.paie30').text((restTranchable*30)/100);
-					        	$('.paie25').text((restTranchable*25)/100);
+					        	Toast.success('Cours retiré avec succès');
+					        }).fail(function() {
+					        	btn.prop('disabled', false).removeClass('opacity-50');
+					        	Toast.error('Erreur lors du retrait du cours');
 					        });
 
 						});
@@ -209,7 +231,7 @@ if ($showCat['category'] == 0){
 				<tfoot>
 					<tr class="bg-slate-200">
 						<th colspan="2"><a id="nbCours"><?=$nbr?></a> cours</th>
-						<th id="tCredit"><?=$tCredit?></th>
+						<th id="tCredit" data-value="<?=$tCredit?>"><?=$tCredit?></th>
 					</tr>
 				</tfoot>
 			</table>
@@ -279,8 +301,8 @@ if ($showCat['category'] == 0){
 						<td><?=number_format($showFin['cout_frais_graduation'], 0, '', ' ')?></td>
 					<?php } ?>
 					<td><?=number_format($showFin['cout_voyage'], 0, '', ' ')?></td>
-					<td><a id="totalCours"><?=number_format($tCout, 0, '', ' ')?></a></td>
-					<td><?=$somm_lab?></td>
+					<td><a id="totalCours" data-value="<?=$tCout?>"><?=number_format($tCout, 0, '', ' ')?></a></td>
+					<td><a id="totalLab" data-value="<?=$somm_lab?>"><?=$somm_lab?></a></td>
 				</tr>
 			</tbody>
 		</table>
@@ -288,8 +310,8 @@ if ($showCat['category'] == 0){
 		<table>
 			<tr>
 				<td class="text-right text-bold">Total = </td>
-				<td class="bg-blue-300 p-1 text-right"><a id="montant"><?=
-number_format($Montant = $showFin['cout_fraix_generaux'] + 
+				<td class="bg-blue-300 p-1 text-right"><a id="montant" data-value="<?=
+$Montant = $showFin['cout_fraix_generaux'] + 
 							$showFin['cout_logement'] +
 							$showFin['cout_fondDepot_dortoir'] +
 							$showFin['cout_abonment'] +
@@ -297,9 +319,8 @@ number_format($Montant = $showFin['cout_fraix_generaux'] +
 							$showFin['cout_frais_graduation'] +
 							/*$showFin['cout_voyage'] +*/
 							$tCout +
-							$somm_lab, 0, '', ' ')
-
-				?></a></td>
+							$somm_lab
+				?>"><?=number_format($Montant, 0, '', ' ')?></a></td>
 				<td>ar</td>
 			</tr>
 			<tr>
@@ -309,9 +330,9 @@ number_format($Montant = $showFin['cout_fraix_generaux'] +
 			</tr>
 			<tr>
 				<td class="text-right text-bold">Reste à tranché = </td>
-				<td class="bg-orange-300 p-1 text-right"><a id="tranchable"><?=number_format($Montant_sans_fraix_Generaux =
-							$Montant - ($showFin['cout_fraix_generaux'] + $showFin['cout_fondDepot_dortoir']), 0, '', ' ')
-				?></a></td>
+				<td class="bg-orange-300 p-1 text-right"><a id="tranchable" data-value="<?=
+							$Montant_sans_fraix_Generaux = $Montant - ($showFin['cout_fraix_generaux'] + $showFin['cout_fondDepot_dortoir'])
+				?>"><?=number_format($Montant_sans_fraix_Generaux, 0, '', ' ')?></a></td>
 				<td>ar</td>
 			</tr>
 		</table>
@@ -449,14 +470,22 @@ number_format($Montant = $showFin['cout_fraix_generaux'] +
 
 		$('.form-payement').on('submit',function(submitP){
 			submitP.preventDefault();
+			
+			var submitBtn = $(this).find('button[type="submit"]');
+			var originalText = submitBtn.text();
+			submitBtn.prop('disabled', true).text('Enregistrement...');
 
 			var url	= './app/mode.payement.php?student_id=<?=$student_id?>&session_id=<?=$session_id?>';
 			var data = $(this).serialize();
 
 			$.post(url,data,function(response){
-				alert("Mode de payement enregistrée !");
+				Toast.success('Mode de paiement enregistré avec succès!');
 				$('#submit-payement').attr('class','my-2 px-5 py-2 bg-slate-700 rounded-md toolInactive');
 				$('#upStage').attr('class','px-5 py-2 bg-cyan-700 rounded-md');
+				submitBtn.prop('disabled', false).text(originalText);
+			}).fail(function(){
+				Toast.error('Erreur lors de l\'enregistrement du mode de paiement');
+				submitBtn.prop('disabled', false).text(originalText);
 			});
 
 		});

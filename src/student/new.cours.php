@@ -1,5 +1,38 @@
 ﻿
 <?php 
+	/*::::::::::::::::::::::: CHARGEMENT AUTONOME (AJAX) ::::::::::::::::::::::*/
+	
+	// Si appelé directement via AJAX, charger les dépendances
+	if (!isset($profil) && (isset($_GET['student_id']) || isset($_GET['id']))) {
+		require_once('../../data/backdb.php');
+		
+		$student_id = $_GET['student_id'] ?? '';
+		$id = $_GET['id'] ?? '';
+		$ajax_session_id = $_GET['session_id'] ?? '';
+		
+		if (!empty($student_id)) {
+			$stmt = $dtb->prepare('SELECT * FROM tbl_2024_etudiant WHERE student_id = :student_id AND remove != 1 LIMIT 1');
+			$stmt->execute(['student_id' => $student_id]);
+			$profil = $stmt->fetch(PDO::FETCH_ASSOC);
+			
+			if ($profil) {
+				$id = $profil['id'];
+				$student_id = $profil['student_id'];
+				$student_nom = $profil['student_nom'];
+				$student_prenom = $profil['student_prenom'];
+				$level = $profil['annee_etude'];
+				$annee_scolaire = $profil['annee_scolaire'];
+				$etude_envisage = $profil['etude_envisage'];
+				$etude_option = $profil['etude_option'];
+			}
+		}
+	}
+	
+	// Récupérer le session_id (depuis GET pour AJAX, sinon depuis le formulaire parent)
+	$current_session_id = $ajax_session_id ?? '';
+?>
+
+<?php 
 	/*::::::::::::::::::::::: VÉRIFICATION SUSPENSION ::::::::::::::::::::::*/
 	
 	// Vérifier si l'étudiant est suspendu
@@ -91,7 +124,7 @@
 			}
 		}
  ?>
-<div class=" mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">	
+<div id="coursListContainer" class="mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">	
 <?php
 	
 	if ($etude_envisage == "Théologie") {
@@ -169,22 +202,26 @@
  ?>
 
  <!-- DEBUT DU FORMULAIRE -->
- <form action="../app/.student/checkCours?id=<?=$id?>&student_id=<?=$student_id?>&page=newCours&user_id=<?=$rg_id?>
-&etude_envisage=<?=$profil['etude_envisage']?>
-&status=<?=$profil['status']?>
-&new_student=<?=$profil['new_student']?>
-&graduated=<?=$profil['graduated']?>
-&student_adresse=<?=$profil['student_adresse']?>
-&etude_option=<?=$profil['etude_option']?>
-&annee_etude=<?=$profil['annee_etude']?>
-&sponsor_nom=<?=$profil['sponsor_nom']?>
-&sponsor_prenom=<?=$profil['sponsor_prenom']?>
-&sponsor_tel=<?=$profil['sponsor_tel']?>
-&sponsor_adresse=<?=$profil['sponsor_adresse']?>
-&situationf=<?=$profil['situationf']?>
-&nom_conjoint=<?=$profil['nom_conjoint']?>
-&nb_enfant=<?=$profil['nb_enfant']?>
-&abonment=<?=$profil['abonment']?>" method="post" class="form-newCours">
+ <form action="javascript:void(0);" data-action="../app/.student/checkCours.php" method="post" class="form-newCours">
+ 	<input type="hidden" name="id" value="<?=htmlspecialchars($id ?? '')?>">
+ 	<input type="hidden" name="student_id" value="<?=htmlspecialchars($student_id ?? '')?>">
+ 	<input type="hidden" name="page" value="newCours">
+ 	<input type="hidden" name="user_id" value="<?=htmlspecialchars($rg_id ?? '')?>">
+ 	<input type="hidden" name="etude_envisage" value="<?=htmlspecialchars($profil['etude_envisage'] ?? '')?>">
+ 	<input type="hidden" name="status" value="<?=htmlspecialchars($profil['status'] ?? '')?>">
+ 	<input type="hidden" name="new_student" value="<?=htmlspecialchars($profil['new_student'] ?? '')?>">
+ 	<input type="hidden" name="graduated" value="<?=htmlspecialchars($profil['graduated'] ?? '')?>">
+ 	<input type="hidden" name="student_adresse" value="<?=htmlspecialchars($profil['student_adresse'] ?? '')?>">
+ 	<input type="hidden" name="etude_option" value="<?=htmlspecialchars($profil['etude_option'] ?? '')?>">
+ 	<input type="hidden" name="annee_etude" value="<?=htmlspecialchars($profil['annee_etude'] ?? '')?>">
+ 	<input type="hidden" name="sponsor_nom" value="<?=htmlspecialchars($profil['sponsor_nom'] ?? '')?>">
+ 	<input type="hidden" name="sponsor_prenom" value="<?=htmlspecialchars($profil['sponsor_prenom'] ?? '')?>">
+ 	<input type="hidden" name="sponsor_tel" value="<?=htmlspecialchars($profil['sponsor_tel'] ?? '')?>">
+ 	<input type="hidden" name="sponsor_adresse" value="<?=htmlspecialchars($profil['sponsor_adresse'] ?? '')?>">
+ 	<input type="hidden" name="situationf" value="<?=htmlspecialchars($profil['situationf'] ?? '')?>">
+ 	<input type="hidden" name="nom_conjoint" value="<?=htmlspecialchars($profil['nom_conjoint'] ?? '')?>">
+ 	<input type="hidden" name="nb_enfant" value="<?=htmlspecialchars($profil['nb_enfant'] ?? 0)?>">
+ 	<input type="hidden" name="abonment" value="<?=htmlspecialchars($profil['abonment'] ?? 0)?>">
 
 		<table class="simpleTbl mb-1 w-full">
 			<thead>
@@ -236,8 +273,10 @@
 			$annee_scolaire = $crs['yearlevel'];
 			$semester = $crs['semester'];
 
-	$verifyExisting = $dtb->query('SELECT * FROM t_2023_notes WHERE id_cours = "'.$note_id.'" AND student_id="'.$student_id.'" AND ajout = 1 AND remove = 0');
-	$validExisting = $verifyExisting->fetch();
+	// Vérifier si le cours existe déjà pour cet étudiant (dans TOUTES les sessions)
+	$stmtVerify = $dtb->prepare('SELECT * FROM t_2023_notes WHERE id_cours = :id_cours AND student_id = :student_id AND ajout = 1 AND remove = 0');
+	$stmtVerify->execute(['id_cours' => $note_id, 'student_id' => $student_id]);
+	$validExisting = $stmtVerify->fetch();
 	 ?>
 				<tr 
 <?php if (empty($validExisting)) { ?>	
@@ -475,37 +514,87 @@ $tcredit+= $credit + $crs['nb_crd'];
 	        window.location.hash = '#year'+a;
 	    };
 
-		$(".form-newCours").on('submit',function (e) {
+		// Attacher les événements du formulaire au chargement
+		bindFormEvents();
+	});
+	
+	// Déterminer le chemin de base selon le contexte
+	var basePath = window.location.pathname.includes('/inscription/') ? '../app/.student/' : '../app/.student/';
+	
+	// Fonction pour rafraîchir uniquement la liste des cours
+	function refreshCoursList() {
+		var scrollTop = $('#coursListContainer').scrollTop();
+		var currentHash = window.location.hash;
+		
+		// Construire l'URL relative depuis la page actuelle
+		var ajaxUrl = '../app/.student/get-cours-list.php';
+		
+		$.ajax({
+			url: ajaxUrl,
+			method: 'GET',
+			data: {
+				id: <?=json_encode($id ?? '')?>,
+				student_id: <?=json_encode($student_id ?? '')?>,
+				etude_envisage: <?=json_encode($profil['etude_envisage'] ?? '')?>,
+				etude_option: <?=json_encode($profil['etude_option'] ?? '')?>,
+				level: <?=json_encode($profil['level'] ?? 1)?>
+			},
+			beforeSend: function() {
+				$('#coursListContainer').css('opacity', '0.5');
+			},
+			success: function(data) {
+				$('#coursListContainer').html(data).css('opacity', '1');
+				// Restaurer la position du scroll
+				$('#coursListContainer').scrollTop(scrollTop);
+				// Réattacher les événements du formulaire
+				bindFormEvents();
+			},
+			error: function() {
+				$('#coursListContainer').css('opacity', '1');
+				Toast.error('Erreur lors du rafraîchissement de la liste');
+			}
+		});
+	}
+	
+	// Fonction pour réattacher les événements après le rafraîchissement AJAX
+	function bindFormEvents() {
+		$(".form-newCours").off('submit').on('submit', function (e) {
+			e.preventDefault();
+			 
+			var form = $(this);
+			var submitBtn = form.find('button[type="submit"]');
+			var originalText = submitBtn.text();
+			 
+			// Vérifier si au moins une case est cochée
+			if (form.find('input[type="checkbox"]:checked').length === 0) {
+				Toast.warning('Veuillez sélectionner au moins un cours');
+				return;
+			}
+			 
+			// Désactiver le bouton pendant l'envoi
+			submitBtn.prop('disabled', true).text('Enregistrement...');
 
-			 e.preventDefault();
-
-			var url = '../app/.student/checkCours?id=<?=$id?>&student_id=<?=$student_id?>&page=newCours&user_id=<?=$rg_id?>
-&etude_envisage=<?=$profil['etude_envisage']?>
-&status=<?=$profil['status']?>
-&new_student=<?=$profil['new_student']?>
-&graduated=<?=$profil['graduated']?>
-&student_adresse=<?=$profil['student_adresse']?>
-&etude_option=<?=$profil['etude_option']?>
-&annee_etude=<?=$profil['annee_etude']?>
-&sponsor_nom=<?=$profil['sponsor_nom']?>
-&sponsor_prenom=<?=$profil['sponsor_prenom']?>
-&sponsor_tel=<?=$profil['sponsor_tel']?>
-&sponsor_adresse=<?=$profil['sponsor_adresse']?>
-&situationf=<?=$profil['situationf']?>
-&nom_conjoint=<?=$profil['nom_conjoint']?>
-&nb_enfant=<?=$profil['nb_enfant']?>
-&abonment=<?=$profil['abonment']?>';
+			var url = form.data('action');
+			
+			if (!url) {
+				Toast.error('URL du formulaire non trouvée');
+				submitBtn.prop('disabled', false).text(originalText);
+				return;
+			}
 			
 			var data = $(this).serialize();
 
-			$.post(url,data,function(response){
+			$.post(url, data, function(response){
+				Toast.success('Cours ajouté au transcript avec succès!');
 				
-				alert("Cours sauvegardé !");
-				/*$(".submiting").attr('class','submiting px-2 text-center py-0 m-1 text-slate-400 bg-slate-700 toolInactive');*/
+				submitBtn.prop('disabled', false).text(originalText);
+				refreshCoursList();
 				
+			}).fail(function(){
+				Toast.error('Erreur lors de l\'ajout du cours');
+				submitBtn.prop('disabled', false).text(originalText);
 			});
-
 		});
-	});
+	}
 
 </script>
