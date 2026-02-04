@@ -39,18 +39,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
             
             // Déterminer la destination finale
             if ($userLevel === 6 || $userType === 'student') {
-                $destination = './student.dashboard.php';
+                $destination = './student.dashboard';
             } elseif ($userLevel === 5 || $userType === 'teacher') {
-                $destination = './teacher.dashboard.php';
+                $destination = './teacher.dashboard';
             } else {
-                $destination = './accueil.php';
+                $destination = './accueil';
             }
             
             // Stocker la destination dans la session
             $_SESSION['login_redirect'] = $destination;
             
             // Rediriger vers la page de chargement
-            header('Location: ./loading.php');
+            header('Location: ./loading');
             exit;
         } else {
             // Log de tentative échouée

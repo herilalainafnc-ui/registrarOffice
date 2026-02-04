@@ -554,6 +554,23 @@ class Middleware {
     }
 
     /**
+     * Récupère les informations de l'enseignant connecté
+     */
+    public static function getTeacherInfo() {
+        if (!self::isTeacher() || !self::$dtb) return null;
+        
+        $teacherUid = self::getTeacherUid();
+        if (!$teacherUid) return null;
+        
+        $stmt = self::$dtb->prepare(
+            "SELECT * FROM teacher WHERE uid = :uid LIMIT 1"
+        );
+        $stmt->execute(['uid' => $teacherUid]);
+        
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
      * Récupère les cours de l'étudiant connecté
      */
     public static function getStudentCourses($anneeScolaire = null, $semestre = null) {

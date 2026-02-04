@@ -512,13 +512,13 @@
 					if (confirmed) {
 						const loadingId = Toast.loading("Déconnexion en cours...");
 						setTimeout(function() {
-							window.location.href = '../app/logout.php';
+							window.location.href = '../app/logout';
 						}, 500);
 					}
 				});
 			} else {
 				if (confirm("Êtes-vous sûr de vouloir vous déconnecter ?")) {
-					window.location.href = '../app/logout.php';
+					window.location.href = '../app/logout';
 				}
 			}
 		});

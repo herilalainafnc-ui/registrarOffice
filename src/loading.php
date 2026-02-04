@@ -24,19 +24,50 @@ $userPhoto = $user['photos'] ?? '';
 $userLevel = (int)($user['level'] ?? 4);
 $userType = $user['user_type'] ?? 'staff';
 
+// Pour les étudiants, récupérer les infos depuis tbl_2024_etudiant
+if (Middleware::isStudent()) {
+    $studentInfo = Middleware::getStudentInfo();
+    if ($studentInfo) {
+        // Utiliser les informations de l'étudiant
+        $userName = htmlspecialchars($studentInfo['student_nom'] ?? $userName);
+        $userFirstName = htmlspecialchars($studentInfo['student_prenom'] ?? $userFirstName);
+        // La photo de l'étudiant est dans image_student
+        if (!empty($studentInfo['image_student'])) {
+            $userPhoto = $studentInfo['image_student'];
+            $userType = 'student'; // Forcer le type pour le chemin de la photo
+        }
+    }
+}
+
+// Pour les enseignants, récupérer les infos depuis la table teacher
+if (Middleware::isTeacher()) {
+    $teacherInfo = Middleware::getTeacherInfo();
+    if ($teacherInfo) {
+        if (!empty($teacherInfo['lastName'])) {
+            $userName = htmlspecialchars($teacherInfo['lastName']);
+        }
+        if (!empty($teacherInfo['name'])) {
+            $userFirstName = htmlspecialchars($teacherInfo['name']);
+        }
+        if (!empty($teacherInfo['teacher_image'])) {
+            $userPhoto = $teacherInfo['teacher_image'];
+            $userType = 'teacher';
+        }
+    }
+}
+
 // Déterminer le chemin de la photo
 $photoPath = '';
 if (!empty($userPhoto)) {
-    // Les photos utilisateurs sont dans photosuser
-    $photoPath = '../app/photosuser/' . $userPhoto;
-    
-    // Vérifier si le fichier existe, sinon essayer d'autres chemins
-    if (!file_exists(__DIR__ . '/../app/photosuser/' . $userPhoto)) {
-        if ($userType === 'student' || $userLevel === 6) {
-            $photoPath = '../app/photosetudiants/' . $userPhoto;
-        } elseif ($userType === 'teacher' || $userLevel === 5) {
-            $photoPath = '../app/photosenseignants/' . $userPhoto;
-        }
+    if ($userType === 'student' || $userLevel === 6) {
+        // Photos des étudiants
+        $photoPath = '../app/photosetudiants/' . $userPhoto;
+    } elseif ($userType === 'teacher' || $userLevel === 5) {
+        // Photos des enseignants
+        $photoPath = '../app/photosenseignants/' . $userPhoto;
+    } else {
+        // Photos des utilisateurs (staff)
+        $photoPath = '../app/photosuser/' . $userPhoto;
     }
 }
 
@@ -46,7 +77,7 @@ if (empty($photoPath) || empty($userPhoto)) {
 }
 
 // Récupérer la destination
-$destination = $_SESSION['login_redirect'] ?? './accueil.php';
+$destination = $_SESSION['login_redirect'] ?? './accueil';
 unset($_SESSION['login_redirect']);
 
 // Déterminer l'heure pour le message de salutation
