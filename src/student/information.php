@@ -1,5 +1,186 @@
-﻿
+﻿<?php
+// Helper function to format dates - returns empty string for invalid dates
+function formatDateForInput($date) {
+	if (empty($date) || $date === '0000-00-00' || $date === '0000-00-00 00:00:00') {
+		return '';
+	}
+	return $date;
+}
+?>
+<!-- Toast Container -->
+<div id="toast-container" class="toast-container"></div>
+
 <style>
+	/* ===== TOAST NOTIFICATIONS ===== */
+	.toast-container {
+		position: fixed;
+		top: 20px;
+		right: 20px;
+		z-index: 9999;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		pointer-events: none;
+	}
+
+	.toast {
+		pointer-events: all;
+		min-width: 320px;
+		max-width: 420px;
+		padding: 16px 20px;
+		border-radius: 12px;
+		backdrop-filter: blur(16px);
+		box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+		display: flex;
+		align-items: flex-start;
+		gap: 14px;
+		animation: toastSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.toast.toast-out {
+		animation: toastSlideOut 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
+	}
+
+	@keyframes toastSlideIn {
+		from { opacity: 0; transform: translateX(100%) scale(0.8); }
+		to { opacity: 1; transform: translateX(0) scale(1); }
+	}
+
+	@keyframes toastSlideOut {
+		from { opacity: 1; transform: translateX(0) scale(1); }
+		to { opacity: 0; transform: translateX(100%) scale(0.8); }
+	}
+
+	.toast-icon {
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		font-size: 14px;
+	}
+
+	.toast-content {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.toast-title {
+		font-size: 14px;
+		font-weight: 600;
+		margin-bottom: 4px;
+	}
+
+	.toast-message {
+		font-size: 13px;
+		opacity: 0.85;
+		line-height: 1.4;
+	}
+
+	.toast-close {
+		background: none;
+		border: none;
+		color: inherit;
+		opacity: 0.5;
+		cursor: pointer;
+		padding: 4px;
+		margin: -4px;
+		transition: opacity 0.2s;
+		font-size: 18px;
+	}
+
+	.toast-close:hover {
+		opacity: 1;
+	}
+
+	.toast-progress {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		height: 3px;
+		border-radius: 0 0 12px 12px;
+		animation: toastProgress linear forwards;
+	}
+
+	@keyframes toastProgress {
+		from { width: 100%; }
+		to { width: 0%; }
+	}
+
+	/* Toast types */
+	.toast-success {
+		background: linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.95));
+		color: white;
+	}
+	.toast-success .toast-icon { background: rgba(255, 255, 255, 0.2); }
+	.toast-success .toast-progress { background: rgba(255, 255, 255, 0.4); }
+
+	.toast-error {
+		background: linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 0.95));
+		color: white;
+	}
+	.toast-error .toast-icon { background: rgba(255, 255, 255, 0.2); }
+	.toast-error .toast-progress { background: rgba(255, 255, 255, 0.4); }
+
+	.toast-warning {
+		background: linear-gradient(135deg, rgba(245, 158, 11, 0.95), rgba(217, 119, 6, 0.95));
+		color: white;
+	}
+	.toast-warning .toast-icon { background: rgba(255, 255, 255, 0.2); }
+	.toast-warning .toast-progress { background: rgba(255, 255, 255, 0.4); }
+
+	.toast-info {
+		background: linear-gradient(135deg, rgba(14, 165, 233, 0.95), rgba(2, 132, 199, 0.95));
+		color: white;
+	}
+	.toast-info .toast-icon { background: rgba(255, 255, 255, 0.2); }
+	.toast-info .toast-progress { background: rgba(255, 255, 255, 0.4); }
+
+	/* Light mode toasts */
+	[data-theme="light"] .toast {
+		box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+	}
+
+	/* Saving overlay */
+	.saving-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(15, 23, 42, 0.6);
+		backdrop-filter: blur(4px);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 9998;
+		opacity: 0;
+		visibility: hidden;
+		transition: all 0.3s ease;
+	}
+
+	.saving-overlay.active {
+		opacity: 1;
+		visibility: visible;
+	}
+
+	.saving-spinner {
+		width: 50px;
+		height: 50px;
+		border: 3px solid rgba(56, 189, 248, 0.2);
+		border-top-color: #38bdf8;
+		border-radius: 50%;
+		animation: spin 0.8s linear infinite;
+	}
+
+	@keyframes spin {
+		to { transform: rotate(360deg); }
+	}
+
 	/* ===== SHADCN-INSPIRED MODERN STYLES ===== */
 	.info-card {
 		background: rgba(15, 23, 42, 0.6);
@@ -255,8 +436,8 @@
 
 				<div class="field-group">
 					<label class="field-label">Date de naissance</label>
-					<p class="showPers field-value"><?=$profil['dateNaissance']?></p>
-					<input class="editPers field-input hidden" type="date" name="dateNaissance" value="<?=$profil['dateNaissance']?>">
+					<p class="showPers field-value"><?=formatDateForInput($profil['dateNaissance'])?></p>
+					<input class="editPers field-input hidden" type="date" name="dateNaissance" value="<?=formatDateForInput($profil['dateNaissance'])?>">
 				</div>
 
 				<div class="field-group">
@@ -311,8 +492,8 @@ while ($showR = $findRegion->fetch()) {
 
 				<div class="field-group">
 					<label class="field-label">Date de délivrance</label>
-					<p class="showPers field-value"><?=$profil['cin_date_delivre']?></p>
-					<input class="editPers field-input hidden" type="date" name="cin_date_delivre" value="<?=$profil['cin_date_delivre']?>">
+					<p class="showPers field-value"><?=formatDateForInput($profil['cin_date_delivre'])?></p>
+					<input class="editPers field-input hidden" type="date" name="cin_date_delivre" value="<?=formatDateForInput($profil['cin_date_delivre'])?>">
 				</div>
 
 				<input type="hidden" name="session_id" value="">
@@ -405,8 +586,8 @@ $showBacc = $findBacc->fetch();
 				
 				<div class="field-group">
 					<label class="field-label">Année d'obtention Bacc</label>
-					<p class="showContact field-value"><?php if(!empty($showBacc)) {echo $showBacc['date_obtent'];}?></p>
-					<input class="editContact field-input hidden" type="date" name="obtention_bacc" value="<?=$showBacc['date_obtent']?>">
+					<p class="showContact field-value"><?php if(!empty($showBacc)) {echo formatDateForInput($showBacc['date_obtent']);}?></p>
+					<input class="editContact field-input hidden" type="date" name="obtention_bacc" value="<?php if(!empty($showBacc)) { echo formatDateForInput($showBacc['date_obtent']); } ?>">
 				</div>
 				
 				<?php 
@@ -422,8 +603,8 @@ $showDiplome = $findDiplome->fetch();
 				
 				<div class="field-group">
 					<label class="field-label">Date d'obtention</label>
-					<p class="showContact field-value"><?php if(!empty($showDiplome)) {echo $showDiplome['date_obtent'];}?></p>
-					<input class="editContact field-input hidden" type="date" name="date_obtent_diplome_preced" value="<?=$showDiplome['date_obtent']?>">
+					<p class="showContact field-value"><?php if(!empty($showDiplome)) {echo formatDateForInput($showDiplome['date_obtent']);}?></p>
+					<input class="editContact field-input hidden" type="date" name="date_obtent_diplome_preced" value="<?php if(!empty($showDiplome)) { echo formatDateForInput($showDiplome['date_obtent']); } ?>">
 				</div>
 				<?php 
 					}
@@ -785,6 +966,72 @@ $y = $y - 1;
 <!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
 <script type="text/javascript">
+	// ===== TOAST NOTIFICATION SYSTEM =====
+	function showToast(type, title, message, duration = 4000) {
+		const container = document.getElementById('toast-container');
+		const toast = document.createElement('div');
+		toast.className = `toast toast-${type}`;
+		
+		const icons = {
+			success: '<i class="bi bi-check-lg"></i>',
+			error: '<i class="bi bi-x-lg"></i>',
+			warning: '<i class="bi bi-exclamation-triangle"></i>',
+			info: '<i class="bi bi-info-lg"></i>'
+		};
+		
+		toast.innerHTML = `
+			<div class="toast-icon">${icons[type]}</div>
+			<div class="toast-content">
+				<div class="toast-title">${title}</div>
+				<div class="toast-message">${message}</div>
+			</div>
+			<button class="toast-close" onclick="this.parentElement.classList.add('toast-out'); setTimeout(() => this.parentElement.remove(), 300);">
+				<i class="bi bi-x"></i>
+			</button>
+			<div class="toast-progress" style="animation-duration: ${duration}ms;"></div>
+		`;
+		
+		container.appendChild(toast);
+		
+		setTimeout(() => {
+			toast.classList.add('toast-out');
+			setTimeout(() => toast.remove(), 300);
+		}, duration);
+	}
+
+	// ===== SAVING OVERLAY =====
+	function showSavingOverlay() {
+		let overlay = document.querySelector('.saving-overlay');
+		if (!overlay) {
+			overlay = document.createElement('div');
+			overlay.className = 'saving-overlay';
+			overlay.innerHTML = '<div class="saving-spinner"></div>';
+			document.body.appendChild(overlay);
+		}
+		setTimeout(() => overlay.classList.add('active'), 10);
+	}
+
+	function hideSavingOverlay() {
+		const overlay = document.querySelector('.saving-overlay');
+		if (overlay) {
+			overlay.classList.remove('active');
+		}
+	}
+
+	// ===== REFRESH INFORMATION SECTION =====
+	function refreshInformationSection() {
+		const currentUrl = window.location.href;
+		$.get(currentUrl, function(response) {
+			const newContent = $(response).find('.w-full.grid.gap-4').first();
+			if (newContent.length) {
+				$('.w-full.grid.gap-4').first().html(newContent.html());
+				showToast('info', 'Données actualisées', 'Les informations ont été rechargées.');
+			}
+		}).fail(function() {
+			console.log('Refresh failed, but data was saved');
+		});
+	}
+
 	$(document).ready(function(){
 
 		var rg_user = <?=$rg_user['level'];?>;
@@ -808,209 +1055,187 @@ $y = $y - 1;
 
 			var url = '../app/.student/updateStd?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>&etude_envisage=<?=$etude_envisage?>';
 			
-			alert("Modification bien effectuée.");
+			showSavingOverlay();
 			
 			var session_id = $('input[name="session_id"]').val();
 			
 			var data = $(this).serialize();
 			
-			$.post(url,data,function(response){
+			$.ajax({
+				url: url,
+				type: 'POST',
+				data: data,
+				dataType: 'text',
+				headers: {
+					'X-Requested-With': 'XMLHttpRequest'
+				},
+				success: function(response){
+					hideSavingOverlay();
+					showToast('success', 'Modification réussie', 'Les informations de l\'étudiant ont été mises à jour avec succès.');
 
-				$('.submitPers').css({'display':'none'});
-				$('.submitContact').css({'display':'none'});
-				$('.submitEtd').css({'display':'none'});
-				$('.submitParent').css({'display':'none'});
-				$('.submitSpons').css({'display':'none'});
-				$('.submitAutr').css({'display':'none'});
+					// Reset UI state
+					$('.submitPers, .submitContact, .submitEtd, .submitParent, .submitSpons, .submitAutr').addClass('hidden');
+					$('.annulPers, .annulContact, .annulEtd, .annulParent, .annulSpons, .annulAutr').addClass('hidden');
+					$('#editPers, #editContact, #editEtd, #editParent, #editSpons, #editAutr').css({'display':'block'});
+					$('.editPers, .editContact, .editEtd, .editParent, .editSpons, .editAutr').addClass('hidden');
+					$('.showPers, .showContact, .showEtd, .showParent, .showSpons, .showAutr').css({'display':'block'});
 
-				$('.annulPers').css({'display':'none'});
-				$('.annulContact').css({'display':'none'});
-				$('.annulEtd').css({'display':'none'});
-				$('.annulParent').css({'display':'none'});
-				$('.annulSpons').css({'display':'none'});
-				$('.annulAutr').css({'display':'none'});
-
-				$('#editPers').css({'display':'block'});
-				$('#editContact').css({'display':'block'});
-				$('#editEtd').css({'display':'block'});
-				$('#editParent').css({'display':'block'});
-				$('#editSpons').css({'display':'block'});
-				$('#editAutr').css({'display':'block'});
-				
+					// Refresh section to show updated data
+					setTimeout(function() {
+						refreshInformationSection();
+					}, 500);
+				},
+				error: function(xhr, status, error){
+					hideSavingOverlay();
+					showToast('error', 'Erreur de modification', 'Une erreur est survenue lors de la mise à jour. Veuillez réessayer.');
+					console.error('Update error:', error);
+				}
 			});
-
-			/*if (session_id != "") {
-					
-					var status = $('#status').val();
-					var etude_envisage = '<?=$etude_envisage?>';
-					var student_id = '<?=$student_id?>';
-					var annee_etude = $('#annee_etude').val();
-					var abonment = $('#abonment').val();
-					var graduated = $('#graduated').val();
-					var new_student = '<?=$new_student?>';
-					
-
-					var financeUrl = '../app/.student/updateFinance?status=' + status +
-                         '&etude_envisage=' + etude_envisage + 
-                         '&student_id=' + student_id + 
-                         '&session_id=' + session_id + 
-                         '&annee_etude=' + annee_etude + 
-                         '&abonment=' + abonment + 
-                         '&graduated=' + graduated+
-                         'new_student='+ new_student;
-
-			 
-			        $.get(financeUrl, function(response) {
-			            alert("Finance update successful!");
-			        });
-
-			}
-*/
 		});
 		
 		$('#editPers').click(function(){
 			if (rg_user < 3) {
 
 			$(this).css({'display':'none'});
-			$('.annulPers').css({'display':'block'});
-			$('.editPers').css({'display':'block'});
+			$('.annulPers').removeClass('hidden').css({'display':'block'});
+			$('.editPers').removeClass('hidden').css({'display':'block'});
 			$('#firstPers').focus();
 			$('.showPers').css({'display':'none'});
 
 			}else{
-				alert('Vous ne pouvez pas modifier ce contenu');
+				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
 			}
 		});
 		$('.annulPers').click(function(){
-			$(this).css({'display':'none'});
+			$(this).addClass('hidden');
 			$('#editPers').css({'display':'block'});
-			$('.editPers').css({'display':'none'});
+			$('.editPers').addClass('hidden');
 			$('.showPers').css({'display':'block'});
-			$('.submitPers').css({'display':'none'});
+			$('.submitPers').addClass('hidden');
 		});
 
 		$('.editPers').click(function(){
-			$('.submitPers').css({'display':'block'});
+			$('.submitPers').removeClass('hidden').css({'display':'block'});
 		});
 
 
 		$('#editContact').click(function(){
 			if (rg_user < 3) {
 			$(this).css({'display':'none'});
-			$('.annulContact').css({'display':'block'});
-			$('.editContact').css({'display':'block'});
+			$('.annulContact').removeClass('hidden').css({'display':'block'});
+			$('.editContact').removeClass('hidden').css({'display':'block'});
 			$('#firstContact').focus();
 			$('.showContact').css({'display':'none'});
 			}else{
-				alert('Vous ne pouvez pas modifier ce contenu');
+				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
 			}
 		});
 		$('.annulContact').click(function(){
-			$(this).css({'display':'none'});
+			$(this).addClass('hidden');
 			$('#editContact').css({'display':'block'});
-			$('.editContact').css({'display':'none'});
+			$('.editContact').addClass('hidden');
 			$('.showContact').css({'display':'block'});
-			$('.submitContact').css({'display':'none'});
+			$('.submitContact').addClass('hidden');
 		});
 
 		$('.editContact').click(function(){
-			$('.submitContact').css({'display':'block'});
+			$('.submitContact').removeClass('hidden').css({'display':'block'});
 		});
 
 
 		$('#editEtd').click(function(){
 			if (rg_user < 3) {
 			$(this).css({'display':'none'});
-			$('.annulEtd').css({'display':'block'});
-			$('.editEtd').css({'display':'block'});
+			$('.annulEtd').removeClass('hidden').css({'display':'block'});
+			$('.editEtd').removeClass('hidden').css({'display':'block'});
 			$('#firstEtd').focus();
 			$('.showEtd').css({'display':'none'});
 			}else{
-				alert('Vous ne pouvez pas modifier ce contenu');
+				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
 			}
 		});
 		$('.annulEtd').click(function(){
-			$(this).css({'display':'none'});
+			$(this).addClass('hidden');
 			$('#editEtd').css({'display':'block'});
-			$('.editEtd').css({'display':'none'});
+			$('.editEtd').addClass('hidden');
 			$('.showEtd').css({'display':'block'});
-			$('.submitEtd').css({'display':'none'});
+			$('.submitEtd').addClass('hidden');
 		});
 
 		$('.editEtd').click(function(){
-			$('.submitEtd').css({'display':'block'});
+			$('.submitEtd').removeClass('hidden').css({'display':'block'});
 		});
 
 
 		$('#editParent').click(function(){
 			if (rg_user < 3) {
 			$(this).css({'display':'none'});
-			$('.annulParent').css({'display':'block'});
-			$('.editParent').css({'display':'block'});
+			$('.annulParent').removeClass('hidden').css({'display':'block'});
+			$('.editParent').removeClass('hidden').css({'display':'block'});
 			$('#firstParent').focus();
 			$('.showParent').css({'display':'none'});
 			}else{
-				alert('Vous ne pouvez pas modifier ce contenu');
+				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
 			}
 		});
 		$('.annulParent').click(function(){
-			$(this).css({'display':'none'});
+			$(this).addClass('hidden');
 			$('#editParent').css({'display':'block'});
-			$('.editParent').css({'display':'none'});
+			$('.editParent').addClass('hidden');
 			$('.showParent').css({'display':'block'});
-			$('.submitParent').css({'display':'none'});
+			$('.submitParent').addClass('hidden');
 		});
 
 		$('.editParent').click(function(){
-			$('.submitParent').css({'display':'block'});
+			$('.submitParent').removeClass('hidden').css({'display':'block'});
 		});
 
 
 		$('#editSpons').click(function(){
 			if (rg_user < 3) {
 			$(this).css({'display':'none'});
-			$('.annulSpons').css({'display':'block'});
-			$('.editSpons').css({'display':'block'});
+			$('.annulSpons').removeClass('hidden').css({'display':'block'});
+			$('.editSpons').removeClass('hidden').css({'display':'block'});
 			$('#firstSpons').focus();
 			$('.showSpons').css({'display':'none'});
 			}else{
-				alert('Vous ne pouvez pas modifier ce contenu');
+				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
 			}
 		});
 		$('.annulSpons').click(function(){
-			$(this).css({'display':'none'});
+			$(this).addClass('hidden');
 			$('#editSpons').css({'display':'block'});
-			$('.editSpons').css({'display':'none'});
+			$('.editSpons').addClass('hidden');
 			$('.showSpons').css({'display':'block'});
-			$('.submitSpons').css({'display':'none'});
+			$('.submitSpons').addClass('hidden');
 		});
 
 		$('.editSpons').click(function(){
-			$('.submitSpons').css({'display':'block'});
+			$('.submitSpons').removeClass('hidden').css({'display':'block'});
 		});
 
 
 		$('#editAutr').click(function(){
 			if (rg_user < 3) {
 			$(this).css({'display':'none'});
-			$('.annulAutr').css({'display':'block'});
-			$('.editAutr').css({'display':'block'});
+			$('.annulAutr').removeClass('hidden').css({'display':'block'});
+			$('.editAutr').removeClass('hidden').css({'display':'block'});
 			$('#firstAutr').focus();
 			$('.showAutr').css({'display':'none'});
 			}else{
-				alert('Vous ne pouvez pas modifier ce contenu');
+				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
 			}
 		});
 		$('.annulAutr').click(function(){
-			$(this).css({'display':'none'});
+			$(this).addClass('hidden');
 			$('#editAutr').css({'display':'block'});
-			$('.editAutr').css({'display':'none'});
+			$('.editAutr').addClass('hidden');
 			$('.showAutr').css({'display':'block'});
-			$('.submitAutr').css({'display':'none'});
+			$('.submitAutr').addClass('hidden');
 		});
 
 		$('.editAutr').click(function(){
-			$('.submitAutr').css({'display':'block'});
+			$('.submitAutr').removeClass('hidden').css({'display':'block'});
 		});
 	});
 </script>

@@ -4,19 +4,11 @@
  * Affiche une animation de salut avec un message personnalisé
  */
 
-session_start();
-
-// Récupérer les infos de l'utilisateur déconnecté
-$userName = $_SESSION['goodbye_name'] ?? '';
-$userFirstName = $_SESSION['goodbye_firstname'] ?? '';
-$userPhoto = $_SESSION['goodbye_photo'] ?? '';
-$userType = $_SESSION['goodbye_user_type'] ?? 'staff';
-
-// Nettoyer les variables de session d'au revoir
-unset($_SESSION['goodbye_name']);
-unset($_SESSION['goodbye_firstname']);
-unset($_SESSION['goodbye_photo']);
-unset($_SESSION['goodbye_user_type']);
+// Récupérer les infos de l'utilisateur déconnecté depuis les paramètres GET
+$userName = isset($_GET['name']) ? urldecode($_GET['name']) : '';
+$userFirstName = isset($_GET['firstname']) ? urldecode($_GET['firstname']) : '';
+$userPhoto = isset($_GET['photo']) ? urldecode($_GET['photo']) : '';
+$userType = isset($_GET['type']) ? urldecode($_GET['type']) : 'staff';
 
 // Nom complet
 $fullName = trim($userFirstName . ' ' . $userName);

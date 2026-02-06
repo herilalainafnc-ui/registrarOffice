@@ -12,7 +12,7 @@ initMiddleware($dtb);
 
 // Vérifier si l'utilisateur est connecté
 if (!isLoggedIn()) {
-    header('Location: ./index.php');
+    header('Location: ./index');
     exit;
 }
 

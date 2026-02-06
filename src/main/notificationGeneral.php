@@ -1145,9 +1145,192 @@ if (date('m')>7) {
 	</div>
 
 
+<!-- FOR EXCEL EXPORT -->
+	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifExcel" style="backdrop-filter: blur(3px);">
+
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl rounded-lg overflow-hidden">
+			<div class="p-3 bg-green-600 text-white flex items-center gap-2">
+				<i class="bi bi-file-earmark-excel-fill text-lg"></i>
+				<b>Exporter la liste d'étudiants (Excel)</b>
+			</div>
+			<form method="post" action="./genPDF/gen.excel.php" target="_blank">
+			<div class="p-4">
+				<b class="text-slate-600 text-sm">Type d'exportation</b>
+				<div class="flex mb-3 mt-2">
+					<div class="w-3/12 text-right pr-2">
+						<label for="excelExportType" class="text-sm">Type</label>
+					</div>
+					<div class="w-9/12">
+						<select id="excelExportType" name="exportation" class="input w-full border rounded px-2 py-1">
+							<option value="general">Liste d'étudiant générale</option>
+							<option value="internat">Liste d'étudiant interne</option>
+							<option value="abnment">Liste d'étudiant abonnée</option>
+							<option value="adventiste">Liste d'étudiant Adventiste</option>
+							<option value="non_adventiste">Liste d'étudiant Non-Adventiste</option>
+							<option value="contacts">Liste avec contacts (email, téléphone)</option>
+						</select>	
+					</div>
+				</div>
+				
+				<div class="flex mb-3">
+					<div class="w-3/12 text-right pr-2"></div>
+					<div class="w-9/12">
+						<input id="excelNewStudent" type="checkbox" name="new_student">
+						<label for="excelNewStudent" class="text-sm"> Les nouveaux seulement</label>
+					</div>
+				</div>
+				
+				<hr class="my-3">
+				
+				<b class="text-slate-600 text-sm">Filtres</b>
+				<div class="flex mb-3 mt-2">
+					<div class="w-3/12 text-right pr-2">
+						<label for="excelMention" class="text-sm">Mention</label>
+					</div>
+					<div class="w-9/12">
+						<select id="excelMention" name="types" class="input w-full border rounded px-2 py-1">
+							<option value="TOUT">Tout</option>
+<?php 
+	$voir = $dtb->query("SELECT * FROM filiere");
+	while ($affiche = $voir->fetch()) {?>
+							<option value="<?=$affiche['filiere_sigle'];?>"><?=$affiche['filiere_description'];?></option>
+<?php } ?>	
+						</select>	
+					</div>
+				</div>
+
+				<div class="flex mb-3">
+					<div class="w-3/12 text-right pr-2">
+						<label for="excelAnneeScolaire" class="text-sm">Année</label>
+					</div>
+					<div class="w-9/12">
+						<select id="excelAnneeScolaire" name="anneescolaire" class="input w-full border rounded px-2 py-1">
+<?php
+	$y = date('Y');
+	for ($i=0; $i <= 3; $i++) { 
+		if (date('m')>7) {
+			$annee = $y." - ".($y+1);	
+		}else{
+			$annee = ($y-1)." - ".$y;
+		}
+?>
+							<option value="<?=$annee?>"><?=$annee?></option>
+<?php
+		$y = $y - 1;
+	}
+?>
+						</select>	
+					</div>
+				</div>
+
+				<div class="flex mb-3">
+					<div class="w-3/12 text-right pr-2">
+						<label for="excelNiveau" class="text-sm">Niveau</label>
+					</div>
+					<div class="w-9/12">
+						<select id="excelNiveau" name="annee_etude" class="input w-full border rounded px-2 py-1">
+							<option value="tout">Tout</option>
+							<option value="1">Licence 1</option>
+							<option value="2">Licence 2</option>
+							<option value="3">Licence 3</option>
+							<option value="4">Master 1</option>
+							<option value="5">Master 2</option>
+							<option value="10">Classe spéciale</option>
+						</select>	
+					</div>
+				</div>
+
+				<div class="flex mb-3">
+					<div class="w-3/12 text-right pr-2">
+						<label for="excelSemestre" class="text-sm">Semestre</label>
+					</div>
+					<div class="w-9/12">
+						<select id="excelSemestre" name="semestre" class="input w-full border rounded px-2 py-1">
+							<option <?php if (date('m')>7) { echo "selected"; } ?> value="1">Premier semestre</option>
+							<option value="3">Semestre d'été</option>
+							<option <?php if (date('m')<=7) { echo "selected"; } ?> value="2">Deuxième semestre</option>
+							<option value="4">Semestre d'hiver</option>
+						</select>	
+					</div>
+				</div>
+
+				<hr class="my-3">
+
+				<b class="text-slate-600 text-sm">Colonnes à inclure</b>
+				<div class="flex flex-wrap mb-3 mt-2">
+					<div class="w-4/12 p-1">
+						<input id="excelMatricule" type="checkbox" name="col_matricule" checked>
+						<label for="excelMatricule" class="text-sm">Matricule</label>
+					</div>
+					<div class="w-4/12 p-1">
+						<input id="excelNom" type="checkbox" name="col_nom" checked>
+						<label for="excelNom" class="text-sm">Nom</label>
+					</div>
+					<div class="w-4/12 p-1">
+						<input id="excelPrenom" type="checkbox" name="col_prenom" checked>
+						<label for="excelPrenom" class="text-sm">Prénom</label>
+					</div>
+					<div class="w-4/12 p-1">
+						<input id="excelSexe" type="checkbox" name="col_sexe" checked>
+						<label for="excelSexe" class="text-sm">Sexe</label>
+					</div>
+					<div class="w-4/12 p-1">
+						<input id="excelDateNaissance" type="checkbox" name="col_datenaissance">
+						<label for="excelDateNaissance" class="text-sm">Date naiss.</label>
+					</div>
+					<div class="w-4/12 p-1">
+						<input id="excelMentionCol" type="checkbox" name="col_mention" checked>
+						<label for="excelMentionCol" class="text-sm">Mention</label>
+					</div>
+					<div class="w-4/12 p-1">
+						<input id="excelNiveauCol" type="checkbox" name="col_niveau" checked>
+						<label for="excelNiveauCol" class="text-sm">Niveau</label>
+					</div>
+					<div class="w-4/12 p-1">
+						<input id="excelEmail" type="checkbox" name="col_email">
+						<label for="excelEmail" class="text-sm">Email</label>
+					</div>
+					<div class="w-4/12 p-1">
+						<input id="excelTelephone" type="checkbox" name="col_telephone">
+						<label for="excelTelephone" class="text-sm">Téléphone</label>
+					</div>
+					<div class="w-4/12 p-1">
+						<input id="excelAdresse" type="checkbox" name="col_adresse">
+						<label for="excelAdresse" class="text-sm">Adresse</label>
+					</div>
+					<div class="w-4/12 p-1">
+						<input id="excelStatus" type="checkbox" name="col_status">
+						<label for="excelStatus" class="text-sm">Statut</label>
+					</div>
+					<div class="w-4/12 p-1">
+						<input id="excelReligion" type="checkbox" name="col_religion">
+						<label for="excelReligion" class="text-sm">Religion</label>
+					</div>
+				</div>
+			</div>
+			<div class="p-3 bg-slate-200 flex justify-center gap-3">
+				<a href="#" id="cancelnotifExcel" class="bg-slate-400 hover:bg-slate-500 text-white px-4 py-2 rounded-md transition">Annuler</a>
+				<input id="btnExcel" type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md cursor-pointer transition" value="Télécharger Excel">
+			</div>
+			</form>
+		</div>
+
+	</div>
+
+
 <!-- ----------------------------------------------------------------- SCRIPTS ----------------------------------------------------------------------------- -->
 <script type="text/javascript">
 	$(document).ready(function(){
+		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
+		
+		$('#exportExcel').click(function(){
+			$('#notifExcel').css({'display':'block'});
+		});
+
+		$('#cancelnotifExcel').click(function(){
+			$('#notifExcel').css({'display':'none'});
+		});
+
 		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
 		
 		$('#exportListStd').click(function(){
