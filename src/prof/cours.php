@@ -20,11 +20,11 @@
 	while ($cours_list = $recupcours->fetch()) {
  ?>								
 								<tr id="cours_<?=$cours_nb?>" class="hover:<?=$bg_six_color?> hover:text-slate-800">	
-									<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><a href="./cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['Sigle']?></div></a></td>
-									<td><a href="./cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['title']?></div></a></td>
-									<td><a href="./cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['dep_desc']?></div></a></td>
-									<td><a href="./cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['nb_crd']?></div></a></td>
-									<td><a href="./cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
+									<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><a href="<?=$app_base?>/src/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['Sigle']?></div></a></td>
+									<td><a href="<?=$app_base?>/src/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['title']?></div></a></td>
+									<td><a href="<?=$app_base?>/src/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['dep_desc']?></div></a></td>
+									<td><a href="<?=$app_base?>/src/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['nb_crd']?></div></a></td>
+									<td><a href="<?=$app_base?>/src/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
 if ($cours_list['category'] == 0){
 	echo "Général";
 }elseif ($cours_list['category'] == 1) {
@@ -39,8 +39,8 @@ if ($cours_list['category'] == 0){
 	echo "-";
 }
 								?></div></a></td>
-									<td><a href="./cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['yearlevel']?></div></a></td>
-									<td><a href="./cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['semester']?></div></a></td>
+									<td><a href="<?=$app_base?>/src/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['yearlevel']?></div></a></td>
+									<td><a href="<?=$app_base?>/src/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['semester']?></div></a></td>
 <?php
 	$cours_nb++;
 	}

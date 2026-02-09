@@ -1,6 +1,9 @@
 <?php 
-	require('../../data/backdb.php');	
-
+	require('../../data/backdb.php');
+	$_doc_root = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+	$_app_root = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+	$app_base = substr($_app_root, strlen($_doc_root));
+	if ($app_base === false) $app_base = '';
  ?>
 <table class="simpleTbl">
 	<thead class="bg-slate-500 text-white">
@@ -26,15 +29,15 @@ if (isset($_POST['trie'])) {
 	while ($sdt_list = $recupsdt->fetch()) {
  ?>								
 		<tr id="std_<?=$sdt_nb?>" class="hover:bg-slate-300 hover:bg-slate-600 text-slate-100">	
-			<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['student_id']?></div></a></td>
-			<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=strtoupper($sdt_list['student_nom'])?>
+			<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><a href="<?=$app_base?>/src/student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['student_id']?></div></a></td>
+			<td><a href="<?=$app_base?>/src/student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=strtoupper($sdt_list['student_nom'])?>
 			<?php if($sdt_list['new_student'] == 1){ echo "&nbsp;&nbsp;&nbsp;<span class='badge rounded-pill bg-slate-900 border-1 border-slate-500 text-slate-400 pb-1'>Nouveau</span>";} ?>
 			</div></a></td>
-			<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['student_prenom']?></div></a></td>
-			<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['etude_envisage']?></div></a></td>
-			<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['etude_option']?></div></a></td>
-			<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['annee_scolaire']?></div></a></td>
-			<td><a href="./student.php?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?php
+			<td><a href="<?=$app_base?>/src/student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['student_prenom']?></div></a></td>
+			<td><a href="<?=$app_base?>/src/student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['etude_envisage']?></div></a></td>
+			<td><a href="<?=$app_base?>/src/student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['etude_option']?></div></a></td>
+			<td><a href="<?=$app_base?>/src/student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?=$sdt_list['annee_scolaire']?></div></a></td>
+			<td><a href="<?=$app_base?>/src/student?id=<?=$sdt_list['id']?>&page=information"><div class="w-full"><?php
 				if ($sdt_list['annee_etude']==0) {
 					echo "Remise à niveau";
 				}elseif($sdt_list['annee_etude'] > 0 AND $sdt_list['annee_etude'] < 4) {

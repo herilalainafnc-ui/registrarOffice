@@ -19,13 +19,13 @@
 	
 				<div class="back flex-1 overflow-y-auto">
 					<div class="w-full grid gap-4 xl:grid-cols-4 sm:grid-cols-1 p-4">
-						<a href="./creat.account" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
+						<a href="./creat.account" <?php if($rg_user['level'] <= 3) { echo "";}else{ echo "class='toolInactive'";}?>>
 							<div class='m-0 p-3 <?=$bg_one_color?> hover:bg-slate-700 rounded-md border-2 border-slate-800 hover:border-cyan-500 transition-all text-white h-[160px]'>
 							<b class="text-lg"><i class="bi-person-fill"></i>&nbsp;&nbsp; Utilisateur</b><br><br>
 							<p class="text-slate-500">Consulter la liste des utilisateurs. Créer un nouveau utilisateur.</p>
 							</div>
 						</a>
-						<a href="./gestion_finance" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
+						<a href="./gestion_finance" <?php if($rg_user['level'] <= 3) { echo "";}else{ echo "class='toolInactive'";}?>>
 							<div class='m-0 p-3 <?=$bg_one_color?> hover:bg-slate-700 rounded-md border-2 border-slate-800 hover:border-cyan-500 transition-all text-white h-[160px]'>
 							<b class="text-lg"><i class="bi-currency-exchange"></i>&nbsp;&nbsp; Finance</b><br><br>
 							<p class="text-slate-500">Voir, Modifier les détails financiaires des étudiants.</p>

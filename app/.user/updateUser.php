@@ -46,15 +46,23 @@ Middleware::logSecurityEvent('user_update_attempt', [
 
 
 	if ($level == 1) {
-		$privilege = "administrator";
+		$privilege = "superadmin";
 	}elseif($level == 2) {
-		$privilege = "registrar";
+		$privilege = "administrator";
 	}elseif($level == 3) {
-		$privilege = "user";
+		$privilege = "registrar";
 	}elseif($level == 4) {
-		$privilege = "visitor";
+		$privilege = "comptabilite";
+	}elseif($level == 5) {
+		$privilege = "media";
+	}elseif($level == 6) {
+		$privilege = "chef_mention";
+	}elseif($level == 7) {
+		$privilege = "teacher";
+	}elseif($level == 8) {
+		$privilege = "student";
 	} else {
-		$privilege = "visitor";
+		$privilege = "registrar";
 	}
 
 	$updateUser_user = (int)$_GET['rg_id'];

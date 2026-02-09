@@ -11,19 +11,19 @@
 									
 									if ($profil['teacher_image'] !="" OR $imangeLen >=10) { ?>
 
-									<img src="../app/photosenseignants/<?=$teacher_image?>" class="border-1 border-black w-full">
+									<img src="<?=$app_base?>/app/photosenseignants/<?=encodeFilePath($teacher_image)?>" class="border-1 border-black w-full">
 
 								<?php 
 									}else{
 								?>
 									
-									<img src="../app/photosetudiants/10054.jpg" class="border-1 border-black w-full">
+									<img src="<?=$app_base?>/app/photosetudiants/10054.jpg" class="border-1 border-black w-full">
 
 								<?php
 									}
 								}else{ ?>
 									
-									<img src="../app/photosetudiants/10054.jpg" class="border-1 border-black w-full">
+									<img src="<?=$app_base?>/app/photosetudiants/10054.jpg" class="border-1 border-black w-full">
 
 								<?php }	?>
 								
@@ -109,7 +109,7 @@ if(isset($_GET['page']) and $_GET['page'] == "newCours") {
 							<!-- MODIF IMAGE -->
 
 						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifModifIMGTeacher" style="backdrop-filter: blur(30px);">
-<form method="post" action="../app/.prof/updateImgProf.php?id=<?=$id?>&user_id=<?=$rg_id?>" enctype="multipart/form-data">
+<form method="post" action="<?=$app_base?>/app/.prof/updateImgProf.php?id=<?=$id?>&user_id=<?=$rg_id?>" enctype="multipart/form-data">
 							<div class="w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 								<div class="p-2">
 									<p>Modifier l'image d'enseignant</p>
@@ -139,7 +139,7 @@ if(isset($_GET['page']) and $_GET['page'] == "newCours") {
 							<div class="w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 								
 								<div class="p-2">
-									<div class="w-full h-[400px]" style="background-image: url('../app/photosenseignants/<?=$profil['teacher_image']?>');background-position: center; background-size: cover;background-repeat: no-repeat;">
+									<div class="w-full h-[400px]" style="background-image: url('<?=$app_base?>/app/photosenseignants/<?=encodeFilePath($profil['teacher_image'])?>');background-position: center; background-size: cover;background-repeat: no-repeat;">
 										
 									</div>
 

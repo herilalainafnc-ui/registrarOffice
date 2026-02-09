@@ -15,7 +15,7 @@ $loginError = false;
 
 // Si déjà connecté, rediriger vers l'accueil
 if (isLoggedIn()) {
-    header('Location: ./accueil.php');
+    header('Location: ./accueil');
     exit;
 }
 

@@ -320,6 +320,15 @@
 		background: hsl(217.2 91.2% 59.8%);
 		color: hsl(222.2 84% 4.9%);
 	}
+
+	/* Excel button - green color */
+	.tool-btn.tool-excel:hover .tool-icon {
+		background: hsl(142.1 76.2% 36.3%);
+		color: white;
+	}
+	.tool-btn.tool-excel .tool-icon i {
+		color: hsl(142.1 76.2% 36.3%);
+	}
 </style>
 
 <div class="toolbar-container w-full py-2 flex flex-nowrap overflow-x-auto <?=$txt_one_color?>">
@@ -342,16 +351,26 @@
 		</a>
 		
 		<a id="exportStatistic" href="#" class="tool-btn tool-stats text-xs flex-1 <?php if($rg_user['level'] <=3) { echo "";}else{ echo "toolInactive";}?>">
-			<div class="tool-icon">
+			<div class="tool-icon">	
 				<i class="bi bi-bar-chart-line-fill"></i>
 			</div>
 			<span class="tool-label">Statistique</span>
+		</a>
+
+		<a href="#" id="exportExcel" class="tool-btn tool-excel text-xs flex-1 <?php 
+		if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
+			echo "toolInactive";
+		} ?><?php if($rg_user['level'] <=3) { echo "";}else{ echo " toolInactive";}?>">
+			<div class="tool-icon">
+				<i class="bi bi-file-earmark-excel-fill"></i>
+			</div>
+			<span class="tool-label">Export<br>Excel</span>
 		</a>
 		
 		<a href="#" id="exportListFOP" class="tool-btn tool-document text-xs flex-1 <?php 
 		if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 			echo "toolInactive";
-		} ?><?php if($rg_user['level'] <=2) { echo "";}else{ echo " toolInactive";}?>">
+		} ?><?php if($rg_user['level'] <=3) { echo "";}else{ echo " toolInactive";}?>">
 			<div class="tool-icon">
 				<i class="bi bi-file-text-fill"></i>
 			</div>
@@ -376,7 +395,7 @@
 		<a href="#" id="exportMesupres" class="tool-btn text-xs flex-1 <?php 
 		if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 			echo "toolInactive";
-		} ?><?php if($rg_user['level'] <=2) { echo "";}else{ echo " toolInactive";}?>">
+		} ?><?php if($rg_user['level'] <=3) { echo "";}else{ echo " toolInactive";}?>">
 			<div class="tool-icon">
 				<i class="bi bi-bar-chart-steps"></i>
 			</div>
@@ -386,7 +405,7 @@
 		<a href="#" id="exportListCSV" class="tool-btn text-xs flex-1 <?php 
 		if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 			echo "toolInactive";
-		} ?><?php if($rg_user['level'] <=2) { echo "";}else{ echo " toolInactive";}?>">
+		} ?><?php if($rg_user['level'] <=3) { echo "";}else{ echo " toolInactive";}?>">
 			<div class="tool-icon">
 				<i class="bi bi-envelope-at-fill"></i>
 			</div>
@@ -396,7 +415,7 @@
 		<a href="#" id="exportTicketMail" class="tool-btn text-xs flex-1 <?php 
 		if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 			echo "toolInactive";
-		} ?><?php if($rg_user['level'] <=2) { echo "";}else{ echo " toolInactive";}?>">
+		} ?><?php if($rg_user['level'] <=3) { echo "";}else{ echo " toolInactive";}?>">
 			<div class="tool-icon">
 				<i class="bi bi-ticket-perforated-fill"></i>
 			</div>
@@ -408,10 +427,10 @@
 	<!-- SECTION 3: Inscription & Work -->	
 	<div class="toolbar-section flex-shrink-0 flex px-1">
 		
-		<a target='_blank' href="../inscription/inscription" class="tool-btn text-xs flex-1 <?php 
+		<a target='_blank' href="<?=$app_base?>/inscription/inscription" class="tool-btn text-xs flex-1 <?php 
 		if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 			echo "toolInactive";
-		} ?><?php if($rg_user['level'] <=4) { echo "";}else{ echo " toolInactive";}?>">
+		} ?><?php if($rg_user['level'] <=6) { echo "";}else{ echo " toolInactive";}?>">
 			<div class="tool-icon">
 				<i class="bi bi-person-fill-add"></i>
 			</div>
@@ -421,7 +440,7 @@
 		<a href="#" id="worked" class="tool-btn text-xs flex-1 <?php 
 		if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 			echo "toolInactive";
-		} ?><?php if($rg_user['level'] <=4) { echo "";}else{ echo " toolInactive";}?>">
+		} ?><?php if($rg_user['level'] <=6) { echo "";}else{ echo " toolInactive";}?>">
 			<div class="tool-icon">
 				<i class="bi bi-person-lines-fill"></i>
 			</div>
@@ -431,7 +450,7 @@
 		<a href="#" id="workedSlip" class="tool-btn text-xs flex-1 <?php 
 		if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 			echo "toolInactive";
-		} ?><?php if($rg_user['level'] <=4) { echo "";}else{ echo " toolInactive";}?>">
+		} ?><?php if($rg_user['level'] <=6) { echo "";}else{ echo " toolInactive";}?>">
 			<div class="tool-icon">
 				<i class="bi bi-card-checklist"></i>
 			</div>
@@ -441,7 +460,7 @@
 		<a href="#" id="filesSlip" class="tool-btn text-xs flex-1 <?php 
 		if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 			echo "toolInactive";
-		} ?><?php if($rg_user['level'] <=4) { echo "";}else{ echo " toolInactive";}?>">
+		} ?><?php if($rg_user['level'] <=6) { echo "";}else{ echo " toolInactive";}?>">
 			<div class="tool-icon">
 				<i class="bi bi-folder-check"></i>
 			</div>
@@ -588,7 +607,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 		<a href="#" id="badgeGr" class="tool-btn text-xs flex-1 <?php 
 		if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 			echo "toolInactive";
-		} ?><?php if($rg_user['level'] <=2) { echo "";}else{ echo " toolInactive";}?>">
+		} ?><?php if($rg_user['level'] <=3) { echo "";}else{ echo " toolInactive";}?>">
 			<div class="tool-icon">
 				<i class="bi bi-person-badge-fill"></i>
 			</div>
@@ -598,7 +617,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 		<a href="#" class="tool-btn text-xs flex-1 <?php 
 		if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 			echo "toolInactive";
-		} ?><?php if($rg_user['level'] <=1) { echo "";}else{ echo " toolInactive";}?>">
+		} ?><?php if($rg_user['level'] <=2) { echo "";}else{ echo " toolInactive";}?>">
 			<div class="tool-icon">
 				<i class="bi bi-file-excel-fill"></i>
 			</div>
@@ -608,7 +627,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 		<a href="#" class="tool-btn text-xs flex-1 <?php 
 		if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 			echo "toolInactive";
-		} ?><?php if($rg_user['level'] <=1) { echo "";}else{ echo " toolInactive";}?>">
+		} ?><?php if($rg_user['level'] <=2) { echo "";}else{ echo " toolInactive";}?>">
 			<div class="tool-icon">
 				<i class="bi bi-download"></i>
 			</div>
@@ -620,7 +639,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 	<!-- SECTION 6: Settings -->	
 	<div class="toolbar-section flex-shrink-0 flex px-1">
 		
-		<a href="./settings.php" class="tool-btn tool-settings text-xs flex-1">
+		<a href="<?=$app_base?>/src/settings" class="tool-btn tool-settings text-xs flex-1">
 			<div class="tool-icon">
 				<i class="bi bi-gear-fill"></i>
 			</div>
@@ -656,7 +675,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 			$('#all-std').css({'display':'none'});
 
 		    $.ajax({
-				url:"../init/.student/std-live.php",
+				url:APP_BASE+"/init/.student/std-live.php",
 				method:"POST",
 				data:{trie:trie},
 				beforeSend: function() {
@@ -684,7 +703,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 			$('#all-cours').css({'display':'none'});
 
 		    $.ajax({
-				url:"../init/.cours/cours-live.php",
+				url:APP_BASE+"/init/.cours/cours-live.php",
 				method:"POST",
 				data:{trie:trie},
 				beforeSend: function() {
@@ -713,7 +732,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 			$('#all-prof').css({'display':'none'});
 
 		    $.ajax({
-				url:"../init/.prof/prof-live.php",
+				url:APP_BASE+"/init/.prof/prof-live.php",
 				method:"POST",
 				data:{trie:trie},
 				beforeSend: function() {
@@ -746,7 +765,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 			$('#all-std').css({'display':'none'});
 
 		    $.ajax({
-				url:"../init/.student/std-livesearch.php",
+				url:APP_BASE+"/init/.student/std-livesearch.php",
 				method:"POST",
 				data:{filter:filter , channel:channel},
 				beforeSend: function() {
@@ -778,7 +797,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 			$('#all-cours').css({'display':'none'});
 
 		    $.ajax({
-				url:"../init/.cours/cours-livesearch.php",
+				url:APP_BASE+"/init/.cours/cours-livesearch.php",
 				method:"POST",
 				data:{filter:filter , channel:channel},
 				beforeSend: function() {
@@ -810,7 +829,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 			$('#all-prof').css({'display':'none'});
 
 		    $.ajax({
-				url:"../init/.prof/prof-livesearch.php",
+				url:APP_BASE+"/init/.prof/prof-livesearch.php",
 				method:"POST",
 				data:{filter:filter , channel:channel},
 				beforeSend: function() {

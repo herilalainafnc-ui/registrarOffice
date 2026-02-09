@@ -282,8 +282,8 @@
 			<span>Étudiants</span>
 		</div>
 		
-		<div class="menu-item <?php if($page == "accueil.php" OR $page == "student.php") { echo "active"; } ?>">
-			<a href="./accueil">
+		<div class="menu-item <?php if($page == "accueil" OR $page == "student") { echo "active"; } ?>">
+			<a href="<?=$app_base?>/src/accueil">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-people-fill menu-icon"></i>
 				</div>
@@ -291,8 +291,8 @@
 			</a>
 		</div>
 
-		<div class="menu-item <?php if($page == "creat.student.php") { echo "active"; } ?> <?php if($rg_user['level'] > 2) { echo "toolInactive"; } ?>">
-			<a href="./creat.student">
+		<div class="menu-item <?php if($page == "creat.student") { echo "active"; } ?> <?php if($rg_user['level'] > 3) { echo "toolInactive"; } ?>">
+			<a href="<?=$app_base?>/src/creat.student">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-person-plus-fill menu-icon"></i>
 				</div>
@@ -301,7 +301,7 @@
 		</div>
 
 		<div class="menu-item <?php if($page == "deans-list.php") { echo "active"; } ?>">
-			<a href="./deans-list">
+			<a href="<?=$app_base?>/src/deans-list">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-star-fill menu-icon"></i>
 				</div>
@@ -309,8 +309,8 @@
 			</a>
 		</div>
 
-		<div class="menu-item <?php if($page == "meilleurs-etudiants.php") { echo "active"; } ?>">
-			<a href="./meilleurs-etudiants">
+		<div class="menu-item <?php if($page == "meilleurs-etudiants") { echo "active"; } ?>">
+			<a href="<?=$app_base?>/src/meilleurs-etudiants">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-trophy-fill menu-icon"></i>
 				</div>
@@ -323,8 +323,8 @@
 			<span>Professeurs</span>
 		</div>
 		
-		<div class="menu-item <?php if($page == "accueil.prof.php" OR $page == "prof.php") { echo "active"; } ?>">
-			<a href="./accueil.prof">
+		<div class="menu-item <?php if($page == "accueil.prof" OR $page == "prof") { echo "active"; } ?>">
+			<a href="<?=$app_base?>/src/accueil.prof">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-person-lines-fill menu-icon"></i>
 				</div>
@@ -332,7 +332,7 @@
 			</a>
 		</div>
 
-		<div class="menu-item <?php if($rg_user['level'] > 2) { echo "toolInactive"; } ?>">
+		<div class="menu-item <?php if($rg_user['level'] > 3) { echo "toolInactive"; } ?>">
 			<a href="#" id="addProf">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-person-plus-fill menu-icon"></i>
@@ -347,7 +347,7 @@
 		</div>
 		
 		<div class="menu-item <?php if($page == "accueil.cours.php" OR $page == "cours.php") { echo "active"; } ?>">
-			<a href="./accueil.cours">
+			<a href="<?=$app_base?>/src/accueil.cours">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-list-columns-reverse menu-icon"></i>
 				</div>
@@ -355,7 +355,7 @@
 			</a>
 		</div>
 
-		<div class="menu-item <?php if($rg_user['level'] > 2) { echo "toolInactive"; } ?>">
+		<div class="menu-item <?php if($rg_user['level'] > 3) { echo "toolInactive"; } ?>">
 			<a href="#" id="addCours">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-file-earmark-plus-fill menu-icon"></i>
@@ -370,7 +370,7 @@
 		</div>
 		
 		<div class="menu-item <?php if($page == "accueil.emploi-temps.php") { echo "active"; } ?>">
-			<a href="./accueil.emploi-temps">
+			<a href="<?=$app_base?>/src/accueil.emploi-temps">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-calendar3-week menu-icon"></i>
 				</div>
@@ -384,7 +384,7 @@
 		</div>
 		
 		<div class="menu-item <?php if($page == "settings.php") { echo "active"; } ?>">
-			<a href="./settings">
+			<a href="<?=$app_base?>/src/settings">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-sliders menu-icon"></i>
 				</div>

@@ -100,7 +100,7 @@ if(isset($_GET['page']) and $_GET['page'] == "etudiants") {
 							<!-- MODIF IMAGE -->
 
 						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifModifIMG" style="backdrop-filter: blur(30px);">
-<form method="post" action="../app/updtadeImgStd.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>" enctype="multipart/form-data" class="form-no-refrech">
+<form method="post" action="<?=$app_base?>/app/updtadeImgStd.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>" enctype="multipart/form-data" class="form-no-refrech">
 							<div class="w-3/12 <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[12%] opacity-100 drop-shadow-2xl">
 								<div class="p-2">
 									<p>Modifier l'image</p>
@@ -130,7 +130,7 @@ if(isset($_GET['page']) and $_GET['page'] == "etudiants") {
 							<div class="w-3/12 <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[12%] opacity-100 drop-shadow-2xl">
 								
 								<div class="p-2">
-									<div class="w-full h-[400px]" style="background-image: url('../app/photosetudiants/<?=$profil['image_student']?>');background-position: center; background-size: cover;background-repeat: no-repeat;">
+									<div class="w-full h-[400px]" style="background-image: url('<?=$app_base?>/app/photosetudiants/<?=encodeFilePath($profil['image_student'])?>');background-position: center; background-size: cover;background-repeat: no-repeat;">
 										
 									</div>
 

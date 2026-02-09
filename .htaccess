@@ -1,5 +1,19 @@
 RewriteEngine On
 
+# Désactiver l'ajout automatique de slash pour les dossiers
+<IfModule mod_dir.c>
+    DirectorySlash Off
+</IfModule>
+
+# Désactiver l'affichage du contenu des dossiers
+Options -Indexes
+
+# Supprimer le trailing slash (redirection 301)
+# Empêche /src/student/ -> redirige vers /src/student
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} ^(.+)/$
+RewriteRule ^(.+)/$ $1 [R=301,L,QSA]
+
 # Empêcher l'accès direct aux fichiers .php (redirection 301)
 # Redirige /page.php vers /page (chemin relatif)
 RewriteCond %{THE_REQUEST} \s/+(.*/)?([^/.]+)\.php[\s?] [NC]

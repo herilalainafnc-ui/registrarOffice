@@ -48,16 +48,16 @@ if (isLoggedIn()) {
     Middleware::logSecurityEvent('logout', ['user_id' => $_SESSION['user_id'] ?? null]);
 }
 
-// Stocker les infos pour l'écran d'au revoir
-$_SESSION['goodbye_name'] = $userName;
-$_SESSION['goodbye_firstname'] = $userFirstName;
-$_SESSION['goodbye_photo'] = $userPhoto;
-$_SESSION['goodbye_user_type'] = $userType;
+// Stocker les infos pour l'écran d'au revoir (dans des variables locales car la session sera détruite)
+$goodbyeName = urlencode($userName);
+$goodbyeFirstname = urlencode($userFirstName);
+$goodbyePhoto = urlencode($userPhoto);
+$goodbyeUserType = urlencode($userType);
 
 // Déconnexion sécurisée via le middleware
 Middleware::logout();
 
-// Redirection vers la page d'au revoir
-header('Location: ../src/goodbye');
+// Redirection vers la page d'au revoir avec les paramètres
+header('Location: ../src/goodbye?name=' . $goodbyeName . '&firstname=' . $goodbyeFirstname . '&photo=' . $goodbyePhoto . '&type=' . $goodbyeUserType);
 exit;
 ?>

@@ -1,4 +1,4 @@
-ï»¿<div class=" mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">	
+<div class=" mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">	
 <?php 
 	$level = $profil['annee_etude'];
 
@@ -39,7 +39,7 @@
 			echo "NIVEAU Licence ".$a;
 			$nbrA = $a+1;
 		}elseif($a==0){
-			echo "Remise Ã  niveau";
+			echo "Remise à niveau";
 			$nbrA = $a;
 		}else{
 			echo "NIVEAU Master ".($a-3);
@@ -62,11 +62,11 @@
 				<tr>
 					<th class="w-20">Sigle</th>
 					<th class="w-">Titre du cours</th>
-					<th class="w-20">CrÃ©dits</th>
-					<th class="w-20">CatÃ©gorie</th>
+					<th class="w-20">Crédits</th>
+					<th class="w-20">Catégorie</th>
 					<th class="w-20">Notes/20</th>
 					<th class="w-20">Crd * Not</th>
-					<th class="w-4">Ã‰tat</th>
+					<th class="w-4">État</th>
 					<!-- <th class="w-4">ID</th> -->
 					<th class="w-4"></th>
 				</tr>	
@@ -109,14 +109,14 @@ $cours = $dtb->query("SELECT * FROM t_2023_notes WHERE student_id ='".$student_i
 		$annee_scolaire = $crs['annee_scolaire'];
 		$id_cours = $crs['id_cours'];
 	 ?>
-<form method="post" action="../app/.student/updatenote?id=<?=$id;?>&nbr=<?=$s.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$a.$s?>&user_id=<?=$rg_id?>" class="form-no-refrech<?=$nbr.$a.$s?>">			
+<form method="post" action="<?=$app_base?>/app/.student/updatenote?id=<?=$id;?>&nbr=<?=$s.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$a.$s?>&user_id=<?=$rg_id?>" class="form-no-refrech<?=$nbr.$a.$s?>">			
 				<tr id="note<?=$s.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black ">
 					<td class="bg-gradient-to-r from-orange-800 to-orange-400 text-white"><?=$crs['Sigle']?></td>
 					<td><?=$crs['title_cours']?></td>
 					<td><?=$crs['credit']?></td>
 					<td><?php 
 if ($crs['cours_category'] == 0){
-	echo "GÃ©nÃ©ral";
+	echo "Général";
 }elseif ($crs['cours_category'] == 1) {
 	echo "Majeur";
 }elseif ($crs['cours_category'] == -1 OR $crs['cours_category'] == 2) {
@@ -133,17 +133,17 @@ if ($crs['cours_category'] == 0){
 
 <?php 
 
-if ($rg_level <= 2) {
+if ($rg_level <= 3) {
 
  ?>
 <input class="insimple text-sm bg-transparent px-2 g<?=$nbr.$a.$s?>" type="text" name="nb_crd<?=$s.$nbr;?>" value="<?php if($crs['grade']==-2){echo "Ok";}else{echo $crs['grade'];}?>">
 <?php 
 
-}elseif($rg_level > 2 AND $rg_level < 4) {
+}elseif($rg_level > 3 AND $rg_level < 7) {
 	echo "<a class='px-2'>".$crs['grade']."</a>";
 
-}elseif($rg_level >= 4) {
-	echo "<em class='px-2'>masquÃ©</em>";
+}elseif($rg_level >= 7) {
+	echo "<em class='px-2'>masqué</em>";
 }
 
  ?>
@@ -151,10 +151,10 @@ if ($rg_level <= 2) {
 <td>
 <?php if($crs['grade']==-2){echo "";}else{
 	 $notecredi = $crs['credit'] * $crs['grade'];
-	 if ($rg_level < 4) {
+	 if ($rg_level < 7) {
 	 	echo $notecredi;
 	 }else{
-	 	echo "<em>masquÃ©</em>";
+	 	echo "<em>masqué</em>";
 	 }
 } ?>					
 </td>
@@ -170,7 +170,7 @@ if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 
 					 ?> text-center text-black" title="<?php 
 if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
-	echo "SuccÃ¨s";
+	echo "Succès";
 }elseif ($crs['grade'] < 10 and $crs['grade'] > 0){
 	echo "Echec";
 }elseif ($crs['grade'] == 0){
@@ -193,7 +193,7 @@ if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 
 							<ul class="dropdown-menu absolute border <?=$bg_six_color?> text-black p-0 rounded-0 text-xs">
 
-								<li><a href="../app/.student/del-cours.momentanee?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$a.$s?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>&id_cours=<?=$id_cours?>">		<p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Retirer</p>
+								<li><a href="<?=$app_base?>/app/.student/del-cours.momentanee?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$a.$s?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>&id_cours=<?=$id_cours?>">		<p class="px-2 py-1 hover:bg-cyan-700 hover:text-white">Retirer</p>
 								</a></li>
 
 							</ul>
@@ -219,7 +219,7 @@ if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 				$('.form-no-refrech<?=$nbr.$a.$s?>').on('submit',function(e){
 					e.preventDefault();
 					
-					var url = '../app/.student/updatenote?id=<?=$id;?>&nbr=<?=$s.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$a.$s?>&user_id=<?=$rg_id?>';
+					var url = '<?=$app_base?>/app/.student/updatenote?id=<?=$id;?>&nbr=<?=$s.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$a.$s?>&user_id=<?=$rg_id?>';
 
 					var data = $(this).serialize();
 
@@ -283,7 +283,7 @@ $tnotecredit+= $notecredit + $notecredi;
 
 /* --- CALCULE DES NOTES GENERAL --- */
 
-if (($crs['cours_category'] == 0) OR ($crs['cours_category'] == "GÃ©nÃ©ral")) {
+if (($crs['cours_category'] == 0) OR ($crs['cours_category'] == "Général")) {
 	$gradeGen = $crs['grade'];
 	$nbrGen++;
 }else{
@@ -304,7 +304,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur")) {
 
 /* --- CALCULE DES NOTES FINALES --- */
  
-if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($crs['cours_category'] == 0) OR ($crs['cours_category'] == "GÃ©nÃ©ral")) {
+if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($crs['cours_category'] == 0) OR ($crs['cours_category'] == "Général")) {
 	$gradeFinale = $crs['grade'];
 	$nbrFinale++;
 }else{
@@ -324,12 +324,12 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 					<th class="px-2" colspan="2"><?=$nbr?> cours</th>
 					<th><?php if(!empty($tcredit)) { echo $tcredit;}?></th>
 					<th class="px-2"></th>
-					<th class="px-2"><?php if(($nbr-1)<1){echo 0;}else{ if ($rg_level < 4) { echo round($tnote,2);}else{ echo "<em>masquÃ©</em>";}}?></th>
-					<th><?php if(($nbr-1)<1){echo 0;}else{ if ($rg_level < 4) { echo round($tnotecredit,2);}else{ echo "<em>masquÃ©</em>";}}?></th>
+					<th class="px-2"><?php if(($nbr-1)<1){echo 0;}else{ if ($rg_level < 7) { echo round($tnote,2);}else{ echo "<em>masqué</em>";}}?></th>
+					<th><?php if(($nbr-1)<1){echo 0;}else{ if ($rg_level < 7) { echo round($tnotecredit,2);}else{ echo "<em>masqué</em>";}}?></th>
 					<th class="px-2" colspan="2"></th>
 				</tr>
 
-<form method="post" action="../app/.student/updatePromotionNote?id=<?=$id;?>&session_id=<?=$session_id?>&student_id=<?=$student_id;?>&nbr=<?=$s.$nbr;?>&a=<?=$a?>&s=<?=$s?>&annee_scolaire=<?=$annee_scolaire?>&user_id=<?=$rg_id?>" enctype="multipart/form-data" class="form-no-refrech">
+<form method="post" action="<?=$app_base?>/app/.student/updatePromotionNote?id=<?=$id;?>&session_id=<?=$session_id?>&student_id=<?=$student_id;?>&nbr=<?=$s.$nbr;?>&a=<?=$a?>&s=<?=$s?>&annee_scolaire=<?=$annee_scolaire?>&user_id=<?=$rg_id?>" enctype="multipart/form-data" class="form-no-refrech">
 <?php
 	
 	if(!empty($session_id)){
@@ -350,12 +350,12 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 					<td colspan="4">Note de Work Education</td>
 					<td class="<?=$bg_six_color?> <?=$txt_three_color?> px-0 text-left">
 <?php 
-if ($rg_level <= 2) {
+if ($rg_level <= 3) {
  ?>
  <input class="insimple text-sm bg-transparent px-2" type="text" name="grade_work_educ" value="<?=$grade_work_educ?>">
 <?php 
 }else{
-	if ($rg_level < 4) { echo "<a class='px-2'>".$grade_work_educ."</a>"; }else{ echo "<em>masquÃ©</em>";}
+	if ($rg_level < 7) { echo "<a class='px-2'>".$grade_work_educ."</a>"; }else{ echo "<em>masqué</em>";}
 	
 }
  ?>
@@ -363,16 +363,16 @@ if ($rg_level <= 2) {
 				</tr>
 
 				<tr class="<?=$bg_four_color?> text-right">
-					<td colspan="4">Remarque acadÃ©mique</td>
+					<td colspan="4">Remarque académique</td>
 					<td class="<?=$bg_six_color?> <?=$txt_three_color?> px-0 text-left">
 
 <?php 
-if ($rg_level <= 2) {
+if ($rg_level <= 3) {
  ?>
 <input class="insimple text-sm bg-transparent px-2" type="text" name="grade_remark_acad" value="<?=$grade_remark_acad?>">
 <?php 
 }else{
-	if ($rg_level < 4) { echo "<a class='px-2'>".$grade_remark_acad."</a>"; }else{ echo "<em>masquÃ©</em>";}
+	if ($rg_level < 7) { echo "<a class='px-2'>".$grade_remark_acad."</a>"; }else{ echo "<em>masqué</em>";}
 	
 }
  ?>
@@ -380,16 +380,16 @@ if ($rg_level <= 2) {
 				</tr>
 
 				<tr class="<?=$bg_four_color?> text-right">
-					<td colspan="4">Note de participation Ã  l'exercice de chapelle et Ã  la semaine de priÃ¨re</td>
+					<td colspan="4">Note de participation à l'exercice de chapelle et à la semaine de prière</td>
 					<td class="<?=$bg_six_color?> <?=$txt_three_color?> px-0 text-left">
 
 <?php 
-if ($rg_level <= 2) {
+if ($rg_level <= 3) {
  ?>
 <input class="insimple text-sm bg-transparent px-2" type="text" name="grade_chapel_part" value="<?=$grade_chapel_part?>">
 <?php 
 }else{
-	if ($rg_level < 4) { echo "<a class='px-2'>".$grade_chapel_part."</a>"; }else{ echo "<em>masquÃ©</em>";}
+	if ($rg_level < 7) { echo "<a class='px-2'>".$grade_chapel_part."</a>"; }else{ echo "<em>masqué</em>";}
 	
 }
  ?>
@@ -402,20 +402,20 @@ if ($rg_level <= 2) {
 	}
  ?>
 				<!-- <tr>
-					<th colspan="4" class="text-right">Moyenne GÃ©nÃ©rale(faux)</th>
+					<th colspan="4" class="text-right">Moyenne Générale(faux)</th>
 					<th class="px-2"><?php if($nbrGen != 0){echo $moyenGenSem = round(($tTGen/$nbrGen),2);}else{echo 0;$moyenGenSem =0;}?></th>
 				</tr> -->
 				<tr>
 					<th colspan="4" class="text-right">Moyenne Majeure</th>
 					<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-					<th class="px-2"><?php if ($rg_level < 4) { if($nbrMaj != 0){echo round(($moyenMajSem = ($tTMaj/$tcreditMaj)),2);}else{echo 0;$moyenMajSem =0;}}else{ echo "<em>masquÃ©</em>";}?></th>
+					<th class="px-2"><?php if ($rg_level < 7) { if($nbrMaj != 0){echo round(($moyenMajSem = ($tTMaj/$tcreditMaj)),2);}else{echo 0;$moyenMajSem =0;}}else{ echo "<em>masqué</em>";}?></th>
 					<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 				</tr>
 				
 				<!--  -->
 				<tr>
-					<th colspan="4" class="text-right">Moyenne GÃ©nÃ©rale</th>
-					<th class="px-2 bg-cyan-700 text-white"><?php if ($rg_level < 4) { if($nbr != 0){echo round(($moyenGenSem = $tnotecredit/$tcredit),2);}else{echo 0;$moyenGenSem =0;}}else{ echo "<em>masquÃ©</em>";}?></th>
+					<th colspan="4" class="text-right">Moyenne Générale</th>
+					<th class="px-2 bg-cyan-700 text-white"><?php if ($rg_level < 7) { if($nbr != 0){echo round(($moyenGenSem = $tnotecredit/$tcredit),2);}else{echo 0;$moyenGenSem =0;}}else{ echo "<em>masqué</em>";}?></th>
 				</tr>
 
 				<!-- <tr>
@@ -450,33 +450,33 @@ if ($rg_level <= 2) {
 		<tbody class=" <?=$bg_two_color?> <?=$txt_one_color?>">
 			<tr>
 				<td class="p-1 w-8/12 text-right">Note de Work Education cumulative</td>
-				<td class="px-2 w-2/12 text-bold"><?php if ($rg_level < 4) {round(($cumulWorkNote*20)/((($a-1)*2)*20),2);}else{ echo "<em>masquÃ©</em>";}?></td>
+				<td class="px-2 w-2/12 text-bold"><?php if ($rg_level < 7) {round(($cumulWorkNote*20)/((($a-1)*2)*20),2);}else{ echo "<em>masqué</em>";}?></td>
 			</tr>
 			<!-- <tr>
-				<td class="p-1 w-8/12 text-right">Nemarque acadÃ©mique cumulative</td>
-				<td class="px-2 w-2/12 text-bold"><?php if ($rg_level < 4) {round(($cumulremarkAcad*20)/((($a-1)*2)*20),2);}else{ echo "<em>masquÃ©</em>";}?></td>
+				<td class="p-1 w-8/12 text-right">Nemarque académique cumulative</td>
+				<td class="px-2 w-2/12 text-bold"><?php if ($rg_level < 7) {round(($cumulremarkAcad*20)/((($a-1)*2)*20),2);}else{ echo "<em>masqué</em>";}?></td>
 			</tr> -->
 			<tr>
-				<td class="p-1 w-8/12 text-right">Note de participation Ã  l'exercice de chapelle et Ã  la semaine de priÃ¨re cumulative</td>
-				<td class="px-2 w-2/12 text-bold"><?php if ($rg_level < 4) {round(($cumulChapel*20)/((($a-1)*2)*20),2);}else{ echo "<em>masquÃ©</em>";}?></td>
+				<td class="p-1 w-8/12 text-right">Note de participation à l'exercice de chapelle et à la semaine de prière cumulative</td>
+				<td class="px-2 w-2/12 text-bold"><?php if ($rg_level < 7) {round(($cumulChapel*20)/((($a-1)*2)*20),2);}else{ echo "<em>masqué</em>";}?></td>
 			</tr>
 		</tbody>
 	</table>
 	<table class="simpleTbl mb-1 w-full">
 		<thead class="bg-slate-900">
 			<!-- <tr>
-				<th class="p-1 w-8/12 text-right">Moyenne GÃ©nÃ©rale Cumulative</th>
+				<th class="p-1 w-8/12 text-right">Moyenne Générale Cumulative</th>
 				<th class="py-1 px-2 w-2/12"><?=round(($cumulFinale*20)/((($nbrA-1)*2)*20),2);?></th>
 			</tr> -->
 			<tr>
 				<th class="p-1 w-8/12 text-right">Moyenne Majeure Cumulative</th>
-				<th class="py-1 px-2 w-2/12"><?php if ($rg_level < 4) {round(($cumulMaj*20)/((($nbrA-1)*2)*20),2);}else{ echo "<em>masquÃ©</em>";}?></th>
+				<th class="py-1 px-2 w-2/12"><?php if ($rg_level < 7) {round(($cumulMaj*20)/((($nbrA-1)*2)*20),2);}else{ echo "<em>masqué</em>";}?></th>
 			</tr>
 			
 			<!--  -->
 			<tr>
-				<th class="p-1 w-8/12 text-right bg-cyan-700">Moyenne GÃ©nÃ©rale Cumulative</th>
-				<th class="py-1 px-2 w-2/12 bg-cyan-700"><?php if ($rg_level < 4) {round(($cumulGen*20)/((($nbrA-1)*2)*20),2);}else{ echo "<em>masquÃ©</em>";}?></th>
+				<th class="p-1 w-8/12 text-right bg-cyan-700">Moyenne Générale Cumulative</th>
+				<th class="py-1 px-2 w-2/12 bg-cyan-700"><?php if ($rg_level < 7) {round(($cumulGen*20)/((($nbrA-1)*2)*20),2);}else{ echo "<em>masqué</em>";}?></th>
 			</tr>
 		</thead>
 	</table>

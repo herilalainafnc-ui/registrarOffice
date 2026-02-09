@@ -33,12 +33,28 @@ if (!defined('APP_ROOT')) {
  */
 
 // Niveaux de privilèges (du plus élevé au plus bas)
-if (!defined('ROLE_ADMINISTRATOR')) define('ROLE_ADMINISTRATOR', 1);
-if (!defined('ROLE_REGISTRAR')) define('ROLE_REGISTRAR', 2);
-if (!defined('ROLE_USER')) define('ROLE_USER', 3);
-if (!defined('ROLE_VISITOR')) define('ROLE_VISITOR', 4);
-if (!defined('ROLE_TEACHER')) define('ROLE_TEACHER', 5);
-if (!defined('ROLE_STUDENT')) define('ROLE_STUDENT', 6);
+if (!defined('ROLE_SUPERADMIN')) define('ROLE_SUPERADMIN', 1);
+if (!defined('ROLE_ADMINISTRATOR')) define('ROLE_ADMINISTRATOR', 2);
+if (!defined('ROLE_REGISTRAR')) define('ROLE_REGISTRAR', 3);
+if (!defined('ROLE_COMPTABILITE')) define('ROLE_COMPTABILITE', 4);
+if (!defined('ROLE_MEDIA')) define('ROLE_MEDIA', 5);
+if (!defined('ROLE_CHEF_MENTION')) define('ROLE_CHEF_MENTION', 6);
+if (!defined('ROLE_TEACHER')) define('ROLE_TEACHER', 7);
+if (!defined('ROLE_STUDENT')) define('ROLE_STUDENT', 8);
+
+// Mapping des niveaux vers les noms de privilèges
+if (!defined('ROLE_LABELS')) {
+    define('ROLE_LABELS', [
+        1 => 'Superadmin',
+        2 => 'Administrateur',
+        3 => 'Registraire',
+        4 => 'Comptabilité',
+        5 => 'Média',
+        6 => 'Chef de mention',
+        7 => 'Professeur',
+        8 => 'Étudiant'
+    ]);
+}
 
 // Durée de vie du cookie "Se souvenir de moi" (20 jours)
 if (!defined('REMEMBER_ME_DURATION')) define('REMEMBER_ME_DURATION', 20 * 24 * 60 * 60);
@@ -358,17 +374,48 @@ class Middleware {
     }
     
     /**
-     * Vérifie si l'utilisateur est administrateur
+     * Vérifie si l'utilisateur est superadmin
+     */
+    public static function isSuperAdmin() {
+        return self::hasPrivilege('superadmin') || self::hasMinLevel(ROLE_SUPERADMIN);
+    }
+
+    /**
+     * Vérifie si l'utilisateur est administrateur ou supérieur
      */
     public static function isAdmin() {
-        return self::hasPrivilege('administrator');
+        return self::hasPrivilege('superadmin') || self::hasPrivilege('administrator') || self::hasMinLevel(ROLE_ADMINISTRATOR);
     }
     
     /**
-     * Vérifie si l'utilisateur est registrar ou supérieur
+     * Vérifie si l'utilisateur est registraire ou supérieur
      */
     public static function isRegistrar() {
-        return self::hasPrivilege('administrator') || self::hasPrivilege('registrar');
+        return self::isAdmin() || self::hasPrivilege('registrar') || self::hasMinLevel(ROLE_REGISTRAR);
+    }
+
+    /**
+     * Vérifie si l'utilisateur est comptabilité
+     */
+    public static function isComptabilite() {
+        return self::isAdmin() || self::hasPrivilege('comptabilite') || 
+               (int)(self::getCurrentUser()['level'] ?? 0) === ROLE_COMPTABILITE;
+    }
+
+    /**
+     * Vérifie si l'utilisateur est média
+     */
+    public static function isMedia() {
+        return self::isAdmin() || self::hasPrivilege('media') || 
+               (int)(self::getCurrentUser()['level'] ?? 0) === ROLE_MEDIA;
+    }
+
+    /**
+     * Vérifie si l'utilisateur est chef de mention
+     */
+    public static function isChefMention() {
+        return self::isAdmin() || self::hasPrivilege('chef_mention') || 
+               (int)(self::getCurrentUser()['level'] ?? 0) === ROLE_CHEF_MENTION;
     }
 
     /**
@@ -386,7 +433,7 @@ class Middleware {
         
         return ($user['user_type'] ?? '') === 'teacher' || 
                self::hasPrivilege('teacher') ||
-               (int)($user['level'] ?? 0) === 5;
+               (int)($user['level'] ?? 0) === ROLE_TEACHER;
     }
 
     /**
@@ -398,7 +445,15 @@ class Middleware {
         
         return ($user['user_type'] ?? '') === 'student' || 
                self::hasPrivilege('student') ||
-               (int)($user['level'] ?? 0) === 6;
+               (int)($user['level'] ?? 0) === ROLE_STUDENT;
+    }
+
+    /**
+     * Récupère le label du rôle par son niveau
+     */
+    public static function getRoleLabel($level) {
+        $labels = ROLE_LABELS;
+        return $labels[(int)$level] ?? 'Inconnu';
     }
 
     /**
@@ -967,6 +1022,15 @@ function hasLevel($level) {
 }
 }
 
+if (!function_exists('isSuperAdmin')) {
+/**
+ * Vérifie si l'utilisateur est superadmin
+ */
+function isSuperAdmin() {
+    return Middleware::isSuperAdmin();
+}
+}
+
 if (!function_exists('isAdmin')) {
 /**
  * Vérifie si l'utilisateur est admin
@@ -982,6 +1046,42 @@ if (!function_exists('isRegistrar')) {
  */
 function isRegistrar() {
     return Middleware::isRegistrar();
+}
+}
+
+if (!function_exists('isComptabilite')) {
+/**
+ * Vérifie si l'utilisateur est comptabilité
+ */
+function isComptabilite() {
+    return Middleware::isComptabilite();
+}
+}
+
+if (!function_exists('isMedia')) {
+/**
+ * Vérifie si l'utilisateur est média
+ */
+function isMedia() {
+    return Middleware::isMedia();
+}
+}
+
+if (!function_exists('isChefMention')) {
+/**
+ * Vérifie si l'utilisateur est chef de mention
+ */
+function isChefMention() {
+    return Middleware::isChefMention();
+}
+}
+
+if (!function_exists('getRoleLabel')) {
+/**
+ * Récupère le label du rôle par son niveau
+ */
+function getRoleLabel($level) {
+    return Middleware::getRoleLabel($level);
 }
 }
 

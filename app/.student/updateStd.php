@@ -1,26 +1,33 @@
 <?php 
 
+// Désactiver l'affichage des erreurs pour les requêtes AJAX
+$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+if ($isAjax) {
+	error_reporting(0);
+	ini_set('display_errors', 0);
+}
+
 require '../../data/backdb.php';
 require 'student_history_helper.php';
 	
-	$last_change_user_id = $_GET['rg_id'];
-	$id = $_GET['id'];
-	$student_id = $_GET['student_id'];
-	$student_nom = $_POST['student_nom'];
-	$student_prenom = $_POST['student_prenom'];
-	$etude_option = $_POST['etude_option'];
-	$student_tel = $_POST['student_tel'];
-	$sex = $_POST['sex'];
-	$student_email = $_POST['student_email'];
-	$annee_etude = $_POST['annee_etude'];
-	$dateNaissance = $_POST['dateNaissance'];
-	$nationalite = $_POST['nationalite'];
-	$student_adresse = $_POST['student_adresse'];
-	$student_region = $_POST['student_region'];
-	$lieuNaissance = $_POST['lieuNaissance'];
-	$num_cin = $_POST['num_cin'];
+	$last_change_user_id = $_GET['rg_id'] ?? '';
+	$id = $_GET['id'] ?? '';
+	$student_id = $_GET['student_id'] ?? '';
+	$student_nom = $_POST['student_nom'] ?? '';
+	$student_prenom = $_POST['student_prenom'] ?? '';
+	$etude_option = $_POST['etude_option'] ?? '';
+	$student_tel = $_POST['student_tel'] ?? '';
+	$sex = $_POST['sex'] ?? '';
+	$student_email = $_POST['student_email'] ?? '';
+	$annee_etude = $_POST['annee_etude'] ?? '';
+	$dateNaissance = $_POST['dateNaissance'] ?? '';
+	$nationalite = $_POST['nationalite'] ?? '';
+	$student_adresse = $_POST['student_adresse'] ?? '';
+	$student_region = $_POST['student_region'] ?? '';
+	$lieuNaissance = $_POST['lieuNaissance'] ?? '';
+	$num_cin = $_POST['num_cin'] ?? '';
 	
-	echo $cin_datedelivre = $_POST['cin_date_delivre'];
+	$cin_datedelivre = $_POST['cin_date_delivre'] ?? '';
 	
 	if (!empty($cin_datedelivre)) {
 
@@ -40,42 +47,42 @@ $oldStudentData = $getOldData->fetch(PDO::FETCH_ASSOC);
 
 $findInfiliere = $dtb->query('SELECT * FROM filiere WHERE filiere_description = "'.$etude_envisage.'"');
 $showInfiliere = $findInfiliere->fetch();
-$etude_envisage_sign = $showInfiliere['filiere_sigle'];
+$etude_envisage_sign = $showInfiliere['filiere_sigle'] ?? '';
 
 
-	$father_name = $_POST['father_name'];
-	$father_prof = $_POST['father_prof'];
-	$parent_tel = $_POST['parent_tel'];
-	$mother_name = $_POST['mother_name'];
-	$mother_prof = $_POST['mother_prof'];
-	$parent_adresse = $_POST['parent_adresse'];
-	$sponsor_nom = $_POST['sponsor_nom'];
-	$sponsor_prenom = $_POST['sponsor_prenom'];
-	$sponsor_adresse = $_POST['sponsor_adresse'];
-	$sponsor_tel = $_POST['sponsor_tel'];
-	$annee_scolaire = $_POST['annee_scolaire'];
-	$new_student = $_POST['new_student'];
-	$status = $_POST['status'];
-	$cin_region = $_POST['cin_region'];
-	$religion = $_POST['religion'];
-	$graduated = $_POST['graduated'];
+	$father_name = $_POST['father_name'] ?? '';
+	$father_prof = $_POST['father_prof'] ?? '';
+	$parent_tel = $_POST['parent_tel'] ?? '';
+	$mother_name = $_POST['mother_name'] ?? '';
+	$mother_prof = $_POST['mother_prof'] ?? '';
+	$parent_adresse = $_POST['parent_adresse'] ?? '';
+	$sponsor_nom = $_POST['sponsor_nom'] ?? '';
+	$sponsor_prenom = $_POST['sponsor_prenom'] ?? '';
+	$sponsor_adresse = $_POST['sponsor_adresse'] ?? '';
+	$sponsor_tel = $_POST['sponsor_tel'] ?? '';
+	$annee_scolaire = $_POST['annee_scolaire'] ?? '';
+	$new_student = $_POST['new_student'] ?? '';
+	$status = $_POST['status'] ?? '';
+	$cin_region = $_POST['cin_region'] ?? '';
+	$religion = $_POST['religion'] ?? '';
+	$graduated = $_POST['graduated'] ?? '';
 	
-	$situationf = $_POST['situationf'];
-	$nb_enfant = $_POST['nb_enfant'];
-	$nom_conjoint = $_POST['nom_conjoint'];
+	$situationf = $_POST['situationf'] ?? '';
+	$nb_enfant = $_POST['nb_enfant'] ?? '';
+	$nom_conjoint = $_POST['nom_conjoint'] ?? '';
 
-	$num_visa = $_POST['num_visa'];
-	$abonment = $_POST['abonment'];
+	$num_visa = $_POST['num_visa'] ?? '';
+	$abonment = $_POST['abonment'] ?? '';
 	
 	$last_change_datetime = date('Y-m-d');
 
-	$semesterForInformation = $_POST['semesterForInformation'];
-	$annee_scolaireForInformation =$_POST['annee_scolaireForInformation'];
+	$semesterForInformation = $_POST['semesterForInformation'] ?? '';
+	$annee_scolaireForInformation = $_POST['annee_scolaireForInformation'] ?? '';
 
 
 	$verificationOldStatus = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'"');
  	$oldStatusConfirmed = $verificationOldStatus->fetch();
- 	$oldStatus = $oldStatusConfirmed['status'];
+ 	$oldStatus = $oldStatusConfirmed['status'] ?? '';
 
  	
 /*========================================== UPDATE STUDENT ON SESSION ==========================*/	
@@ -83,8 +90,8 @@ $etude_envisage_sign = $showInfiliere['filiere_sigle'];
 $findSessionOnSS = $dtb->query('SELECT * FROM t_2023_session WHERE session_name ="'.$semesterForInformation.'" AND session_year = "'.$annee_scolaireForInformation.'"');
 
 $showSessionOnSS = $findSessionOnSS->fetch();
-$session_id_for_modification = $showSessionOnSS['session_id'];
-$nbr_semester = $showSessionOnSS['session_semester'];
+$session_id_for_modification = $showSessionOnSS['session_id'] ?? 0;
+$nbr_semester = $showSessionOnSS['session_semester'] ?? '';
 
 $verification = $dtb->query('SELECT * FROM t_2024_inscription_session WHERE student_id = "'.$student_id.'" AND session_id = "'.$session_id_for_modification.'"');
 
@@ -493,7 +500,16 @@ if (!empty($answering)) {
 		$updateFnc->execute();
 
 
+// Check if this is an AJAX request
+$isAjaxRequest = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') 
+				|| (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)
+				|| !empty($_POST);
 
- header('location:../../src/student.php?id='.$id.'&page=information');
+if ($isAjaxRequest && !headers_sent()) {
+	echo 'OK';
+	exit;
+}
+
+header('location:../../src/student.php?id='.$id.'&page=information');
 
 ?>

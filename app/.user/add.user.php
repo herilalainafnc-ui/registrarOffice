@@ -51,27 +51,33 @@ Middleware::logSecurityEvent('user_create_attempt', [
 	$user_type = 'staff';
 
 	if ($level == 1) {
+		$privilege = "superadmin";
+		$user_type = 'superadmin';
+	}elseif($level == 2) {
 		$privilege = "administrator";
 		$user_type = 'admin';
-	}elseif($level == 2) {
-		$privilege = "registrar";
-		$user_type = 'staff';
 	}elseif($level == 3) {
-		$privilege = "user";
-		$user_type = 'staff';
+		$privilege = "registrar";
+		$user_type = 'registrar';
 	}elseif($level == 4) {
-		$privilege = "visitor";
-		$user_type = 'staff';
+		$privilege = "comptabilite";
+		$user_type = 'comptabilite';
 	}elseif($level == 5) {
+		$privilege = "media";
+		$user_type = 'media';
+	}elseif($level == 6) {
+		$privilege = "chef_mention";
+		$user_type = 'chef_mention';
+	}elseif($level == 7) {
 		$privilege = "teacher";
 		$user_type = 'teacher';
-	}elseif($level == 6) {
+	}elseif($level == 8) {
 		$privilege = "student";
 		$user_type = 'student';
 	} else {
-		$privilege = "visitor";
-		$level = 4;
-		$user_type = 'staff';
+		$privilege = "registrar";
+		$level = 3;
+		$user_type = 'registrar';
 	}
 
 	$theme = 'Blue';

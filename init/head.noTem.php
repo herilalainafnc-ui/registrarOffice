@@ -1,7 +1,19 @@
 <head>
 	<?php/* require('../data/connectdb.php');*/ ?>
 
-	<?php require('../data/backdb.php'); ?>
+	<?php require('../data/backdb.php');
+	// Calculer le chemin racine de l'application (fiable: basé sur DOCUMENT_ROOT)
+	$_doc_root = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+	$_app_root = rtrim(str_replace('\\', '/', dirname(__DIR__)), '/');
+	$app_base = substr($_app_root, strlen($_doc_root));
+	if ($app_base === false || $app_base === '/' || $app_base === '.') $app_base = '';
+	if (!function_exists('encodeFilePath')) {
+		function encodeFilePath($path) {
+			if (empty($path)) return '';
+			return implode('/', array_map('rawurlencode', explode('/', str_replace('\\', '/', $path))));
+		}
+	}
+	?>
 
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -12,7 +24,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link rel="shortcut icon" href="../file/logo-coldbloud.png" type="image/x-icon">
+	<link rel="shortcut icon" href="<?=$app_base?>/file/logo-coldbloud.png" type="image/x-icon">
 
 
 <!-- TAILWIND CSS -->
@@ -23,8 +35,8 @@
 <!-- ------------ -->
 
 
-	<link rel="stylesheet" type="text/css" href="./css/style.css">
-	<link rel="stylesheet" type="text/css" href="./css/responsive.css">
+	<link rel="stylesheet" type="text/css" href="<?=$app_base?>/src/css/style.css">
+	<link rel="stylesheet" type="text/css" href="<?=$app_base?>/src/css/responsive.css">
 
 </head>
 

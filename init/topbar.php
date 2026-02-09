@@ -239,9 +239,9 @@
 	
 	<!-- Logo Section -->
 	<div class="hidden md:flex items-center gap-3 lg:w-2/12">
-		<a href="../src/" class="logo-container flex items-center gap-2">
+		<a href="<?=$app_base?>/src/" class="logo-container flex items-center gap-2">
 			<div class="w-8 h-8 bg-gradient-to-br from-[#4e9ede] to-[#1a3a5c] rounded-lg p-1 shadow-md">
-				<img src="../file/logo-coldbloud.png" class="w-full h-full">
+				<img src="<?=$app_base?>/file/logo-coldbloud.png" class="w-full h-full">
 			</div>
 			<span class="hidden md:block font-bold text-base logo-text-gradient">
 				Infinit Registrar
@@ -304,7 +304,7 @@
 			<a href="#" class="flex items-center gap-2 hover:opacity-90 transition-all duration-300" data-bs-toggle="dropdown" aria-expanded="false">
 				<span class="hidden sm:block font-medium text-sm text-slate-200 hover:text-cyan-400 transition-colors"><?=$rg_last_name;?></span>
 				<div class="user-avatar rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 w-10 h-10 p-0.5 shadow-lg ring-2 ring-transparent hover:ring-cyan-400/50 transition-all duration-300">
-					<img src="../app/photosuser/<?=$rg_photos?>" class="rounded-full w-full h-full object-cover border-2 border-slate-800" alt="User Avatar">
+					<img src="<?=$app_base?>/app/photosuser/<?=encodeFilePath($rg_photos)?>" class="rounded-full w-full h-full object-cover border-2 border-slate-800" alt="User Avatar">
 				</div>		
 			</a>
 			
@@ -327,7 +327,7 @@
 		        
 		        <!-- My Account -->
 		        <li class="dropdown-item-hover mb-1">
-		        	<a href="./my.account.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
+		        	<a href="<?=$app_base?>/src/my.account" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
 		        		<div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
 		        			<i class="bi-gear text-cyan-400 group-hover:rotate-90 transition-transform duration-300"></i>
 		        		</div>
@@ -335,7 +335,7 @@
 		        	</a>
 		        </li>
 		
-				<?php if($rg_user['level'] <=2) { ?>
+				<?php if($rg_user['level'] <=3) { ?>
 				
 				<!-- Divider -->
 				<li class="my-2">
@@ -352,7 +352,7 @@
 				
 				<!-- Dev Tools Items -->
 				<li class="dropdown-item-hover mb-1">
-					<a href="../app/Motors/" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
+					<a href="<?=$app_base?>/app/Motors/" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
 						<div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
 			        		<i class="bi-code-slash text-purple-400"></i>
 			        	</div>
@@ -362,7 +362,7 @@
 				</li>
 
 				<li class="dropdown-item-hover mb-1">
-					<a href="../wordpress/wp-login.php" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
+					<a href="<?=$app_base?>/wordpress/wp-login.php" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
 						<div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
 			        		<i class="bi-wordpress text-blue-400"></i>
 			        	</div>
@@ -372,7 +372,7 @@
 				</li>
 		        
 		        <li class="dropdown-item-hover mb-1">
-		        	<a href="../../phpmyadmin/index.php?route=/database/structure&db=registrar_db" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
+		        	<a href="/phpmyadmin/index.php?route=/database/structure&db=registrar_db" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
 		        		<div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center group-hover:bg-orange-500/20 transition-colors">
 			        		<i class="bi-database-exclamation text-orange-400"></i>
 			        	</div>
@@ -416,7 +416,7 @@
 
 				<!-- Applications Items -->
 		        <li class="dropdown-item-hover mb-1">
-		        	<a href="../../rhm/" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
+		        	<a href="/rhm/" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
 		        		<div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center group-hover:bg-green-500/20 transition-colors">
 			        		<i class="bi-app-indicator text-green-400"></i>
 			        	</div>
@@ -426,7 +426,7 @@
 		        </li>
 
 		        <li class="dropdown-item-hover mb-1">
-		        	<a href="../../uaz-site/" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
+		        	<a href="/uaz-site/" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
 		        		<div class="w-8 h-8 rounded-lg bg-yellow-500/10 flex items-center justify-center group-hover:bg-yellow-500/20 transition-colors">
 			        		<i class="bi-award-fill text-yellow-400"></i>
 			        	</div>
@@ -436,7 +436,7 @@
 		        </li>
 
 		        <li class="dropdown-item-hover mb-1">
-		        	<a href="../../" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
+		        	<a href="/" target="_blank" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
 		        		<div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
 			        		<i class="bi-alexa text-blue-400"></i>
 			        	</div>
@@ -512,7 +512,7 @@
 					if (confirmed) {
 						const loadingId = Toast.loading("Déconnexion en cours...");
 						setTimeout(function() {
-							window.location.href = '../app/logout';
+							window.location.href = APP_BASE+'/app/logout';
 						}, 500);
 					}
 				});
@@ -531,7 +531,7 @@
 				$('#all-std').css({'display':'none'});
 
 				$.ajax({
-					url:"../init/.student/std-livesearch",
+					url:APP_BASE+"/init/.student/std-livesearch",
 					method:"POST",
 					data:{input:input},
 					beforeSend: function() {
@@ -562,7 +562,7 @@
 				$('#all-cours').css({'display':'none'});
 
 				$.ajax({
-					url:"../init/.cours/cours-livesearch",
+					url:APP_BASE+"/init/.cours/cours-livesearch",
 					method:"POST",
 					data:{input:input},
 					beforeSend: function() {
@@ -593,7 +593,7 @@
 				$('#all-prof').css({'display':'none'});
 
 				$.ajax({
-					url:"../init/.prof/prof-livesearch",
+					url:APP_BASE+"/init/.prof/prof-livesearch",
 					method:"POST",
 					data:{input:input},
 					beforeSend: function() {

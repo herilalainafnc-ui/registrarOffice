@@ -70,12 +70,12 @@
 								if ($extentionImage == '.jpg' OR $extentionImage == '.JPG') {
 								
 								?>
-									<img src="../app/photosetudiants/<?=$profil['image_student']?>" class="border-1 border-black w-full">
+									<img src="<?=$app_base?>/app/photosetudiants/<?=encodeFilePath($profil['image_student'])?>" class="border-1 border-black w-full">
 
 								<?php	
 								}else{ ?>
 									
-									<img src="../app/photosetudiants/10054.jpg" class="border-1 border-black w-full">
+									<img src="<?=$app_base?>/app/photosetudiants/10054.jpg" class="border-1 border-black w-full">
 
 								<?php }	?>
 								
@@ -177,7 +177,7 @@ if(isset($_GET['page']) and $_GET['page'] == "information") {
 									</div>
 								</a>
 		
-								<a href="?id=<?=$id;?>&page=transcriptSS" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
+								<a href="?id=<?=$id;?>&page=transcriptSS" <?php if($rg_user['level'] <= 3) { echo "";}else{ echo "class='toolInactive'";}?>>
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
 if(isset($_GET['page']) and $_GET['page'] == "transcriptSS") {
 	echo "bg-cyan-700 text-white";
@@ -188,7 +188,7 @@ if(isset($_GET['page']) and $_GET['page'] == "transcriptSS") {
 									</div>
 								</a>
 								
-								<a href="?id=<?=$id;?>&page=newCours" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
+								<a href="?id=<?=$id;?>&page=newCours" <?php if($rg_user['level'] <= 3) { echo "";}else{ echo "class='toolInactive'";}?>>
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
 if(isset($_GET['page']) and $_GET['page'] == "newCours") {
 	echo "bg-cyan-700 text-white";
@@ -199,7 +199,7 @@ if(isset($_GET['page']) and $_GET['page'] == "newCours") {
 									</div>
 								</a>
 		
-								<a href="?id=<?=$id;?>&page=bulletin" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
+								<a href="?id=<?=$id;?>&page=bulletin" <?php if($rg_user['level'] <= 3) { echo "";}else{ echo "class='toolInactive'";}?>>
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
 if(isset($_GET['page']) and $_GET['page'] == "bulletin") {
 	echo "bg-cyan-700 text-white";
@@ -210,7 +210,7 @@ if(isset($_GET['page']) and $_GET['page'] == "bulletin") {
 									</div>
 								</a>
 								
-								<a href="?id=<?=$id;?>&page=histNotes" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
+								<a href="?id=<?=$id;?>&page=histNotes" <?php if($rg_user['level'] <= 3) { echo "";}else{ echo "class='toolInactive'";}?>>
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
 if(isset($_GET['page']) and $_GET['page'] == "histNotes") {
 	echo "bg-cyan-700 text-white";
@@ -221,7 +221,7 @@ if(isset($_GET['page']) and $_GET['page'] == "histNotes") {
 									</div>
 								</a>
 								<hr>
-								<a href="?id=<?=$id;?>&page=diplome&langue=FR" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
+								<a href="?id=<?=$id;?>&page=diplome&langue=FR" <?php if($rg_user['level'] <= 3) { echo "";}else{ echo "class='toolInactive'";}?>>
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
 if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 	echo "bg-cyan-700 text-white";
@@ -247,7 +247,7 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 									</div>
 								</a>
 								<?php else: ?>
-								<a href="#" id="linkSuspendStd" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
+								<a href="#" id="linkSuspendStd" <?php if($rg_user['level'] <= 3) { echo "";}else{ echo "class='toolInactive'";}?>>
 									<div class="w-full hover:bg-orange-500 hover:text-slate-100 p-2 my-1 text-orange-600 rounded-md">
 										<i class="bi-person-dash-fill"></i>
 												Suspendre
@@ -263,7 +263,7 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 									</div>
 								</a>
 								<?php else: ?>
-								<a href="#" id="linkRetraitUniv" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
+								<a href="#" id="linkRetraitUniv" <?php if($rg_user['level'] <= 3) { echo "";}else{ echo "class='toolInactive'";}?>>
 									<div class="w-full hover:bg-blue-500 hover:text-slate-100 p-2 my-1 text-blue-600 rounded-md">
 										<i class="bi-door-open-fill"></i>
 												Retrait de l'université
@@ -271,7 +271,7 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 								</a>
 								<?php endif; ?>
 
-								<a href="#" id="linkSupprStd" <?php if($rg_user['level'] <= 2) { echo "";}else{ echo "class='toolInactive'";}?>>
+								<a href="#" id="linkSupprStd" <?php if($rg_user['level'] <= 3) { echo "";}else{ echo "class='toolInactive'";}?>>
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 text-red-600 rounded-md">
 										
 										<i class="bi-trash3"></i>
@@ -285,7 +285,7 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 
 							<!-- MODAL SUSPENSION -->
 						<div class="fixed inset-0 z-40 hidden overflow-y-auto" id="notifSuspendStd" style="backdrop-filter: blur(30px);">
-<form method="post" action="../app/.student/suspendre.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>">
+<form method="post" action="<?=$app_base?>/app/.student/suspendre.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>">
 							<div class="w-[95%] max-w-[500px] <?=$bg_eight_color?> border-2 border-orange-500 mx-auto my-[3%] lg:my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
 								<div class="p-3 bg-orange-500 text-white rounded-t-md">
 									<p class="text-lg font-bold"><i class="bi-exclamation-triangle-fill mr-2"></i>Suspendre l'étudiant</p>
@@ -333,7 +333,7 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 
 							<!-- MODAL LEVER SUSPENSION -->
 						<div class="fixed inset-0 z-40 hidden overflow-y-auto" id="notifLeverSuspension" style="backdrop-filter: blur(30px);">
-<form method="post" action="../app/.student/lever-suspension.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>">
+<form method="post" action="<?=$app_base?>/app/.student/lever-suspension.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>">
 							<div class="w-[95%] max-w-[500px] <?=$bg_eight_color?> border-2 border-green-500 mx-auto my-[3%] lg:my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
 								<div class="p-3 bg-green-500 text-white rounded-t-md">
 									<p class="text-lg font-bold"><i class="bi-person-check-fill mr-2"></i>Lever la suspension</p>
@@ -370,7 +370,7 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 
 							<!-- MODAL RETRAIT UNIVERSITÉ -->
 						<div class="fixed inset-0 z-40 hidden overflow-y-auto" id="notifRetraitUniv" style="backdrop-filter: blur(30px);">
-<form method="post" action="../app/.student/retrait-universite.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>">
+<form method="post" action="<?=$app_base?>/app/.student/retrait-universite.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>">
 							<div class="w-[95%] max-w-[550px] <?=$bg_eight_color?> border-2 border-blue-500 mx-auto my-[3%] lg:my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
 								<div class="p-3 bg-blue-500 text-white rounded-t-md">
 									<p class="text-lg font-bold"><i class="bi-door-open-fill mr-2"></i>Retrait de l'université</p>
@@ -434,7 +434,7 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 
 							<!-- MODAL ANNULER RETRAIT -->
 						<div class="fixed inset-0 z-40 hidden overflow-y-auto" id="notifAnnulerRetrait" style="backdrop-filter: blur(30px);">
-<form method="post" action="../app/.student/annuler-retrait.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>">
+<form method="post" action="<?=$app_base?>/app/.student/annuler-retrait.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>">
 							<div class="w-[95%] max-w-[500px] <?=$bg_eight_color?> border-2 border-green-500 mx-auto my-[3%] lg:my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
 								<div class="p-3 bg-green-500 text-white rounded-t-md">
 									<p class="text-lg font-bold"><i class="bi-arrow-return-left mr-2"></i>Annuler le retrait</p>
@@ -481,7 +481,7 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 							<!-- MODIF IMAGE -->
 
 						<div class="fixed inset-0 z-40 hidden overflow-y-auto" id="notifModifIMG" style="backdrop-filter: blur(30px);">
-<form method="post" action="../app/.student/updtateImgStd.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>" enctype="multipart/form-data">
+<form method="post" action="<?=$app_base?>/app/.student/updtateImgStd.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>" enctype="multipart/form-data">
 							<div class="w-[95%] max-w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[3%] lg:my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
 								<div class="p-2">
 									<p>Modifier l'image d'étudiant</p>
@@ -511,7 +511,7 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 							<div class="w-[95%] max-w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[3%] lg:my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
 								
 								<div class="p-2">
-									<div class="w-full h-[400px]" style="background-image: url('../app/photosetudiants/<?=$profil['image_student']?>');background-position: center; background-size: cover;background-repeat: no-repeat;">
+									<div class="w-full h-[400px]" style="background-image: url('<?=$app_base?>/app/photosetudiants/<?=encodeFilePath($profil['image_student'])?>');background-position: center; background-size: cover;background-repeat: no-repeat;">
 										
 									</div>
 

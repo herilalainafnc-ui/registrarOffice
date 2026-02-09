@@ -1,4 +1,4 @@
-ï»¿<div class=" mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">
+<div class=" mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">
 <?php 
 $year = date('Y')+1;
 for ($i=0; $i < 4 ; $i++) { 
@@ -9,7 +9,7 @@ $preced = $soustract - 1;
 
 <div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 <div class="text-center bg-gradient-to-r from-cyan-500">
-	<b>Etudiants en annÃ©e <?php echo $scolaire = $preced." - ".$soustract; ?>.</b>
+	<b>Etudiants en année <?php echo $scolaire = $preced." - ".$soustract; ?>.</b>
 </div>
 
 	<div>
@@ -21,11 +21,11 @@ $preced = $soustract - 1;
 				<thead class="<?=$bg_one_color?> text-white">
 					<tr>
 						<td class="w-20">ID</td>
-						<td>Nom et PrÃ©noms</td>
+						<td>Nom et Prénoms</td>
 						<td class="w-20">Niveau</td>
 						<td class="w-20">Semestre</td>
 						<td class="w-20">Notes/20</td>
-						<td class="w-4">Ã‰tat</td>
+						<td class="w-4">État</td>
 						<td class="w-4"><span class="bi-trash3-fill"></span></td>
 					</tr>
 				</thead>
@@ -40,7 +40,7 @@ while ($cours_table = $cors->fetch()) {
 $idcours = $cours_table['id'];
  ?>
 
-<form method="post" action="../app/.cours/completnotes?id=<?=$id?>&idcours=<?=$idcours?>&year=<?=$preced.$soustract;?>&sigle=<?=$cours_table['Sigle']?>" class="form-no-refrech<?=$nbr.$soustract?>">
+<form method="post" action="<?=$app_base?>/app/.cours/completnotes?id=<?=$id?>&idcours=<?=$idcours?>&year=<?=$preced.$soustract;?>&sigle=<?=$cours_table['Sigle']?>" class="form-no-refrech<?=$nbr.$soustract?>">
 					<tr id="<?=$cours_table['Sigle'].$preced.$soustract?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black">
 						<td class="bg-gradient-to-r from-orange-800 to-orange-400"><?=$cours_table['student_id']?></td>
 						<td class="c<?=$nbr.$i;?>"><?php
@@ -49,12 +49,12 @@ $jer = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE student_id='".$cours_t
 $apotr = $jer->fetch();
 if($apotr){
 	if(is_null($apotr['student_nom']) AND is_null($apotr['student_prenom'])){
-		echo "<em style='color:red'>Non dÃ©fini</em>";
+		echo "<em style='color:red'>Non défini</em>";
 	}else{
 		echo $apotr['student_nom']." ".$apotr['student_prenom'];
 	}
 }else{
-	echo "<em style='color:red'>Etudiant supprimÃ© de la base.</em>";
+	echo "<em style='color:red'>Etudiant supprimé de la base.</em>";
 }
 					?></td>
 					<td class="c<?=$nbr.$soustract;?>">
@@ -89,7 +89,7 @@ if ($cours_table['grade'] == -2 OR $cours_table['grade'] >= 10) {
 	echo "bg-none";
 } ?> text-center' title="<?php 
 if ($cours_table['grade'] == -2 OR $cours_table['grade'] >= 10) {
-	echo "SuccÃ¨s";
+	echo "Succès";
 }elseif ($cours_table['grade'] < 10 and $cours_table['grade'] > 0){
 	echo "Echec";
 }elseif ($cours_table['grade'] == 0){
@@ -112,7 +112,7 @@ if ($cours_table['grade'] == -2 OR $cours_table['grade'] >= 10) {
 								<a href="#" class="btn nav-link" type="button" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="bi-three-dots-vertical"></span></a>
 								<ul class="dropdown-menu">
 							        <li>
-<a class="dropdown-item" href="app/.cours/dell-listcours.incours?idSupprCours=<?=$idcours?>&id=<?=$id?>"><span class="bi-trash3-fill" style="color: red;"></span> Supprimer cet Ã©tudiant</a></li>
+<a class="dropdown-item" href="app/.cours/dell-listcours.incours?idSupprCours=<?=$idcours?>&id=<?=$id?>"><span class="bi-trash3-fill" style="color: red;"></span> Supprimer cet étudiant</a></li>
 					          		</ul>
 							</div>
 						</td>
@@ -123,7 +123,7 @@ if ($cours_table['grade'] == -2 OR $cours_table['grade'] >= 10) {
 				$('.form-no-refrech<?=$nbr.$soustract?>').on('submit',function(e){
 					e.preventDefault();
 					
-					var url = '../app/.cours/completnotes?id=<?=$id?>&idcours=<?=$idcours?>&year=<?=$preced.$soustract;?>&sigle=<?=$cours_table['Sigle']?>';
+					var url = '<?=$app_base?>/app/.cours/completnotes?id=<?=$id?>&idcours=<?=$idcours?>&year=<?=$preced.$soustract;?>&sigle=<?=$cours_table['Sigle']?>';
 					var data = $(this).serialize();
 
 					$.post(url,data,function(response){
@@ -177,9 +177,9 @@ $nbr++;
 <div class="text-center text-white">
 	<b><p style="margin: 0px;">Nombre : <?php 
 if (($nbr-1)<=1) {
-	echo ($nbr-1)." Ã©tudiant";
+	echo ($nbr-1)." étudiant";
 }else{
-	echo ($nbr-1)." Ã©tudiants";
+	echo ($nbr-1)." étudiants";
 }
 	?></p></b>
 

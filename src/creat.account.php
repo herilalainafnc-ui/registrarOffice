@@ -4,7 +4,7 @@
 	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
 	<?php 
 	// SÉCURITÉ: Cette page est réservée aux administrateurs et registraires
-	requireLevel(ROLE_REGISTRAR, './accueil.php');
+	requireLevel(ROLE_REGISTRAR, './accueil');
 	?>
 	<title>Gestion des Utilisateurs</title>
 	<style>
@@ -128,25 +128,51 @@
 		}
 
 		/* Input Component */
+		.shad-dialog .shad-input,
 		.shad-input {
 			width: 100%;
-			padding: 0.5rem 0.75rem;
-			font-size: 0.875rem;
-			background: rgba(15, 23, 42, 0.6);
-			border: 1px solid rgba(51, 65, 85, 0.8);
+			padding: 0.5rem 0.75rem !important;
+			font-size: 0.875rem !important;
+			background: rgba(30, 41, 59, 0.95) !important;
+			border: 1px solid rgba(71, 85, 105, 0.8) !important;
 			border-radius: 0.375rem;
-			color: #f1f5f9;
+			color: #ffffff !important;
+			-webkit-text-fill-color: #ffffff !important;
 			transition: all 0.2s ease;
+			opacity: 1;
 		}
 
+		.shad-dialog .shad-input:focus,
 		.shad-input:focus {
 			outline: none;
-			border-color: #0ea5e9;
+			border-color: #0ea5e9 !important;
 			box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+			background: rgba(30, 41, 59, 1) !important;
+			color: #ffffff !important;
+			-webkit-text-fill-color: #ffffff !important;
 		}
 
+		.shad-dialog .shad-input::placeholder,
 		.shad-input::placeholder {
-			color: #64748b;
+			color: #94a3b8 !important;
+			-webkit-text-fill-color: #94a3b8 !important;
+			opacity: 1;
+		}
+
+		/* Fix autofill styles */
+		.shad-input:-webkit-autofill,
+		.shad-input:-webkit-autofill:hover,
+		.shad-input:-webkit-autofill:focus {
+			-webkit-text-fill-color: #ffffff !important;
+			-webkit-box-shadow: 0 0 0px 1000px rgba(30, 41, 59, 0.95) inset !important;
+			transition: background-color 5000s ease-in-out 0s;
+		}
+
+		/* Fix select inside dialog */
+		.shad-dialog .shad-select,
+		.shad-select {
+			color: #ffffff !important;
+			-webkit-text-fill-color: #ffffff !important;
 		}
 
 		.shad-input-error {
@@ -600,11 +626,13 @@
 		.stat-content p { font-size: 1.5rem; font-weight: 700; color: #f1f5f9; }
 
 		/* Role Badges */
+		.role-superadmin { background: linear-gradient(135deg, rgba(220, 38, 38, 0.2), rgba(185, 28, 28, 0.2)); color: #ef4444; border: 1px solid rgba(220, 38, 38, 0.3); }
 		.role-admin { background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(139, 92, 246, 0.2)); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.3); }
 		.role-registrar { background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(6, 182, 212, 0.2)); color: #0ea5e9; border: 1px solid rgba(14, 165, 233, 0.3); }
-		.role-user { background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.2)); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
-		.role-visitor { background: linear-gradient(135deg, rgba(100, 116, 139, 0.2), rgba(71, 85, 105, 0.2)); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.3); }
-		.role-teacher { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(251, 191, 36, 0.2)); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+		.role-comptabilite { background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.2)); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+		.role-media { background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(219, 39, 119, 0.2)); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.3); }
+		.role-chef-mention { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.2)); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+		.role-teacher { background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2)); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
 		.role-student { background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(99, 102, 241, 0.2)); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
 
 		/* Space utility */
@@ -632,7 +660,7 @@
 					<?php 
 					$totalUsers = $dtb->query("SELECT COUNT(*) FROM compt_utilisateur")->fetchColumn();
 					$activeUsers = $dtb->query("SELECT COUNT(*) FROM compt_utilisateur WHERE etat = 1")->fetchColumn();
-					$adminCount = $dtb->query("SELECT COUNT(*) FROM compt_utilisateur WHERE level IN (1,2)")->fetchColumn();
+					$adminCount = $dtb->query("SELECT COUNT(*) FROM compt_utilisateur WHERE level IN (1,2,3)")->fetchColumn();
 					?>
 					
 					<div class="stats-grid">
@@ -699,15 +727,17 @@
 		$user_id = $user['id'];
 		
 		// Badge selon le niveau
-		$roleBadgeClass = 'shad-badge role-visitor';
+		$roleBadgeClass = 'shad-badge role-student';
 		$roleLabel = $user['privilege'];
 		switch($user['level']) {
-			case 1: $roleBadgeClass = 'shad-badge role-admin'; $roleLabel = 'Administrateur'; break;
-			case 2: $roleBadgeClass = 'shad-badge role-registrar'; $roleLabel = 'Registraire'; break;
-			case 3: $roleBadgeClass = 'shad-badge role-user'; $roleLabel = 'Utilisateur'; break;
-			case 4: $roleBadgeClass = 'shad-badge role-visitor'; $roleLabel = 'Visiteur'; break;
-			case 5: $roleBadgeClass = 'shad-badge role-teacher'; $roleLabel = 'Professeur'; break;
-			case 6: $roleBadgeClass = 'shad-badge role-student'; $roleLabel = 'Étudiant'; break;
+			case 1: $roleBadgeClass = 'shad-badge role-superadmin'; $roleLabel = 'Superadmin'; break;
+			case 2: $roleBadgeClass = 'shad-badge role-admin'; $roleLabel = 'Administrateur'; break;
+			case 3: $roleBadgeClass = 'shad-badge role-registrar'; $roleLabel = 'Registraire'; break;
+			case 4: $roleBadgeClass = 'shad-badge role-comptabilite'; $roleLabel = 'Comptabilité'; break;
+			case 5: $roleBadgeClass = 'shad-badge role-media'; $roleLabel = 'Média'; break;
+			case 6: $roleBadgeClass = 'shad-badge role-chef-mention'; $roleLabel = 'Chef de mention'; break;
+			case 7: $roleBadgeClass = 'shad-badge role-teacher'; $roleLabel = 'Professeur'; break;
+			case 8: $roleBadgeClass = 'shad-badge role-student'; $roleLabel = 'Étudiant'; break;
 		}
 		
 		$initials = strtoupper(substr($user['nom'] ?? 'U', 0, 1) . substr($user['prenom'] ?? '', 0, 1));
@@ -810,15 +840,14 @@
 						<div class="form-group">
 							<label class="shad-label">Privilège</label>
 							<select class="shad-select" name="level<?=$user_id?>">
-								<option value="1" <?= $userData['level'] == 1 ? 'selected' : '' ?>>🛡️ Administrateur</option>
-								<option value="2" <?= $userData['level'] == 2 ? 'selected' : '' ?>>📋 Registraire</option>
-								<option value="3" <?= $userData['level'] == 3 ? 'selected' : '' ?>>👤 Utilisateur</option>
-								<option value="4" <?= $userData['level'] == 4 ? 'selected' : '' ?>>👁️ Visiteur</option>
-								<option value="5" <?= $userData['level'] == 5 ? 'selected' : '' ?>>👨‍🏫 Professeur</option>
-								<option value="6" <?= $userData['level'] == 6 ? 'selected' : '' ?>>🎓 Étudiant</option>
-							</select>
-						</div>
-						
+									<option value="1" <?= $userData['level'] == 1 ? 'selected' : '' ?>>👑 Superadmin</option>
+									<option value="2" <?= $userData['level'] == 2 ? 'selected' : '' ?>>🛡️ Administrateur</option>
+									<option value="3" <?= $userData['level'] == 3 ? 'selected' : '' ?>>📋 Registraire</option>
+									<option value="4" <?= $userData['level'] == 4 ? 'selected' : '' ?>>💰 Comptabilité</option>
+									<option value="5" <?= $userData['level'] == 5 ? 'selected' : '' ?>>📷 Média</option>
+									<option value="6" <?= $userData['level'] == 6 ? 'selected' : '' ?>>🏅 Chef de mention</option>
+									<option value="7" <?= $userData['level'] == 7 ? 'selected' : '' ?>>👨‍🏫 Professeur</option>
+									<option value="8" <?= $userData['level'] == 8 ? 'selected' : '' ?>>🎓 Étudiant</option>
 						<div class="form-group">
 							<label class="shad-label">Pseudo</label>
 							<input class="shad-input" type="text" name="pseudo<?=$user_id?>" value="<?=$userData['pseudo']?>" required>
@@ -902,12 +931,14 @@
 						<div class="form-group">
 							<label class="shad-label">Privilège</label>
 							<select class="shad-select" name="level" id="levelSelect">
-								<option value="1">🛡️ Administrateur</option>
-								<option value="2">📋 Registraire</option>
-								<option value="3" selected>👤 Utilisateur</option>
-								<option value="4">👁️ Visiteur</option>
-								<option value="5">👨‍🏫 Professeur</option>
-								<option value="6">🎓 Étudiant</option>
+								<option value="1">� Superadmin</option>
+								<option value="2">🛡️ Administrateur</option>
+								<option value="3" selected>📋 Registraire</option>
+								<option value="4">💰 Comptabilité</option>
+								<option value="5">📷 Média</option>
+								<option value="6">🏅 Chef de mention</option>
+								<option value="7">👨‍🏫 Professeur</option>
+								<option value="8">🎓 Étudiant</option>
 							</select>
 						</div>
 						
@@ -1042,8 +1073,8 @@ $(document).ready(function() {
 	$('#levelSelect').on('change', function() {
 		const level = $(this).val();
 		$('#teacherLinkSection, #studentLinkSection').addClass('hidden');
-		if (level === '5') $('#teacherLinkSection').removeClass('hidden');
-		else if (level === '6') $('#studentLinkSection').removeClass('hidden');
+		if (level === '7') $('#teacherLinkSection').removeClass('hidden');
+		else if (level === '8') $('#studentLinkSection').removeClass('hidden');
 	});
 	
 	// Switch Labels

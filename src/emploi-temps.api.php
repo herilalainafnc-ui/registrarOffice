@@ -1,11 +1,6 @@
 <?php
 // Connexion centralisée pour l'API
-require_once __DIR__ . '/../data/config.php';
-try {
-    $dtb = getDbConnection();
-} catch(PDOException $e) {
-    die(json_encode(['error' => 'Connexion DB échouée']));
-}
+require_once __DIR__ . '/../data/backdb.php';
 
 session_start();
 

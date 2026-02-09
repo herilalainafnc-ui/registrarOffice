@@ -180,7 +180,7 @@ $students = getTeacherStudents($currentYear);
                         <a href="./accueil.cours.php" class="bg-cyan-700 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg">
                             <i class="bi bi-list-ul mr-2"></i>Voir tous mes cours
                         </a>
-                        <a href="./accueil.php" class="bg-slate-600 hover:bg-slate-500 text-white px-4 py-2 rounded-lg">
+                        <a href="./accueil" class="bg-slate-600 hover:bg-slate-500 text-white px-4 py-2 rounded-lg">
                             <i class="bi bi-people mr-2"></i>Voir mes étudiants
                         </a>
                     </div>

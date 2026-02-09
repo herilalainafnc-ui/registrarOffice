@@ -98,7 +98,7 @@ $tnotecredit = 0;
 						if (!empty($crs)) {
 							?>
 							<tbody class="<?=$bg_four_color?>">
-								<form method="post" action="../app/.student/updatenote?id=<?=$id;?>&nbr=<?=$sessionCount.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$sessionCount?>&user_id=<?=$rg_id?>" class="form-update-note">			
+								<form method="post" action="<?=$app_base?>/app/.student/updatenote?id=<?=$id;?>&nbr=<?=$sessionCount.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$sessionCount?>&user_id=<?=$rg_id?>" class="form-update-note">			
 				<tr id="note<?=$sessionCount.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black">
 					<td class="bg-gradient-to-r from-orange-800 to-orange-400"><?=$crs['Sigle']?></td>
 					<td><?=$crs['title_cours']?></td>
@@ -158,7 +158,7 @@ if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 								<li><p class="px-2 py-1">Session ID : <?=$session_id?></p></li>
 								<hr>
 								<li><a href="#" class="btn-delete-cours" 
-									data-url="../app/.student/del-cours.momentanee.php?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$sessionCount?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>"
+									data-url="<?=$app_base?>/app/.student/del-cours.momentanee.php?student_id=<?=$student_id?>&id=<?=$id?>&as=<?=$sessionCount?>&idSupprCours=<?=$note_id?>&user_id=<?=$rg_id?>"
 									data-cours="<?=$crs['title_cours']?>">
 									<p class="px-2 py-1 hover:bg-red-600 hover:text-white"><i class="bi-trash"></i> Supprimer</p>
 								</a></li>
@@ -232,7 +232,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 					<th colspan="2"></th>
 				</tr>
 
-<form method="post" action="../app/.student/updatePromotionNote?id=<?=$id;?>&session_id=<?=$session_id?>&student_id=<?=$student_id;?>&nbr=<?=$sessionCount.$nbr;?>&sessionCount=<?=$sessionCount?>&annee_scolaire=<?=$annee_scolaire?>&user_id=<?=$rg_id?>" enctype="multipart/form-data" class="form-no-refrech">
+<form method="post" action="<?=$app_base?>/app/.student/updatePromotionNote?id=<?=$id;?>&session_id=<?=$session_id?>&student_id=<?=$student_id;?>&nbr=<?=$sessionCount.$nbr;?>&sessionCount=<?=$sessionCount?>&annee_scolaire=<?=$annee_scolaire?>&user_id=<?=$rg_id?>" enctype="multipart/form-data" class="form-no-refrech">
 <?php
 	
 	if(!empty($session_id)){

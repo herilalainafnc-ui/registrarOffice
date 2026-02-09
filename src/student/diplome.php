@@ -38,9 +38,9 @@ if($level <3 ){
 	<div class="relative" id="diplomeConcept">
 		<?php 
 		if (isset($_GET['langue']) AND $langue == 'ANG') {
-			echo '<img src="../file/Diplôme UAZ-ang.jpg">';
+			echo '<img src="<?=$app_base?>/file/Diplôme UAZ-ang.jpg">';
 		}else{
-			echo '<img src="../file/Diplôme UAZ-fr.jpg">';
+			echo '<img src="<?=$app_base?>/file/Diplôme UAZ-fr.jpg">';
 		}
 		?>
 		

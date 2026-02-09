@@ -1,3 +1,11 @@
+<?php
+// Rediriger si trailing slash (conflit dossier cours/ vs cours.php)
+if (preg_match('#/cours/$#', $_SERVER['REQUEST_URI'])) {
+	$clean = preg_replace('#/+$#', '', $_SERVER['REQUEST_URI']);
+	header('Location: ' . $clean, true, 301);
+	exit;
+}
+?>
 <!DOCTYPE html>
 <html>
 <head>

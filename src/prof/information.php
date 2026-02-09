@@ -1,4 +1,4 @@
-ï»¿
+
 <style>
 	/* ===== SHADCN-INSPIRED MODERN STYLES ===== */
 	.info-card {
@@ -209,7 +209,7 @@
 	}
 </style>
 
-<form method="post" action="../app/.prof/updateProf?id=<?=$teacher_id?>&rg_id=<?=$rg_id?>" class="form-no-refrech">
+<form method="post" action="<?=$app_base?>/app/.prof/updateProf?id=<?=$teacher_id?>&rg_id=<?=$rg_id?>" class="form-no-refrech">
 <div class="w-full grid gap-4 grid-cols-1 lg:grid-cols-2 mt-3">
 
 	<div class='info-card'>
@@ -241,22 +241,22 @@
 
 				<div class="field-group">
 					<label class="field-label">Genre</label>
-					<p class="showPers field-value"><?php if($profil['sex'] == '0'){echo 'FÃ©minin';}else{echo 'Masculin';}?></p>
+					<p class="showPers field-value"><?php if($profil['sex'] == '0'){echo 'Féminin';}else{echo 'Masculin';}?></p>
 					<select class="editPers field-input hidden" name="sex">
 						<option value="1" <?php if($profil['sex'] == '1'){echo 'selected';}?>>Masculin</option>
-						<option value="0" <?php if($profil['sex'] == '0'){echo 'selected';}?>>FÃ©minin</option>
+						<option value="0" <?php if($profil['sex'] == '0'){echo 'selected';}?>>Féminin</option>
 					</select>
 				</div>
                 
 				<div class="field-group">
-					<label class="field-label">DiplÃ´me</label>
+					<label class="field-label">Diplôme</label>
 					<p class="showPers field-value"><?=$profil['diplome']?></p>
 					<input class="editPers field-input hidden" type="text" name="diplome" value="<?=$profil['diplome']?>">
 				</div>
     		</div>
 			<div>
 				<div class="field-group">
-					<label class="field-label">PrÃ©nom</label>
+					<label class="field-label">Prénom</label>
 					<p class="showPers field-value"><?=$lastName?></p>
 					<input class="editPers field-input hidden" type="text" name="lastName" value="<?=$lastName?>">
 				</div>
@@ -297,7 +297,7 @@
 		<div class="grid-two-cols">
 			<div>
 				<div class="field-group">
-					<label class="field-label">TÃ©lÃ©phone</label>
+					<label class="field-label">Téléphone</label>
 					<p class="showContact field-value"><?=$profil['phone']?></p>
 					<input id="firstContact" class="editContact field-input hidden" type="text" name="phone" value="<?=$profil['phone']?>">
 				</div>
@@ -311,7 +311,7 @@
 			<div>
 				<div class="field-group">
 					<label class="field-label">Extension</label>
-					<p class="showContact field-value">â€”</p>
+					<p class="showContact field-value">—</p>
 				</div>
 			</div>
 		</div>
@@ -329,7 +329,7 @@
 		$('.form-no-refrech').on('submit',function (e) {
 			e.preventDefault();
 
-			var url = '../app/.prof/updateProf?id=<?=$teacher_id?>&rg_id=<?=$rg_id?>';
+			var url = '<?=$app_base?>/app/.prof/updateProf?id=<?=$teacher_id?>&rg_id=<?=$rg_id?>';
 			var data = $(this).serialize();
 
 			$.post(url,data,function(response){

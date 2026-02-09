@@ -21,8 +21,8 @@ $user = Middleware::getCurrentUser();
 $userName = htmlspecialchars($user['nom'] ?? $user['pseudo'] ?? 'Utilisateur');
 $userFirstName = htmlspecialchars($user['prenom'] ?? '');
 $userPhoto = $user['photos'] ?? '';
-$userLevel = (int)($user['level'] ?? 4);
-$userType = $user['user_type'] ?? 'staff';
+$userLevel = (int)($user['level'] ?? 3);
+$userType = $user['user_type'] ?? 'admin';
 
 // Pour les étudiants, récupérer les infos depuis tbl_2024_etudiant
 if (Middleware::isStudent()) {
@@ -59,10 +59,10 @@ if (Middleware::isTeacher()) {
 // Déterminer le chemin de la photo
 $photoPath = '';
 if (!empty($userPhoto)) {
-    if ($userType === 'student' || $userLevel === 6) {
+    if ($userType === 'student' || $userLevel === 8) {
         // Photos des étudiants
         $photoPath = '../app/photosetudiants/' . $userPhoto;
-    } elseif ($userType === 'teacher' || $userLevel === 5) {
+    } elseif ($userType === 'teacher' || $userLevel === 7) {
         // Photos des enseignants
         $photoPath = '../app/photosenseignants/' . $userPhoto;
     } else {
@@ -99,18 +99,34 @@ if ($hour >= 5 && $hour < 12) {
 // Déterminer le message selon le type d'utilisateur
 $welcomeTitle = $greeting;
 if ($userLevel === 1) {
+    $roleText = "Superadmin";
+    $personalMessage = "Votre tableau de bord superadmin est prêt.";
+    $tip = "Vous avez un accès complet à toutes les fonctionnalités du système.";
+} elseif ($userLevel === 2) {
     $roleText = "Administrateur";
     $personalMessage = "Votre tableau de bord administrateur est prêt.";
     $tip = "Vous avez accès à toutes les fonctionnalités du système.";
-} elseif ($userLevel === 2) {
-    $roleText = "Registrar";
+} elseif ($userLevel === 3) {
+    $roleText = "Registraire";
     $personalMessage = "Prêt à gérer les inscriptions et les dossiers étudiants.";
     $tip = "N'oubliez pas de vérifier les nouvelles demandes d'inscription.";
-} elseif ($userLevel === 5 || $userType === 'teacher') {
+} elseif ($userLevel === 4) {
+    $roleText = "Comptabilité";
+    $personalMessage = "Votre espace comptabilité est en cours de chargement.";
+    $tip = "Consultez les finances et les paiements des étudiants.";
+} elseif ($userLevel === 5) {
+    $roleText = "Média";
+    $personalMessage = "Votre espace média est prêt.";
+    $tip = "Gérez les contenus médias et les communications.";
+} elseif ($userLevel === 6) {
+    $roleText = "Chef de mention";
+    $personalMessage = "Votre espace de gestion de mention est prêt.";
+    $tip = "Consultez les étudiants et les cours de votre mention.";
+} elseif ($userLevel === 7 || $userType === 'teacher') {
     $roleText = "Enseignant";
     $personalMessage = "Vos cours et étudiants vous attendent.";
     $tip = "Consultez vos classes pour voir les dernières mises à jour.";
-} elseif ($userLevel === 6 || $userType === 'student') {
+} elseif ($userLevel === 8 || $userType === 'student') {
     $roleText = "Étudiant";
     $personalMessage = "Votre espace étudiant est en cours de chargement.";
     $tip = "Vérifiez vos notes et votre emploi du temps.";

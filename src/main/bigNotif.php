@@ -1,15 +1,15 @@
-ï»¿<!-- AJOUT DE COURS -->
+<!-- AJOUT DE COURS -->
 	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="bigNotifCours" style="backdrop-filter: blur(3px);">
 
 		<div class="w-[700px] bg-slate-300 border-2 border-slate-700 mx-auto my-[1%] opacity-100 drop-shadow-2xl">
-			<form method="post" action="../app/.cours/addCours" enctype="multipart/form-data" class="form-no-refrech-cours">
+			<form method="post" action="<?=$app_base?>/app/.cours/addCours" enctype="multipart/form-data" class="form-no-refrech-cours">
 			<div class="p-2 text-black">
 				<b>Ajouter un cours.</b>
 			</div>
 			<div class="p-2">
 				<!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
 
-			<b class="toolInactive">Info GÃ©nÃ©rale.</b>
+			<b class="toolInactive">Info Générale.</b>
 
 			<div class="w-full gap-2 flex mb-3">
 				<div class="w-2/12">
@@ -26,11 +26,11 @@
 				</div>
 			</div>
 <hr><br>
-			<b class="toolInactive">DÃ©tail.</b>
+			<b class="toolInactive">Détail.</b>
 
 			<div class="w-full gap-2 flex mb-3">
 				<div class="w-2/12">
-					<label>CrÃ©dit</label><br>
+					<label>Crédit</label><br>
  					<select class="input w-full" type="number" name="nb_credit">
  						<option>1</option>
  						<option>2</option>
@@ -55,11 +55,11 @@
  					</select>
 				</div>
 				<div class="w-2/12">
-					<label>CatÃ©gorie</label><br>
+					<label>Catégorie</label><br>
  					<select class="input w-full" type="number" name="category">
- 						<option value="0">GÃ©nÃ©ral</option>
+ 						<option value="0">Général</option>
  						<option value="1">Majeur</option>
- 						<option value="2">SÃ©lÃ©ctive</option>
+ 						<option value="2">Séléctive</option>
  						<option value="3">Additionnel</option>
  					</select>
 				</div>
@@ -104,7 +104,7 @@ while($ct = $cat->fetch()){
 				<div class="w-2/12">
 					<label>Niveau du cours</label><br>
  					<select class="input w-full" type="number" name="yearlevel">
- 						<option value="0">Remise Ã  niveau</option>
+ 						<option value="0">Remise à niveau</option>
  						<option value="1" selected>Licence 1</option>
  						<option value="2">Licence 2</option>
  						<option value="3">Licence 3</option>
@@ -113,7 +113,7 @@ while($ct = $cat->fetch()){
  					</select>
 				</div>
 				<div class="w-2/12">
-					<label>SemÃ¨stre</label><br>
+					<label>Semèstre</label><br>
  					<select class="input w-full" type="number" name="semester">
  						<option>1</option>
  						<option>2</option>
@@ -215,8 +215,8 @@ while($tch = $teach->fetch()){
 									</div>
 									
 									<div>
-										<label class="block text-sm font-medium text-slate-300 mb-1.5">PrÃ©nom</label>
-										<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all" type="text" name="lastName" placeholder="PrÃ©nom">
+										<label class="block text-sm font-medium text-slate-300 mb-1.5">Prénom</label>
+										<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all" type="text" name="lastName" placeholder="Prénom">
 									</div>
 									
 									<div class="grid grid-cols-2 gap-3">
@@ -232,7 +232,7 @@ while($tch = $teach->fetch()){
 									
 									<div>
 										<label class="block text-sm font-medium text-slate-300 mb-1.5">Adresse <span class="text-red-400">*</span></label>
-										<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all requierd-prof-2" type="text" name="address" placeholder="Adresse complÃ¨te">
+										<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all requierd-prof-2" type="text" name="address" placeholder="Adresse complète">
 									</div>
 									
 									<div class="grid grid-cols-2 gap-3">
@@ -240,7 +240,7 @@ while($tch = $teach->fetch()){
 											<label class="block text-sm font-medium text-slate-300 mb-1.5">Genre</label>
 											<select class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all" name="sex">
 												<option value="1">Masculin</option>
-												<option value="0">FÃ©minin</option>
+												<option value="0">Féminin</option>
 											</select>
 										</div>
 										<div>
@@ -264,7 +264,7 @@ while($tch = $teach->fetch()){
 									</div>
 									
 									<div>
-										<label class="block text-sm font-medium text-slate-300 mb-1.5">TÃ©lÃ©phone <span class="text-red-400">*</span></label>
+										<label class="block text-sm font-medium text-slate-300 mb-1.5">Téléphone <span class="text-red-400">*</span></label>
 										<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all requierd-prof-3" type="text" name="phone" placeholder="034 00 000 00">
 									</div>
 									
@@ -274,7 +274,7 @@ while($tch = $teach->fetch()){
 									</div>
 									
 									<div>
-										<label class="block text-sm font-medium text-slate-300 mb-1.5">DiplÃ´me <span class="text-red-400">*</span></label>
+										<label class="block text-sm font-medium text-slate-300 mb-1.5">Diplôme <span class="text-red-400">*</span></label>
 										<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all requierd-prof-5" type="text" name="diplome" placeholder="Master, Doctorat...">
 									</div>
 									
@@ -319,7 +319,7 @@ while($tch = $teach->fetch()){
 				var mentionSelect = $(this).val();
 					
 					$.ajax({
-					url:"./services/parcours.live.addCours",
+					url:"<?=$app_base?>/src/services/parcours.live.addCours",
 					method:"POST",
 					data:{mentionSelect:mentionSelect},
 
@@ -370,11 +370,11 @@ while($tch = $teach->fetch()){
 		$('.form-no-refrech-cours').on('submit',function (e) {
 			e.preventDefault();
 
-			var url = '../app/.cours/addCours';
+			var url = '<?=$app_base?>/app/.cours/addCours';
 			var data = $(this).serialize();
 			
 			$.post(url,data,function(response){
-				alert('OpÃ©ration bien effectuÃ©.');
+				alert('Opération bien effectué.');
 				$('#bigNotifCours').css({'display':'none'});
 			});
 		});
@@ -398,7 +398,7 @@ while($tch = $teach->fetch()){
 
 			if (rec_1 !="" && rec_2 !="" && rec_3 !="" && rec_4 !="" && rec_5 !="") {
 				$('#formToAddProf').attr('method','post');
-				$('#formToAddProf').attr('action','../app/.prof/addProf.php');
+				$('#formToAddProf').attr('action','<?=$app_base?>/app/.prof/addProf.php');
 				$('#btnAddProf').attr('type','submit');
 
 			}else{

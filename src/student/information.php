@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 // Helper function to format dates - returns empty string for invalid dates
 function formatDateForInput($date) {
 	if (empty($date) || $date === '0000-00-00' || $date === '0000-00-00 00:00:00') {
@@ -410,7 +410,7 @@ function formatDateForInput($date) {
 	}
 </style>
 
-<form method="post" action="../app/.student/updateStd?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>&etude_envisage=<?=$etude_envisage?>" class="form-no-refrech" target="_blank">
+<form method="post" action="<?=$app_base?>/app/.student/updateStd?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>&etude_envisage=<?=$etude_envisage?>" class="form-no-refrech" target="_blank">
 <div class="w-full grid gap-4 grid-cols-1 lg:grid-cols-2 mt-3 p-3 overflow-auto" style="max-height: calc(100vh - 246px);">
 
 	<div class='info-card'>
@@ -442,10 +442,10 @@ function formatDateForInput($date) {
 
 				<div class="field-group">
 					<label class="field-label">Genre</label>
-					<p class="showPers field-value"><?php if($profil['sex'] == '0'){echo 'FÃ©minin';}else{echo 'Masculin';}?></p>
+					<p class="showPers field-value"><?php if($profil['sex'] == '0'){echo 'Féminin';}else{echo 'Masculin';}?></p>
 					<select class="editPers field-input hidden" name="sex">
 						<option value="1" <?php if($profil['sex'] == '1'){echo 'selected';}?>>Masculin</option>
-						<option value="0" <?php if($profil['sex'] == '0'){echo 'selected';}?>>FÃ©minin</option>
+						<option value="0" <?php if($profil['sex'] == '0'){echo 'selected';}?>>Féminin</option>
 					</select>
 				</div>
 
@@ -456,7 +456,7 @@ function formatDateForInput($date) {
 				</div>
 
 				<div class="field-group">
-					<label class="field-label">CIN rÃ©gion</label>
+					<label class="field-label">CIN région</label>
 					<p class="showPers field-value"><?php $findRegi = $dtb->query('SELECT * FROM region WHERE id ="'.$profil['cin_region'].'"'); $showRegi = $findRegi->fetch(); if(!empty($showRegi)){echo $showRegi['region'];}?></p>
 					<select class="editPers field-input hidden" name="cin_region">
 						<option value=""></option>
@@ -473,7 +473,7 @@ while ($showR = $findRegion->fetch()) {
 			</div>
 			<div>
 				<div class="field-group">
-					<label class="field-label">PrÃ©nom</label>
+					<label class="field-label">Prénom</label>
 					<p class="showPers field-value"><?=$student_prenom?></p>
 					<input class="editPers field-input hidden" type="text" name="student_prenom" value="<?=$student_prenom?>">
 				</div>
@@ -485,13 +485,13 @@ while ($showR = $findRegion->fetch()) {
 				</div>
 
 				<div class="field-group">
-					<label class="field-label">NationalitÃ©</label>
+					<label class="field-label">Nationalité</label>
 					<p class="showPers field-value"><?=$profil['nationalite']?></p>
 					<input class="editPers field-input hidden" type="text" name="nationalite" value="<?=$profil['nationalite']?>">
 				</div>
 
 				<div class="field-group">
-					<label class="field-label">Date de dÃ©livrance</label>
+					<label class="field-label">Date de délivrance</label>
 					<p class="showPers field-value"><?=formatDateForInput($profil['cin_date_delivre'])?></p>
 					<input class="editPers field-input hidden" type="date" name="cin_date_delivre" value="<?=formatDateForInput($profil['cin_date_delivre'])?>">
 				</div>
@@ -519,7 +519,7 @@ while ($showR = $findRegion->fetch()) {
 		<div class="grid-two-cols">
 			<div>
 				<div class="field-group">
-					<label class="field-label">TÃ©lÃ©phone</label>
+					<label class="field-label">Téléphone</label>
 					<p class="showContact field-value"><?=$profil['student_tel']?></p>
 					<input id="firstContact" class="editContact field-input hidden" type="text" name="student_tel" value="<?=$profil['student_tel']?>">
 				</div>
@@ -537,7 +537,7 @@ while ($showR = $findRegion->fetch()) {
 				</div>
 				
 				<div class="field-group">
-					<label class="field-label">RÃ©gion</label>
+					<label class="field-label">Région</label>
 					<p class="showContact field-value"><?php $findRegi = $dtb->query('SELECT * FROM region WHERE id ="'.$profil['student_region'].'"'); $showRegi = $findRegi->fetch(); if (!empty($showRegi)) {echo $showRegi['region'];}?></p>
 					<select class="editContact field-input hidden" name="student_region">
 						<option value=""></option>
@@ -565,7 +565,7 @@ $findBacc = $dtb->query('SELECT * FROM t_2024_bacc WHERE student_id = "'.$studen
 $showBacc = $findBacc->fetch();
 				 ?>	
 				<div class="field-group">
-					<label class="field-label">SÃ©rie du Bacc</label>
+					<label class="field-label">Série du Bacc</label>
 					<p class="showContact field-value"><?php if(!empty($showBacc)) {echo $showBacc['bacc_serie'];}?></p>
 					<select class="editContact field-input hidden" name="serie_bacc">
 						<option value=""></option>
@@ -585,7 +585,7 @@ $showBacc = $findBacc->fetch();
 				</div>
 				
 				<div class="field-group">
-					<label class="field-label">AnnÃ©e d'obtention Bacc</label>
+					<label class="field-label">Année d'obtention Bacc</label>
 					<p class="showContact field-value"><?php if(!empty($showBacc)) {echo formatDateForInput($showBacc['date_obtent']);}?></p>
 					<input class="editContact field-input hidden" type="date" name="obtention_bacc" value="<?php if(!empty($showBacc)) { echo formatDateForInput($showBacc['date_obtent']); } ?>">
 				</div>
@@ -596,7 +596,7 @@ $findDiplome = $dtb->query('SELECT * FROM t_2024_diplome_preced WHERE student_id
 $showDiplome = $findDiplome->fetch();
 				?>
 				<div class="field-group">
-					<label class="field-label">DiplÃ´me prÃ©cÃ©dent</label>
+					<label class="field-label">Diplôme précédent</label>
 					<p class="showContact field-value"><?php if(!empty($showDiplome)) {echo $showDiplome['diplome_name'];}?></p>
 					<input class="editContact field-input hidden" type="text" name="diplome_preced" value="<?php if(!empty($showDiplome)) {echo $showDiplome['diplome_name'];}?>">
 				</div>
@@ -624,7 +624,7 @@ $showDiplome = $findDiplome->fetch();
 		<div class="card-header">
 			<div class="card-title">
 				<i class="bi bi-mortarboard"></i>
-				<span>Informations d'Ã©tudes</span>
+				<span>Informations d'études</span>
 			</div>
 			<div class="card-actions">
 				<a href="#" class="submitEtd submitRedirect btn-primary hidden">Enregistrer</a>
@@ -643,7 +643,7 @@ $showDiplome = $findDiplome->fetch();
 				<div class="field-group">
 					<label class="field-label">Niveau</label>
 					<p class="showEtd field-value"><?php if ($profil['annee_etude']==0) {
-										echo "Remise Ã  niveau";
+										echo "Remise à niveau";
 									}elseif($profil['annee_etude'] > 0 AND $profil['annee_etude'] < 4) {
 										echo "Licence ".$profil['annee_etude'];
 									}else{
@@ -651,7 +651,7 @@ $showDiplome = $findDiplome->fetch();
 									} ?>	
 					</p>
 					<select class="editEtd field-input hidden" name="annee_etude" id="annee_etude">
-						<option value="0" <?php if($profil['annee_etude'] == 0){echo 'selected';}?>>Remise Ã  niveau</option>
+						<option value="0" <?php if($profil['annee_etude'] == 0){echo 'selected';}?>>Remise à niveau</option>
 						<option value="1" <?php if($profil['annee_etude'] == 1){echo 'selected';}?>>Licence 1</option>
 						<option value="2" <?php if($profil['annee_etude'] == 2){echo 'selected';}?>>Licence 2</option>
 						<option value="3" <?php if($profil['annee_etude'] == 3){echo 'selected';}?>>Licence 3</option>
@@ -700,7 +700,7 @@ while ($showO = $findOption->fetch()) {
 				</div>
 				
 				<div class="field-group">
-					<label class="field-label">AnnÃ©e universitaire</label>
+					<label class="field-label">Année universitaire</label>
 					<p class="showEtd field-value"><?=$profil['annee_scolaire']?></p>
 					<select class="editEtd field-input hidden" name="annee_scolaire">
 <?php
@@ -718,7 +718,7 @@ $y = $y - 1;
 				</div>
 				
 				<div class="field-group">
-					<label class="field-label">Ancien Ã©tudiant</label>
+					<label class="field-label">Ancien étudiant</label>
 					<p class="showEtd field-value"><?php $new_student = $profil['new_student']; if($profil['new_student'] == 1){echo 'Non';}else{echo 'Oui';}?></p>
 					<select class="editEtd field-input hidden" name="new_student" id="new_student">
 						<option <?php if($profil['new_student'] == 1){echo 'selected';}?> value="1">Non</option>
@@ -727,7 +727,7 @@ $y = $y - 1;
 				</div>
 				
 				<div class="field-group">
-					<label class="field-label">GraduÃ©</label>
+					<label class="field-label">Gradué</label>
 					<p class="showEtd field-value"><?php if($profil['graduated'] == "" OR $profil['graduated'] == 0){echo 'Non';}else{echo 'Oui';}?></p>
 					<select class="editEtd field-input hidden" name="graduated" id="graduated">
 						<option <?php if($profil['graduated'] == 0){echo 'selected';}?> value="0">Non</option>
@@ -756,19 +756,19 @@ $y = $y - 1;
 		<div class="grid-two-cols">
 			<div>
 				<div class="field-group">
-					<label class="field-label">Nom du pÃ¨re</label>
+					<label class="field-label">Nom du père</label>
 					<p class="showParent field-value"><?=$profil['father_name']?></p>
 					<input id="firstParent" class="editParent field-input hidden" type="text" name="father_name" value="<?=$profil['father_name']?>">
 				</div>
 				
 				<div class="field-group">
-					<label class="field-label">Nom de la mÃ¨re</label>
+					<label class="field-label">Nom de la mère</label>
 					<p class="showParent field-value"><?=$profil['mother_name']?></p>
 					<input class="editParent field-input hidden" type="text" name="mother_name" value="<?=$profil['mother_name']?>">
 				</div>
 				
 				<div class="field-group">
-					<label class="field-label">TÃ©lÃ©phone</label>
+					<label class="field-label">Téléphone</label>
 					<p class="showParent field-value"><?=$profil['parent_tel']?></p>
 					<input class="editParent field-input hidden" type="text" name="parent_tel" value="<?=$profil['parent_tel']?>">
 				</div>
@@ -781,13 +781,13 @@ $y = $y - 1;
 			</div>
 			<div>
 				<div class="field-group">
-					<label class="field-label">Sa profession (pÃ¨re)</label>
+					<label class="field-label">Sa profession (père)</label>
 					<p class="showParent field-value"><?=$profil['father_prof']?></p>
 					<input class="editParent field-input hidden" type="text" name="father_prof" value="<?=$profil['father_prof']?>">
 				</div>
 				
 				<div class="field-group">
-					<label class="field-label">Sa profession (mÃ¨re)</label>
+					<label class="field-label">Sa profession (mère)</label>
 					<p class="showParent field-value"><?=$profil['mother_prof']?></p>
 					<input class="editParent field-input hidden" type="text" name="mother_prof" value="<?=$profil['mother_prof']?>">
 				</div>
@@ -819,7 +819,7 @@ $y = $y - 1;
 				</div>
 				
 				<div class="field-group">
-					<label class="field-label">TÃ©lÃ©phone</label>
+					<label class="field-label">Téléphone</label>
 					<p class="showSpons field-value"><?=$profil['sponsor_tel']?></p>
 					<input class="editSpons field-input hidden" type="text" name="sponsor_tel" value="<?=$profil['sponsor_tel']?>">
 				</div>
@@ -832,7 +832,7 @@ $y = $y - 1;
 			</div>
 			<div>
 				<div class="field-group">
-					<label class="field-label">PrÃ©nom</label>
+					<label class="field-label">Prénom</label>
 					<p class="showSpons field-value"><?=$profil['sponsor_prenom']?></p>
 					<input class="editSpons field-input hidden" type="text" name="sponsor_prenom" value="<?=$profil['sponsor_prenom']?>">
 				</div>
@@ -858,11 +858,11 @@ $y = $y - 1;
 		<div class="grid-two-cols">
 			<div>
 				<div class="field-group">
-					<label class="field-label">Ã‰tat civil</label>
+					<label class="field-label">État civil</label>
 					<p class="showAutr field-value"><?=$profil['situationf']?></p>
 					<select id="firstAutr" class="editAutr field-input hidden" name="situationf">
-						<option <?php if($profil['situationf'] == 'CÃ©libataire'){echo 'selected';}?>>CÃ©libataire</option>
-						<option <?php if($profil['situationf'] == 'MariÃ©'){echo 'selected';}?>>MariÃ©</option>
+						<option <?php if($profil['situationf'] == 'Célibataire'){echo 'selected';}?>>Célibataire</option>
+						<option <?php if($profil['situationf'] == 'Marié'){echo 'selected';}?>>Marié</option>
 					</select>
 				</div>
 				
@@ -873,7 +873,7 @@ $y = $y - 1;
 				</div>
 				
 				<div class="field-group">
-					<label class="field-label">NumÃ©ro visa</label>
+					<label class="field-label">Numéro visa</label>
 					<p class="showAutr field-value"><?=$profil['num_visa']?></p>
 					<input class="editAutr field-input hidden" type="text" name="num_visa" value="<?=$profil['num_visa']?>">
 				</div>
@@ -895,7 +895,7 @@ $y = $y - 1;
 				</div>
 				
 				<div class="field-group">
-					<label class="field-label">AbonnÃ© au CAF</label>
+					<label class="field-label">Abonné au CAF</label>
 					<p class="showAutr field-value"><?php if ($profil['abonment'] == 1) { echo "Oui"; }else{ echo "Non"; }?></p>
 					<select class="editAutr field-input hidden" name="abonment" id="abonment">
 						<option <?php if($profil['abonment'] == 1){ echo 'selected'; }?> value="1">Oui</option>
@@ -916,7 +916,7 @@ $y = $y - 1;
 					<i class="bi bi-save text-cyan-400"></i>
 					Enregistrement de la modification
 				</h3>
-				<p class="text-sm text-slate-400 mt-1">SÃ©lectionnez la session pour cette modification</p>
+				<p class="text-sm text-slate-400 mt-1">Sélectionnez la session pour cette modification</p>
 			</div>
 			
 			<div class="p-6 space-y-4">
@@ -925,14 +925,14 @@ $y = $y - 1;
 						<label class="field-label">Semestre</label>
 						<select name="semesterForInformation" class="field-input w-full mt-1">
 							<option <?php if (date('m')>7) { echo "selected"; } ?>>Premier semestre</option>
-							<option>Semestre d'Ã©tÃ©</option>
-							<option <?php if (date('m')<=7) { echo "selected"; } ?>>DeuxiÃ¨me semestre</option>
+							<option>Semestre d'été</option>
+							<option <?php if (date('m')<=7) { echo "selected"; } ?>>Deuxième semestre</option>
 							<option>Semestre d'hiver</option>
 						</select>
 					</div>
 
 					<div>
-						<label class="field-label">AnnÃ©e scolaire</label>
+						<label class="field-label">Année scolaire</label>
 						<select name="annee_scolaireForInformation" class="field-input w-full mt-1">
 							<?php
 							$y = date('Y');
@@ -1025,7 +1025,7 @@ $y = $y - 1;
 			const newContent = $(response).find('.w-full.grid.gap-4').first();
 			if (newContent.length) {
 				$('.w-full.grid.gap-4').first().html(newContent.html());
-				showToast('info', 'DonnÃ©es actualisÃ©es', 'Les informations ont Ã©tÃ© rechargÃ©es.');
+				showToast('info', 'Données actualisées', 'Les informations ont été rechargées.');
 			}
 		}).fail(function() {
 			console.log('Refresh failed, but data was saved');
@@ -1053,7 +1053,7 @@ $y = $y - 1;
 			
 			e.preventDefault();
 
-			var url = '../app/.student/updateStd?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>&etude_envisage=<?=$etude_envisage?>';
+			var url = '<?=$app_base?>/app/.student/updateStd?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>&etude_envisage=<?=$etude_envisage?>';
 			
 			showSavingOverlay();
 			
@@ -1071,7 +1071,7 @@ $y = $y - 1;
 				},
 				success: function(response){
 					hideSavingOverlay();
-					showToast('success', 'Modification rÃ©ussie', 'Les informations de l\'Ã©tudiant ont Ã©tÃ© mises Ã  jour avec succÃ¨s.');
+					showToast('success', 'Modification réussie', 'Les informations de l\'étudiant ont été mises à jour avec succès.');
 
 					// Reset UI state
 					$('.submitPers, .submitContact, .submitEtd, .submitParent, .submitSpons, .submitAutr').addClass('hidden');
@@ -1087,7 +1087,7 @@ $y = $y - 1;
 				},
 				error: function(xhr, status, error){
 					hideSavingOverlay();
-					showToast('error', 'Erreur de modification', 'Une erreur est survenue lors de la mise Ã  jour. Veuillez rÃ©essayer.');
+					showToast('error', 'Erreur de modification', 'Une erreur est survenue lors de la mise à jour. Veuillez réessayer.');
 					console.error('Update error:', error);
 				}
 			});
@@ -1103,7 +1103,7 @@ $y = $y - 1;
 			$('.showPers').css({'display':'none'});
 
 			}else{
-				showToast('warning', 'AccÃ¨s refusÃ©', 'Vous n\'avez pas les droits pour modifier ce contenu.');
+				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
 			}
 		});
 		$('.annulPers').click(function(){
@@ -1127,7 +1127,7 @@ $y = $y - 1;
 			$('#firstContact').focus();
 			$('.showContact').css({'display':'none'});
 			}else{
-				showToast('warning', 'AccÃ¨s refusÃ©', 'Vous n\'avez pas les droits pour modifier ce contenu.');
+				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
 			}
 		});
 		$('.annulContact').click(function(){
@@ -1151,7 +1151,7 @@ $y = $y - 1;
 			$('#firstEtd').focus();
 			$('.showEtd').css({'display':'none'});
 			}else{
-				showToast('warning', 'AccÃ¨s refusÃ©', 'Vous n\'avez pas les droits pour modifier ce contenu.');
+				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
 			}
 		});
 		$('.annulEtd').click(function(){
@@ -1175,7 +1175,7 @@ $y = $y - 1;
 			$('#firstParent').focus();
 			$('.showParent').css({'display':'none'});
 			}else{
-				showToast('warning', 'AccÃ¨s refusÃ©', 'Vous n\'avez pas les droits pour modifier ce contenu.');
+				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
 			}
 		});
 		$('.annulParent').click(function(){
@@ -1199,7 +1199,7 @@ $y = $y - 1;
 			$('#firstSpons').focus();
 			$('.showSpons').css({'display':'none'});
 			}else{
-				showToast('warning', 'AccÃ¨s refusÃ©', 'Vous n\'avez pas les droits pour modifier ce contenu.');
+				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
 			}
 		});
 		$('.annulSpons').click(function(){
@@ -1223,7 +1223,7 @@ $y = $y - 1;
 			$('#firstAutr').focus();
 			$('.showAutr').css({'display':'none'});
 			}else{
-				showToast('warning', 'AccÃ¨s refusÃ©', 'Vous n\'avez pas les droits pour modifier ce contenu.');
+				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
 			}
 		});
 		$('.annulAutr').click(function(){

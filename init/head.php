@@ -13,6 +13,22 @@
 	
 	// Initialiser le middleware avec la connexion DB
 	initMiddleware($dtb);
+
+	// Calculer le chemin racine de l'application (fonctionne en local et en production)
+	// Local: /a.registrar  |  Production: (vide = racine)
+	// Méthode fiable: comparer DOCUMENT_ROOT et le dossier réel de l'app
+	$_doc_root = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+	$_app_root = rtrim(str_replace('\\', '/', dirname(__DIR__)), '/');
+	$app_base = substr($_app_root, strlen($_doc_root));
+	if ($app_base === false || $app_base === '/' || $app_base === '.') $app_base = '';
+
+	// Encoder un chemin de fichier en préservant les / (encode chaque segment)
+	if (!function_exists('encodeFilePath')) {
+		function encodeFilePath($path) {
+			if (empty($path)) return '';
+			return implode('/', array_map('rawurlencode', explode('/', str_replace('\\', '/', $path))));
+		}
+	}
 	
 	// Vérifier l'authentification (redirige vers login si non connecté)
 	requireAuth('../src/index.php');
@@ -84,7 +100,10 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link rel="shortcut icon" href="../file/logo-coldbloud.png" type="image/x-icon">
+	<link rel="shortcut icon" href="<?=$app_base?>/file/logo-coldbloud.png" type="image/x-icon">
+
+	<!-- Variable JS globale pour les chemins absolus -->
+	<script>var APP_BASE = '<?=$app_base?>';</script>
 
 
 <!-- TAILWIND CSS -->
@@ -92,9 +111,9 @@
 <!-- ------------ -->
 
 
-	<link rel="stylesheet" type="text/css" href="./css/style.css">
-	<link rel="stylesheet" type="text/css" href="./css/button.css">
-	<link rel="stylesheet" type="text/css" href="./css/responsive.css">
+	<link rel="stylesheet" type="text/css" href="<?=$app_base?>/src/css/style.css">
+	<link rel="stylesheet" type="text/css" href="<?=$app_base?>/src/css/button.css">
+	<link rel="stylesheet" type="text/css" href="<?=$app_base?>/src/css/responsive.css">
 
 	<!-- ===== GLOBAL UTILITY STYLES ===== -->
 	<style>

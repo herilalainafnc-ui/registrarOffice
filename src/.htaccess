@@ -1,17 +1,24 @@
 RewriteEngine On
 
-# Permettre l'accès aux ressources existantes (fichiers et liens symboliques)
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -l
-RewriteRule ^ - [L]
-
 # Désactiver l'ajout automatique de slash pour les dossiers
 DirectorySlash Off
 
 # Désactiver l'affichage du contenu des dossiers
 Options -Indexes
 
-# Supprimer le slash final et rediriger avec les query strings
+# Permettre l'accès aux ressources existantes (fichiers et liens symboliques)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -l
+RewriteRule ^ - [L]
+
+# PRIORITÉ 1: Si c'est un dossier avec trailing slash ET qu'un .php existe, rediriger SANS slash
+# Empêche le problème de chemins relatifs quand DirectorySlash Off est ignoré par le serveur
+RewriteCond %{REQUEST_URI} ^(.+)/$
+RewriteCond %{DOCUMENT_ROOT}%1.php -f [OR]
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+)/$ $1 [R=301,L,QSA]
+
+# PRIORITÉ 2: Supprimer le slash final pour tous les autres cas
 RewriteCond %{REQUEST_URI} ^(.+)/$
 RewriteRule ^(.+)/$ $1 [R=301,L,QSA]
 
@@ -24,7 +31,7 @@ RewriteRule ^ %1%2 [R=301,L,NE]
 # Ex: /student?id=1 -> student.php?id=1 (même si dossier student/ existe)
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^(.*)/?$ $1.php [L,QSA]
+RewriteRule ^(.*)$ $1.php [L,QSA]
 
 # Servir les fichiers .php sans l'extension (cas standard)
 RewriteCond %{REQUEST_FILENAME} !-d
