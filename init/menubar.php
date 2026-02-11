@@ -378,6 +378,20 @@
 			</a>
 		</div>
 		
+		<!-- Communication Section -->
+		<div class="menu-section-header">
+			<span>Communication</span>
+		</div>
+		
+		<div class="menu-item <?php if($page == "admin.actus.php") { echo "active"; } ?> <?php if($rg_user['level'] > 3) { echo "toolInactive"; } ?>">
+			<a href="<?=$app_base?>/src/admin.actus">
+				<div class="menu-icon-wrapper">
+					<i class="bi bi-megaphone-fill menu-icon"></i>
+				</div>
+				<span class="menu-title">Actualités</span>
+			</a>
+		</div>
+
 		<!-- Paramètres Section -->
 		<div class="menu-section-header">
 			<span>Paramètres</span>

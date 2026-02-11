@@ -848,6 +848,32 @@
 									<option value="6" <?= $userData['level'] == 6 ? 'selected' : '' ?>>🏅 Chef de mention</option>
 									<option value="7" <?= $userData['level'] == 7 ? 'selected' : '' ?>>👨‍🏫 Professeur</option>
 									<option value="8" <?= $userData['level'] == 8 ? 'selected' : '' ?>>🎓 Étudiant</option>
+								</select>
+							</div>
+
+							<?php if ($userData['level'] == 8 || ($userData['privilege'] ?? '') === 'student'): ?>
+							<div class="form-group">
+								<label class="shad-label">Matricule étudiant lié</label>
+								<input type="text" class="shad-input" id="studentSearchEdit<?=$user_id?>" placeholder="🔍 Rechercher par nom ou matricule..." autocomplete="off" data-user-id="<?=$user_id?>">
+								<div class="studentSearchResultsEdit" id="studentSearchResultsEdit<?=$user_id?>" data-user-id="<?=$user_id?>" style="max-height:180px;overflow-y:auto;margin-top:4px;display:none;background:#0f1729;border:1px solid rgba(14,165,233,0.2);border-radius:8px;"></div>
+								<input type="hidden" name="student_id<?=$user_id?>" id="selectedStudentIdEdit<?=$user_id?>" value="<?=htmlspecialchars($userData['student_id'] ?? '')?>">
+								<?php if (!empty($userData['student_id'])):
+									$stInfo = $dtb->prepare("SELECT student_nom, student_prenom FROM tbl_2024_etudiant WHERE student_id = :sid LIMIT 1");
+									$stInfo->execute(['sid' => $userData['student_id']]);
+									$stRow = $stInfo->fetch();
+								?>
+								<div style="margin-top:6px;padding:6px 10px;background:rgba(14,165,233,0.1);border:1px solid rgba(14,165,233,0.3);border-radius:6px;font-size:13px;color:#e8f1f8;">
+									✅ Lié à: <b><?=htmlspecialchars($userData['student_id'])?></b>
+									<?php if ($stRow): ?> — <?=htmlspecialchars($stRow['student_nom'].' '.$stRow['student_prenom'])?><?php endif; ?>
+								</div>
+								<?php else: ?>
+								<div style="margin-top:6px;padding:6px 10px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:6px;font-size:13px;color:#fca5a5;">
+									⚠️ Aucun matricule lié — recherchez et sélectionnez l'étudiant ci-dessus
+								</div>
+								<?php endif; ?>
+							</div>
+							<?php endif; ?>
+
 						<div class="form-group">
 							<label class="shad-label">Pseudo</label>
 							<input class="shad-input" type="text" name="pseudo<?=$user_id?>" value="<?=$userData['pseudo']?>" required>
@@ -956,9 +982,14 @@
 						</div>
 						
 						<div id="studentLinkSection" class="form-group hidden">
-							<label class="shad-label">Matricule étudiant</label>
-							<input type="text" class="shad-input" name="student_id" placeholder="Ex: STD-2024-001">
-						</div>
+									<label class="shad-label">Lier à l'étudiant</label>
+									<input type="text" class="shad-input" id="studentSearchAdd" placeholder="🔍 Rechercher par nom ou matricule..." autocomplete="off">
+									<div id="studentSearchResults" style="max-height:180px;overflow-y:auto;margin-top:4px;display:none;background:#0f1729;border:1px solid rgba(14,165,233,0.2);border-radius:8px;"></div>
+									<input type="hidden" name="student_id" id="selectedStudentId">
+									<div id="selectedStudentBadge" class="hidden" style="margin-top:6px;padding:6px 10px;background:rgba(14,165,233,0.1);border:1px solid rgba(14,165,233,0.3);border-radius:6px;display:flex;align-items:center;gap:8px;">
+										<span id="selectedStudentText" style="flex:1;font-size:13px;color:#e8f1f8;"></span>
+										<button type="button" onclick="clearStudentSelection()" style="background:none;border:none;color:#f87171;cursor:pointer;font-size:16px;">✕</button>
+									</div>
 						
 						<div class="form-group">
 							<label class="shad-label">Pseudo <span class="text-red-400">*</span></label>
@@ -1093,6 +1124,61 @@ $(document).ready(function() {
 		showToast('info', 'Création...', 'Création en cours.');
 	});
 	
+	// ====== Student Search Autocomplete ======
+	function clearStudentSelection() {
+		$('#selectedStudentId').val('');
+		$('#selectedStudentBadge').addClass('hidden').hide();
+		$('#selectedStudentText').html('');
+		$('#studentSearchAdd').val('');
+	}
+	function studentSearch(input, resultsDiv, hiddenInput, badgeDiv, badgeText) {
+		let timer;
+		$(input).on('input', function() {
+			clearTimeout(timer);
+			const q = $(this).val().trim();
+			if (q.length < 2) { $(resultsDiv).hide().empty(); return; }
+			timer = setTimeout(function() {
+				$.get('../app/.user/search.student.php', { q: q }, function(data) {
+					if (data.length === 0) {
+						$(resultsDiv).html('<div style="padding:10px;color:#94a3b8;font-size:13px;">Aucun étudiant trouvé</div>').show();
+						return;
+					}
+					let html = '';
+					data.forEach(function(s) {
+						html += '<div class="student-result-item" style="padding:8px 12px;cursor:pointer;border-bottom:1px solid rgba(51,65,85,0.3);font-size:13px;color:#e8f1f8;transition:background 0.2s;" '
+							+ 'onmouseover="this.style.background=\'rgba(14,165,233,0.15)\'" onmouseout="this.style.background=\'none\'" '
+							+ 'data-id="' + s.student_id + '" data-name="' + s.student_nom + ' ' + s.student_prenom + '">'
+							+ '<b style="color:#0ea5e9;">' + s.student_id + '</b> — ' + s.student_nom + ' ' + s.student_prenom
+							+ (s.etude_envisage ? ' <span style="color:#64748b;font-size:11px;">(' + s.etude_envisage + ')</span>' : '')
+							+ '</div>';
+					});
+					$(resultsDiv).html(html).show();
+					$(resultsDiv).find('.student-result-item').on('click', function() {
+						const sid = $(this).data('id');
+						const sname = $(this).data('name');
+						$(hiddenInput).val(sid);
+						$(input).val('');
+						$(resultsDiv).hide();
+						if (badgeDiv && badgeText) {
+							$(badgeText).html('✅ <b>' + sid + '</b> — ' + sname);
+							$(badgeDiv).removeClass('hidden').show();
+						}
+						showToast('success', 'Étudiant sélectionné', sid + ' — ' + sname);
+					});
+				}, 'json');
+			}, 300);
+		});
+	}
+
+	// Init search for Add modal
+	studentSearch('#studentSearchAdd', '#studentSearchResults', '#selectedStudentId', '#selectedStudentBadge', '#selectedStudentText');
+
+	// Init search for Edit modals
+	$('[id^="studentSearchEdit"]').each(function() {
+		const uid = $(this).data('user-id');
+		studentSearch('#studentSearchEdit'+uid, '#studentSearchResultsEdit'+uid, '#selectedStudentIdEdit'+uid, null, null);
+	});
+
 	// URL Params for Toast
 	const urlParams = new URLSearchParams(window.location.search);
 	if (urlParams.get('success') === '1') {

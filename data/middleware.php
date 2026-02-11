@@ -433,7 +433,8 @@ class Middleware {
         
         return ($user['user_type'] ?? '') === 'teacher' || 
                self::hasPrivilege('teacher') ||
-               (int)($user['level'] ?? 0) === ROLE_TEACHER;
+               (int)($user['level'] ?? 0) === ROLE_TEACHER ||
+               ($user['privilege'] ?? '') === 'teacher';
     }
 
     /**
@@ -445,7 +446,8 @@ class Middleware {
         
         return ($user['user_type'] ?? '') === 'student' || 
                self::hasPrivilege('student') ||
-               (int)($user['level'] ?? 0) === ROLE_STUDENT;
+               (int)($user['level'] ?? 0) === ROLE_STUDENT ||
+               ($user['privilege'] ?? '') === 'student';
     }
 
     /**
@@ -463,7 +465,35 @@ class Middleware {
         $user = self::getCurrentUser();
         if (!$user || !self::isTeacher()) return null;
         
-        return $user['teacher_uid'] ?? null;
+        // 1. Vérifier si teacher_uid est directement dans compt_utilisateur
+        if (!empty($user['teacher_uid'])) {
+            return $user['teacher_uid'];
+        }
+        
+        // 2. Fallback: chercher dans la table teacher par nom/prenom
+        if (self::$dtb) {
+            try {
+                $nom = $user['nom'] ?? '';
+                $prenom = $user['prenom'] ?? '';
+                
+                if (!empty($nom) && !empty($prenom)) {
+                    $stmt = self::$dtb->prepare(
+                        "SELECT uid FROM teacher WHERE lastName = :nom AND name = :prenom LIMIT 1"
+                    );
+                    $stmt->execute(['nom' => $nom, 'prenom' => $prenom]);
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if ($result && !empty($result['uid'])) {
+                        $_SESSION['cached_teacher_uid'] = $result['uid'];
+                        return $result['uid'];
+                    }
+                }
+            } catch (PDOException $e) {
+                // Ignorer silencieusement
+            }
+        }
+        
+        return $_SESSION['cached_teacher_uid'] ?? null;
     }
 
     /**
@@ -473,7 +503,96 @@ class Middleware {
         $user = self::getCurrentUser();
         if (!$user || !self::isStudent()) return null;
         
-        return $user['student_id'] ?? null;
+        // 0. Vérifier le cache en session (évite les requêtes répétées)
+        if (!empty($_SESSION['cached_student_id'])) {
+            return $_SESSION['cached_student_id'];
+        }
+        
+        // 1. Vérifier si student_id est directement dans compt_utilisateur
+        if (!empty($user['student_id'])) {
+            $_SESSION['cached_student_id'] = $user['student_id'];
+            return $user['student_id'];
+        }
+        
+        // 2. Fallback: chercher dans tbl_2024_etudiant
+        if (self::$dtb) {
+            try {
+                $nom = trim($user['nom'] ?? '');
+                $prenom = trim($user['prenom'] ?? '');
+                
+                // 2a. Recherche exacte insensible à la casse
+                if (!empty($nom) && !empty($prenom)) {
+                    $stmt = self::$dtb->prepare(
+                        "SELECT student_id FROM tbl_2024_etudiant 
+                         WHERE LOWER(TRIM(student_nom)) = LOWER(:nom) 
+                         AND LOWER(TRIM(student_prenom)) = LOWER(:prenom) 
+                         ORDER BY annee_scolaire DESC LIMIT 1"
+                    );
+                    $stmt->execute(['nom' => $nom, 'prenom' => $prenom]);
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if ($result && !empty($result['student_id'])) {
+                        $_SESSION['cached_student_id'] = $result['student_id'];
+                        return $result['student_id'];
+                    }
+                }
+                
+                // 2b. Recherche par pseudo = student_id
+                $pseudo = trim($user['pseudo'] ?? '');
+                if (!empty($pseudo)) {
+                    $stmt = self::$dtb->prepare(
+                        "SELECT student_id FROM tbl_2024_etudiant 
+                         WHERE student_id = :pseudo 
+                         ORDER BY annee_scolaire DESC LIMIT 1"
+                    );
+                    $stmt->execute(['pseudo' => $pseudo]);
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if ($result && !empty($result['student_id'])) {
+                        $_SESSION['cached_student_id'] = $result['student_id'];
+                        return $result['student_id'];
+                    }
+                }
+                
+                // 2c. Recherche par email
+                $mail = trim($user['mail'] ?? '');
+                if (!empty($mail)) {
+                    $stmt = self::$dtb->prepare(
+                        "SELECT student_id FROM tbl_2024_etudiant 
+                         WHERE LOWER(TRIM(student_mail)) = LOWER(:mail) 
+                         ORDER BY annee_scolaire DESC LIMIT 1"
+                    );
+                    $stmt->execute(['mail' => $mail]);
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if ($result && !empty($result['student_id'])) {
+                        $_SESSION['cached_student_id'] = $result['student_id'];
+                        return $result['student_id'];
+                    }
+                }
+                
+                // 2d. Recherche LIKE (dernière chance)
+                if (!empty($nom) && !empty($prenom)) {
+                    $stmt = self::$dtb->prepare(
+                        "SELECT student_id FROM tbl_2024_etudiant 
+                         WHERE LOWER(TRIM(student_nom)) LIKE LOWER(:nom) 
+                         AND LOWER(TRIM(student_prenom)) LIKE LOWER(:prenom) 
+                         ORDER BY annee_scolaire DESC LIMIT 1"
+                    );
+                    $stmt->execute(['nom' => '%' . $nom . '%', 'prenom' => '%' . $prenom . '%']);
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if ($result && !empty($result['student_id'])) {
+                        $_SESSION['cached_student_id'] = $result['student_id'];
+                        return $result['student_id'];
+                    }
+                }
+            } catch (PDOException $e) {
+                // Ignorer silencieusement
+            }
+        }
+        
+        return null;
     }
 
     /**
@@ -598,14 +717,46 @@ class Middleware {
         if (!self::isStudent() || !self::$dtb) return null;
         
         $studentId = self::getStudentId();
-        if (!$studentId) return null;
         
-        $stmt = self::$dtb->prepare(
-            "SELECT * FROM tbl_2024_etudiant WHERE student_id = :student_id ORDER BY annee_scolaire DESC LIMIT 1"
-        );
-        $stmt->execute(['student_id' => $studentId]);
+        // 1. Par student_id si trouvé
+        if ($studentId) {
+            $stmt = self::$dtb->prepare(
+                "SELECT * FROM tbl_2024_etudiant WHERE student_id = :student_id ORDER BY annee_scolaire DESC LIMIT 1"
+            );
+            $stmt->execute(['student_id' => $studentId]);
+            $info = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($info) return $info;
+        }
         
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        // 2. Fallback direct par nom/prenom de l'utilisateur connecté
+        $user = self::getCurrentUser();
+        if ($user) {
+            try {
+                $nom = trim($user['nom'] ?? '');
+                $prenom = trim($user['prenom'] ?? '');
+                
+                if (!empty($nom) && !empty($prenom)) {
+                    $stmt = self::$dtb->prepare(
+                        "SELECT * FROM tbl_2024_etudiant 
+                         WHERE LOWER(TRIM(student_nom)) = LOWER(:nom) 
+                         AND LOWER(TRIM(student_prenom)) = LOWER(:prenom) 
+                         ORDER BY annee_scolaire DESC LIMIT 1"
+                    );
+                    $stmt->execute(['nom' => $nom, 'prenom' => $prenom]);
+                    $info = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if ($info) {
+                        // Mettre en cache le student_id trouvé
+                        $_SESSION['cached_student_id'] = $info['student_id'];
+                        return $info;
+                    }
+                }
+            } catch (PDOException $e) {
+                // Ignorer
+            }
+        }
+        
+        return null;
     }
 
     /**

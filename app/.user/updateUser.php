@@ -10,6 +10,12 @@ require('../../data/middleware.php');
 // Initialiser le middleware
 initMiddleware($dtb);
 
+// SÉCURITÉ: Vérifier que la requête est en POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    die('Méthode non autorisée. Ce formulaire doit être soumis via POST.');
+}
+
 // SÉCURITÉ: Vérifier que l'utilisateur est admin ou registrar
 if (!isRegistrar()) {
     http_response_code(403);
@@ -91,72 +97,63 @@ Middleware::logSecurityEvent('user_update_attempt', [
 	}
 	
 
-	if ($passwordBrut == "") {
-		$updateUserNotPwd = $dtb->prepare("UPDATE compt_utilisateur SET
-		nom=:nom,
-		prenom=:prenom,
-		post=:post,
-		mail=:mail,
-		level=:level,
-		privilege=:privilege,
-		pseudo=:pseudo,
-		photos=:photos,
-		etat=:etat,
-		update_user=:update_user,
-		date_entry=:date_entry
+	// Récupérer student_id et teacher_uid du formulaire
+	$student_id_post = trim($_POST['student_id'.$id] ?? '');
+	$teacher_uid_post = trim($_POST['teacher_uid'.$id] ?? '');
 
-		WHERE id=:id");
+	// Déterminer user_type
+	$user_type_map = [
+		1 => 'superadmin', 2 => 'admin', 3 => 'registrar', 4 => 'comptabilite',
+		5 => 'media', 6 => 'chef_mention', 7 => 'teacher', 8 => 'student'
+	];
+	$user_type = $user_type_map[$level] ?? 'admin';
 
-		$updateUserNotPwd->bindParam(':nom', $nom, PDO::PARAM_STR);
-		$updateUserNotPwd->bindParam(':prenom', $prenom, PDO::PARAM_STR);
-		$updateUserNotPwd->bindParam(':post', $post, PDO::PARAM_STR);
-		$updateUserNotPwd->bindParam(':mail', $mail, PDO::PARAM_STR);
-		$updateUserNotPwd->bindParam(':level', $level, PDO::PARAM_INT);
-		$updateUserNotPwd->bindParam(':privilege', $privilege, PDO::PARAM_STR);
-		$updateUserNotPwd->bindParam(':pseudo', $pseudo, PDO::PARAM_STR);
-		$updateUserNotPwd->bindParam(':photos', $photosname, PDO::PARAM_STR);
-		$updateUserNotPwd->bindParam(':etat', $etat, PDO::PARAM_INT);
-		$updateUserNotPwd->bindParam(':update_user', $updateUser_user, PDO::PARAM_INT);
-		$updateUserNotPwd->bindParam(':date_entry', $date_entry, PDO::PARAM_STR);
-			
-		$updateUserNotPwd->bindParam(':id',$id,PDO::PARAM_INT);
+	// Détecter les colonnes disponibles
+	$columns = [];
+	try {
+		$colStmt = $dtb->query("SHOW COLUMNS FROM compt_utilisateur");
+		while ($col = $colStmt->fetch()) { $columns[] = $col['Field']; }
+	} catch (PDOException $e) { /* ignorer */ }
 
-		$updateUserNotPwd->execute();
+	// Construire dynamiquement le SET
+	$setClauses = [
+		'nom=:nom', 'prenom=:prenom', 'post=:post', 'mail=:mail',
+		'level=:level', 'privilege=:privilege', 'pseudo=:pseudo',
+		'photos=:photos', 'etat=:etat', 'update_user=:update_user', 'date_entry=:date_entry'
+	];
+	$params = [
+		'nom' => $nom, 'prenom' => $prenom, 'post' => $post, 'mail' => $mail,
+		'level' => $level, 'privilege' => $privilege, 'pseudo' => $pseudo,
+		'photos' => $photosname, 'etat' => $etat, 'update_user' => $updateUser_user,
+		'date_entry' => $date_entry, 'id' => $id
+	];
 
-	}else{
-
-		$updateUser = $dtb->prepare("UPDATE compt_utilisateur SET
-		nom=:nom,
-		prenom=:prenom,
-		post=:post,
-		mail=:mail,
-		level=:level,
-		privilege=:privilege,
-		pseudo=:pseudo,
-		photos=:photos,
-		etat=:etat,
-		password=:password,
-		update_user=:update_user,
-		date_entry=:date_entry
-
-		WHERE id=:id");
-
-		$updateUser->bindParam(':nom', $nom, PDO::PARAM_STR);
-		$updateUser->bindParam(':prenom', $prenom, PDO::PARAM_STR);
-		$updateUser->bindParam(':post', $post, PDO::PARAM_STR);
-		$updateUser->bindParam(':mail', $mail, PDO::PARAM_STR);
-		$updateUser->bindParam(':level', $level, PDO::PARAM_INT);
-		$updateUser->bindParam(':privilege', $privilege, PDO::PARAM_STR);
-		$updateUser->bindParam(':pseudo', $pseudo, PDO::PARAM_STR);
-		$updateUser->bindParam(':photos', $photosname, PDO::PARAM_STR);
-		$updateUser->bindParam(':etat', $etat, PDO::PARAM_INT);
-		$updateUser->bindParam(':password', $password, PDO::PARAM_STR);
-		$updateUser->bindParam(':update_user', $updateUser_user, PDO::PARAM_INT);
-		$updateUser->bindParam(':date_entry', $date_entry, PDO::PARAM_STR);
-			
-		$updateUser->bindParam(':id',$id,PDO::PARAM_INT);
-
-		$updateUser->execute();
+	if ($passwordBrut != "") {
+		$setClauses[] = 'password=:password';
+		$params['password'] = $password;
 	}
-	header('location:../../src/creat.account.php');
+
+	if (in_array('user_type', $columns)) {
+		$setClauses[] = 'user_type=:user_type';
+		$params['user_type'] = $user_type;
+	}
+	if (in_array('student_id', $columns) && !empty($student_id_post)) {
+		$setClauses[] = 'student_id=:student_id';
+		$params['student_id'] = $student_id_post;
+	}
+	if (in_array('teacher_uid', $columns) && !empty($teacher_uid_post)) {
+		$setClauses[] = 'teacher_uid=:teacher_uid';
+		$params['teacher_uid'] = $teacher_uid_post;
+	}
+
+	$sql = "UPDATE compt_utilisateur SET " . implode(', ', $setClauses) . " WHERE id=:id";
+	$stmt = $dtb->prepare($sql);
+	$stmt->execute($params);
+
+	// Invalider le cache session de student_id si c'est l'utilisateur courant
+	if (isset($_SESSION['user_id']) && (int)$_SESSION['user_id'] === $id) {
+		unset($_SESSION['cached_student_id']);
+	}
+
+	header('location:../../src/creat.account');
  ?>

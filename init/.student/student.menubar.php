@@ -64,16 +64,15 @@
 							<a href="#" data-bs-toggle="dropdown" aria-expanded="false">
 							<div class="w-[75px] <?=$bg_one_color?>">
 								<?php
-								
-								$extentionImage = substr($profil['image_student'], -4);
+								$extentionImage = strtolower(pathinfo($profil['image_student'], PATHINFO_EXTENSION));
+								$validExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
 
-								if ($extentionImage == '.jpg' OR $extentionImage == '.JPG') {
-								
+								if (!empty($profil['image_student']) && in_array($extentionImage, $validExtensions)) {
 								?>
-									<img src="<?=$app_base?>/app/photosetudiants/<?=encodeFilePath($profil['image_student'])?>" class="border-1 border-black w-full">
+									<img src="<?=$app_base?>/app/photosetudiants/<?=encodeFilePath($profil['image_student'])?>" class="border-1 border-black w-full" onerror="this.onerror=null;this.src='<?=$app_base?>/app/photosetudiants/10054.jpg';">
 
-								<?php	
-								}else{ ?>
+								<?php
+								} else { ?>
 									
 									<img src="<?=$app_base?>/app/photosetudiants/10054.jpg" class="border-1 border-black w-full">
 
@@ -491,7 +490,8 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 									<div class="rounded-md <?=$bg_six_color?> h-20 text-center relative active hover:<?=$bg_three_color?> hover:text-white">
 										<label for="image_student" class="text-lg mt-4"><i class="bi-image"></i></label>
 										<p id="imgNote">Choisir une image sur votre PC</p>
-										<input type="file" accept=".jpg, .png" name="image_student" id="image_student" class="w-full h-20 absolute z-40 top-0 left-0" style="opacity: 0;">
+										<input type="file" accept="image/*" name="image_student" id="image_student" class="w-full h-20 absolute z-40 top-0 left-0" style="opacity: 0;">
+									<canvas id="convertCanvas" style="display:none;"></canvas>
 									</div>
 									
 
@@ -511,10 +511,9 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 							<div class="w-[95%] max-w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[3%] lg:my-[5%] opacity-100 drop-shadow-2xl rounded-lg">
 								
 								<div class="p-2">
-									<div class="w-full h-[400px]" style="background-image: url('<?=$app_base?>/app/photosetudiants/<?=encodeFilePath($profil['image_student'])?>');background-position: center; background-size: cover;background-repeat: no-repeat;">
-										
-									</div>
-
+									<img src="<?=$app_base?>/app/photosetudiants/<?=encodeFilePath($profil['image_student'])?>" 
+										 class="w-full rounded" style="max-height:400px; object-fit:contain;" 
+										 onerror="this.onerror=null;this.src='<?=$app_base?>/app/photosetudiants/10054.jpg';">
 								</div>
 								<div class="flex p-2">
 									<a href="#" id="cancelAffichIMG" class="px-2 <?=$bg_six_color?> rounded-md py-1 mx-1">Retour</a>
@@ -539,11 +538,46 @@ if(isset($_GET['page']) and $_GET['page'] == "diplome") {
 			$('#notifAffichIMG').css({'display':'none'});
 		});
 		$('#image_student').on('change',function(){
-			var image_student = $(this).val();
-			if(image_student!="") {
-				$('#imgNote').text('Image bien ajouté.');
-				$('#btnModify').attr('class','px-2 rounded-md py-1 text-white mx-1 bg-cyan-700');
-			}
+			var fileInput = this;
+			var file = fileInput.files[0];
+			if(!file) return;
+
+			// Convertir toute image (HEIC, PNG, WEBP, etc.) en JPEG via Canvas
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				var img = new Image();
+				img.onload = function() {
+					var canvas = document.getElementById('convertCanvas');
+					// Limiter la taille max à 1200px pour optimiser
+					var maxSize = 1200;
+					var w = img.width, h = img.height;
+					if (w > maxSize || h > maxSize) {
+						if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+						else { w = Math.round(w * maxSize / h); h = maxSize; }
+					}
+					canvas.width = w;
+					canvas.height = h;
+					var ctx = canvas.getContext('2d');
+					ctx.drawImage(img, 0, 0, w, h);
+					canvas.toBlob(function(blob) {
+						// Remplacer le fichier dans le formulaire par le JPEG converti
+						var baseName = file.name.replace(/\.[^.]+$/, '');
+						var convertedFile = new File([blob], baseName + '.jpg', { type: 'image/jpeg' });
+						var dataTransfer = new DataTransfer();
+						dataTransfer.items.add(convertedFile);
+						fileInput.files = dataTransfer.files;
+						$('#imgNote').text('Image prête (' + w + 'x' + h + ')');
+						$('#btnModify').attr('class','px-2 rounded-md py-1 text-white mx-1 bg-cyan-700');
+					}, 'image/jpeg', 0.9);
+				};
+				img.onerror = function() {
+					$('#imgNote').text('Format non supporté. Utilisez JPG ou PNG.');
+					$('#btnModify').attr('class','px-2 rounded-md py-1 text-white mx-1 btnInactive');
+					fileInput.value = '';
+				};
+				img.src = e.target.result;
+			};
+			reader.readAsDataURL(file);
 		});
 		$('#linkSupprStd').click(function(){
 			$('#notifSupprStd').css({'display':'block'});

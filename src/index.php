@@ -38,9 +38,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
             $userType = $user['user_type'] ?? 'staff';
             
             // Déterminer la destination finale
-            if ($userLevel === 6 || $userType === 'student') {
-                $destination = './student.dashboard';
-            } elseif ($userLevel === 5 || $userType === 'teacher') {
+            if ($userLevel === 8 || $userType === 'student' || ($user['privilege'] ?? '') === 'student') {
+                $destination = './student.home';
+            } elseif ($userLevel === 7 || $userType === 'teacher' || ($user['privilege'] ?? '') === 'teacher') {
                 $destination = './teacher.dashboard';
             } else {
                 $destination = './accueil';

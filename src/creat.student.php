@@ -156,9 +156,10 @@
 											<label class="field-label">Photo</label>
 											<label for="student_images" class="photo-upload-box">
 												<i class="bi bi-camera text-3xl text-slate-500"></i>
-												<span class="text-xs text-slate-500 mt-1">Cliquer pour ajouter</span>
+												<span class="text-xs text-slate-500 mt-1" id="photoNote">Cliquer pour ajouter</span>
 											</label>
-											<input type="file" accept=".jpg, .png" name="image_student" id="student_images" class="hidden">
+											<input type="file" accept="image/*" name="image_student" id="student_images" class="hidden">
+											<canvas id="convertCanvasCreate" style="display:none;"></canvas>
 										</div>
 									</div>
 								</div>
@@ -738,6 +739,45 @@ while ($showSignMention = $findSignMention->fetch()) {
 				$('.diplome_preced').css({'display':'block'});
 			}
 
+		});
+
+		// Conversion client-side de toute image en JPEG via Canvas
+		$('#student_images').on('change', function(){
+			var fileInput = this;
+			var file = fileInput.files[0];
+			if(!file) return;
+
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				var img = new Image();
+				img.onload = function() {
+					var canvas = document.getElementById('convertCanvasCreate');
+					var maxSize = 1200;
+					var w = img.width, h = img.height;
+					if (w > maxSize || h > maxSize) {
+						if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+						else { w = Math.round(w * maxSize / h); h = maxSize; }
+					}
+					canvas.width = w;
+					canvas.height = h;
+					var ctx = canvas.getContext('2d');
+					ctx.drawImage(img, 0, 0, w, h);
+					canvas.toBlob(function(blob) {
+						var baseName = file.name.replace(/\.[^.]+$/, '');
+						var convertedFile = new File([blob], baseName + '.jpg', { type: 'image/jpeg' });
+						var dataTransfer = new DataTransfer();
+						dataTransfer.items.add(convertedFile);
+						fileInput.files = dataTransfer.files;
+						$('#photoNote').text('Image prête (' + w + 'x' + h + ')');
+					}, 'image/jpeg', 0.9);
+				};
+				img.onerror = function() {
+					$('#photoNote').text('Format non supporté');
+					fileInput.value = '';
+				};
+				img.src = e.target.result;
+			};
+			reader.readAsDataURL(file);
 		});
 
 		$('#btn-inscription').click(function() {

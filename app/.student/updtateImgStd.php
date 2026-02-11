@@ -8,22 +8,82 @@
 
 	$image = $_FILES['image_student']['name'];
 	$image_tmp = $_FILES['image_student']['tmp_name'];
-	$extension = array('.jpg','.JPG','.png','.PNG','.jpeg','.JPEG','.NEF','.nef');
+	$allowed_extensions = ['.jpg','.JPG','.png','.PNG','.jpeg','.JPEG'];
 	$extension_image = strrchr($image,".");
 	$image_dest = '../photosetudiants/';
 
 	$date = date('Y-m-d');
 
 	if(isset($image) AND !empty($image)){
+
+		// Vérifier l'extension
+		if(!in_array($extension_image, $allowed_extensions)){
+			header('location:../../src/student.php?id='.$id.'&page=information&error=format');
+			exit;
+		}
+
 		// Récupérer l'ancienne image pour l'historique
 		$getOldImage = $dtb->query("SELECT image_student FROM tbl_2024_etudiant WHERE id = '".$id."'");
 		$oldImageData = $getOldImage->fetch();
 		$oldImage = $oldImageData['image_student'];
 		
-		echo "<br>".$dbimage = $id.'-'.$image;
-		in_array($extension_image, $extension);
-		move_uploaded_file($image_tmp, $image_dest.$dbimage);
+		// Nom du fichier final (toujours en .jpg)
+		$dbimage = $id.'-'.$image;
+		$finalPath = $image_dest . $dbimage;
 
+		// Déplacer le fichier uploadé temporairement
+		$tempPath = $image_dest . 'tmp_' . $dbimage;
+		move_uploaded_file($image_tmp, $tempPath);
+
+		// Vérifier le vrai type MIME du fichier (pas l'extension)
+		$finfo = new finfo(FILEINFO_MIME_TYPE);
+		$realMime = $finfo->file($tempPath);
+
+		// Si c'est un format non supporté par les navigateurs (HEIC, AVIF, RAW, etc.)
+		// ou si le MIME ne correspond pas à une image web, tenter une conversion via GD
+		$webMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+		
+		if (in_array($realMime, $webMimes) && function_exists('imagecreatefromstring')) {
+			// C'est une vraie image web — vérifier qu'elle est valide et ré-encoder en JPEG propre
+			$imgData = file_get_contents($tempPath);
+			$gdImage = @imagecreatefromstring($imgData);
+			if ($gdImage) {
+				// Ré-encoder en JPEG propre (corrige orientation EXIF, etc.)
+				$dbimage = pathinfo($dbimage, PATHINFO_FILENAME) . '.jpg';
+				$finalPath = $image_dest . $dbimage;
+				imagejpeg($gdImage, $finalPath, 90);
+				imagedestroy($gdImage);
+				if ($tempPath !== $finalPath) @unlink($tempPath);
+			} else {
+				// GD ne peut pas lire l'image — garder tel quel
+				rename($tempPath, $finalPath);
+			}
+		} elseif (!in_array($realMime, $webMimes)) {
+			// Format non-web (HEIC, HEIF, AVIF, TIFF, etc.)
+			// Tenter une conversion avec GD (fonctionne pour certains formats)
+			$converted = false;
+			if (function_exists('imagecreatefromstring')) {
+				$imgData = file_get_contents($tempPath);
+				$gdImage = @imagecreatefromstring($imgData);
+				if ($gdImage) {
+					$dbimage = pathinfo($dbimage, PATHINFO_FILENAME) . '.jpg';
+					$finalPath = $image_dest . $dbimage;
+					imagejpeg($gdImage, $finalPath, 90);
+					imagedestroy($gdImage);
+					if ($tempPath !== $finalPath) @unlink($tempPath);
+					$converted = true;
+				}
+			}
+			if (!$converted) {
+				// Impossible de convertir — supprimer et rediriger avec erreur
+				@unlink($tempPath);
+				header('location:../../src/student.php?id='.$id.'&page=information&error=heic');
+				exit;
+			}
+		} else {
+			// Pas de GD mais format web — garder tel quel
+			rename($tempPath, $finalPath);
+		}
 
 		$updateNote = $dtb->prepare('UPDATE tbl_2024_etudiant SET 
 			image_student=:image_student,

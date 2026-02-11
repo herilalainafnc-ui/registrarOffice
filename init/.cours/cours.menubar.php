@@ -100,7 +100,7 @@ if(isset($_GET['page']) and $_GET['page'] == "etudiants") {
 							<!-- MODIF IMAGE -->
 
 						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifModifIMG" style="backdrop-filter: blur(30px);">
-<form method="post" action="<?=$app_base?>/app/updtadeImgStd.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>" enctype="multipart/form-data" class="form-no-refrech">
+<form method="post" action="<?=$app_base?>/app/.student/updtateImgStd.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>" enctype="multipart/form-data" class="form-no-refrech">
 							<div class="w-3/12 <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[12%] opacity-100 drop-shadow-2xl">
 								<div class="p-2">
 									<p>Modifier l'image</p>
@@ -109,8 +109,9 @@ if(isset($_GET['page']) and $_GET['page'] == "etudiants") {
 									
 									<div class="rounded-md <?=$bg_six_color?> h-20 text-center relative active hover:<?=$bg_three_color?> hover:text-white">
 										<label for="image_student" class="text-lg mt-4"><i class="bi-image"></i></label>
-										<p>Choisir une image sur votre PC</p>
-										<input type="file" accept=".jpg, .png" name="image_student" id="image_student" class="w-full h-20 absolute z-40 top-0 left-0" style="opacity: 0;">
+										<p id="imgNote">Choisir une image sur votre PC</p>
+										<input type="file" accept="image/*" name="image_student" id="image_student" class="w-full h-20 absolute z-40 top-0 left-0" style="opacity: 0;">
+										<canvas id="convertCanvas" style="display:none;"></canvas>
 									</div>
 									
 
@@ -169,10 +170,44 @@ if(isset($_GET['page']) and $_GET['page'] == "etudiants") {
 			$('#notifAffichIMG').css({'display':'none'});
 		});
 		$('#image_student').on('change',function(){
-			image_student = $(this).val();
-			if(image_student!="") {
-				$('#btnModify').attr('class','px-2 rounded-md py-1 text-white mx-1 bg-cyan-700');
-			}
+			var fileInput = this;
+			var file = fileInput.files[0];
+			if(!file) return;
+
+			// Convertir toute image (HEIC, PNG, WEBP, etc.) en JPEG via Canvas
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				var img = new Image();
+				img.onload = function() {
+					var canvas = document.getElementById('convertCanvas');
+					var maxSize = 1200;
+					var w = img.width, h = img.height;
+					if (w > maxSize || h > maxSize) {
+						if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+						else { w = Math.round(w * maxSize / h); h = maxSize; }
+					}
+					canvas.width = w;
+					canvas.height = h;
+					var ctx = canvas.getContext('2d');
+					ctx.drawImage(img, 0, 0, w, h);
+					canvas.toBlob(function(blob) {
+						var baseName = file.name.replace(/\.[^.]+$/, '');
+						var convertedFile = new File([blob], baseName + '.jpg', { type: 'image/jpeg' });
+						var dataTransfer = new DataTransfer();
+						dataTransfer.items.add(convertedFile);
+						fileInput.files = dataTransfer.files;
+						$('#imgNote').text('Image prête (' + w + 'x' + h + ')');
+						$('#btnModify').attr('class','px-2 rounded-md py-1 text-white mx-1 bg-cyan-700');
+					}, 'image/jpeg', 0.9);
+				};
+				img.onerror = function() {
+					$('#imgNote').text('Format non supporté. Utilisez JPG ou PNG.');
+					$('#btnModify').attr('class','px-2 rounded-md py-1 text-white mx-1 btnInactive');
+					fileInput.value = '';
+				};
+				img.src = e.target.result;
+			};
+			reader.readAsDataURL(file);
 		});
 	});
 </script>

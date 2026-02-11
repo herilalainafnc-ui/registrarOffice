@@ -38,7 +38,7 @@ $goodbyeMessages = [
 ];
 $randomMessage = $goodbyeMessages[array_rand($goodbyeMessages)];
 
-// Déterminer le message selon l'heure
+// Déterminer le message selon l'heure (ajusté côté client)
 $hour = (int)date('H');
 if ($hour >= 5 && $hour < 12) {
     $timeMessage = "Passez une excellente journée !";
@@ -472,6 +472,18 @@ if ($hour >= 5 && $hour < 12) {
         // Initialisation
         createStars();
         createHearts();
+
+        // Message selon l'heure locale
+        (function() {
+            const h = new Date().getHours();
+            let msg;
+            if (h >= 5 && h < 12)       { msg = 'Passez une excellente journée !'; }
+            else if (h >= 12 && h < 18) { msg = 'Bon après-midi !'; }
+            else if (h >= 18 && h < 22) { msg = 'Passez une bonne soirée !'; }
+            else                        { msg = 'Bonne nuit et à demain !'; }
+            const el = document.querySelector('.goodbye-message');
+            if (el) el.textContent = msg;
+        })();
     </script>
 </body>
 </html>

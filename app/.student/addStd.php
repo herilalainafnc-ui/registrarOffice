@@ -93,14 +93,64 @@
 
 	$image = $_FILES['image_student']['name'];
 	$image_tmp = $_FILES['image_student']['tmp_name'];
-	$extension = array('.jpg','.JPG','.png','.PNG','.jpeg','.JPEG');
+	$allowed_extensions = ['.jpg','.JPG','.png','.PNG','.jpeg','.JPEG'];
 	$extension_image = strrchr($image,".");
 	$image_dest = '../photosetudiants/';
 
-	$dbimage = $student_id.''.$image;
+	$dbimage = $student_id.'-'.$image;
 
-	in_array($extension_image, $extension);
-	move_uploaded_file($image_tmp, $image_dest.$dbimage);
+	if(!empty($image) && !empty($image_tmp)){
+		if(!in_array($extension_image, $allowed_extensions)){
+			// Extension non autorisée — on saute l'image
+			$dbimage = '';
+		} else {
+			$tempPath = $image_dest . 'tmp_' . $dbimage;
+			move_uploaded_file($image_tmp, $tempPath);
+
+			// Vérifier le vrai type MIME
+			$finfo = new finfo(FILEINFO_MIME_TYPE);
+			$realMime = $finfo->file($tempPath);
+			$webMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+
+			if(in_array($realMime, $webMimes) && function_exists('imagecreatefromstring')){
+				// Ré-encoder en JPEG propre
+				$imgData = file_get_contents($tempPath);
+				$gdImage = @imagecreatefromstring($imgData);
+				if($gdImage){
+					$dbimage = pathinfo($dbimage, PATHINFO_FILENAME) . '.jpg';
+					$finalPath = $image_dest . $dbimage;
+					imagejpeg($gdImage, $finalPath, 90);
+					imagedestroy($gdImage);
+					if($tempPath !== $finalPath) @unlink($tempPath);
+				} else {
+					rename($tempPath, $image_dest . $dbimage);
+				}
+			} elseif(!in_array($realMime, $webMimes)){
+				// Format non-web — tenter conversion GD
+				$converted = false;
+				if(function_exists('imagecreatefromstring')){
+					$imgData = file_get_contents($tempPath);
+					$gdImage = @imagecreatefromstring($imgData);
+					if($gdImage){
+						$dbimage = pathinfo($dbimage, PATHINFO_FILENAME) . '.jpg';
+						$finalPath = $image_dest . $dbimage;
+						imagejpeg($gdImage, $finalPath, 90);
+						imagedestroy($gdImage);
+						if($tempPath !== $finalPath) @unlink($tempPath);
+						$converted = true;
+					}
+				}
+				if(!$converted){
+					@unlink($tempPath);
+					$dbimage = '';
+				}
+			} else {
+				rename($tempPath, $image_dest . $dbimage);
+			}
+		}
+	} else {
+		$dbimage = '';
+	}
 
 	/*:::::::::::::::::::: FINANCE ::::::::::::::::::::*/
 

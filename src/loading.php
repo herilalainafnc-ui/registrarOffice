@@ -80,7 +80,7 @@ if (empty($photoPath) || empty($userPhoto)) {
 $destination = $_SESSION['login_redirect'] ?? './accueil';
 unset($_SESSION['login_redirect']);
 
-// Déterminer l'heure pour le message de salutation
+// Déterminer l'heure pour le message de salutation (ajusté côté client)
 $hour = (int)date('H');
 if ($hour >= 5 && $hour < 12) {
     $greeting = "Bonjour";
@@ -605,6 +605,18 @@ $fullName = trim($userFirstName . ' ' . $userName);
 
         // Redirection automatique après l'animation
         setTimeout(slideOutAndRedirect, 5000);
+
+        // Salutation selon l'heure locale
+        (function() {
+            const h = new Date().getHours();
+            let greeting, icon;
+            if (h >= 5 && h < 12)       { greeting = 'Bonjour';        icon = '☀️'; }
+            else if (h >= 12 && h < 18) { greeting = 'Bon après-midi'; icon = '🌤️'; }
+            else if (h >= 18 && h < 22) { greeting = 'Bonsoir';        icon = '🌅'; }
+            else                        { greeting = 'Bonne nuit';     icon = '🌙'; }
+            const el = document.querySelector('.welcome-text');
+            if (el) el.textContent = icon + ' ' + greeting;
+        })();
     </script>
 </body>
 </html>
