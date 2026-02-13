@@ -97,7 +97,7 @@ if (!$dateFormatted) {
         /* ===== HEADING ===== */
         .heading {
             position: fixed;
-            top: 38%;
+            top: 32%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 10;
@@ -105,7 +105,6 @@ if (!$dateFormatted) {
             text-align: center;
             white-space: nowrap;
             pointer-events: none;
-            text-wrap: auto;
             font-family: "Syne", sans-serif;
             font-size: clamp(2.5rem, 7vw, 6rem);
             font-weight: 700;
@@ -114,12 +113,13 @@ if (!$dateFormatted) {
             line-height: 1.1;
             opacity: 0;
             animation: fadeInUp 1s ease 0.5s forwards;
+            max-width: 90vw;
         }
 
         /* ===== STUDENT INFO CARD ===== */
         .student-welcome {
             position: fixed;
-            top: 55%;
+            top: 56%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 10;
@@ -127,6 +127,8 @@ if (!$dateFormatted) {
             pointer-events: none;
             opacity: 0;
             animation: fadeInUp 1s ease 0.8s forwards;
+            max-width: 90vw;
+            width: 100%;
         }
         .student-welcome .greeting-text {
             font-family: "Space Grotesk", sans-serif;
@@ -142,6 +144,11 @@ if (!$dateFormatted) {
             color: white;
             font-weight: 700;
             letter-spacing: -0.01em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 85vw;
+            margin: 0 auto;
         }
         .student-welcome .student-mention {
             font-family: "Inter", sans-serif;
@@ -151,6 +158,9 @@ if (!$dateFormatted) {
             margin-top: 0.5rem;
             letter-spacing: 0.1em;
             text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .student-welcome .date-text {
             font-family: "Inter", sans-serif;
@@ -484,9 +494,66 @@ if (!$dateFormatted) {
             .heading {
                 font-size: clamp(1.8rem, 8vw, 3rem);
             }
+            .student-welcome .student-name {
+                font-size: clamp(1.2rem, 6vw, 2rem);
+            }
             .nav-card {
                 min-width: 75px;
                 padding: 0.75rem;
+            }
+        }
+
+        /* HD screens (1366x768, 1280x720) where vertical space is tight */
+        @media (max-height: 700px) {
+            .heading {
+                top: 25%;
+                font-size: clamp(2rem, 5vw, 4rem);
+            }
+            .student-welcome {
+                top: 48%;
+            }
+            .student-welcome .student-name {
+                font-size: clamp(1.2rem, 3vw, 2rem);
+            }
+            .student-welcome .greeting-text {
+                font-size: clamp(0.85rem, 2vw, 1.1rem);
+                margin-bottom: 0.25rem;
+            }
+            .student-welcome .date-text {
+                margin-top: 0.5rem;
+            }
+            .nav-cards {
+                bottom: 3rem;
+                gap: 0.6rem;
+            }
+            .nav-card {
+                min-width: 100px;
+                padding: 0.9rem 1.2rem;
+                font-size: 0.75rem;
+            }
+            .nav-card i {
+                font-size: 1.2rem;
+                margin-bottom: 0.3rem;
+            }
+        }
+
+        /* Very short screens (old laptops, split view) */
+        @media (max-height: 550px) {
+            .heading {
+                top: 18%;
+                font-size: clamp(1.5rem, 4vw, 3rem);
+            }
+            .student-welcome {
+                top: 42%;
+            }
+            .nav-cards {
+                bottom: 1.5rem;
+            }
+            .color-controls {
+                display: none;
+            }
+            .footer-info {
+                display: none;
             }
         }
     </style>

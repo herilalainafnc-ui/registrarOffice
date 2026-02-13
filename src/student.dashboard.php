@@ -177,6 +177,9 @@
             color: #e8f1f8;
             margin-bottom: 0.75rem;
             letter-spacing: -0.01em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .std-info-grid {
             display: grid;
@@ -239,6 +242,14 @@
             margin-bottom: 1rem;
             transition: border-color 0.3s ease;
         }
+        .std-table-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .std-table-scroll::-webkit-scrollbar { height: 4px; }
+        .std-table-scroll::-webkit-scrollbar-track { background: transparent; }
+        .std-table-scroll::-webkit-scrollbar-thumb { background: rgba(14, 165, 233, 0.2); border-radius: 10px; }
+        .std-table-scroll::-webkit-scrollbar-thumb:hover { background: rgba(14, 165, 233, 0.4); }
         .std-session-block:hover {
             border-color: rgba(14, 165, 233, 0.15);
         }
@@ -407,6 +418,14 @@
             .std-content { height: calc(100vh - 50px); }
             .std-session-header { font-size: 0.72rem; padding: 0.6rem 0.8rem; }
             .std-table th, .std-table td { padding: 0.4rem 0.5rem; }
+            .std-table { min-width: 580px; }
+            .std-profile-name { 
+                font-size: 1.15rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 100%;
+            }
         }
         @media (max-width: 480px) {
             .std-info-grid { grid-template-columns: 1fr; }
@@ -420,9 +439,10 @@
             .std-profile-placeholder { width: 70px; height: 70px; font-size: 1.8rem; }
             .std-profile-name { font-size: 1rem; }
             .std-avg-badge { padding: 0.8rem; min-width: unset; }
-            .std-table { font-size: 0.68rem; }
+            .std-table { font-size: 0.68rem; min-width: 560px; }
             .std-table th, .std-table td { padding: 0.3rem 0.4rem; }
             .std-cumul-row { padding: 0.5rem 0.6rem; font-size: 0.75rem; }
+            .std-profile-name { font-size: 1rem; }
         }
     </style>
 </head>
@@ -652,6 +672,7 @@ try {
                     <div class="std-session-header">
                         <?=$niveau_label?> &nbsp;·&nbsp; <?=$showSs['session_name']?> — Session N°<?=$showSs['session_semester']?> &nbsp;·&nbsp; <?=$combinAnual?>
                     </div>
+                    <div class="std-table-scroll">
                     <table class="std-table">
                         <thead>
                             <tr>
@@ -762,6 +783,7 @@ try {
                             </tr>
                         </tfoot>
                     </table>
+                    </div>
                 </div>
                 <?php 
                     // Cumuler les notes de promotion

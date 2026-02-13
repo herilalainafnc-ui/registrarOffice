@@ -4,6 +4,9 @@
  * Avec initialisation de la classe DB pour requêtes sécurisées
  */
 
+// Charger la configuration centralisée
+require_once(__DIR__ . '/config.php');
+
 try {
     // $dtb = new PDO('mysql:host=localhost;dbname=registrar_db','herilalaina','J8wFF(FOy1KI(nay');
     $dtb = new PDO('mysql:host=localhost;dbname=registrar_db;charset=utf8mb4','root','');

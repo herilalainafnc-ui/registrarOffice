@@ -11,6 +11,15 @@
  * Créez un fichier config.local.php pour les paramètres locaux.
  */
 
+// ============================================================================
+// CONFIGURATIONS GLOBALES (toujours chargées, même avec config.local.php)
+// ============================================================================
+
+// Google OAuth Client ID (pour connexion @zurcher.edu.mg)
+if (!defined('GOOGLE_CLIENT_ID')) {
+    define('GOOGLE_CLIENT_ID', '550229299869-on5vquosgbipt9d5g3afpuuj50a9t2i1.apps.googleusercontent.com');
+}
+
 // Charger la configuration locale si elle existe (pour le développement)
 if (file_exists(__DIR__ . '/config.local.php')) {
     require_once __DIR__ . '/config.local.php';

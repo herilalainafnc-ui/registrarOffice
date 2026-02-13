@@ -31,6 +31,12 @@
 							<p class="text-slate-500">Voir, Modifier les détails financiaires des étudiants.</p>
 							</div>
 						</a>
+						<a href="./login-locations" <?php if($rg_user['level'] <= 3) { echo "";}else{ echo "class='toolInactive'";}?>>
+							<div class='m-0 p-3 <?=$bg_one_color?> hover:bg-slate-700 rounded-md border-2 border-slate-800 hover:border-cyan-500 transition-all text-white h-[160px]'>
+							<b class="text-lg"><i class="bi-geo-alt-fill"></i>&nbsp;&nbsp; Localisations GPS</b><br><br>
+							<p class="text-slate-500">Voir les coordonnées GPS des connexions utilisateurs sur une carte.</p>
+							</div>
+						</a>
 					</div>
 				</div>
 				

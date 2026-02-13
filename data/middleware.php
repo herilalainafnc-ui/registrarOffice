@@ -1066,6 +1066,436 @@ class Middleware {
         file_put_contents($logFile, json_encode($logEntry) . PHP_EOL, FILE_APPEND | LOCK_EX);
         return false;
     }
+
+    /**
+     * ==========================================================================
+     * GÉOLOCALISATION DES CONNEXIONS
+     * ==========================================================================
+     */
+
+    /**
+     * Enregistre la localisation GPS lors d'une connexion
+     * 
+     * @param float|null $latitude Latitude GPS
+     * @param float|null $longitude Longitude GPS
+     * @param float|null $accuracy Précision en mètres
+     * @param string $loginMethod Méthode de connexion ('password' ou 'google')
+     * @param bool $gpsDenied L'utilisateur a refusé la géolocalisation
+     * @return bool
+     */
+    public static function saveLoginLocation($latitude = null, $longitude = null, $accuracy = null, $loginMethod = 'password', $gpsDenied = false) {
+        if (self::$dtb === null) return false;
+        
+        $userId = $_SESSION['user_id'] ?? null;
+        if (!$userId) return false;
+        
+        $ip = self::getClientIP();
+        $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
+        $city = null;
+        $country = null;
+        
+        // Valider les coordonnées
+        if ($latitude !== null) {
+            $latitude = filter_var($latitude, FILTER_VALIDATE_FLOAT);
+            if ($latitude === false || $latitude < -90 || $latitude > 90) $latitude = null;
+        }
+        if ($longitude !== null) {
+            $longitude = filter_var($longitude, FILTER_VALIDATE_FLOAT);
+            if ($longitude === false || $longitude < -180 || $longitude > 180) $longitude = null;
+        }
+        if ($accuracy !== null) {
+            $accuracy = filter_var($accuracy, FILTER_VALIDATE_FLOAT);
+            if ($accuracy === false || $accuracy < 0) $accuracy = null;
+        }
+        
+        // Fallback serveur : si pas de coordonnées GPS, essayer la géolocalisation par IP
+        if ($latitude === null || $longitude === null) {
+            $geoData = self::geolocateByIP($ip);
+            if ($geoData) {
+                $latitude = $latitude ?? $geoData['lat'];
+                $longitude = $longitude ?? $geoData['lon'];
+                $accuracy = $accuracy ?? 5000; // ~5km précision IP
+                $city = $geoData['city'] ?? null;
+                $country = $geoData['country'] ?? null;
+            }
+        }
+        
+        try {
+            // Créer la table si elle n'existe pas
+            self::ensureLoginLocationsTable();
+            
+            $stmt = self::$dtb->prepare(
+                "INSERT INTO login_locations (user_id, latitude, longitude, accuracy, ip_address, user_agent, login_method, gps_denied, city, country) 
+                 VALUES (:user_id, :latitude, :longitude, :accuracy, :ip_address, :user_agent, :login_method, :gps_denied, :city, :country)"
+            );
+            $stmt->execute([
+                'user_id' => $userId,
+                'latitude' => $latitude,
+                'longitude' => $longitude,
+                'accuracy' => $accuracy,
+                'ip_address' => $ip,
+                'user_agent' => $userAgent,
+                'login_method' => $loginMethod,
+                'gps_denied' => $gpsDenied ? 1 : 0,
+                'city' => $city,
+                'country' => $country
+            ]);
+            return true;
+        } catch (PDOException $e) {
+            // Log l'erreur silencieusement
+            error_log("Erreur saveLoginLocation: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Géolocalise une adresse IP via des APIs publiques gratuites
+     * Retourne ['lat', 'lon', 'city', 'country'] ou null
+     */
+    private static function geolocateByIP($ip) {
+        // Ne pas géolocaliser les IPs privées/locales
+        if (self::isPrivateIP($ip)) {
+            // Pour les IPs privées, utiliser l'IP publique du serveur
+            $ip = ''; // ip-api.com retourne la position de l'IP publique si vide
+        }
+        
+        // Essai 1: ip-api.com (gratuit, 45 req/min)
+        try {
+            $url = 'http://ip-api.com/json/' . $ip . '?fields=status,lat,lon,city,country,query';
+            $ctx = stream_context_create(['http' => ['timeout' => 3]]);
+            $response = @file_get_contents($url, false, $ctx);
+            if ($response) {
+                $data = json_decode($response, true);
+                if ($data && ($data['status'] ?? '') === 'success' && isset($data['lat'], $data['lon'])) {
+                    return [
+                        'lat' => floatval($data['lat']),
+                        'lon' => floatval($data['lon']),
+                        'city' => $data['city'] ?? null,
+                        'country' => $data['country'] ?? null
+                    ];
+                }
+            }
+        } catch (\Exception $e) {
+            // Silencieux
+        }
+        
+        // Essai 2: ipwho.is (gratuit, illimité)
+        try {
+            $url = 'https://ipwho.is/' . $ip;
+            $ctx = stream_context_create(['http' => ['timeout' => 3]]);
+            $response = @file_get_contents($url, false, $ctx);
+            if ($response) {
+                $data = json_decode($response, true);
+                if ($data && ($data['success'] ?? false) && isset($data['latitude'], $data['longitude'])) {
+                    return [
+                        'lat' => floatval($data['latitude']),
+                        'lon' => floatval($data['longitude']),
+                        'city' => $data['city'] ?? null,
+                        'country' => $data['country'] ?? null
+                    ];
+                }
+            }
+        } catch (\Exception $e) {
+            // Silencieux
+        }
+        
+        return null;
+    }
+
+    /**
+     * Vérifie si une IP est privée/locale
+     */
+    private static function isPrivateIP($ip) {
+        return !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)
+            || $ip === '0.0.0.0' || $ip === '127.0.0.1' || $ip === '::1';
+    }
+
+    /**
+     * Crée la table login_locations si elle n'existe pas
+     */
+    private static function ensureLoginLocationsTable() {
+        try {
+            self::$dtb->exec("
+                CREATE TABLE IF NOT EXISTS `login_locations` (
+                    `id` INT(11) NOT NULL AUTO_INCREMENT,
+                    `user_id` INT(11) NOT NULL,
+                    `latitude` DECIMAL(10, 8) DEFAULT NULL,
+                    `longitude` DECIMAL(11, 8) DEFAULT NULL,
+                    `accuracy` DECIMAL(10, 2) DEFAULT NULL,
+                    `ip_address` VARCHAR(45) NOT NULL,
+                    `user_agent` TEXT DEFAULT NULL,
+                    `login_method` VARCHAR(20) NOT NULL DEFAULT 'password',
+                    `city` VARCHAR(100) DEFAULT NULL,
+                    `country` VARCHAR(100) DEFAULT NULL,
+                    `gps_denied` TINYINT(1) DEFAULT 0,
+                    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (`id`),
+                    KEY `idx_user_id` (`user_id`),
+                    KEY `idx_created` (`created_at`),
+                    KEY `idx_location` (`latitude`, `longitude`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+            ");
+        } catch (PDOException $e) {
+            // Table existe peut-être déjà
+        }
+    }
+
+    /**
+     * Récupère l'historique des localisations de connexion
+     * 
+     * @param int|null $userId Filtrer par utilisateur (null = tous)
+     * @param int $limit Nombre maximum de résultats
+     * @param string|null $dateFrom Date de début (Y-m-d)
+     * @param string|null $dateTo Date de fin (Y-m-d)
+     * @return array
+     */
+    public static function getLoginLocations($userId = null, $limit = 100, $dateFrom = null, $dateTo = null) {
+        if (self::$dtb === null) return [];
+        
+        try {
+            $sql = "SELECT ll.*, cu.pseudo, cu.nom, cu.prenom, cu.level, cu.privilege
+                    FROM login_locations ll
+                    LEFT JOIN compt_utilisateur cu ON ll.user_id = cu.id
+                    WHERE 1=1";
+            $params = [];
+            
+            if ($userId !== null) {
+                $sql .= " AND ll.user_id = :user_id";
+                $params['user_id'] = $userId;
+            }
+            
+            if ($dateFrom !== null) {
+                $sql .= " AND ll.created_at >= :date_from";
+                $params['date_from'] = $dateFrom . ' 00:00:00';
+            }
+            
+            if ($dateTo !== null) {
+                $sql .= " AND ll.created_at <= :date_to";
+                $params['date_to'] = $dateTo . ' 23:59:59';
+            }
+            
+            $sql .= " ORDER BY ll.created_at DESC LIMIT " . intval($limit);
+            
+            $stmt = self::$dtb->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
+
+    /**
+     * ==========================================================================
+     * AUTHENTIFICATION GOOGLE (Étudiants @zurcher.edu.mg)
+     * ==========================================================================
+     */
+
+    /**
+     * Authentifie un utilisateur via son token Google ID.
+     * Vérifie que l'email est @zurcher.edu.mg, puis cherche le compte
+     * dans compt_utilisateur (admin, prof, étudiant) ou tbl_2024_etudiant.
+     *
+     * @param string $idToken Le token JWT renvoyé par Google Identity Services
+     * @return array|false Les infos utilisateur ou false
+     */
+    public static function authenticateWithGoogle($idToken) {
+        if (self::$dtb === null || empty($idToken)) return false;
+
+        // 1. Vérifier le token auprès de Google
+        $payload = self::verifyGoogleToken($idToken);
+        if (!$payload) return false;
+
+        $email = strtolower(trim($payload['email'] ?? ''));
+        $emailVerified = $payload['email_verified'] ?? false;
+
+        // 2. Vérifier que l'email est vérifié et du domaine @zurcher.edu.mg
+        if (!$emailVerified || !str_ends_with($email, '@zurcher.edu.mg')) {
+            self::logSecurityEvent('google_login_rejected', [
+                'email' => $email,
+                'reason' => !$emailVerified ? 'email_not_verified' : 'invalid_domain'
+            ]);
+            return false;
+        }
+
+        // 3. Chercher DIRECTEMENT dans compt_utilisateur par email (admin, prof, étudiant)
+        $user = null;
+        $stmt = self::$dtb->prepare(
+            "SELECT * FROM compt_utilisateur 
+             WHERE LOWER(TRIM(mail)) = :email AND etat = 1 LIMIT 1"
+        );
+        $stmt->execute(['email' => $email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // 4. Si pas trouvé par email dans compt_utilisateur, chercher via la table étudiants
+        if (!$user) {
+            $student = null;
+
+            // Chercher l'étudiant par email dans tbl_2024_etudiant
+            $emailColumns = ['student_email', 'student_mail'];
+            foreach ($emailColumns as $col) {
+                try {
+                    $stmt = self::$dtb->prepare(
+                        "SELECT * FROM tbl_2024_etudiant 
+                         WHERE LOWER(TRIM({$col})) = :email 
+                         AND (remove IS NULL OR remove = 0)
+                         ORDER BY annee_scolaire DESC LIMIT 1"
+                    );
+                    $stmt->execute(['email' => $email]);
+                    $student = $stmt->fetch(PDO::FETCH_ASSOC);
+                    if ($student) break;
+                } catch (PDOException $e) {
+                    continue;
+                }
+            }
+
+            if ($student) {
+                $studentId = $student['student_id'] ?? '';
+
+                // Chercher le compte utilisateur lié par student_id
+                if (!empty($studentId)) {
+                    $stmt = self::$dtb->prepare(
+                        "SELECT * FROM compt_utilisateur 
+                         WHERE student_id = :student_id AND etat = 1 LIMIT 1"
+                    );
+                    $stmt->execute(['student_id' => $studentId]);
+                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                }
+
+                // Par nom/prénom de l'étudiant
+                if (!$user && !empty($student['student_nom']) && !empty($student['student_prenom'])) {
+                    $stmt = self::$dtb->prepare(
+                        "SELECT * FROM compt_utilisateur 
+                         WHERE LOWER(TRIM(nom)) = LOWER(:nom) 
+                         AND LOWER(TRIM(prenom)) = LOWER(:prenom) 
+                         AND (level = 8 OR privilege = 'student' OR user_type = 'student')
+                         AND etat = 1 LIMIT 1"
+                    );
+                    $stmt->execute([
+                        'nom' => trim($student['student_nom']),
+                        'prenom' => trim($student['student_prenom'])
+                    ]);
+                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                }
+
+                // Créer un compte automatiquement si l'étudiant existe mais pas de compte utilisateur
+                if (!$user) {
+                    $user = self::createStudentUserFromGoogle($student, $email, $payload);
+                }
+            }
+        }
+
+        // 5. Toujours pas trouvé → échec
+        if (!$user) {
+            self::logSecurityEvent('google_login_user_not_found', ['email' => $email]);
+            return false;
+        }
+
+        // 6. Connecter l'utilisateur
+        self::loginUser($user, false);
+        $_SESSION['google_login'] = true;
+        $_SESSION['google_email'] = $email;
+
+        self::logSecurityEvent('google_login_success', [
+            'email' => $email,
+            'user_id' => $user['id'],
+            'user_type' => $user['user_type'] ?? $user['privilege'] ?? 'unknown'
+        ]);
+
+        return $user;
+    }
+
+    /**
+     * Vérifie un token Google ID en appelant l'API tokeninfo de Google
+     *
+     * @param string $idToken
+     * @return array|false Le payload décodé ou false
+     */
+    private static function verifyGoogleToken($idToken) {
+        $url = 'https://oauth2.googleapis.com/tokeninfo?id_token=' . urlencode($idToken);
+        
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_SSL_VERIFYPEER => true,
+        ]);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($httpCode !== 200 || empty($response)) {
+            return false;
+        }
+        
+        $payload = json_decode($response, true);
+        if (!$payload || empty($payload['email'])) {
+            return false;
+        }
+        
+        // Vérifier le client ID si configuré
+        if (defined('GOOGLE_CLIENT_ID') && GOOGLE_CLIENT_ID !== '') {
+            if (($payload['aud'] ?? '') !== GOOGLE_CLIENT_ID) {
+                self::logSecurityEvent('google_token_invalid_audience', [
+                    'expected' => GOOGLE_CLIENT_ID,
+                    'received' => $payload['aud'] ?? 'none'
+                ]);
+                return false;
+            }
+        }
+        
+        return $payload;
+    }
+
+    /**
+     * Crée automatiquement un compte utilisateur pour un étudiant Google
+     *
+     * @param array $student Les données de l'étudiant depuis tbl_2024_etudiant
+     * @param string $email L'adresse email Google
+     * @param array $payload Le payload Google (contient name, picture, etc.)
+     * @return array|false Le nouvel utilisateur ou false
+     */
+    private static function createStudentUserFromGoogle($student, $email, $payload) {
+        if (self::$dtb === null) return false;
+
+        try {
+            $pseudo = $student['student_id'] ?? ('google_' . explode('@', $email)[0]);
+            // Mot de passe aléatoire (l'étudiant utilisera toujours Google pour se connecter)
+            $salt = 'fixing_password';
+            $randomPass = bin2hex(random_bytes(16));
+            $hashedPassword = hash('sha256', $randomPass . $salt);
+
+            $stmt = self::$dtb->prepare(
+                "INSERT INTO compt_utilisateur 
+                 (pseudo, password, nom, prenom, mail, level, privilege, user_type, student_id, etat, photos)
+                 VALUES (:pseudo, :password, :nom, :prenom, :mail, 8, 'student', 'student', :student_id, 1, :photos)"
+            );
+            $stmt->execute([
+                'pseudo' => $pseudo,
+                'password' => $hashedPassword,
+                'nom' => $student['student_nom'] ?? '',
+                'prenom' => $student['student_prenom'] ?? '',
+                'mail' => $email,
+                'student_id' => $student['student_id'] ?? '',
+                'photos' => $payload['picture'] ?? ''
+            ]);
+
+            $newId = self::$dtb->lastInsertId();
+            if ($newId) {
+                $stmt = self::$dtb->prepare("SELECT * FROM compt_utilisateur WHERE id = :id LIMIT 1");
+                $stmt->execute(['id' => $newId]);
+                return $stmt->fetch(PDO::FETCH_ASSOC);
+            }
+        } catch (PDOException $e) {
+            // Log erreur
+            self::logSecurityEvent('google_user_create_error', [
+                'email' => $email, 
+                'error' => $e->getMessage()
+            ]);
+        }
+
+        return false;
+    }
 }
 
 /**

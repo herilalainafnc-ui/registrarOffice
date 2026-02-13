@@ -10,6 +10,9 @@ require('../data/middleware.php');
 // Initialiser le middleware avec la connexion DB
 initMiddleware($dtb);
 
+// Google Client ID
+$googleClientId = defined('GOOGLE_CLIENT_ID') ? GOOGLE_CLIENT_ID : '';
+
 // Variable pour les erreurs
 $loginError = false;
 
@@ -31,6 +34,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
         if (Middleware::authenticate($pseudo, $password, $remember)) {
             // Log de connexion réussie
             Middleware::logSecurityEvent('login_success', ['pseudo' => $pseudo]);
+            
+            // Enregistrer la localisation GPS
+            $gpsLat = isset($_POST['gps_latitude']) && $_POST['gps_latitude'] !== '' ? floatval($_POST['gps_latitude']) : null;
+            $gpsLng = isset($_POST['gps_longitude']) && $_POST['gps_longitude'] !== '' ? floatval($_POST['gps_longitude']) : null;
+            $gpsAcc = isset($_POST['gps_accuracy']) && $_POST['gps_accuracy'] !== '' ? floatval($_POST['gps_accuracy']) : null;
+            $gpsDenied = isset($_POST['gps_denied']) && $_POST['gps_denied'] === '1';
+            Middleware::saveLoginLocation($gpsLat, $gpsLng, $gpsAcc, 'password', $gpsDenied);
             
             // Redirection vers la page de chargement avec les infos utilisateur
             $user = Middleware::getCurrentUser();
@@ -69,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
     <link rel="shortcut icon" href="../file/logo-coldbloud.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.0/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
@@ -346,6 +357,116 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
                 margin-bottom: 32px;
             }
         }
+
+        /* Google Sign-In Styles */
+        .login-divider {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            gap: 12px;
+        }
+
+        .login-divider::before,
+        .login-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .login-divider span {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .google-btn {
+            width: 100%;
+            padding: 12px 24px;
+            background: white;
+            border: 1.5px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-family: inherit;
+        }
+
+        .google-btn:hover {
+            background: #f8fafc;
+            border-color: #4285f4;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.2);
+        }
+
+        .google-btn:active {
+            transform: translateY(0);
+        }
+
+        .google-btn svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .google-btn .btn-text {
+            font-size: 13px;
+        }
+
+        .google-btn.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .google-btn.loading .btn-text {
+            display: none;
+        }
+
+        .google-btn.loading::after {
+            content: 'Connexion en cours...';
+            font-size: 13px;
+        }
+
+        .google-info {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .google-info i {
+            margin-right: 4px;
+        }
+
+        .google-error {
+            display: none;
+            background: rgba(220, 53, 69, 0.15);
+            border: 1px solid rgba(220, 53, 69, 0.4);
+            color: #ff6b6b;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-size: 13px;
+            text-align: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .google-error.show {
+            display: block;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -367,8 +488,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
             <?php endif; ?>
 
             <!-- Login Form -->
-            <form method="post" action="">
+            <form method="post" action="" id="loginForm">
                 <?= csrf_field() ?>
+                <input type="hidden" name="gps_latitude" id="gps_latitude" value="">
+                <input type="hidden" name="gps_longitude" id="gps_longitude" value="">
+                <input type="hidden" name="gps_accuracy" id="gps_accuracy" value="">
+                <input type="hidden" name="gps_denied" id="gps_denied" value="0">
                 <div class="form-group">
                     <label for="pseudo">Nom d'utilisateur</label>
                     <div class="input-wrapper">
@@ -393,10 +518,149 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
 
                 <button type="submit" class="submit-btn">Connexion</button>
             </form>
+
+            <!-- Google Sign-In Section -->
+            <div class="login-divider">
+                <span>ou continuer avec</span>
+            </div>
+
+            <!-- Conteneur pour le vrai bouton Google (rendu par Google) -->
+            <div id="g_id_signin" style="display:flex;justify-content:center;margin-top:4px;min-height:44px;"></div>
+
+            <p class="google-info">
+                <i class="bi bi-shield-check"></i> Connexion rapide avec votre compte Zurcher
+            </p>
+
+            <div class="google-error" id="googleError"></div>
         </div>
     </div>
 
     <script>
+        // ====== Géolocalisation GPS ======
+        let gpsData = { latitude: null, longitude: null, accuracy: null, denied: false, ready: false, source: 'none' };
+
+        /**
+         * Fallback : géolocalisation par IP via des APIs publiques gratuites
+         * Utilisé quand le GPS navigateur est refusé (HTTP non-sécurisé)
+         */
+        function ipGeoFallback() {
+            return fetch('https://ip-api.com/json/?fields=lat,lon,city,country,query', { mode: 'cors' })
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    if (data.lat && data.lon) {
+                        gpsData.latitude = data.lat;
+                        gpsData.longitude = data.lon;
+                        gpsData.accuracy = 5000; // ~5km (précision IP)
+                        gpsData.denied = false;
+                        gpsData.source = 'ip';
+                        console.log('Géoloc IP:', data.lat, data.lon, '(' + (data.city || '') + ', ' + (data.country || '') + ')');
+                    }
+                })
+                .catch(function() {
+                    // 2e tentative avec un autre service
+                    return fetch('https://ipwho.is/', { mode: 'cors' })
+                        .then(function(res) { return res.json(); })
+                        .then(function(data) {
+                            if (data.success !== false && data.latitude && data.longitude) {
+                                gpsData.latitude = data.latitude;
+                                gpsData.longitude = data.longitude;
+                                gpsData.accuracy = 5000;
+                                gpsData.denied = false;
+                                gpsData.source = 'ip';
+                                console.log('Géoloc IP (fallback 2):', data.latitude, data.longitude);
+                            }
+                        })
+                        .catch(function(e) {
+                            console.log('Impossible de géolocaliser par IP:', e);
+                        });
+                });
+        }
+
+        // Créer une promesse pour le GPS
+        let gpsPromise = new Promise(function(resolve) {
+            // Vérifier si le contexte est sécurisé (HTTPS ou localhost)
+            var isSecure = window.isSecureContext || location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+
+            if (isSecure && navigator.geolocation) {
+                // Essayer le GPS natif du navigateur
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        gpsData.latitude = position.coords.latitude;
+                        gpsData.longitude = position.coords.longitude;
+                        gpsData.accuracy = position.coords.accuracy;
+                        gpsData.denied = false;
+                        gpsData.ready = true;
+                        gpsData.source = 'gps';
+                        console.log('GPS navigateur capturé:', gpsData.latitude, gpsData.longitude);
+                        resolve(gpsData);
+                    },
+                    function(error) {
+                        console.log('GPS navigateur refusé:', error.message, '→ fallback IP');
+                        // Fallback sur la géolocalisation par IP
+                        ipGeoFallback().finally(function() {
+                            gpsData.ready = true;
+                            if (!gpsData.latitude) gpsData.denied = true;
+                            resolve(gpsData);
+                        });
+                    },
+                    { enableHighAccuracy: true, timeout: 5000, maximumAge: 300000 }
+                );
+                // Timeout de sécurité
+                setTimeout(function() {
+                    if (!gpsData.ready) {
+                        console.log('GPS timeout → fallback IP');
+                        ipGeoFallback().finally(function() {
+                            gpsData.ready = true;
+                            if (!gpsData.latitude) gpsData.denied = true;
+                            resolve(gpsData);
+                        });
+                    }
+                }, 5500);
+            } else {
+                // Pas de contexte sécurisé → directement géolocalisation par IP
+                console.log('Contexte non-sécurisé (HTTP) → géolocalisation par IP');
+                ipGeoFallback().finally(function() {
+                    gpsData.ready = true;
+                    if (!gpsData.latitude) gpsData.denied = true;
+                    resolve(gpsData);
+                });
+            }
+        });
+
+        // Remplir les champs cachés du formulaire avec les données GPS
+        function fillGpsFields() {
+            document.getElementById('gps_latitude').value = gpsData.latitude !== null ? gpsData.latitude : '';
+            document.getElementById('gps_longitude').value = gpsData.longitude !== null ? gpsData.longitude : '';
+            document.getElementById('gps_accuracy').value = gpsData.accuracy !== null ? gpsData.accuracy : '';
+            document.getElementById('gps_denied').value = gpsData.denied ? '1' : '0';
+        }
+
+        // Intercepter la soumission du formulaire pour attendre le GPS
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            loginForm.addEventListener('submit', function(e) {
+                // Si le GPS est déjà prêt, remplir et soumettre immédiatement
+                if (gpsData.ready) {
+                    fillGpsFields();
+                    return; // laisse le formulaire se soumettre normalement
+                }
+                
+                // Sinon, empêcher la soumission et attendre le GPS
+                e.preventDefault();
+                const submitBtn = loginForm.querySelector('.submit-btn');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Localisation...';
+                submitBtn.disabled = true;
+
+                gpsPromise.then(function() {
+                    fillGpsFields();
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                    loginForm.submit();
+                });
+            });
+        });
+
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             const eyeIcon = document.getElementById('eye-icon');
@@ -408,6 +672,102 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
                 passwordInput.type = 'password';
                 eyeIcon.textContent = '🙉';
             }
+        }
+
+        // ====== Google Sign-In ======
+        const GOOGLE_CLIENT_ID = '<?= htmlspecialchars($googleClientId) ?>';
+
+        // Initialiser Google Identity Services au chargement
+        window.addEventListener('load', function() {
+            if (!GOOGLE_CLIENT_ID) {
+                console.warn('Google Client ID non configuré.');
+                document.getElementById('g_id_signin').innerHTML = '<p style="color:#94a3b8;font-size:12px;text-align:center;">Connexion Google non disponible</p>';
+                return;
+            }
+
+            // Attendre que la lib Google soit prête
+            function tryInit() {
+                if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+                    // Initialiser
+                    google.accounts.id.initialize({
+                        client_id: GOOGLE_CLIENT_ID,
+                        callback: handleGoogleCredential,
+                        auto_select: false,
+                        cancel_on_tap_outside: true
+                    });
+
+                    // Rendre le bouton Google officiel dans le conteneur
+                    google.accounts.id.renderButton(
+                        document.getElementById('g_id_signin'),
+                        {
+                            type: 'standard',
+                            theme: 'outline',
+                            size: 'large',
+                            text: 'signin_with',
+                            shape: 'rectangular',
+                            logo_alignment: 'left',
+                            width: 356
+                        }
+                    );
+                    console.log('Google Sign-In initialisé avec succès.');
+                } else {
+                    // Réessayer dans 300ms
+                    setTimeout(tryInit, 300);
+                }
+            }
+
+            tryInit();
+            // Abandonner après 15s
+            setTimeout(function() {
+                const container = document.getElementById('g_id_signin');
+                if (container && container.children.length === 0) {
+                    container.innerHTML = '<p style="color:#ff6b6b;font-size:12px;text-align:center;">Impossible de charger Google Sign-In. Vérifiez votre connexion internet.</p>';
+                }
+            }, 15000);
+        });
+
+        // Callback quand Google renvoie le credential
+        function handleGoogleCredential(response) {
+            const errorDiv = document.getElementById('googleError');
+            errorDiv.classList.remove('show');
+
+            // Afficher un état de chargement
+            const gBtn = document.getElementById('g_id_signin');
+            const originalContent = gBtn.innerHTML;
+            gBtn.innerHTML = '<p style="color:#94a3b8;font-size:13px;text-align:center;"><i class="bi bi-arrow-repeat" style="animation:spin 1s linear infinite;display:inline-block;"></i> Connexion en cours...</p>';
+
+            // Envoyer le token au serveur avec les coordonnées GPS
+            fetch('./api/google-auth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    credential: response.credential,
+                    gps_latitude: gpsData.latitude,
+                    gps_longitude: gpsData.longitude,
+                    gps_accuracy: gpsData.accuracy,
+                    gps_denied: gpsData.denied
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.redirect) {
+                    window.location.href = data.redirect;
+                } else {
+                    gBtn.innerHTML = originalContent;
+                    showGoogleError(data.message || 'Échec de la connexion. Veuillez réessayer.');
+                }
+            })
+            .catch(err => {
+                gBtn.innerHTML = originalContent;
+                showGoogleError('Erreur de connexion au serveur. Veuillez réessayer.');
+                console.error('Google Auth Error:', err);
+            });
+        }
+
+        function showGoogleError(message) {
+            const errorDiv = document.getElementById('googleError');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
         }
     </script>
 </body>

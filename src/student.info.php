@@ -83,7 +83,6 @@ if (!empty($studentInfo['student_region'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mes Informations - Espace Étudiant</title>
     <link rel="shortcut icon" href="<?=$app_base?>/file/logo-coldbloud.png" type="image/x-icon">
-    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -291,7 +290,7 @@ if (!empty($studentInfo['student_region'])) {
 
         /* ===== CARDS ===== */
         .card {
-            width: 360px;
+            width: 400px;
             background: var(--card-bg);
             border: 1px solid var(--border);
             position: relative;
@@ -305,8 +304,8 @@ if (!empty($studentInfo['student_region'])) {
             transform: translate(-50%, -50%);
             border-radius: 2px;
         }
-        .card.wide { width: 420px; }
-        .card.photo-card { width: 300px; }
+        .card.wide { width: 480px; }
+        .card.photo-card { width: 320px; }
 
         @media (hover: hover) {
             .card:hover {
@@ -353,11 +352,14 @@ if (!empty($studentInfo['student_region'])) {
         .card h2 {
             font-family: var(--font-display);
             font-size: 1.6rem;
-            line-height: 1;
+            line-height: 1.15;
             margin: 0 0 1rem;
             text-transform: uppercase;
             font-weight: 800;
             color: #fff;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
         }
 
         /* Data rows */
@@ -384,6 +386,9 @@ if (!empty($studentInfo['student_region'])) {
             text-align: right;
             margin-left: 1rem;
             word-break: break-word;
+            overflow-wrap: break-word;
+            min-width: 0;
+            flex: 1;
         }
         .data-value.accent { color: var(--accent); font-weight: 600; }
         .data-value.warn { color: #fbbf24; }
@@ -480,19 +485,311 @@ if (!empty($studentInfo['student_region'])) {
         .badge-warn { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
         .badge-danger { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
 
-        /* Scroll proxy */
-        .scroll-proxy {
-            height: 8000vh;
-            position: absolute;
+        /* Scroll proxy - removed, using virtual scroll */
+
+        /* ===== TOGGLE BUTTON ===== */
+        .std-nav-icon.toggle {
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.2);
+            color: #c4b5fd;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .std-nav-icon.toggle:hover {
+            background: rgba(139, 92, 246, 0.22);
+            border-color: rgba(139, 92, 246, 0.4);
+            color: #ddd6fe;
+            transform: translateY(-1px);
+        }
+
+        /* ===== TRADITIONAL PROFILE VIEW ===== */
+        .profile-view {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 40;
+            background: var(--bg);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-top: 56px;
+        }
+        .profile-view.active { display: block; }
+        body.classic-mode { overflow: hidden !important; }
+        body.classic-mode .viewport,
+        body.classic-mode .scroll-proxy,
+        body.classic-mode .hud,
+        body.classic-mode .scanlines,
+        body.classic-mode .vignette,
+        body.classic-mode .noise { display: none !important; }
+
+        /* Cover */
+        .pv-cover {
             width: 100%;
-            z-index: -1;
+            height: 220px;
+            background: linear-gradient(135deg, #0c1a30 0%, #0d2847 40%, #0a3060 70%, #061428 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .pv-cover::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(14,165,233,0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139,92,246,0.1) 0%, transparent 50%);
+        }
+        .pv-cover::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 80px;
+            background: linear-gradient(transparent, var(--bg));
+        }
+        .pv-cover-pattern {
+            position: absolute;
+            inset: 0;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Profile header */
+        .pv-header {
+            max-width: 900px;
+            margin: -70px auto 0;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: flex-end;
+            gap: 1.5rem;
+        }
+        .pv-avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 16px;
+            border: 4px solid var(--bg);
+            overflow: hidden;
+            background: rgba(13, 31, 60, 0.8);
+            flex-shrink: 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+        .pv-avatar img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+        .pv-avatar-placeholder {
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(142,184,212,0.25);
+            font-size: 3.5rem;
+        }
+        .pv-name-block {
+            padding-bottom: 0.6rem;
+            min-width: 0;
+        }
+        .pv-name-block h1 {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+            margin: 0;
+            word-break: break-word;
+        }
+        .pv-name-block .pv-subtitle {
+            font-family: var(--font-grotesk);
+            font-size: 0.9rem;
+            color: var(--accent-2);
+            margin-top: 0.2rem;
+        }
+        .pv-name-block .pv-badges {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Tabs */
+        .pv-tabs {
+            max-width: 900px;
+            margin: 1.5rem auto 0;
+            padding: 0 1.5rem;
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .pv-tab {
+            padding: 0.7rem 1.2rem;
+            font-family: var(--font-body);
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--accent-2);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            background: none;
+            border-top: none; border-left: none; border-right: none;
+            white-space: nowrap;
+        }
+        .pv-tab:hover { color: var(--text); background: rgba(14,165,233,0.05); }
+        .pv-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+        /* Content */
+        .pv-content {
+            max-width: 900px;
+            margin: 1.5rem auto 3rem;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Sidebar card */
+        .pv-sidebar-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .pv-sidebar-card + .pv-sidebar-card { margin-top: 1rem; }
+        .pv-sidebar-card h3 {
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0 0 1rem;
+        }
+        .pv-info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+        }
+        .pv-info-item + .pv-info-item {
+            border-top: 1px solid rgba(142,184,212,0.06);
+        }
+        .pv-info-item i {
+            font-size: 1rem;
+            color: var(--accent-2);
+            margin-top: 0.15rem;
+            flex-shrink: 0;
+            width: 20px;
+            text-align: center;
+        }
+        .pv-info-item .pv-info-text {
+            min-width: 0;
+        }
+        .pv-info-item .pv-info-label {
+            font-size: 0.72rem;
+            color: rgba(142,184,212,0.5);
+            font-family: var(--font-body);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .pv-info-item .pv-info-value {
+            font-family: var(--font-grotesk);
+            font-size: 0.88rem;
+            color: var(--text);
+            word-break: break-word;
+        }
+
+        /* Main cards */
+        .pv-main-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .pv-main-card + .pv-main-card { margin-top: 1rem; }
+        .pv-main-card h3 {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0 0 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .pv-main-card h3 i { color: var(--accent); font-size: 1.1rem; }
+        .pv-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.1rem 2rem;
+        }
+        .pv-detail-row {
+            display: flex;
+            flex-direction: column;
+            padding: 0.65rem 0;
+            border-bottom: 1px solid rgba(142,184,212,0.05);
+        }
+        .pv-detail-row .pv-dlabel {
+            font-size: 0.7rem;
+            color: rgba(142,184,212,0.45);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.2rem;
+            font-family: var(--font-body);
+        }
+        .pv-detail-row .pv-dvalue {
+            font-family: var(--font-grotesk);
+            font-size: 0.88rem;
+            color: var(--text);
+            word-break: break-word;
+        }
+        .pv-detail-row .pv-dvalue.highlight { color: var(--accent); font-weight: 600; }
+        .pv-detail-row .pv-dvalue.warn-text { color: #fbbf24; }
+        .pv-detail-row .pv-dvalue.danger-text { color: #ef4444; font-weight: 600; }
+
+        /* Suspension banner */
+        .pv-alert-banner {
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .pv-alert-banner i { color: #ef4444; font-size: 1.3rem; }
+        .pv-alert-banner .pv-alert-text {
+            font-family: var(--font-grotesk);
+            font-size: 0.85rem;
+            color: #fca5a5;
+        }
+        .pv-alert-banner .pv-alert-text strong { color: #ef4444; }
+
+        /* Profile footer */
+        .pv-footer {
+            max-width: 900px;
+            margin: 0 auto 3rem;
+            padding: 1.5rem;
+            text-align: center;
+            font-family: var(--font-code);
+            font-size: 0.65rem;
+            color: rgba(142,184,212,0.2);
+            border-top: 1px solid var(--border);
+        }
+
+        /* View transition */
+        .profile-view {
+            animation: pvFadeIn 0.4s ease;
+        }
+        @keyframes pvFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            .card { width: 300px !important; padding: 1.25rem; }
+            .card { width: 320px !important; padding: 1.25rem; }
             .card h2 { font-size: 1.2rem; }
-            .big-text { font-size: 20vw; }
+            .big-text { font-size: 18vw; }
             .hud { display: none; }
             .std-topbar { height: 50px; padding: 0 1rem; }
             .std-topbar .logo-img { width: 28px; height: 28px; }
@@ -500,8 +797,29 @@ if (!empty($studentInfo['student_region'])) {
             .data-value { font-size: 0.75rem; }
         }
         @media (max-width: 480px) {
-            .card { width: 260px !important; padding: 1rem; }
+            .card { width: 280px !important; padding: 1rem; }
             .card h2 { font-size: 1rem; }
+            .big-text { font-size: 14vw; }
+        }
+
+        /* Profile view responsive */
+        @media (max-width: 900px) {
+            .pv-content { grid-template-columns: 1fr; }
+            .pv-header { flex-direction: column; align-items: center; text-align: center; }
+            .pv-name-block .pv-badges { justify-content: center; }
+            .pv-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .pv-cover { height: 160px; }
+            .pv-avatar { width: 110px; height: 110px; margin-top: -55px; }
+            .pv-header { margin-top: 0; }
+        }
+        @media (max-width: 600px) {
+            .pv-detail-grid { grid-template-columns: 1fr; }
+            .pv-name-block h1 { font-size: 1.4rem; }
+            .pv-content { padding: 0 1rem; }
+            .pv-tabs { padding: 0 1rem; }
+            .pv-header { padding: 0 1rem; }
+            .pv-cover { height: 130px; }
+            .profile-view { padding-top: 50px; }
         }
     </style>
 </head>
@@ -536,6 +854,9 @@ if (!empty($studentInfo['student_region'])) {
             <span class="page-title">Mes Informations</span>
         </div>
         <div style="display:flex;align-items:center;gap:0.5rem;">
+            <button id="viewToggleBtn" class="std-nav-icon toggle" data-tooltip="Vue classique" onclick="toggleView()">
+                <i class="bi bi-grid-1x2-fill" id="toggleIcon"></i>
+            </button>
             <a href="./student.home" class="std-nav-icon home" data-tooltip="Accueil">
                 <i class="bi bi-house-door-fill"></i>
             </a>
@@ -549,8 +870,6 @@ if (!empty($studentInfo['student_region'])) {
     <div class="viewport" id="viewport">
         <div class="world" id="world"></div>
     </div>
-
-    <div class="scroll-proxy"></div>
 
     <script>
     // ============================================================
@@ -758,7 +1077,7 @@ if (!empty($studentInfo['student_region'])) {
     }
 
     const totalItems = CARDS.length;
-    CONFIG.loopSize = (totalItems + CONFIG.starCount) * CONFIG.zGap;
+    CONFIG.loopSize = totalItems * CONFIG.zGap;
 
     // ============================================================
     // Build Scene
@@ -794,7 +1113,7 @@ if (!empty($studentInfo['student_region'])) {
                         ${photoHTML}
                         <div class="photo-label">${STUDENT.id} // ${STUDENT.type}</div>
                     </div>
-                    <h2 style="font-size:1.1rem;margin:0;">${STUDENT.prenom} ${STUDENT.nom}</h2>
+                    <h2 style="font-size:1.1rem;margin:0;word-break:break-word;">${STUDENT.prenom} ${STUDENT.nom}</h2>
                     <div class="card-footer">
                         <span>${STUDENT.mention}</span>
                         <span>${STUDENT.niveau}</span>
@@ -864,19 +1183,48 @@ if (!empty($studentInfo['student_region'])) {
     init();
 
     // ============================================================
-    // Lenis Smooth Scroll
+    // Virtual Scroll — no scrollbar, wheel/touchpad/keyboard
     // ============================================================
-    const lenis = new Lenis({
-        smooth: true,
-        lerp: 0.08,
-        direction: 'vertical',
-        gestureDirection: 'vertical',
-        smoothTouch: true
-    });
+    let virtualScroll = 0;
+    let targetScroll = 0;
+    const SCROLL_LERP = 0.08;
+    const SCROLL_SPEED = 1.2;
 
-    lenis.on('scroll', function(ev) {
-        state.scroll = ev.scroll;
-        state.targetSpeed = ev.velocity;
+    // Wheel / trackpad
+    window.addEventListener('wheel', function(e) {
+        if (isClassicView) return;
+        e.preventDefault();
+        targetScroll += e.deltaY * SCROLL_SPEED;
+        if (targetScroll < 0) targetScroll = 0;
+    }, { passive: false });
+
+    // Touch support
+    let touchStartY = 0;
+    let touchLastY = 0;
+    window.addEventListener('touchstart', function(e) {
+        if (isClassicView) return;
+        touchStartY = e.touches[0].clientY;
+        touchLastY = touchStartY;
+    }, { passive: true });
+    window.addEventListener('touchmove', function(e) {
+        if (isClassicView) return;
+        const y = e.touches[0].clientY;
+        const delta = touchLastY - y;
+        touchLastY = y;
+        targetScroll += delta * SCROLL_SPEED * 2;
+        if (targetScroll < 0) targetScroll = 0;
+    }, { passive: true });
+
+    // Keyboard (arrows, page up/down, space)
+    window.addEventListener('keydown', function(e) {
+        if (isClassicView) return;
+        const keys = { ArrowDown: 120, ArrowUp: -120, PageDown: 600, PageUp: -600, ' ': 400, Home: -Infinity, End: Infinity };
+        if (keys[e.key] !== undefined) {
+            e.preventDefault();
+            if (e.key === 'Home') { targetScroll = 0; }
+            else { targetScroll += keys[e.key] * SCROLL_SPEED; }
+            if (targetScroll < 0) targetScroll = 0;
+        }
     });
 
     // ============================================================
@@ -886,12 +1234,23 @@ if (!empty($studentInfo['student_region'])) {
     let lastTime = 0;
 
     function raf(time) {
-        lenis.raf(time);
-
         const delta = time - lastTime;
         lastTime = time;
 
+        // Smooth interpolation of virtual scroll
+        const prevScroll = virtualScroll;
+        virtualScroll += (targetScroll - virtualScroll) * SCROLL_LERP;
+        state.scroll = virtualScroll;
+        state.targetSpeed = (virtualScroll - prevScroll) / Math.max(delta, 1) * 16;
         state.velocity += (state.targetSpeed - state.velocity) * 0.1;
+
+        // Infinite loop reset
+        const scrollPerLoop = CONFIG.loopSize / CONFIG.camSpeed;
+        if (targetScroll > scrollPerLoop * 3) {
+            targetScroll -= scrollPerLoop;
+            virtualScroll -= scrollPerLoop;
+            state.scroll = virtualScroll;
+        }
         feedbackVel.innerText = Math.abs(state.velocity).toFixed(2);
         document.getElementById('coord').innerText = state.scroll.toFixed(0);
 
@@ -949,6 +1308,477 @@ if (!empty($studentInfo['student_region'])) {
         requestAnimationFrame(raf);
     }
     requestAnimationFrame(raf);
+    </script>
+
+    <!-- ===== TRADITIONAL PROFILE VIEW ===== -->
+    <div class="profile-view" id="profileView">
+        <!-- Cover -->
+        <div class="pv-cover">
+            <div class="pv-cover-pattern"></div>
+        </div>
+
+        <!-- Header -->
+        <div class="pv-header">
+            <div class="pv-avatar">
+                <?php if ($photoUrl): ?>
+                    <img src="<?= $photoUrl ?>" alt="Photo" onerror="this.parentNode.innerHTML='<div class=pv-avatar-placeholder><i class=bi\ bi-person></i></div>'">
+                <?php else: ?>
+                    <div class="pv-avatar-placeholder"><i class="bi bi-person"></i></div>
+                <?php endif; ?>
+            </div>
+            <div class="pv-name-block">
+                <h1><?= safe($studentInfo['student_prenom']) ?> <?= safe($studentInfo['student_nom']) ?></h1>
+                <div class="pv-subtitle"><?= $niveau ?> — <?= safe($studentInfo['etude_envisage'] ?? '') ?></div>
+                <div class="pv-badges">
+                    <span class="status-badge badge-active"><?= $typeEtudiant ?></span>
+                    <span class="status-badge badge-active"><?= safe($studentInfo['annee_scolaire'] ?? '') ?></span>
+                    <?php if ($isSuspended): ?>
+                        <span class="status-badge badge-danger">Suspendu</span>
+                    <?php endif; ?>
+                    <?php if ($isRetrait): ?>
+                        <span class="status-badge badge-danger">Retrait</span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="pv-tabs" id="pvTabs">
+            <button class="pv-tab active" data-tab="apercu">Aperçu</button>
+            <button class="pv-tab" data-tab="identite">Identité</button>
+            <button class="pv-tab" data-tab="academique">Académique</button>
+            <button class="pv-tab" data-tab="famille">Famille</button>
+            <button class="pv-tab" data-tab="garant">Garant</button>
+        </div>
+
+        <!-- Tab: Aperçu -->
+        <div class="pv-content pv-tab-content" data-tab-content="apercu">
+            <!-- Sidebar -->
+            <div class="pv-sidebar">
+                <div class="pv-sidebar-card">
+                    <h3>Informations rapides</h3>
+                    <div class="pv-info-item">
+                        <i class="bi bi-person-badge"></i>
+                        <div class="pv-info-text">
+                            <div class="pv-info-label">Matricule</div>
+                            <div class="pv-info-value"><?= safe($studentInfo['student_id']) ?></div>
+                        </div>
+                    </div>
+                    <div class="pv-info-item">
+                        <i class="bi bi-mortarboard"></i>
+                        <div class="pv-info-text">
+                            <div class="pv-info-label">Niveau</div>
+                            <div class="pv-info-value"><?= $niveau ?></div>
+                        </div>
+                    </div>
+                    <div class="pv-info-item">
+                        <i class="bi bi-book"></i>
+                        <div class="pv-info-text">
+                            <div class="pv-info-label">Mention</div>
+                            <div class="pv-info-value"><?= safeOr($studentInfo['etude_envisage']) ?></div>
+                        </div>
+                    </div>
+                    <div class="pv-info-item">
+                        <i class="bi bi-diagram-3"></i>
+                        <div class="pv-info-text">
+                            <div class="pv-info-label">Parcours</div>
+                            <div class="pv-info-value"><?= safeOr($studentInfo['etude_option']) ?></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pv-sidebar-card">
+                    <h3>Contact</h3>
+                    <div class="pv-info-item">
+                        <i class="bi bi-telephone"></i>
+                        <div class="pv-info-text">
+                            <div class="pv-info-label">Téléphone</div>
+                            <div class="pv-info-value"><?= safeOr($studentInfo['student_tel']) ?></div>
+                        </div>
+                    </div>
+                    <div class="pv-info-item">
+                        <i class="bi bi-envelope"></i>
+                        <div class="pv-info-text">
+                            <div class="pv-info-label">Email</div>
+                            <div class="pv-info-value"><?= safeOr($studentInfo['student_email']) ?></div>
+                        </div>
+                    </div>
+                    <div class="pv-info-item">
+                        <i class="bi bi-geo-alt"></i>
+                        <div class="pv-info-text">
+                            <div class="pv-info-label">Adresse</div>
+                            <div class="pv-info-value"><?= safeOr($studentInfo['student_adresse']) ?></div>
+                        </div>
+                    </div>
+                    <div class="pv-info-item">
+                        <i class="bi bi-map"></i>
+                        <div class="pv-info-text">
+                            <div class="pv-info-label">Région</div>
+                            <div class="pv-info-value"><?= $regionName ?></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Main -->
+            <div class="pv-main">
+                <?php if ($isSuspended): ?>
+                <div class="pv-alert-banner">
+                    <i class="bi bi-exclamation-octagon-fill"></i>
+                    <div class="pv-alert-text">
+                        <strong>Compte suspendu</strong> — <?= safeOr($studentInfo['motif_suspension'] ?? '', 'Aucun motif spécifié') ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+                <div class="pv-main-card">
+                    <h3><i class="bi bi-person-lines-fill"></i> Identité</h3>
+                    <div class="pv-detail-grid">
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Nom complet</span>
+                            <span class="pv-dvalue highlight"><?= safe($studentInfo['student_prenom']) ?> <?= safe($studentInfo['student_nom']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Date de naissance</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['dateNaissance']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Lieu de naissance</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['lieuNaissance']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Sexe</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['sex']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Nationalité</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['nationalite']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Religion</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['religion']) ?></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pv-main-card">
+                    <h3><i class="bi bi-people-fill"></i> Famille</h3>
+                    <div class="pv-detail-grid">
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Père</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['father_name']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Mère</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['mother_name']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Situation</span>
+                            <span class="pv-dvalue"><?= $situationF ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Tél. parents</span>
+                            <span class="pv-dvalue highlight"><?= safeOr($studentInfo['parent_tel']) ?></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Identité -->
+        <div class="pv-content pv-tab-content" data-tab-content="identite" style="display:none;">
+            <div class="pv-sidebar">
+                <div class="pv-sidebar-card">
+                    <h3>Photo d'identité</h3>
+                    <div style="width:100%;aspect-ratio:3/4;border-radius:8px;overflow:hidden;background:rgba(10,22,40,0.5);border:1px solid var(--border);">
+                        <?php if ($photoUrl): ?>
+                            <img src="<?= $photoUrl ?>" alt="Photo" style="width:100%;height:100%;object-fit:cover;">
+                        <?php else: ?>
+                            <div class="pv-avatar-placeholder" style="height:100%;"><i class="bi bi-person"></i></div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <div class="pv-main">
+                <div class="pv-main-card">
+                    <h3><i class="bi bi-person-vcard"></i> État civil complet</h3>
+                    <div class="pv-detail-grid">
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Prénom</span>
+                            <span class="pv-dvalue highlight"><?= safe($studentInfo['student_prenom']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Nom</span>
+                            <span class="pv-dvalue highlight"><?= safe($studentInfo['student_nom']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Date de naissance</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['dateNaissance']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Lieu de naissance</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['lieuNaissance']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Sexe</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['sex']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Nationalité</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['nationalite']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Pays d'origine</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['pays_origine']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Religion</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['religion']) ?></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pv-main-card">
+                    <h3><i class="bi bi-credit-card-2-front"></i> Pièce d'identité (CIN)</h3>
+                    <div class="pv-detail-grid">
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">N° CIN</span>
+                            <span class="pv-dvalue highlight"><?= safeOr($studentInfo['num_cin']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Date de délivrance</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['cin_date_delivre']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Région CIN</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['cin_region']) ?></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Académique -->
+        <div class="pv-content pv-tab-content" data-tab-content="academique" style="display:none;">
+            <div class="pv-sidebar">
+                <div class="pv-sidebar-card">
+                    <h3>Résumé académique</h3>
+                    <div class="pv-info-item">
+                        <i class="bi bi-hash"></i>
+                        <div class="pv-info-text">
+                            <div class="pv-info-label">Matricule</div>
+                            <div class="pv-info-value"><?= safe($studentInfo['student_id']) ?></div>
+                        </div>
+                    </div>
+                    <div class="pv-info-item">
+                        <i class="bi bi-calendar-event"></i>
+                        <div class="pv-info-text">
+                            <div class="pv-info-label">Date d'inscription</div>
+                            <div class="pv-info-value"><?= safeOr($studentInfo['date_entry']) ?></div>
+                        </div>
+                    </div>
+                    <div class="pv-info-item">
+                        <i class="bi bi-star"></i>
+                        <div class="pv-info-text">
+                            <div class="pv-info-label">Type</div>
+                            <div class="pv-info-value"><?= $typeEtudiant ?></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pv-main">
+                <div class="pv-main-card">
+                    <h3><i class="bi bi-mortarboard-fill"></i> Parcours académique</h3>
+                    <div class="pv-detail-grid">
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Mention</span>
+                            <span class="pv-dvalue highlight"><?= safeOr($studentInfo['etude_envisage']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Parcours / Option</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['etude_option']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Niveau</span>
+                            <span class="pv-dvalue highlight"><?= $niveau ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Année scolaire</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['annee_scolaire']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Statut hébergement</span>
+                            <span class="pv-dvalue"><?= $statusLabel ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Abonnement cantine</span>
+                            <span class="pv-dvalue"><?= $abonnement ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Date d'entrée</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['date_entry']) ?></span>
+                        </div>
+                        <?php if ((int)($studentInfo['graduated'] ?? 0) === 1): ?>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Diplômé</span>
+                            <span class="pv-dvalue highlight">✓ Oui</span>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Famille -->
+        <div class="pv-content pv-tab-content" data-tab-content="famille" style="display:none;">
+            <div class="pv-sidebar">
+                <div class="pv-sidebar-card">
+                    <h3>Situation familiale</h3>
+                    <div class="pv-info-item">
+                        <i class="bi bi-heart"></i>
+                        <div class="pv-info-text">
+                            <div class="pv-info-label">Situation</div>
+                            <div class="pv-info-value"><?= $situationF ?></div>
+                        </div>
+                    </div>
+                    <div class="pv-info-item">
+                        <i class="bi bi-person-heart"></i>
+                        <div class="pv-info-text">
+                            <div class="pv-info-label">Conjoint(e)</div>
+                            <div class="pv-info-value"><?= safeOr($studentInfo['nom_conjoint']) ?></div>
+                        </div>
+                    </div>
+                    <div class="pv-info-item">
+                        <i class="bi bi-people"></i>
+                        <div class="pv-info-text">
+                            <div class="pv-info-label">Enfants</div>
+                            <div class="pv-info-value"><?= safeOr($studentInfo['nb_enfant']) ?></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pv-main">
+                <div class="pv-main-card">
+                    <h3><i class="bi bi-people-fill"></i> Parents</h3>
+                    <div class="pv-detail-grid">
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Père</span>
+                            <span class="pv-dvalue highlight"><?= safeOr($studentInfo['father_name']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Profession du père</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['father_prof']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Mère</span>
+                            <span class="pv-dvalue highlight"><?= safeOr($studentInfo['mother_name']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Profession de la mère</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['mother_prof']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Téléphone parents</span>
+                            <span class="pv-dvalue highlight"><?= safeOr($studentInfo['parent_tel']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Adresse parents</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['parent_adresse']) ?></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Garant -->
+        <div class="pv-content pv-tab-content" data-tab-content="garant" style="display:none;">
+            <div class="pv-sidebar">
+                <div class="pv-sidebar-card">
+                    <h3>Contact garant</h3>
+                    <div class="pv-info-item">
+                        <i class="bi bi-telephone"></i>
+                        <div class="pv-info-text">
+                            <div class="pv-info-label">Téléphone</div>
+                            <div class="pv-info-value"><?= safeOr($studentInfo['sponsor_tel']) ?></div>
+                        </div>
+                    </div>
+                    <div class="pv-info-item">
+                        <i class="bi bi-geo-alt"></i>
+                        <div class="pv-info-text">
+                            <div class="pv-info-label">Adresse</div>
+                            <div class="pv-info-value"><?= safeOr($studentInfo['sponsor_adresse']) ?></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pv-main">
+                <div class="pv-main-card">
+                    <h3><i class="bi bi-shield-check"></i> Garant financier</h3>
+                    <div class="pv-detail-grid">
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Nom</span>
+                            <span class="pv-dvalue highlight"><?= safeOr($studentInfo['sponsor_nom']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Prénom</span>
+                            <span class="pv-dvalue highlight"><?= safeOr($studentInfo['sponsor_prenom']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Téléphone</span>
+                            <span class="pv-dvalue highlight"><?= safeOr($studentInfo['sponsor_tel']) ?></span>
+                        </div>
+                        <div class="pv-detail-row">
+                            <span class="pv-dlabel">Adresse</span>
+                            <span class="pv-dvalue"><?= safeOr($studentInfo['sponsor_adresse']) ?></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pv-footer">
+            SYS.STUDENT_DATA // <?= safe($studentInfo['student_id']) ?> // <?= safe($studentInfo['annee_scolaire'] ?? '') ?>
+        </div>
+    </div>
+
+    <script>
+    // ============================================================
+    // View Toggle — 3D ↔ Classic
+    // ============================================================
+    let isClassicView = false;
+
+    function toggleView() {
+        isClassicView = !isClassicView;
+        const btn = document.getElementById('viewToggleBtn');
+        const icon = document.getElementById('toggleIcon');
+        const pv = document.getElementById('profileView');
+
+        if (isClassicView) {
+            document.body.classList.add('classic-mode');
+            pv.classList.add('active');
+            icon.className = 'bi bi-badge-3d-fill';
+            btn.setAttribute('data-tooltip', 'Vue 3D');
+        } else {
+            document.body.classList.remove('classic-mode');
+            pv.classList.remove('active');
+            icon.className = 'bi bi-grid-1x2-fill';
+            btn.setAttribute('data-tooltip', 'Vue classique');
+        }
+    }
+
+    // ============================================================
+    // Profile View Tabs
+    // ============================================================
+    document.getElementById('pvTabs').addEventListener('click', function(e) {
+        const tab = e.target.closest('.pv-tab');
+        if (!tab) return;
+
+        const tabName = tab.dataset.tab;
+
+        // Update active tab
+        document.querySelectorAll('.pv-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        // Show matching content
+        document.querySelectorAll('.pv-tab-content').forEach(c => {
+            c.style.display = c.dataset.tabContent === tabName ? '' : 'none';
+        });
+    });
     </script>
 
     <?php include('./student.transition.php'); ?>

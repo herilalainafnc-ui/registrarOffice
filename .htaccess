@@ -1,5 +1,9 @@
 RewriteEngine On
 
+# Redirection HTTP vers HTTPS (nécessaire pour la géolocalisation GPS)
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
 # Désactiver l'ajout automatique de slash pour les dossiers
 <IfModule mod_dir.c>
     DirectorySlash Off
