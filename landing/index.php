@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>UniversitÃ© Adventiste Zurcher - Registrar</title>
+    <title>Université Adventiste Zurcher - Registrar</title>
     <?php
-    // Calculer le chemin de base si non dÃ©fini (accÃ¨s direct)
+    // Calculer le chemin de base si non défini (accès direct)
     if (!isset($app_base)) {
         $_doc_root = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
         $_app_root = rtrim(str_replace('\\', '/', dirname(__DIR__)), '/');
@@ -26,7 +26,7 @@
             <div class="logo-container">
                 <img src="<?=$app_base?>/file/UAZ Official.png" alt="UAZ Logo" class="nav-logo">
             </div>
-            <div class="brand-name">UniversitÃ© Adventiste Zurcher</div>
+            <div class="brand-name">Université Adventiste Zurcher</div>
         </div>
         <div class="nav-right">
             <a href="<?=$app_base?>/" class="nav-link active">Accueil</a>
@@ -52,12 +52,12 @@
 
     <div class="details" id="details-even">
         <div class="place-box">
-            <div class="text">Mention ThÃ©ologie</div>
+            <div class="text">Mention Théologie</div>
         </div>
-        <div class="title-box-1"><div class="title-1">THÃ‰OLOGIE</div></div>
+        <div class="title-box-1"><div class="title-1">THÉOLOGIE</div></div>
         <div class="title-box-2" style="display: none;"><div class="title-2"></div></div>
         <div class="desc">
-            Approfondissez votre comprÃ©hension des textes sacrÃ©s et de la thÃ©ologie adventiste. Une formation spirituelle et acadÃ©mique pour ceux qui souhaitent servir l'Ã‰glise et enseigner la Parole.
+            Approfondissez votre compréhension des textes sacrés et de la théologie adventiste. Une formation spirituelle et académique pour ceux qui souhaitent servir l'Église et enseigner la Parole.
         </div>
         <div class="cta">
             <button class="bookmark">
@@ -65,18 +65,18 @@
                     <path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z" clip-rule="evenodd"/>
                 </svg>
             </button>
-            <a href="<?=$app_base?>/login" class="discover">AccÃ©der Ã  Infinit Registrar</a>
+            <a href="<?=$app_base?>/login" class="discover">Accéder à Infinit Registrar</a>
         </div>
     </div>
 
     <div class="details" id="details-odd">
         <div class="place-box">
-            <div class="text">Mention ThÃ©ologie</div>
+            <div class="text">Mention Théologie</div>
         </div>
-        <div class="title-box-1"><div class="title-1">THÃ‰OLOGIE</div></div>
+        <div class="title-box-1"><div class="title-1">THÉOLOGIE</div></div>
         <div class="title-box-2" style="display: none;"><div class="title-2"></div></div>
         <div class="desc">
-            Approfondissez votre comprÃ©hension des textes sacrÃ©s et de la thÃ©ologie adventiste. Une formation spirituelle et acadÃ©mique pour ceux qui souhaitent servir l'Ã‰glise et enseigner la Parole.
+            Approfondissez votre compréhension des textes sacrés et de la théologie adventiste. Une formation spirituelle et académique pour ceux qui souhaitent servir l'Église et enseigner la Parole.
         </div>
         <div class="cta">
             <button class="bookmark">
@@ -84,7 +84,7 @@
                     <path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z" clip-rule="evenodd"/>
                 </svg>
             </button>
-            <a href="<?=$app_base?>/login" class="discover">AccÃ©der Ã  Infinit Registrar</a>
+            <a href="<?=$app_base?>/login" class="discover">Accéder à Infinit Registrar</a>
         </div>
     </div>
 
@@ -121,7 +121,7 @@
     <div class="stats-container" id="stats">
         <div class="stat-item">
             <div class="stat-number" data-count="420">0</div>
-            <div class="stat-label">Ã‰tudiants</div>
+            <div class="stat-label">Étudiants</div>
         </div>
         <div class="stat-item">
             <div class="stat-number" data-count="40">0</div>

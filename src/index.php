@@ -69,6 +69,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
         }
     }
 }
+
+// Permettre les popups Google Sign-In (FedCM / One Tap)
+header('Cross-Origin-Opener-Policy: same-origin-allow-popups');
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -76,7 +79,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion - Infinit Registrar</title>
-    <link rel="shortcut icon" href="../file/logo-coldbloud.png" type="image/x-icon">
+    <?php
+    // Calculer le chemin de base pour les URLs
+    $_doc_root = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+    $_app_root = rtrim(str_replace('\\', '/', dirname(__DIR__)), '/');
+    $app_base = substr($_app_root, strlen($_doc_root));
+    if ($app_base === false || $app_base === '/' || $app_base === '.') $app_base = '';
+    ?>
+    <script>var APP_BASE = '<?=$app_base?>';</script>
+    <link rel="shortcut icon" href="<?=$app_base?>/file/logo-coldbloud.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.0/bootstrap-icons.min.css" rel="stylesheet">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -475,7 +486,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
             <!-- Header -->
             <div class="login-header">
                 <div class="logo-container">
-                    <img src="../file/logo-coldbloud.png" alt="Logo Infinit Registrar">
+                    <img src="<?=$app_base?>/file/logo-coldbloud.png" alt="Logo Infinit Registrar">
                     <h1>Registrar</h1>
                 </div>
                 <p class="login-subtitle">Veuillez vous connecter pour continuer</p>

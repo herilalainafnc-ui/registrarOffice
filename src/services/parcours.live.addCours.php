@@ -1,7 +1,7 @@
 <select class="input w-full" name="parcours" id="parcours">
 	<option value="all">TRONC COMMUN</option>
 <?php
-	require('../../data/backdb.php');
+	require(__DIR__ . '/../../data/backdb.php');
 
 	$mention = $_POST['mentionSelect'];
 

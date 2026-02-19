@@ -2,15 +2,15 @@
 <html>
 <head>
 	<?php require('../init/head.php');?>
-	<link rel="stylesheet" type="text/css" href="../src/css/style.css">
 	<title>Inscription</title>
 </head>
-<body>
+<body class="<?=$bg_three_color?> sm:text-xs lg:text-sm">
+<div class="h-screen w-full <?=$bg_three_color?>">
 	<!-- TOP BAR --><?php require('../init/topbar.php');?>
 
 	<!-- NOTIFICATION MANAGER --><?php require('../src/main/notificationGeneral.php');?>
 	
-	<div class="w-full bg-slate-700 py-6" style="height: calc(100vh - 48px);">
+	<div class="w-full bg-slate-700 py-6" style="height: calc(100vh - 56px);">
 
 		<div class="xl:w-11/12 sm:w-11/12 sm:rounded-xl p-3 bg-slate-800 mx-auto shadow-sm" style="height: calc(100vh - 110px);">
 			<div id="header" class="flex w-full h-[70px]">
@@ -86,19 +86,19 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 									
 									if ($profil['image_student'] !="" OR $imangeLen >=10) { ?>
 
-									<img src="../app/photosetudiants/<?=$profil['image_student'] ?>" class="border-1 border-black w-full">
+									<img src="<?=$app_base?>/app/photosetudiants/<?=$profil['image_student'] ?>" class="border-1 border-black w-full">
 
 								<?php 
 									}else{
 								?>
 									
-									<img src="../app/photosetudiants/10054.jpg" class="border-1 border-black w-full">
+									<img src="<?=$app_base?>/app/photosetudiants/10054.jpg" class="border-1 border-black w-full">
 
 								<?php
 									}
 								}else{ ?>
 									
-									<img src="../app/photosetudiants/10054.jpg" class="border-1 border-black w-full">
+									<img src="<?=$app_base?>/app/photosetudiants/10054.jpg" class="border-1 border-black w-full">
 
 								<?php }	?>
 								
@@ -413,7 +413,7 @@ function updateSessionDisplay() {
 							<div class="w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 								
 								<div class="p-2">
-									<div class="w-full h-[400px]" style="background-image: url('../app/photosetudiants/<?=$profil['image_student']?>');background-position: center; background-size: cover;background-repeat: no-repeat;">
+									<div class="w-full h-[400px]" style="background-image: url('<?=$app_base?>/app/photosetudiants/<?=$profil['image_student']?>');background-position: center; background-size: cover;background-repeat: no-repeat;">
 										
 									</div>
 
@@ -433,9 +433,6 @@ function updateSessionDisplay() {
 		</div>
 		
 	</div>
-
-</body>
-</html>
 
 <script type="text/javascript">
 	// Variable globale pour stocker le session_id actuel (mis à jour dynamiquement)
@@ -848,5 +845,6 @@ function updateSessionDisplay() {
 	});
 </script>
 <?php require('../init/toast.php'); ?>
+</div><!-- /h-screen wrapper -->
 </body>
 </html>

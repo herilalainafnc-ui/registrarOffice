@@ -119,13 +119,18 @@
     // ─── EXIT: Intercept links and slide curtain DOWN ─────────
     // Student pages we want transitions for
     const STUDENT_PATHS = [
+        // MVC clean URLs
+        '/student/home', '/student/dashboard', '/student/info', '/student/news',
+        '/student/quiz', '/student/game',
+        // Legacy URLs (backward compat)
         'student.home', 'student.dashboard', 'student.home.php', 'student.dashboard.php',
         'student.game', 'student.info', 'student.actus', 'student.quiz',
         'student.game.php', 'student.info.php', 'student.actus.php', 'student.quiz.php',
+        // Sub-pages (via ?page= parameter)
         'student/bulletin', 'student/transcript', 'student/information',
         'student/historique-notes', 'student/diplome', 'student/transcriptSS',
         'student/newCours', 'student/courssupprim', 'student/histNotes', 'student/histInfos',
-        'student?page=', 'student.php?page='
+        'student?page=', 'student.php?page=', '/student?page='
     ];
 
     function isStudentLink(href) {

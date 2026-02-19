@@ -1,12 +1,8 @@
 # Activer le module de réécriture
 RewriteEngine On
 
-# Redirection des URLs sans .php vers les fichiers .php
+# Servir les fichiers .php sans l'extension (compatibilité arrière)
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^(.*)$ $1.php [L]
-
-# Rediriger les URLs avec .php vers les URLs sans .php (optionnel - SEO)
-RewriteCond %{THE_REQUEST} /([^.]+)\.php [NC]
-RewriteRule ^ /%1 [R=301,L]

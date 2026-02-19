@@ -1,6 +1,6 @@
 <select id="firstEtd" class="inscInput h-6 text-sm w-full requierd-9 mb-3" name="etude_option" >
 <?php
-	require('../../data/backdb.php');
+	require(__DIR__ . '/../../data/backdb.php');
 
 	$mention = $_POST['mention'];
 	$findOption = $dtb->query('SELECT * FROM filiere_parcours WHERE departement = "'.$mention.'"');

@@ -22,8 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-require('../../data/backdb.php');
-require('../../data/middleware.php');
+require(__DIR__ . '/../../data/backdb.php');
+require(__DIR__ . '/../../data/middleware.php');
 
 // Initialiser le middleware
 initMiddleware($dtb);

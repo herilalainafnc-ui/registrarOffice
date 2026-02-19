@@ -1,5 +1,5 @@
 <?php 
-	require('../../data/backdb.php');
+	require(__DIR__ . '/../../data/backdb.php');
 
 	$mention = $_POST['mention'];
 	$annee_etude = $_POST['annee_etude'];
