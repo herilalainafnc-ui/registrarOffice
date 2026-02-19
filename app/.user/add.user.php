@@ -4,6 +4,11 @@
  * SÉCURISÉ: Vérification des privilèges + CSRF
  */
 
+// MVC base path
+$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 // Activer l'affichage des erreurs pour le debug (à retirer en production stable)
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
@@ -158,7 +163,7 @@ try {
 	$insertuser = $dtb->prepare($sql);
 	$insertuser->execute($params);
 
-	header('Location: ../../src/creat.account.php');
+	header('Location: ' . $app_base . '/accounts/create');
 	exit();
 
 } catch (PDOException $e) {

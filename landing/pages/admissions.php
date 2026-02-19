@@ -113,12 +113,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <?php include 'init-landing.php'; ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admissions - Université Adventiste Zurcher</title>
-    <link rel="shortcut icon" href="../../file/logo-coldbloud.png" type="image/x-icon">
+    <link rel="shortcut icon" href="<?=$app_base?>/file/logo-coldbloud.png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./pages.css">
+    <link rel="stylesheet" href="<?=$app_base?>/landing/pages/pages.css">
 </head>
 <body>
     <!-- Navigation -->
@@ -366,6 +367,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <?php include 'footer.php'; ?>
 
-    <script src="./pages.js"></script>
+    <script src="<?=$app_base?>/landing/pages/pages.js"></script>
 </body>
 </html>

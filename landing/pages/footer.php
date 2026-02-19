@@ -3,7 +3,7 @@
     <div class="footer-grid">
         <div>
             <div class="footer-brand">
-                <img src="../../file/UAZ Official.png" alt="UAZ" class="footer-logo">
+                <img src="<?=$app_base?>/file/UAZ Official.png" alt="UAZ" class="footer-logo">
                 <span class="footer-name">Université Adventiste Zurcher</span>
             </div>
             <p class="footer-desc">
@@ -36,20 +36,20 @@
         <div>
             <h4 class="footer-title">Liens Rapides</h4>
             <ul class="footer-links">
-                <li><a href="../index.php">Accueil</a></li>
-                <li><a href="./formations.php">Formations</a></li>
-                <li><a href="./admissions.php">Admissions</a></li>
-                <li><a href="./campus.php">Campus</a></li>
-                <li><a href="./contact.php">Contact</a></li>
+                <li><a href="<?=$app_base?>/">Accueil</a></li>
+                <li><a href="<?=$app_base?>/formations">Formations</a></li>
+                <li><a href="<?=$app_base?>/admissions">Admissions</a></li>
+                <li><a href="<?=$app_base?>/campus">Campus</a></li>
+                <li><a href="<?=$app_base?>/contact">Contact</a></li>
             </ul>
         </div>
         <div>
             <h4 class="footer-title">Mentions</h4>
             <ul class="footer-links">
-                <li><a href="./formations.php">Théologie</a></li>
-                <li><a href="./formations.php">Gestion</a></li>
-                <li><a href="./formations.php">Informatique</a></li>
-                <li><a href="./formations.php">Sciences Infirmières</a></li>
+                <li><a href="<?=$app_base?>/formations">Théologie</a></li>
+                <li><a href="<?=$app_base?>/formations">Gestion</a></li>
+                <li><a href="<?=$app_base?>/formations">Informatique</a></li>
+                <li><a href="<?=$app_base?>/formations">Sciences Infirmières</a></li>
             </ul>
         </div>
         <div>

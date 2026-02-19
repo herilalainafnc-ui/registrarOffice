@@ -1,4 +1,9 @@
 <?php 
+// MVC base path
+$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 require '../../data/backdb.php';
 	
 	$last_change_user_id = $_GET['rg_id'];
@@ -22,6 +27,6 @@ require '../../data/backdb.php';
 
 	$delete->execute();
 
-	header('location:../../src/accueil.php');
+	header('location:' . $app_base . '/dashboard');
 
 ?>

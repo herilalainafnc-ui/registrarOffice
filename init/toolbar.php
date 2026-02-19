@@ -639,7 +639,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 	<!-- SECTION 6: Settings -->	
 	<div class="toolbar-section flex-shrink-0 flex px-1">
 		
-		<a href="<?=$app_base?>/src/settings" class="tool-btn tool-settings text-xs flex-1">
+		<a href="<?=$app_base?>/settings" class="tool-btn tool-settings text-xs flex-1">
 			<div class="tool-icon">
 				<i class="bi bi-gear-fill"></i>
 			</div>

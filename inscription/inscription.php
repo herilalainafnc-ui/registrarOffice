@@ -235,7 +235,7 @@ echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];
 									<div class="w-5/12 m-auto mt-4 p-3 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-lg border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all">
 										<a class="text-white">Veuillez préciser la session à laquelle cet étudiant doit s’inscrire.</a>
 
-					<form method="post" action="./app/generate.student.php?student_id=<?=$student_id?>&graduated=<?=$graduated?>" class="session-no-refrech">
+					<form method="post" action="<?=$app_base?>/inscription/app/generate.student.php?student_id=<?=$student_id?>&graduated=<?=$graduated?>" class="session-no-refrech">
 
 										<select name="semesterSession" id="semesterSelect" class="w-full bg-slate-800 rounded-lg my-2">
 											<option <?php if (date('m') >= 7) { echo "selected"; } ?>>Premier semestre</option>
@@ -287,7 +287,7 @@ function checkSessionExists() {
 	message.className = 'text-slate-400';
 	
 	$.ajax({
-		url: './app/check.session.php',
+		url: APP_BASE+'/inscription/app/check.session.php',
 		type: 'POST',
 		data: {
 			student_id: studentId,
@@ -345,7 +345,7 @@ $(document).ready(function() {
 // Mettre à jour l'affichage de la session dans la sidebar
 function updateSessionDisplay() {
 	$.ajax({
-		url: "./stages/session.php",
+		url: APP_BASE+'/inscription/stages/session.php',
 		method: "POST",
 		data: {
 			student_id: '<?=$student_id?>',
@@ -375,7 +375,7 @@ function updateSessionDisplay() {
 							<div id="contentFicheinscription" class="stage_4 hidden">
 								<div class="w-full text-center pt-20">
 									<a target="_blank" href="#" id="linkFicheInscription"
-										data-base-url="../src/data.topdf.php?ptype=Fiche_inscription&id=<?=$id?>&student_id=<?=$student_id?>&student_nom=<?=$student_nom?>&student_prenom=<?=$student_prenom?>&etude_envisage=<?=$etude_envisage?>&level=<?=$level?>&student_tel=<?=$student_tel?>&image_student=<?=$image_student?>"
+										data-base-url="<?=$app_base?>/src/data.topdf.php?ptype=Fiche_inscription&id=<?=$id?>&student_id=<?=$student_id?>&student_nom=<?=$student_nom?>&student_prenom=<?=$student_prenom?>&etude_envisage=<?=$etude_envisage?>&level=<?=$level?>&student_tel=<?=$student_tel?>&image_student=<?=$image_student?>"
 											class="text-[40px] leading-tight active:bg-cyan-700 p-1">
 											<div class="w-5/12 m-auto p-3 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-lg border-2 <?=$br_two_color?> hover:border-cyan-500 transition-all">
 											<i class="bi-file-text-fill text-[180px] text-green-300"></i><br>
@@ -446,7 +446,7 @@ function updateSessionDisplay() {
 		$('.session-no-refrech').on('submit',function(submitSS){
 			submitSS.preventDefault();
 
-			var url = './app/generate.student.php?student_id=<?=$student_id?>&graduated=<?=$graduated ?? 0?>';
+			var url = APP_BASE+'/inscription/app/generate.student.php?student_id=<?=$student_id?>&graduated=<?=$graduated ?? 0?>';
 			var data = $(this).serialize();
 			
 			var submitBtn = $('#submitSession');
@@ -474,7 +474,7 @@ function updateSessionDisplay() {
 				var	student_id = '<?=$student_id?>';
 
 				$.ajax({
-						url:"./stages/top.stages.php",
+						url: APP_BASE+'/inscription/stages/top.stages.php',
 						method:"POST",
 						data:{student_id:student_id},
 
@@ -485,7 +485,7 @@ function updateSessionDisplay() {
 					});
 
 				$.ajax({
-						url:"./stages/session.php",
+						url: APP_BASE+'/inscription/stages/session.php',
 						method:"POST",
 						data:{
 							student_id: student_id,
@@ -513,7 +513,7 @@ function updateSessionDisplay() {
 		var	student_id = '<?=$student_id?>';
 
 		$.ajax({
-				url:"./stages/top.stages.php",
+				url: APP_BASE+'/inscription/stages/top.stages.php',
 				method:"POST",
 				data:{student_id:student_id},
 
@@ -524,7 +524,7 @@ function updateSessionDisplay() {
 			});
 
 		$.ajax({
-				url:"./stages/session.php",
+				url: APP_BASE+'/inscription/stages/session.php',
 				method:"POST",
 				data:{
 					student_id: student_id,
@@ -563,7 +563,7 @@ function updateSessionDisplay() {
 				$('#intFicheinscription').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
 
 
-				var url = './app/generate.stage.php?student_id=<?=$student_id?>&stage=1';
+				var url = APP_BASE+'/inscription/app/generate.stage.php?student_id=<?=$student_id?>&stage=1';
 
 				$.post(url,function(response){});
 			
@@ -584,7 +584,7 @@ function updateSessionDisplay() {
 				$('#intFicheinscription').attr('class','w-full  text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-200 ');
 
 				
-				var url = './app/generate.stage.php?student_id=<?=$student_id?>&stage=2';
+				var url = APP_BASE+'/inscription/app/generate.stage.php?student_id=<?=$student_id?>&stage=2';
 
 				$.post(url,function(response){});
 
@@ -613,14 +613,14 @@ function updateSessionDisplay() {
 				// Utiliser la variable globale currentSessionId (toujours à jour)
 				var session_id = currentSessionId || $("#session_id").text();
 				
-				var url = './app/generate.stage.php?student_id=<?=$student_id?>&session_id='+session_id+'&stage=3';
+				var url = APP_BASE+'/inscription/app/generate.stage.php?student_id=<?=$student_id?>&session_id='+session_id+'&stage=3';
 
 				$.post(url,function(response){});
 
 				// Rafraîchir la liste des cours pour refléter les changements (suppression à l'étape 4)
 				$('#contentNewcours').css('opacity', '0.5');
 				$.ajax({
-					url: '../src/student/new.cours.php',
+					url: APP_BASE+'/src/student/new.cours.php',
 					method: 'GET',
 					cache: false,
 					data: {
@@ -660,7 +660,7 @@ function updateSessionDisplay() {
             	
             	$('#stageMark_3').attr('class','text-xs p-1');
             	
-            	var url = './app/generate.stage.php?student_id=<?=$student_id?>&stage=4';
+            	var url = APP_BASE+'/inscription/app/generate.stage.php?student_id=<?=$student_id?>&stage=4';
 
 				$.post(url,function(response){});
             
@@ -670,7 +670,7 @@ function updateSessionDisplay() {
             	var session_id = currentSessionId || $("#session_id").text();
             	
             	$.ajax({
-					url:"./stages/mode.payement.php",
+					url: APP_BASE+'/inscription/stages/mode.payement.php',
 					method:"POST",
 					data:{student_id:student_id,session_id:session_id},
 
@@ -707,7 +707,7 @@ function updateSessionDisplay() {
             	var session_id = currentSessionId || $("#session_id").text();
             	linkFiche.attr('href', baseUrl + '&session_id=' + session_id);
             	
-            	var url = './app/generate.stage.php?student_id=<?=$student_id?>&stage=5';
+            	var url = APP_BASE+'/inscription/app/generate.stage.php?student_id=<?=$student_id?>&stage=5';
 
 				$.post(url,function(response){});
 
@@ -729,7 +729,7 @@ function updateSessionDisplay() {
 
 				$('#stageMark_5').attr('class','text-xs p-1');
 				
-				var url = './app/generate.stage.php?student_id=<?=$student_id?>&stage=6';
+				var url = APP_BASE+'/inscription/app/generate.stage.php?student_id=<?=$student_id?>&stage=6';
 
 				$.post(url,function(response){});
 
@@ -745,7 +745,7 @@ function updateSessionDisplay() {
 
             	$('#stageMark_6').attr('class','text-xs p-1');
             	
-            	var url = './app/generate.stage.php?student_id=<?=$student_id?>&stage=7';
+            	var url = APP_BASE+'/inscription/app/generate.stage.php?student_id=<?=$student_id?>&stage=7';
 
 				$.post(url,function(response){});
             }

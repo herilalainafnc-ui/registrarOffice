@@ -781,7 +781,7 @@
 <div class="shad-dialog-overlay" id="updateDialog<?=$user_id?>">
 	<div class="shad-dialog">
 		<?php $userData = DB::find('compt_utilisateur', $user_id); ?>
-		<form method="post" action="../app/.user/updateUser?rg_id=<?=$rg_id;?>&id=<?=$user_id?>" enctype="multipart/form-data" class="updateUserForm">
+		<form method="post" action="<?=$app_base?>/app/.user/updateUser?rg_id=<?=$rg_id;?>&id=<?=$user_id?>" enctype="multipart/form-data" class="updateUserForm">
 			<?= csrf_field() ?>
 			<div class="shad-dialog-header">
 				<h3 class="shad-dialog-title"><i class="bi-person-gear mr-2 text-cyan-400"></i>Modifier l'utilisateur</h3>
@@ -910,7 +910,7 @@
 <!-- Modal Add User -->
 <div class="shad-dialog-overlay" id="addUserDialog">
 	<div class="shad-dialog">
-		<form id="formToAddUser" method="post" action="../app/.user/add.user?id=<?=$rg_id?>" enctype="multipart/form-data">
+		<form id="formToAddUser" method="post" action="<?=$app_base?>/app/.user/add.user?id=<?=$rg_id?>" enctype="multipart/form-data">
 			<?= csrf_field() ?>
 			<div class="shad-dialog-header">
 				<h3 class="shad-dialog-title"><i class="bi-person-plus-fill mr-2 text-cyan-400"></i>Créer un utilisateur</h3>
@@ -1138,7 +1138,7 @@ $(document).ready(function() {
 			const q = $(this).val().trim();
 			if (q.length < 2) { $(resultsDiv).hide().empty(); return; }
 			timer = setTimeout(function() {
-				$.get('../app/.user/search.student.php', { q: q }, function(data) {
+				$.get(APP_BASE+'/app/.user/search.student.php', { q: q }, function(data) {
 					if (data.length === 0) {
 						$(resultsDiv).html('<div style="padding:10px;color:#94a3b8;font-size:13px;">Aucun étudiant trouvé</div>').show();
 						return;

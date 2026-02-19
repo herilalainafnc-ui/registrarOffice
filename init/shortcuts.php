@@ -314,13 +314,13 @@ document.addEventListener('keydown', function(e) {
     // Go to home with Alt+H
     if (e.altKey && e.key === 'h') {
         e.preventDefault();
-        window.location.href = APP_BASE+'/src/accueil';
+        window.location.href = APP_BASE+'/dashboard';
     }
 
     // New student with Alt+N
     if (e.altKey && e.key === 'n') {
         e.preventDefault();
-        window.location.href = APP_BASE+'/src/creat.student';
+        window.location.href = APP_BASE+'/students/create';
     }
 });
 

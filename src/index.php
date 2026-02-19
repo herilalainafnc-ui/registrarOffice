@@ -18,7 +18,7 @@ $loginError = false;
 
 // Si déjà connecté, rediriger vers l'accueil
 if (isLoggedIn()) {
-    header('Location: ./accueil');
+    header('Location: ' . (defined('APP_BASE') ? APP_BASE : '') . '/dashboard');
     exit;
 }
 
@@ -49,18 +49,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
             
             // Déterminer la destination finale
             if ($userLevel === 8 || $userType === 'student' || ($user['privilege'] ?? '') === 'student') {
-                $destination = './student.home';
+                $destination = (defined('APP_BASE') ? APP_BASE : '') . '/student/home';
             } elseif ($userLevel === 7 || $userType === 'teacher' || ($user['privilege'] ?? '') === 'teacher') {
-                $destination = './teacher.dashboard';
+                $destination = (defined('APP_BASE') ? APP_BASE : '') . '/teacher/dashboard';
             } else {
-                $destination = './accueil';
+                $destination = (defined('APP_BASE') ? APP_BASE : '') . '/dashboard';
             }
             
             // Stocker la destination dans la session
             $_SESSION['login_redirect'] = $destination;
             
             // Rediriger vers la page de chargement
-            header('Location: ./loading');
+            header('Location: ' . (defined('APP_BASE') ? APP_BASE : '') . '/loading');
             exit;
         } else {
             // Log de tentative échouée
@@ -737,7 +737,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
             gBtn.innerHTML = '<p style="color:#94a3b8;font-size:13px;text-align:center;"><i class="bi bi-arrow-repeat" style="animation:spin 1s linear infinite;display:inline-block;"></i> Connexion en cours...</p>';
 
             // Envoyer le token au serveur avec les coordonnées GPS
-            fetch('./api/google-auth', {
+            fetch(APP_BASE+'/api/google-auth', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

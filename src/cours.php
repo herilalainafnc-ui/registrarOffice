@@ -20,14 +20,14 @@ if (preg_match('#/cours/$#', $_SERVER['REQUEST_URI'])) {
 	
 	// Les étudiants ne peuvent pas accéder à cette page
 	if (isStudent() && !isAdmin() && !isRegistrar()) {
-		header('Location: ./student.dashboard.php');
+		header('Location: ' . $app_base . '/student/dashboard');
 		exit;
 	}
 	
 	// Si c'est un professeur, vérifier qu'il a accès à ce cours
 	if (isTeacher() && !isAdmin() && !isRegistrar()) {
 		if (!teacherCanAccessCourse($requestedCourseId)) {
-			header('Location: ./teacher.dashboard.php?error=access_denied');
+			header('Location: ' . $app_base . '/teacher/dashboard?error=access_denied');
 			exit;
 		}
 	}

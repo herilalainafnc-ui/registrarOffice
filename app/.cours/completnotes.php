@@ -1,5 +1,9 @@
 <?php 
-	
+	// MVC base path
+	$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+	$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+	$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 	require ('../../data/backdb.php');
 	
 	$id = $_GET['id'];
@@ -15,6 +19,6 @@
 	$update->bindParam(':idcours',$idcours,PDO::PARAM_INT);
 	$update->execute();
 
-	header('location:../../src/cours.php?id='.$id.'&page=notes#'.$sigle.$year);
+	header('location:' . $app_base . '/course?id='.$id.'&page=notes#'.$sigle.$year);
 
  ?>

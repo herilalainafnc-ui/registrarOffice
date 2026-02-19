@@ -80,7 +80,7 @@ if($apotr){
 			$(document).ready(function(){
 				$('.form-no-refrech').on('submit',function(e){
 					e.preventDefault();
-					var url = 'actions/completnotes';
+					var url = APP_BASE+'/app/.cours/completnotes';
 					var data = $(this).serialize();
 
 					$.post(url,data,function(response){

@@ -10,7 +10,7 @@ initMiddleware($dtb);
 // Accès réservé aux administrateurs
 requireAuth();
 if (!isAdmin() && !isRegistrar()) {
-    header('Location: ./accueil');
+    header('Location: ' . $app_base . '/dashboard');
     exit;
 }
 

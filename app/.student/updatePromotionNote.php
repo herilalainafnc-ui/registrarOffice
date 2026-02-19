@@ -1,4 +1,9 @@
 <?php 
+	// MVC base path
+	$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+	$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+	$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 	require('../../data/backdb.php');
 
 	$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
@@ -34,7 +39,7 @@
 			echo json_encode(['success' => false, 'message' => $msg]);
 			exit;
 		} else {
-			header('location:../../src/student.php?id='.$id.'&page=transcriptSS&error=note_max');
+			header('location:' . $app_base . '/student?id='.$id.'&page=transcriptSS&error=note_max');
 			exit;
 		}
 	}
@@ -113,5 +118,5 @@
 		exit;
 	}
 
-	header('location:../../src/student.php?id='.$id.'&page=transcriptSS#semestre'.$a.$s);
+	header('location:' . $app_base . '/student?id='.$id.'&page=transcriptSS#semestre'.$a.$s);
  ?>

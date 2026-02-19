@@ -1,4 +1,9 @@
 <?php
+	// MVC base path
+	$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+	$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+	$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 	require '../../data/backdb.php';
 
 	$id = $_GET['id'];
@@ -13,5 +18,5 @@
 	$deleteCoursFinance->bindvalue(':idSupprCours', $id_cours, PDO::PARAM_INT);
 	$deleteCoursFinance->execute();
 
-	header('location:../../src/student.php?id='.$id.'&page=courssupprim');
+	header('location:' . $app_base . '/student?id='.$id.'&page=courssupprim');
  ?>

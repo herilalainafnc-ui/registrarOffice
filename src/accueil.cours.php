@@ -10,8 +10,7 @@
 	
 	// Les étudiants sont redirigés vers leur tableau de bord
 	if (isStudent() && !isAdmin() && !isRegistrar()) {
-		header('Location: ./student.dashboard.php');
-		exit;
+    header('Location: ' . $app_base . '/student/dashboard');
 	}
 	
 	// Les professeurs voient uniquement leurs cours (filtré dans le live-search)

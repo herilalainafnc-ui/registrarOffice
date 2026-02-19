@@ -6,7 +6,7 @@
         $(document).ready(function() {
             function fetchData() {
                 $.ajax({
-                    url: '../data/data',
+                    url: APP_BASE+'/data/data',
                     method: 'GET',
                     success: function(response) {
                         $('#content').text(response.message);

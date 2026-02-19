@@ -1,4 +1,9 @@
 <?php 
+	// MVC base path
+	$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+	$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+	$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 	require('../../data/backdb.php');
 	require('student_history_helper.php');
 
@@ -70,5 +75,5 @@
 		'action_type' => 'suspension'
 	));
 
-	header('location:../../src/student.php?id='.$id.'&page=information&msg=suspended');
+	header('location:' . $app_base . '/student?id='.$id.'&page=information&msg=suspended');
 ?>

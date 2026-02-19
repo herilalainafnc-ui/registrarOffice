@@ -325,7 +325,7 @@ while($f_list = $filiere->fetch()) {
 		for ($i=1; $i < 3; $i++) {
 
 		?>
-<form method="post" action="finance/save_finance?filiere=<?=$filiere_sigle?>&semester=<?=$i?>" id="formFor<?=$filiere_sigle?>_semester<?=$i?>">
+<form method="post" action="<?=$app_base?>/finance/save?filiere=<?=$filiere_sigle?>&semester=<?=$i?>" id="formFor<?=$filiere_sigle?>_semester<?=$i?>">
 <div id="pach_<?=$filiere_sigle?>_<?=$i?>" class="mt-3">
 	<div class="flex items-center gap-2 mb-2">
 		<span class="semester-badge">

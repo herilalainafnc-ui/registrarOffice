@@ -1,5 +1,10 @@
 <?php 
 
+// MVC base path
+$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 // Désactiver l'affichage des erreurs pour les requêtes AJAX
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 if ($isAjax) {
@@ -510,6 +515,6 @@ if ($isAjaxRequest && !headers_sent()) {
 	exit;
 }
 
-header('location:../../src/student.php?id='.$id.'&page=information');
+header('location:' . $app_base . '/student?id='.$id.'&page=information');
 
 ?>

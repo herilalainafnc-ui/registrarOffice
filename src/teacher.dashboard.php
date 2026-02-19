@@ -29,7 +29,7 @@ initMiddleware($dtb);
 
 // Autoriser l'accès aux admins, registrars ET professeurs
 if (!isTeacher() && !isAdmin() && !isRegistrar()) {
-    header('Location: ./index.php');
+    header('Location: ' . (defined('APP_BASE') ? APP_BASE : '') . '/login');
     exit;
 }
 
@@ -105,7 +105,7 @@ $students = getTeacherStudents($currentYear);
                                         <tr class="hover:bg-slate-600 border-b border-slate-600">
                                             <td class="p-2 text-white"><?= htmlspecialchars($course['Sigle']) ?></td>
                                             <td class="p-2 text-white">
-                                                <a href="./cours.php?id=<?= $course['id'] ?>" class="hover:text-cyan-400">
+                                                <a href="<?=$app_base?>/course?id=<?= $course['id'] ?>" class="hover:text-cyan-400">
                                                     <?= htmlspecialchars($course['title']) ?>
                                                 </a>
                                             </td>
@@ -147,7 +147,7 @@ $students = getTeacherStudents($currentYear);
                                         <tr class="hover:bg-slate-600 border-b border-slate-600">
                                             <td class="p-2 text-white"><?= htmlspecialchars($student['student_id']) ?></td>
                                             <td class="p-2 text-white">
-                                                <a href="./student.php?id=<?= urlencode($student['student_id']) ?>" class="hover:text-cyan-400">
+                                                <a href="<?=$app_base?>/student?id=<?= urlencode($student['student_id']) ?>" class="hover:text-cyan-400">
                                                     <?= htmlspecialchars($student['student_nom'].' '.$student['student_prenom']) ?>
                                                 </a>
                                             </td>
@@ -177,10 +177,10 @@ $students = getTeacherStudents($currentYear);
                         Actions Rapides
                     </h2>
                     <div class="flex flex-wrap gap-3">
-                        <a href="./accueil.cours.php" class="bg-cyan-700 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg">
+                        <a href="<?=$app_base?>/courses" class="bg-cyan-700 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg">
                             <i class="bi bi-list-ul mr-2"></i>Voir tous mes cours
                         </a>
-                        <a href="./accueil" class="bg-slate-600 hover:bg-slate-500 text-white px-4 py-2 rounded-lg">
+                        <a href="<?=$app_base?>/dashboard" class="bg-slate-600 hover:bg-slate-500 text-white px-4 py-2 rounded-lg">
                             <i class="bi bi-people mr-2"></i>Voir mes étudiants
                         </a>
                     </div>

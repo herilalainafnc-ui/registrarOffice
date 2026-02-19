@@ -22,6 +22,15 @@
 	$app_base = substr($_app_root, strlen($_doc_root));
 	if ($app_base === false || $app_base === '/' || $app_base === '.') $app_base = '';
 
+	// Définir APP_BASE si pas déjà fait (mode sans front controller)
+	if (!defined('APP_BASE')) define('APP_BASE', $app_base);
+	if (!defined('ROOT_DIR')) define('ROOT_DIR', dirname(__DIR__));
+
+	// Charger les helpers MVC si pas déjà chargés
+	if (!function_exists('url')) {
+		require_once(dirname(__DIR__) . '/core/helpers.php');
+	}
+
 	// Encoder un chemin de fichier en préservant les / (encode chaque segment)
 	if (!function_exists('encodeFilePath')) {
 		function encodeFilePath($path) {
@@ -31,7 +40,7 @@
 	}
 	
 	// Vérifier l'authentification (redirige vers login si non connecté)
-	requireAuth('../src/index.php');
+	requireAuth($app_base . '/login');
 
 	/*:::::::::::::::::::::::: SESSION COLORS - BLEU NUIT ::::::::::::::::::::::::*/
 

@@ -2,6 +2,11 @@
 /**
  * Page de déconnexion sécurisée
  */
+// MVC base path
+$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+$_ar = rtrim(str_replace('\\', '/', dirname(__DIR__)), '/');
+$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 require('../data/backdb.php');
 require('../data/middleware.php');
 
@@ -58,6 +63,6 @@ $goodbyeUserType = urlencode($userType);
 Middleware::logout();
 
 // Redirection vers la page d'au revoir avec les paramètres
-header('Location: ../src/goodbye?name=' . $goodbyeName . '&firstname=' . $goodbyeFirstname . '&photo=' . $goodbyePhoto . '&type=' . $goodbyeUserType);
+header('Location: ' . $app_base . '/goodbye?name=' . $goodbyeName . '&firstname=' . $goodbyeFirstname . '&photo=' . $goodbyePhoto . '&type=' . $goodbyeUserType);
 exit;
 ?>

@@ -23,7 +23,7 @@ if (preg_match('#/student/$#', $_SERVER['REQUEST_URI'])) {
 		$studentIdFromSession = getStudentId();
 		$checkStudent = DB::selectOne("SELECT student_id FROM tbl_2024_etudiant WHERE id = :id", ['id' => $requestedStudentId]);
 		if (!$checkStudent || $checkStudent['student_id'] !== $studentIdFromSession) {
-			header('Location: ./student.dashboard');
+			header('Location: ' . $app_base . '/student/dashboard');
 			exit;
 		}
 	}
@@ -32,7 +32,7 @@ if (preg_match('#/student/$#', $_SERVER['REQUEST_URI'])) {
 	if (isTeacher() && !isAdmin() && !isRegistrar()) {
 		$checkStudent = DB::selectOne("SELECT student_id FROM tbl_2024_etudiant WHERE id = :id", ['id' => $requestedStudentId]);
 		if ($checkStudent && !teacherCanAccessStudent($checkStudent['student_id'])) {
-			header('Location: ./teacher.dashboard.php?error=access_denied');
+			header('Location: ' . $app_base . '/teacher/dashboard?error=access_denied');
 			exit;
 		}
 	}

@@ -28,9 +28,15 @@ require('../../data/middleware.php');
 // Initialiser le middleware
 initMiddleware($dtb);
 
+// Calculer le base path
+$_doc_root = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+$_app_root = rtrim(str_replace('\\', '/', dirname(__DIR__, 2)), '/');
+$app_base = substr($_app_root, strlen($_doc_root));
+if ($app_base === false || $app_base === '/' || $app_base === '.') $app_base = '';
+
 // Si déjà connecté
 if (isLoggedIn()) {
-    echo json_encode(['success' => true, 'redirect' => '../student.home']);
+    echo json_encode(['success' => true, 'redirect' => $app_base . '/student/home']);
     exit;
 }
 
@@ -62,11 +68,11 @@ if ($user) {
     
     // Déterminer la destination (pour un étudiant Google, c'est toujours student.home)
     if ($userLevel === 8 || $userType === 'student' || ($user['privilege'] ?? '') === 'student') {
-        $destination = './student.home';
+        $destination = $app_base . '/student/home';
     } elseif ($userLevel === 7 || $userType === 'teacher' || ($user['privilege'] ?? '') === 'teacher') {
-        $destination = './teacher.dashboard';
+        $destination = $app_base . '/teacher/dashboard';
     } else {
-        $destination = './accueil';
+        $destination = $app_base . '/dashboard';
     }
     
     // Stocker la destination pour la page de chargement
@@ -74,7 +80,7 @@ if ($user) {
     
     echo json_encode([
         'success' => true,
-        'redirect' => './loading',
+        'redirect' => $app_base . '/loading',
         'message' => 'Connexion réussie'
     ]);
 } else {

@@ -584,7 +584,7 @@
                                 
                                         <!-- Student Item -->
                                         <div class="dl-student-item p-3 flex items-center gap-3"
-                                             data-photo="<?= (!empty($student['image_student']) && file_exists('../app/photosetudiants/'.$student['image_student'])) ? '../app/photosetudiants/'.$student['image_student'] : '' ?>"
+                                             data-photo="<?= (!empty($student['image_student']) && file_exists(__DIR__.'/../../app/photosetudiants/'.$student['image_student'])) ? $app_base.'/app/photosetudiants/'.$student['image_student'] : '' ?>"
                                              data-session-id="<?= $session_id ?>"
                                              data-session-name="<?= htmlspecialchars($session_name) ?>"
                                              data-mention="<?= htmlspecialchars($sigle) ?>"
@@ -597,8 +597,8 @@
                                             
                                             <!-- Avatar -->
                                             <div class="flex-shrink-0 relative">
-                                                <?php if (!empty($student['image_student']) && file_exists('../app/photosetudiants/'.$student['image_student'])): ?>
-                                                    <img src="../app/photosetudiants/<?= $student['image_student'] ?>" 
+                                                <?php if (!empty($student['image_student']) && file_exists(__DIR__.'/../../app/photosetudiants/'.$student['image_student'])): ?>
+                                                    <img src="<?=$app_base?>/app/photosetudiants/<?= $student['image_student'] ?>" 
                                                          class="w-10 h-10 rounded-full object-cover ring-2 ring-blue-500/40">
                                                 <?php else: ?>
                                                     <div class="w-10 h-10 rounded-full bg-slate-700/80 flex items-center justify-center ring-2 ring-slate-600/50">

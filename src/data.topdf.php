@@ -13,7 +13,7 @@ $date = 'h_'.date($h.'-i-s').' date_'.date('d-m-Y');
     <div class="bg-slate-800 flex h-10 p-1">
 
         <div class="sm:w-5/12 py-1 text-left lg:w-4/12">
-        <a href="./" class="flex text-white">
+        <a href="<?=$app_base?>/dashboard" class="flex text-white">
             <img src="../file/logo-coldbloud.png" class="w-6 h-6 mx-3 mx-2">
             <b> Infinit Registrar</b>
         </a>
@@ -25,7 +25,7 @@ $date = 'h_'.date($h.'-i-s').' date_'.date('d-m-Y');
         </div>
         <div class="sm:w-5/12 text-right lg:w-4/12 pr-4">
             
-            <form action="data.toxlsx" method="post" id="exportForm">
+            <form action="<?=$app_base?>/src/data.toxlsx" method="post" id="exportForm">
                 
                 <input type="hidden" name="htmlContent" id="htmlContent" value="">
                 

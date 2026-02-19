@@ -4,6 +4,11 @@
  * SÉCURISÉ: Vérification des privilèges + CSRF
  */
 
+// MVC base path
+$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 require('../../data/backdb.php');
 require('../../data/middleware.php');
 initMiddleware($dtb);
@@ -30,7 +35,7 @@ try {
     $oldImage   = $_POST['oldImage'] ?? '';
 
     if (!$id || empty($title) || empty($content)) {
-        header('location:../../src/admin.actus?error=' . urlencode('Données invalides.'));
+        header('location:' . $app_base . '/news?error=' . urlencode('Données invalides.'));
         exit;
     }
 
@@ -43,7 +48,7 @@ try {
     // Check annonce exists
     $existing = DB::find('t_annonces', $id);
     if (!$existing) {
-        header('location:../../src/admin.actus?error=' . urlencode('Annonce introuvable.'));
+        header('location:' . $app_base . '/news?error=' . urlencode('Annonce introuvable.'));
         exit;
     }
 
@@ -55,7 +60,7 @@ try {
         $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
         
         if (!in_array($mimeType, $allowedMimes)) {
-            header('location:../../src/admin.actus?error=' . urlencode('Format d\'image non autorisé.'));
+            header('location:' . $app_base . '/news?error=' . urlencode('Format d\'image non autorisé.'));
             exit;
         }
 
@@ -107,11 +112,11 @@ try {
         'by_user' => $_SESSION['user_id'] ?? null
     ]);
 
-    header('location:../../src/admin.actus?success=1&msg=' . urlencode('Annonce mise à jour avec succès.'));
+    header('location:' . $app_base . '/news?success=1&msg=' . urlencode('Annonce mise à jour avec succès.'));
     exit;
 
 } catch (Exception $e) {
     error_log('Erreur mise à jour annonce: ' . $e->getMessage());
-    header('location:../../src/admin.actus?error=' . urlencode('Erreur lors de la mise à jour.'));
+    header('location:' . $app_base . '/news?error=' . urlencode('Erreur lors de la mise à jour.'));
     exit;
 }

@@ -1,4 +1,9 @@
 <?php 
+// MVC base path
+$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 require '../../data/backdb.php';
 	
 	$last_change_user_id = $_GET['rg_id'];
@@ -55,4 +60,4 @@ require '../../data/backdb.php';
 
 $update->execute();
 
-header('location:../../src/prof.php?id='.$teacher_id.'&page=information');
+header('location:' . $app_base . '/professor?id='.$teacher_id.'&page=information');

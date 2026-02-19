@@ -1,4 +1,9 @@
 <?php 
+	// MVC base path
+	$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+	$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+	$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 	require('../../data/backdb.php');
 
 	// Fuseau horaire Madagascar (UTC+3)
@@ -26,7 +31,7 @@
 			echo json_encode(['success' => false, 'message' => 'La note ne peut pas dépasser 20. Veuillez saisir une note entre 0 et 20.']);
 			exit;
 		} else {
-			header('location:../../src/student.php?id='.$id.'&page=transcriptSS&error=note_max#semestre'.$as);
+			header('location:' . $app_base . '/student?id='.$id.'&page=transcriptSS&error=note_max#semestre'.$as);
 			exit;
 		}
 	}
@@ -38,7 +43,7 @@
 			echo json_encode(['success' => false, 'message' => 'La note doit être un nombre valide.']);
 			exit;
 		} else {
-			header('location:../../src/student.php?id='.$id.'&page=transcriptSS&error=note_invalid#semestre'.$as);
+			header('location:' . $app_base . '/student?id='.$id.'&page=transcriptSS&error=note_invalid#semestre'.$as);
 			exit;
 		}
 	}
@@ -110,5 +115,5 @@
 		exit;
 	}
 
-	header('location:../../src/student.php?id='.$id.'&page=transcriptSS#semestre'.$as);
+	header('location:' . $app_base . '/student?id='.$id.'&page=transcriptSS#semestre'.$as);
  ?>

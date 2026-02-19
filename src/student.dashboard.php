@@ -451,7 +451,7 @@
 // Middleware déjà chargé par head.php — pas besoin de re-require
 // Autoriser l'accès aux admins, registrars ET étudiants
 if (!isStudent() && !isAdmin() && !isRegistrar()) {
-    header('Location: ./index');
+    header('Location: ' . (defined('APP_BASE') ? APP_BASE : '') . '/login');
     exit;
 }
 
@@ -465,7 +465,7 @@ if (!$studentInfo) {
         echo '<h2 style="color:#e8f1f8;margin-bottom:0.5rem;">Compte non lié</h2>';
         echo '<p>Votre compte utilisateur n\'est pas encore lié à un profil étudiant (matricule).</p>';
         echo '<p style="color:#5a8aa8;margin-top:0.5rem;">Veuillez contacter le bureau du registraire pour lier votre compte.</p>';
-        echo '<a href="./student.home" style="display:inline-block;margin-top:1rem;padding:8px 20px;background:rgba(14,165,233,0.15);border:1px solid rgba(14,165,233,0.3);border-radius:8px;color:#38bdf8;text-decoration:none;">← Retour à l\'accueil</a>';
+        echo '<a href="' . $app_base . '/student/home" style="display:inline-block;margin-top:1rem;padding:8px 20px;background:rgba(14,165,233,0.15);border:1px solid rgba(14,165,233,0.3);border-radius:8px;color:#38bdf8;text-decoration:none;">← Retour à l\'accueil</a>';
         echo '</div>';
     } else {
         echo '<div style="padding:2rem;text-align:center;color:#fca5a5;">Aucun profil étudiant à afficher.</div>';
@@ -530,10 +530,10 @@ try {
             <span class="page-title">Mes Notes</span>
         </div>
         <div class="flex items-center gap-2">
-            <a href="./student.home" class="std-nav-icon home" data-tooltip="Accueil">
+            <a href="<?=$app_base?>/student/home" class="std-nav-icon home" data-tooltip="Accueil">
                 <i class="bi bi-house-door-fill"></i>
             </a>
-            <a href="../app/logout" class="std-nav-icon logout" data-tooltip="Déconnexion">
+            <a href="<?=$app_base?>/logout" class="std-nav-icon logout" data-tooltip="Déconnexion">
                 <i class="bi bi-box-arrow-right"></i>
             </a>
         </div>

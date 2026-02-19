@@ -11,7 +11,7 @@ require('../data/middleware.php');
 initMiddleware($dtb);
 
 if (!isStudent() && !isAdmin() && !isRegistrar()) {
-    header('Location: ./index');
+    header('Location: ' . $app_base . '/login');
     exit;
 }
 
@@ -443,13 +443,13 @@ if ($app_base === false || $app_base === '/' || $app_base === '.') $app_base = '
         <span class="page-title">Quiz UAZ</span>
     </div>
     <div style="display:flex;align-items:center;gap:0.5rem;">
-        <a href="./student.home" class="std-nav-icon home" data-tooltip="Accueil">
+        <a href="<?=$app_base?>/student/home" class="std-nav-icon home" data-tooltip="Accueil">
             <i class="bi bi-house-door-fill"></i>
         </a>
-        <a href="./student.dashboard" class="std-nav-icon" data-tooltip="Notes">
+        <a href="<?=$app_base?>/student/dashboard" class="std-nav-icon" data-tooltip="Notes">
             <i class="bi bi-clipboard-data-fill"></i>
         </a>
-        <a href="../app/logout" class="std-nav-icon logout" data-tooltip="Déconnexion">
+        <a href="<?=$app_base?>/logout" class="std-nav-icon logout" data-tooltip="Déconnexion">
             <i class="bi bi-box-arrow-right"></i>
         </a>
     </div>
@@ -529,7 +529,7 @@ if ($app_base === false || $app_base === '/' || $app_base === '.') $app_base = '
             <button class="modal-btn primary" onclick="restartQuiz()">
                 <i class="bi bi-arrow-clockwise"></i> Rejouer
             </button>
-            <a href="./student.home" class="modal-btn secondary" style="text-decoration:none;">
+            <a href="<?=$app_base?>/student/home" class="modal-btn secondary" style="text-decoration:none;">
                 <i class="bi bi-house-door"></i> Accueil
             </a>
         </div>

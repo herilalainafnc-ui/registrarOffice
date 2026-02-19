@@ -11,7 +11,7 @@ require('../data/middleware.php');
 initMiddleware($dtb);
 
 if (!isStudent() && !isAdmin() && !isRegistrar()) {
-    header('Location: ./index');
+    header('Location: ' . $app_base . '/login');
     exit;
 }
 
@@ -698,10 +698,10 @@ $catMetaJson  = json_encode($catMeta, JSON_UNESCAPED_UNICODE);
             <span class="page-title">Actualités</span>
         </div>
         <div style="display:flex;align-items:center;gap:0.5rem;">
-            <a href="./student.home" class="std-nav-icon home" data-tooltip="Accueil">
+            <a href="<?=$app_base?>/student/home" class="std-nav-icon home" data-tooltip="Accueil">
                 <i class="bi bi-house-door-fill"></i>
             </a>
-            <a href="../app/logout" class="std-nav-icon logout" data-tooltip="Déconnexion">
+            <a href="<?=$app_base?>/logout" class="std-nav-icon logout" data-tooltip="Déconnexion">
                 <i class="bi bi-box-arrow-right"></i>
             </a>
         </div>
@@ -728,9 +728,9 @@ $catMetaJson  = json_encode($catMeta, JSON_UNESCAPED_UNICODE);
         <div class="ib-section-2">
             <h3>+Navigation</h3>
             <ul>
-                <li><a href="./student.home">Accueil</a></li>
-                <li><a href="./student.dashboard">Mes Notes</a></li>
-                <li><a href="./student.info">Mes Infos</a></li>
+                <li><a href="<?=$app_base?>/student/home">Accueil</a></li>
+                <li><a href="<?=$app_base?>/student/dashboard">Mes Notes</a></li>
+                <li><a href="<?=$app_base?>/student/info">Mes Infos</a></li>
             </ul>
         </div>
         <div class="ib-section-3">

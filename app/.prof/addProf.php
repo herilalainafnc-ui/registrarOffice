@@ -1,4 +1,9 @@
 <?php 
+	// MVC base path
+	$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+	$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+	$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 	require ('../../data/backdb.php');
 
 	$name = $_POST['name'];
@@ -83,5 +88,5 @@
 
 		));
 
-		header('location:../../src/accueil.prof.php')
+		header('location:' . $app_base . '/professors')
  ?>

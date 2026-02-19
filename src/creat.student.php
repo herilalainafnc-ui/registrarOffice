@@ -1218,7 +1218,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 			var annee_etude = $('#annee_etude').val();
 
 			$.ajax({
-				url:"./services/parcours.live",
+				url:APP_BASE+"/src/services/parcours.live",
 				method:"POST",
 				data:{mention:mention},
 
@@ -1228,7 +1228,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 			});
 
 			$.ajax({
-				url:"./services/matricule.live",
+				url:APP_BASE+"/src/services/matricule.live",
 				method:"POST",
 				data:{mention:mention, annee_etude:annee_etude},
 
@@ -1243,7 +1243,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 			var annee_etude = $(this).val();
 
 			$.ajax({
-				url:"./services/matricule.live",
+				url:APP_BASE+"/src/services/matricule.live",
 				method:"POST",
 				data:{mention:mention, annee_etude:annee_etude},
 
@@ -1349,7 +1349,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 			
 			}else{
 
-				$('#form-inscription').attr('action','../app/.student/addStd.php?rg_id=<?=$rg_id?>');
+				$('#form-inscription').attr('action', APP_BASE+'/app/.student/addStd?rg_id=<?=$rg_id?>');
 				$('#form-inscription').attr('method','post');
 				$(this).attr('types','submit');
 
@@ -1371,7 +1371,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 			
 			if(r_1 !="" && r_2 !="" && r_3 !="" && r_4 !="" && r_5 !="" && r_6 !="" && r_7 !="" && r_8 !="" && r_9 !="" && r_10 !="") {			
 				$(this).attr('type','submit');
-				$('#form-inscription').attr('action','../app/.student/addStd.php?rg_id=<?=$rg_id?>');
+				$('#form-inscription').attr('action', APP_BASE+'/app/.student/addStd?rg_id=<?=$rg_id?>');
 				$('#form-inscription').attr('method','post');
 			}
 		});

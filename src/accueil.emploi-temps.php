@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
@@ -1240,7 +1240,7 @@
 		formData.append('duree', draggedData.duree);
 		
 		try {
-			const response = await fetch('./emploi-temps.api', {
+			const response = await fetch(APP_BASE+'/src/emploi-temps.api', {
 				method: 'POST',
 				body: formData
 			});
@@ -1336,7 +1336,7 @@
 		
 		// Charger les données de la séance
 		try {
-			const response = await fetch(`./emploi-temps.api?action=get_seance&id=${id}`);
+			const response = await fetch(APP_BASE+`/src/emploi-temps.api?action=get_seance&id=${id}`);
 			const seance = await response.json();
 			
 			if(seance) {
@@ -1367,7 +1367,7 @@
 	}
 	
 	async function loadEditSalles() {
-		const response = await fetch('./emploi-temps.api?action=get_salles');
+		const response = await fetch(APP_BASE+'/src/emploi-temps.api?action=get_salles');
 		const salles = await response.json();
 		
 		const select = document.getElementById('editSalle');
@@ -1378,7 +1378,7 @@
 	}
 	
 	async function loadEditTeachers() {
-		const response = await fetch('./emploi-temps.api?action=get_teachers');
+		const response = await fetch(APP_BASE+'/src/emploi-temps.api?action=get_teachers');
 		const teachers = await response.json();
 		
 		const select = document.getElementById('editTeacher');
@@ -1407,7 +1407,7 @@
 		formData.append('action', 'update_seance');
 		
 		try {
-			const response = await fetch('./emploi-temps.api', {
+			const response = await fetch(APP_BASE+'/src/emploi-temps.api', {
 				method: 'POST',
 				body: formData
 			});
@@ -1440,7 +1440,7 @@
 	async function loadAllCours() {
 		if(allCoursCache) return allCoursCache;
 		
-		const response = await fetch('./emploi-temps.api?action=get_cours');
+		const response = await fetch(APP_BASE+'/src/emploi-temps.api?action=get_cours');
 		allCoursCache = await response.json();
 		return allCoursCache;
 	}
@@ -1535,7 +1535,7 @@
 		}
 		
 		// Récupérer la mention du cours sélectionné
-		const response = await fetch('./emploi-temps.api?action=get_cours');
+		const response = await fetch(APP_BASE+'/src/emploi-temps.api?action=get_cours');
 		const cours = await response.json();
 		const selectedCours = cours.find(c => c.id == coursId);
 		
@@ -1546,7 +1546,7 @@
 	
 	// Charger les parcours d'une mention
 	async function loadParcours(mention, selectId) {
-		const response = await fetch(`./emploi-temps.api?action=get_parcours&mention=${mention}`);
+		const response = await fetch(APP_BASE+`/src/emploi-temps.api?action=get_parcours&mention=${mention}`);
 		const parcours = await response.json();
 		
 		const select = document.getElementById(selectId);
@@ -1558,7 +1558,7 @@
 	
 	// Charger les salles
 	async function loadSalles() {
-		const response = await fetch('./emploi-temps.api?action=get_salles');
+		const response = await fetch(APP_BASE+'/src/emploi-temps.api?action=get_salles');
 		const salles = await response.json();
 		
 		const select = document.getElementById('salleSelect');
@@ -1570,7 +1570,7 @@
 	
 	// Charger les enseignants
 	async function loadTeachers() {
-		const response = await fetch('./emploi-temps.api?action=get_teachers');
+		const response = await fetch(APP_BASE+'/src/emploi-temps.api?action=get_teachers');
 		const teachers = await response.json();
 		
 		const select = document.getElementById('teacherSelect');
@@ -1602,7 +1602,7 @@
 			return;
 		}
 		
-		const coursResponse = await fetch(`./emploi-temps.api?action=get_cours`);
+		const coursResponse = await fetch(APP_BASE+`/src/emploi-temps.api?action=get_cours`);
 		const allCours = await coursResponse.json();
 		const cours = allCours.find(c => c.id == coursId);
 		
@@ -1612,7 +1612,7 @@
 			formData.append('parcours', cours.parcours || '');
 		}
 		
-		const response = await fetch('./emploi-temps.api', {
+		const response = await fetch(APP_BASE+'/src/emploi-temps.api', {
 			method: 'POST',
 			body: formData
 		});
@@ -1641,7 +1641,7 @@
 		const formData = new FormData(this);
 		formData.append('action', 'add_seance');
 		
-		const response = await fetch('./emploi-temps.api', {
+		const response = await fetch(APP_BASE+'/src/emploi-temps.api', {
 			method: 'POST',
 			body: formData
 		});
@@ -1673,7 +1673,7 @@
 		formData.append('action', 'delete_seance');
 		formData.append('id', id);
 		
-		const response = await fetch('./emploi-temps.api', {
+		const response = await fetch(APP_BASE+'/src/emploi-temps.api', {
 			method: 'POST',
 			body: formData
 		});

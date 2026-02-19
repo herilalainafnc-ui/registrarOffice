@@ -11,7 +11,7 @@ initMiddleware($dtb);
 header('Content-Type: text/html; charset=utf-8');
 
 if (!isLoggedIn()) {
-    die('Non connecté. <a href="./index">Se connecter</a>');
+    die('Non connecté. <a href="<?=$app_base?>/login">Se connecter</a>');
 }
 
 $user = Middleware::getCurrentUser();

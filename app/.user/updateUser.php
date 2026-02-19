@@ -4,6 +4,11 @@
  * SÉCURISÉ: Vérification des privilèges + CSRF
  */
 
+// MVC base path
+$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 require('../../data/backdb.php');
 require('../../data/middleware.php');
 
@@ -155,5 +160,5 @@ Middleware::logSecurityEvent('user_update_attempt', [
 		unset($_SESSION['cached_student_id']);
 	}
 
-	header('location:../../src/creat.account');
+	header('location:' . $app_base . '/accounts/create');
  ?>

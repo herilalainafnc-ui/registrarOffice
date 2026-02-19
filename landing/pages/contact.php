@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Configuration email
 $destinataire = "registraroffice@zurcher.edu.mg";
 $success = false;
@@ -95,12 +95,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <?php include 'init-landing.php'; ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact - Université Adventiste Zurcher</title>
-    <link rel="shortcut icon" href="../../file/logo-coldbloud.png" type="image/x-icon">
+    <link rel="shortcut icon" href="<?=$app_base?>/file/logo-coldbloud.png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./pages.css">
+    <link rel="stylesheet" href="<?=$app_base?>/landing/pages/pages.css">
 </head>
 <body>
     <!-- Navigation -->
@@ -320,7 +321,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     Vous pouvez soumettre votre candidature en ligne via notre page Admissions ou 
                     déposer votre dossier directement au secrétariat de l'université.
                 </p>
-                <a href="./admissions" class="card-link">
+                <a href="<?=$app_base?>/admissions" class="card-link">
                     En savoir plus
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
@@ -334,7 +335,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     Les frais varient selon la filière choisie. Nous proposons également des 
                     possibilités de paiement échelonné et des bourses pour les étudiants méritants.
                 </p>
-                <a href="./admissions.php" class="card-link">
+                <a href="<?=$app_base?>/admissions" class="card-link">
                     Voir les détails
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
@@ -348,7 +349,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     Oui, nous disposons de résidences universitaires séparées pour les étudiants 
                     et étudiantes avec des chambres confortables et toutes les commodités.
                 </p>
-                <a href="./campus" class="card-link">
+                <a href="<?=$app_base?>/campus" class="card-link">
                     Découvrir le campus
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
@@ -362,7 +363,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     Le campus est situé à 45 km d'Antananarivo sur la RN2 direction Moramanga. 
                     Des taxis-brousse desservent régulièrement Manjakandriana.
                 </p>
-                <a href="./campus" class="card-link">
+                <a href="<?=$app_base?>/campus" class="card-link">
                     Voir la carte
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
@@ -375,6 +376,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Footer -->
     <?php include 'footer.php'; ?>
 
-    <script src="./pages.js"></script>
+    <script src="<?=$app_base?>/landing/pages/pages.js"></script>
 </body>
 </html>

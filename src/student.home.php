@@ -12,7 +12,7 @@ initMiddleware($dtb);
 
 // Vérifier que l'utilisateur est connecté et est un étudiant
 if (!isStudent() && !isAdmin() && !isRegistrar()) {
-    header('Location: ./index');
+    header('Location: ' . (defined('APP_BASE') ? APP_BASE : '') . '/login');
     exit;
 }
 
@@ -573,7 +573,7 @@ if (!$dateFormatted) {
             <?php else: ?>
                 <div class="user-default"><i class="bi bi-person"></i></div>
             <?php endif; ?>
-            <a href="../app/logout" class="logout-btn">
+            <a href="<?=$app_base?>/logout" class="logout-btn">
                 <i class="bi bi-box-arrow-right"></i> Déconnexion
             </a>
         </div>
@@ -594,19 +594,19 @@ if (!$dateFormatted) {
 
     <!-- NAVIGATION CARDS -->
     <div class="nav-cards">
-        <a href="./student.dashboard" class="nav-card">
+        <a href="<?=$app_base?>/student/dashboard" class="nav-card">
             <i class="bi bi-clipboard-data"></i>
             Mes Notes
         </a>
-        <a href="./student.info" class="nav-card">
+        <a href="<?=$app_base?>/student/info" class="nav-card">
             <i class="bi bi-person-badge"></i>
             Mes Infos
         </a>
-        <a href="./student.actus" class="nav-card">
+        <a href="<?=$app_base?>/student/news" class="nav-card">
             <i class="bi bi-megaphone"></i>
             Actus
         </a>
-        <a href="./student.quiz" class="nav-card">
+        <a href="<?=$app_base?>/student/quiz" class="nav-card">
             <i class="bi bi-patch-question"></i>
             Quiz
         </a>
@@ -614,7 +614,7 @@ if (!$dateFormatted) {
             <i class="bi bi-clock-history"></i>
             Historique
         </a> -->
-        <a href="./student.game" class="nav-card">
+        <a href="<?=$app_base?>/student/game" class="nav-card">
             <i class="bi bi-dpad"></i>
             Jeu
         </a>

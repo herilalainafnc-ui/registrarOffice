@@ -1,4 +1,9 @@
 <?php 
+	// MVC base path
+	$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+	$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+	$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 	require ('../../data/backdb.php');
 
 	$student_nom = trim($_POST['student_nom']);
@@ -424,5 +429,5 @@
 	$showId = $findId->fetch();
 	$id = $showId['id'];
 	
-	header('location:../../src/student.php?id='.$id.'&page=information')
+	header('location:' . $app_base . '/student?id='.$id.'&page=information')
  ?>

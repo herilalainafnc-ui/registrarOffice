@@ -10,13 +10,13 @@ require('../data/middleware.php');
 initMiddleware($dtb);
 
 if (!isStudent() && !isAdmin() && !isRegistrar()) {
-    header('Location: ./index');
+    header('Location: ' . $app_base . '/login');
     exit;
 }
 
 $studentInfo = getStudentInfo();
 if (!$studentInfo) {
-    header('Location: ./student.home');
+    header('Location: ' . $app_base . '/student/home');
     exit;
 }
 
@@ -857,10 +857,10 @@ if (!empty($studentInfo['student_region'])) {
             <button id="viewToggleBtn" class="std-nav-icon toggle" data-tooltip="Vue classique" onclick="toggleView()">
                 <i class="bi bi-grid-1x2-fill" id="toggleIcon"></i>
             </button>
-            <a href="./student.home" class="std-nav-icon home" data-tooltip="Accueil">
+            <a href="<?=$app_base?>/student/home" class="std-nav-icon home" data-tooltip="Accueil">
                 <i class="bi bi-house-door-fill"></i>
             </a>
-            <a href="../app/logout" class="std-nav-icon logout" data-tooltip="Déconnexion">
+            <a href="<?=$app_base?>/logout" class="std-nav-icon logout" data-tooltip="Déconnexion">
                 <i class="bi bi-box-arrow-right"></i>
             </a>
         </div>

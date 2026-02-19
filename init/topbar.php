@@ -2,6 +2,96 @@
 	$path = $_SERVER['PHP_SELF'];
 	$page = basename($path);
 	
+	// MVC: Déterminer la route actuelle à partir de REQUEST_URI
+	$_request_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+	$current_route = $_request_uri;
+	if ($app_base && strpos($current_route, $app_base) === 0) {
+		$current_route = substr($current_route, strlen($app_base));
+	}
+	$current_route = '/' . ltrim($current_route ?: '', '/');
+	if ($current_route !== '/') $current_route = rtrim($current_route, '/');
+
+	// MVC: Mapper la route actuelle vers l'ancien nom de fichier PHP
+	// Ceci permet à toutes les vérifications $page == "fichier.php" de fonctionner
+	$_route_to_page = [
+		'/dashboard'          => 'accueil.php',
+		'/classrooms'         => 'accueil.classroom.php',
+		'/professors'         => 'accueil.prof.php',
+		'/courses'            => 'accueil.cours.php',
+		'/schedule'           => 'accueil.emploi-temps.php',
+		'/students/create'    => 'creat.student.php',
+		'/deans-list'         => 'deans-list.php',
+		'/top-students'       => 'meilleurs-etudiants.php',
+		'/news'               => 'admin.actus.php',
+		'/settings'           => 'settings.php',
+		'/login'              => 'index.php',
+		'/student/home'       => 'student.home.php',
+		'/student/dashboard'  => 'student.dashboard.php',
+		'/student/info'       => 'student.info.php',
+		'/student/news'       => 'student.actus.php',
+		'/student/quiz'       => 'student.quiz.php',
+		'/student/game'       => 'student.game.php',
+		'/student/transition' => 'student.transition.php',
+		'/student'            => 'student.php',
+		'/teacher/dashboard'  => 'teacher.dashboard.php',
+		'/accounts/create'    => 'creat.account.php',
+		'/login-locations'    => 'login-locations.php',
+		'/my-account'         => 'my.account.php',
+		'/finance'            => 'gestion_finance.php',
+		'/professor'          => 'prof.php',
+		'/course'             => 'cours.php',
+		'/inscription'        => 'inscription.php',
+		'/reel'               => 'reel.php',
+		'/export'             => 'export.php',
+		'/export/pdf'         => 'data.topdf.php',
+		'/export/pdf-landscape' => 'data.topdf_paysage.php',
+		'/export/xlsx'        => 'data.toxlsx.php',
+	];
+	if (isset($_route_to_page[$current_route])) {
+		$page = $_route_to_page[$current_route];
+	}
+	// Normaliser les anciens chemins vers les nouvelles routes MVC
+	$_route_aliases = [
+		'/src/accueil' => '/dashboard',
+		'/src/accueil.classroom' => '/classrooms',
+		'/src/accueil.prof' => '/professors',
+		'/src/accueil.cours' => '/courses',
+		'/src/accueil.emploi-temps' => '/schedule',
+		'/src/creat.student' => '/students/create',
+		'/src/deans-list' => '/deans-list',
+		'/src/meilleurs-etudiants' => '/top-students',
+		'/src/admin.actus' => '/news',
+		'/src/settings' => '/settings',
+		'/src/index' => '/login',
+		'/src/student.home' => '/student/home',
+		'/src/student.dashboard' => '/student/dashboard',
+		'/src/student.info' => '/student/info',
+		'/src/student.actus' => '/student/news',
+		'/src/student.quiz' => '/student/quiz',
+		'/src/student.game' => '/student/game',
+		'/src/student.transition' => '/student/transition',
+		'/src/teacher.dashboard' => '/teacher/dashboard',
+		'/src/creat.account' => '/accounts/create',
+		'/src/login-locations' => '/login-locations',
+		'/src/my.account' => '/my-account',
+		'/src/gestion_finance' => '/finance',
+		'/src/student' => '/student',
+		'/src/prof' => '/professor',
+		'/src/cours' => '/course',
+	];
+	if (isset($_route_aliases[$current_route])) {
+		$current_route = $_route_aliases[$current_route];
+	}
+
+	// Helper pour vérifier la route active
+	if (!function_exists('isRoute')) {
+		function isRoute($route) {
+			global $current_route;
+			if (is_array($route)) return in_array($current_route, $route);
+			return $current_route === $route;
+		}
+	}
+
 	// Utiliser le middleware pour récupérer l'utilisateur courant
 	// Le middleware est déjà initialisé dans head.php
 	$rg_user = currentUser();
@@ -18,8 +108,8 @@
 		$privilege = $rg_user['privilege'];
 		$rg_level = $rg_user['level'];
 	} else {
-		// Redirection gérée par le middleware, mais au cas où
-		header('Location: ./index.php');
+		// Redirection vers la page de login MVC
+		header('Location: ' . $app_base . '/login');
 		exit;
 	}
  ?>
@@ -239,7 +329,7 @@
 	
 	<!-- Logo Section -->
 	<div class="hidden md:flex items-center gap-3 lg:w-2/12">
-		<a href="<?=$app_base?>/src/" class="logo-container flex items-center gap-2">
+		<a href="<?=$app_base?>/dashboard" class="logo-container flex items-center gap-2">
 			<div class="w-8 h-8 bg-gradient-to-br from-[#4e9ede] to-[#1a3a5c] rounded-lg p-1 shadow-md">
 				<img src="<?=$app_base?>/file/logo-coldbloud.png" class="w-full h-full">
 			</div>
@@ -255,7 +345,7 @@
 			<?php 
 			if($page == "accueil.php" OR $page == "student.php") {
 			 ?>
-			<form method="post" action="accueil" class="search-wrapper w-full max-w-md">
+			<form method="post" action="<?=$app_base?>/dashboard" class="search-wrapper w-full max-w-md">
 				<i class="bi bi-search search-icon"></i>
 				<input id="std-search" type="text" name="search" 
 					   placeholder="Rechercher un étudiant..." 
@@ -266,7 +356,7 @@
 			<?php 
 			}elseif($page == "accueil.cours.php" OR $page == "cours.php") {
 			?>
-			<form method="post" action="accueil.cours" class="search-wrapper w-full max-w-md">
+			<form method="post" action="<?=$app_base?>/courses" class="search-wrapper w-full max-w-md">
 				<i class="bi bi-search search-icon"></i>
 				<input id="cours-search" type="text" name="search" 
 					   placeholder="Rechercher un cours..." 
@@ -277,7 +367,7 @@
 			<?php 
 			}elseif($page == "accueil.prof.php" OR $page == "prof.php") {
 			?>
-			<form method="post" action="accueil.prof" class="search-wrapper w-full max-w-md">
+			<form method="post" action="<?=$app_base?>/professors" class="search-wrapper w-full max-w-md">
 				<i class="bi bi-search search-icon"></i>
 				<input id="prof-search" type="text" name="search" 
 					   placeholder="Rechercher un enseignant..." 
@@ -327,7 +417,7 @@
 		        
 		        <!-- My Account -->
 		        <li class="dropdown-item-hover mb-1">
-		        	<a href="<?=$app_base?>/src/my.account" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
+		        	<a href="<?=$app_base?>/my-account" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/70 transition-all duration-200 group">
 		        		<div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
 		        			<i class="bi-gear text-cyan-400 group-hover:rotate-90 transition-transform duration-300"></i>
 		        		</div>
@@ -512,13 +602,13 @@
 					if (confirmed) {
 						const loadingId = Toast.loading("Déconnexion en cours...");
 						setTimeout(function() {
-							window.location.href = APP_BASE+'/app/logout';
+							window.location.href = APP_BASE+'/logout';
 						}, 500);
 					}
 				});
 			} else {
 				if (confirm("Êtes-vous sûr de vouloir vous déconnecter ?")) {
-					window.location.href = '../app/logout';
+					window.location.href = APP_BASE+'/logout';
 				}
 			}
 		});

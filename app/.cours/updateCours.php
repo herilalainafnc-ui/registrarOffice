@@ -1,4 +1,9 @@
 <?php 
+	// MVC base path
+	$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+	$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+	$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 	require '../../data/backdb.php';
 
 
@@ -106,6 +111,6 @@
 
 	$modify->execute();
 
-	header('location:../../src/cours.php?id='.$id.'&page=information');
+	header('location:' . $app_base . '/course?id='.$id.'&page=information');
 
  ?>

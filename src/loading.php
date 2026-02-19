@@ -12,7 +12,7 @@ initMiddleware($dtb);
 
 // Vérifier si l'utilisateur est connecté
 if (!isLoggedIn()) {
-    header('Location: ./index');
+    header('Location: ' . (defined('APP_BASE') ? APP_BASE : '') . '/login');
     exit;
 }
 
@@ -61,23 +61,23 @@ $photoPath = '';
 if (!empty($userPhoto)) {
     if ($userType === 'student' || $userLevel === 8) {
         // Photos des étudiants
-        $photoPath = '../app/photosetudiants/' . $userPhoto;
+        $photoPath = $app_base . '/app/photosetudiants/' . $userPhoto;
     } elseif ($userType === 'teacher' || $userLevel === 7) {
         // Photos des enseignants
-        $photoPath = '../app/photosenseignants/' . $userPhoto;
+        $photoPath = $app_base . '/app/photosenseignants/' . $userPhoto;
     } else {
         // Photos des utilisateurs (staff)
-        $photoPath = '../app/photosuser/' . $userPhoto;
+        $photoPath = $app_base . '/app/photosuser/' . $userPhoto;
     }
 }
 
 // Si pas de photo ou fichier inexistant, utiliser le logo
 if (empty($photoPath) || empty($userPhoto)) {
-    $photoPath = '../file/logo-coldbloud.png';
+    $photoPath = $app_base . '/file/logo-coldbloud.png';
 }
 
 // Récupérer la destination
-$destination = $_SESSION['login_redirect'] ?? './accueil';
+$destination = $_SESSION['login_redirect'] ?? $app_base . '/dashboard';
 unset($_SESSION['login_redirect']);
 
 // Déterminer l'heure pour le message de salutation (ajusté côté client)
@@ -519,7 +519,7 @@ $fullName = trim($userFirstName . ' ' . $userName);
     <!-- Container principal -->
     <div class="loading-container">
         <!-- Photo de profil -->
-        <img src="<?= $photoPath ?>" alt="Photo de profil" class="profile-photo" onerror="this.src='../file/logo-coldbloud.png'">
+        <img src="<?= $photoPath ?>" alt="Photo de profil" class="profile-photo" onerror="this.src='<?=$app_base?>/file/logo-coldbloud.png'">
 
         <!-- Message de bienvenue -->
         <div class="welcome-text"><?= $timeEmoji ?> <?= $welcomeTitle ?></div>

@@ -282,8 +282,8 @@
 			<span>Étudiants</span>
 		</div>
 		
-		<div class="menu-item <?php if($page == "accueil.php" OR $page == "student") { echo "active"; } ?>">
-			<a href="<?=$app_base?>/src/accueil">
+		<div class="menu-item <?php if(isRoute('/dashboard')) { echo "active"; } ?>">
+			<a href="<?=$app_base?>/dashboard">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-people-fill menu-icon"></i>
 				</div>
@@ -291,8 +291,8 @@
 			</a>
 		</div>
 
-		<div class="menu-item <?php if($page == "creat.student.php") { echo "active"; } ?> <?php if($rg_user['level'] > 3) { echo "toolInactive"; } ?>">
-			<a href="<?=$app_base?>/src/creat.student">
+		<div class="menu-item <?php if(isRoute('/students/create')) { echo "active"; } ?> <?php if($rg_user['level'] > 3) { echo "toolInactive"; } ?>">
+			<a href="<?=$app_base?>/students/create">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-person-plus-fill menu-icon"></i>
 				</div>
@@ -300,8 +300,8 @@
 			</a>
 		</div>
 
-		<div class="menu-item <?php if($page == "deans-list.php") { echo "active"; } ?>">
-			<a href="<?=$app_base?>/src/deans-list">
+		<div class="menu-item <?php if(isRoute('/deans-list')) { echo "active"; } ?>">
+			<a href="<?=$app_base?>/deans-list">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-star-fill menu-icon"></i>
 				</div>
@@ -309,8 +309,8 @@
 			</a>
 		</div>
 
-		<div class="menu-item <?php if($page == "meilleurs-etudiants.php") { echo "active"; } ?>">
-			<a href="<?=$app_base?>/src/meilleurs-etudiants">
+		<div class="menu-item <?php if(isRoute('/top-students')) { echo "active"; } ?>">
+			<a href="<?=$app_base?>/top-students">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-trophy-fill menu-icon"></i>
 				</div>
@@ -323,8 +323,8 @@
 			<span>Professeurs</span>
 		</div>
 		
-		<div class="menu-item <?php if($page == "accueil.prof.php" OR $page == "prof") { echo "active"; } ?>">
-			<a href="<?=$app_base?>/src/accueil.prof">
+		<div class="menu-item <?php if(isRoute(['/professors', '/professor'])) { echo "active"; } ?>">
+			<a href="<?=$app_base?>/professors">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-person-lines-fill menu-icon"></i>
 				</div>
@@ -346,8 +346,8 @@
 			<span>Cours</span>
 		</div>
 		
-		<div class="menu-item <?php if($page == "accueil.cours.php" OR $page == "cours.php") { echo "active"; } ?>">
-			<a href="<?=$app_base?>/src/accueil.cours">
+		<div class="menu-item <?php if(isRoute(['/courses', '/course'])) { echo "active"; } ?>">
+			<a href="<?=$app_base?>/courses">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-list-columns-reverse menu-icon"></i>
 				</div>
@@ -369,8 +369,8 @@
 			<span>Emploi du temps</span>
 		</div>
 		
-		<div class="menu-item <?php if($page == "accueil.emploi-temps.php") { echo "active"; } ?>">
-			<a href="<?=$app_base?>/src/accueil.emploi-temps">
+		<div class="menu-item <?php if(isRoute('/schedule')) { echo "active"; } ?>">
+			<a href="<?=$app_base?>/schedule">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-calendar3-week menu-icon"></i>
 				</div>
@@ -383,8 +383,8 @@
 			<span>Communication</span>
 		</div>
 		
-		<div class="menu-item <?php if($page == "admin.actus.php") { echo "active"; } ?> <?php if($rg_user['level'] > 3) { echo "toolInactive"; } ?>">
-			<a href="<?=$app_base?>/src/admin.actus">
+		<div class="menu-item <?php if(isRoute('/news')) { echo "active"; } ?> <?php if($rg_user['level'] > 3) { echo "toolInactive"; } ?>">
+			<a href="<?=$app_base?>/news">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-megaphone-fill menu-icon"></i>
 				</div>
@@ -397,8 +397,8 @@
 			<span>Paramètres</span>
 		</div>
 		
-		<div class="menu-item <?php if($page == "settings.php") { echo "active"; } ?>">
-			<a href="<?=$app_base?>/src/settings">
+		<div class="menu-item <?php if(isRoute('/settings')) { echo "active"; } ?>">
+			<a href="<?=$app_base?>/settings">
 				<div class="menu-icon-wrapper">
 					<i class="bi bi-sliders menu-icon"></i>
 				</div>

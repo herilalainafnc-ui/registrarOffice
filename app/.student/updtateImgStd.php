@@ -1,4 +1,9 @@
 <?php 
+	// MVC base path
+	$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+	$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+	$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 	require('../../data/backdb.php');
 	require('student_history_helper.php');
 
@@ -18,7 +23,7 @@
 
 		// Vérifier l'extension
 		if(!in_array($extension_image, $allowed_extensions)){
-			header('location:../../src/student.php?id='.$id.'&page=information&error=format');
+			header('location:' . $app_base . '/student?id='.$id.'&page=information&error=format');
 			exit;
 		}
 
@@ -77,7 +82,7 @@
 			if (!$converted) {
 				// Impossible de convertir — supprimer et rediriger avec erreur
 				@unlink($tempPath);
-				header('location:../../src/student.php?id='.$id.'&page=information&error=heic');
+				header('location:' . $app_base . '/student?id='.$id.'&page=information&error=heic');
 				exit;
 			}
 		} else {
@@ -101,5 +106,5 @@
 		// Enregistrer la modification d'image dans l'historique
 		logStudentModification($dtb, $student_id, $id, 'image_student', $oldImage, $dbimage, $last_change_user_id, 'image', 'Modification de la photo');
 	}
-	header('location:../../src/student.php?id='.$id.'&page=information');
+	header('location:' . $app_base . '/student?id='.$id.'&page=information');
  ?>

@@ -4,6 +4,11 @@
  * SÉCURISÉ: Vérification des privilèges + CSRF
  */
 
+// MVC base path
+$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 require('../../data/backdb.php');
 require('../../data/middleware.php');
 initMiddleware($dtb);
@@ -20,14 +25,14 @@ try {
     $id = (int) ($_POST['id'] ?? 0);
     
     if (!$id) {
-        header('location:../../src/admin.actus?error=' . urlencode('ID invalide.'));
+        header('location:' . $app_base . '/news?error=' . urlencode('ID invalide.'));
         exit;
     }
 
     // Check exists & get image name
     $annonce = DB::find('t_annonces', $id);
     if (!$annonce) {
-        header('location:../../src/admin.actus?error=' . urlencode('Annonce introuvable.'));
+        header('location:' . $app_base . '/news?error=' . urlencode('Annonce introuvable.'));
         exit;
     }
 
@@ -48,11 +53,11 @@ try {
         'by_user' => $_SESSION['user_id'] ?? null
     ]);
 
-    header('location:../../src/admin.actus?success=1&msg=' . urlencode('Annonce supprimée.'));
+    header('location:' . $app_base . '/news?success=1&msg=' . urlencode('Annonce supprimée.'));
     exit;
 
 } catch (Exception $e) {
     error_log('Erreur suppression annonce: ' . $e->getMessage());
-    header('location:../../src/admin.actus?error=' . urlencode('Erreur lors de la suppression.'));
+    header('location:' . $app_base . '/news?error=' . urlencode('Erreur lors de la suppression.'));
     exit;
 }

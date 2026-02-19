@@ -1,4 +1,9 @@
 <?php 
+// MVC base path
+$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 require ('../../data/backdb.php');
 
 // Fuseau horaire Madagascar (UTC+3)
@@ -119,7 +124,7 @@ try {
 		echo json_encode(['success' => true, 'message' => 'Cours supprimé avec succès']);
 		exit;
 	} else {
-		header('location:../../src/student.php?id='.$id.'&page=transcriptSS#semestre'.$as);
+		header('location:' . $app_base . '/student?id='.$id.'&page=transcriptSS#semestre'.$as);
 		exit;
 	}
 

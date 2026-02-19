@@ -6,7 +6,7 @@ initMiddleware($dtb);
 
 // Les étudiants sont redirigés vers leur tableau de bord
 if (isStudent() && !isAdmin() && !isRegistrar()) {
-	header('Location: ./student.dashboard.php');
+	header('Location: ' . $app_base . '/student/dashboard');
 	exit;
 }
 

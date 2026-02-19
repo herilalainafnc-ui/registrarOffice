@@ -401,7 +401,7 @@ if ($hour >= 5 && $hour < 12) {
         <div class="time-message">Vous avez été déconnecté avec succès.</div>
 
         <!-- Bouton de retour -->
-        <a href="./index" class="return-btn">
+        <a href="<?=$app_base?>/login" class="return-btn">
             <i class="bi bi-arrow-left-circle"></i>
             Se reconnecter
         </a>
@@ -464,7 +464,7 @@ if ($hour >= 5 && $hour < 12) {
                 clearInterval(countdownInterval);
                 document.body.classList.add('fade-out');
                 setTimeout(() => {
-                    window.location.href = './index';
+                    window.location.href = '<?php echo (defined("APP_BASE") ? APP_BASE : ""); ?>/login';
                 }, 500);
             }
         }, 1000);

@@ -1,5 +1,10 @@
 <?php 
 	
+	// MVC base path
+	$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+	$_ar = rtrim(str_replace('\\', '/', dirname(__DIR__)), '/');
+	$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 	require('../data/backdb.php');
 
 	$date_entry = date('Y-m-d');
@@ -226,6 +231,6 @@
 		$nb++;
 	}
 
-header('location:../src/');
+header('location:' . $app_base . '/login');
 
  ?>

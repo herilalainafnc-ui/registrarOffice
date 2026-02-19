@@ -559,7 +559,7 @@
 <!-- ============================================================ -->
 <div class="shad-dialog-overlay" id="addAnnonceDialog">
 	<div class="shad-dialog">
-		<form id="formAddAnnonce" method="post" action="../app/.annonces/add.annonce" enctype="multipart/form-data">
+		<form id="formAddAnnonce" method="post" action="<?=$app_base?>/app/.annonces/add.annonce" enctype="multipart/form-data">
 			<?= csrf_field() ?>
 			<div class="shad-dialog-header">
 				<h3 class="shad-dialog-title"><i class="bi-plus-circle-fill mr-2 text-cyan-400"></i>Nouvelle Annonce</h3>
@@ -647,7 +647,7 @@
 <!-- ============================================================ -->
 <div class="shad-dialog-overlay" id="editAnnonceDialog">
 	<div class="shad-dialog">
-		<form id="formEditAnnonce" method="post" action="../app/.annonces/update.annonce" enctype="multipart/form-data">
+		<form id="formEditAnnonce" method="post" action="<?=$app_base?>/app/.annonces/update.annonce" enctype="multipart/form-data">
 			<?= csrf_field() ?>
 			<input type="hidden" name="id" id="editId">
 			<div class="shad-dialog-header">
@@ -737,7 +737,7 @@
 <!-- ============================================================ -->
 <div class="shad-dialog-overlay" id="deleteAnnonceDialog">
 	<div class="shad-dialog confirm-dialog">
-		<form id="formDeleteAnnonce" method="post" action="../app/.annonces/delete.annonce">
+		<form id="formDeleteAnnonce" method="post" action="<?=$app_base?>/app/.annonces/delete.annonce">
 			<?= csrf_field() ?>
 			<input type="hidden" name="id" id="deleteId">
 			<div class="shad-dialog-body">
@@ -848,7 +848,7 @@ $(document).ready(function() {
 		const id = $(this).data('id');
 		
 		// Fetch data
-		$.get('../app/.annonces/get.annonce', { id: id }, function(data) {
+		$.get(APP_BASE+'/app/.annonces/get.annonce', { id: id }, function(data) {
 			if (data.success) {
 				const a = data.annonce;
 				$('#editId').val(a.id);
@@ -889,7 +889,7 @@ $(document).ready(function() {
 		const id = btn.data('id');
 		const currentlyPinned = btn.data('pinned');
 		
-		$.post('../app/.annonces/toggle.annonce', { 
+		$.post(APP_BASE+'/app/.annonces/toggle.annonce', { 
 			id: id, 
 			field: 'is_pinned', 
 			value: currentlyPinned ? 0 : 1,
@@ -914,7 +914,7 @@ $(document).ready(function() {
 		const id = btn.data('id');
 		const currentlyActive = btn.data('active');
 		
-		$.post('../app/.annonces/toggle.annonce', { 
+		$.post(APP_BASE+'/app/.annonces/toggle.annonce', { 
 			id: id, 
 			field: 'is_active', 
 			value: currentlyActive ? 0 : 1,

@@ -261,7 +261,7 @@ if (date('m')>7) {
 			<div class="p-3">
 				<center>
 				<a href="#" id="cancelnotifSupprStd" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
-				<a href="../app/.student/delStd?id=<?=$id?>&rg_id=<?=$rg_id?>" id="btnnotifSupprStd" class="bg-red-600 p-2 text-white rounded-md mx-1">Supprimer</a>
+				<a href="<?=$app_base?>/app/.student/delStd?id=<?=$id?>&rg_id=<?=$rg_id?>" id="btnnotifSupprStd" class="bg-red-600 p-2 text-white rounded-md mx-1">Supprimer</a>
 				</center>
 			</div>
 			</form>

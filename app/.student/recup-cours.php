@@ -1,4 +1,9 @@
 <?php 
+// MVC base path
+$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 require ('../../data/backdb.php');
 
 // Fuseau horaire Madagascar (UTC+3)
@@ -120,6 +125,6 @@ $ip_address = $_SERVER['REMOTE_ADDR'] ?? null;
 		$updateReste->bindParam(':student_id',$student_id,PDO::PARAM_STR);
 		$updateReste->execute();
 
-header('location:../../src/student.php?id='.$id.'&page=transcriptSS#semestre'.$as);
+header('location:' . $app_base . '/student?id='.$id.'&page=transcriptSS#semestre'.$as);
 
  ?>

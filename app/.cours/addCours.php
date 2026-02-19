@@ -1,4 +1,9 @@
 <?php
+	// MVC base path
+	$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+	$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+	$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 	require ('../../data/backdb.php');
 
 	$date_entry = date('Y-m-d');
@@ -95,7 +100,7 @@ if($sigle !="" AND $title!="") {
 				'date_entry' => $date_entry 
 	));
 
-	header('location:../../src/accueil.cours.php');
+	header('location:' . $app_base . '/courses');
 
 }else{
 	echo "Opération non effectué!!!";

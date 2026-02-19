@@ -4,6 +4,11 @@
  * SÉCURISÉ: Vérification des privilèges + CSRF
  */
 
+// MVC base path
+$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+$app_base = substr($_ar, strlen($_dr)) ?: '';
+
 require('../../data/backdb.php');
 require('../../data/middleware.php');
 initMiddleware($dtb);
@@ -35,7 +40,7 @@ try {
 
     // Validation
     if (empty($title) || empty($content)) {
-        header('location:../../src/admin.actus?error=' . urlencode('Le titre et le contenu sont obligatoires.'));
+        header('location:' . $app_base . '/news?error=' . urlencode('Le titre et le contenu sont obligatoires.'));
         exit;
     }
 
@@ -53,7 +58,7 @@ try {
         $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
         
         if (!in_array($mimeType, $allowedMimes)) {
-            header('location:../../src/admin.actus?error=' . urlencode('Format d\'image non autorisé. Formats acceptés: JPG, PNG, GIF, WEBP.'));
+            header('location:' . $app_base . '/news?error=' . urlencode('Format d\'image non autorisé. Formats acceptés: JPG, PNG, GIF, WEBP.'));
             exit;
         }
 
@@ -101,11 +106,11 @@ try {
         'by_user' => $_SESSION['user_id'] ?? null
     ]);
 
-    header('location:../../src/admin.actus?success=1&msg=' . urlencode('Annonce publiée avec succès.'));
+    header('location:' . $app_base . '/news?success=1&msg=' . urlencode('Annonce publiée avec succès.'));
     exit;
 
 } catch (Exception $e) {
     error_log('Erreur création annonce: ' . $e->getMessage());
-    header('location:../../src/admin.actus?error=' . urlencode('Erreur lors de la création de l\'annonce.'));
+    header('location:' . $app_base . '/news?error=' . urlencode('Erreur lors de la création de l\'annonce.'));
     exit;
 }
