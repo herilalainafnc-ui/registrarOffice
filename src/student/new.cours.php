@@ -2,7 +2,7 @@
 <?php 
 	/*::::::::::::::::::::::: CHARGEMENT AUTONOME (AJAX) ::::::::::::::::::::::*/
 	
-	// Si appelé directement via AJAX, charger les dépendances
+	// Si appelÃ© directement via AJAX, charger les dÃ©pendances
 	if (!isset($profil) && (isset($_GET['student_id']) || isset($_GET['id']))) {
 		require_once('../../data/backdb.php');
 		
@@ -28,14 +28,14 @@
 		}
 	}
 	
-	// Récupérer le session_id (depuis GET pour AJAX, sinon depuis le formulaire parent)
+	// RÃ©cupÃ©rer le session_id (depuis GET pour AJAX, sinon depuis le formulaire parent)
 	$current_session_id = $ajax_session_id ?? '';
 ?>
 
 <?php 
-	/*::::::::::::::::::::::: VÉRIFICATION SUSPENSION ::::::::::::::::::::::*/
+	/*::::::::::::::::::::::: VÃ‰RIFICATION SUSPENSION ::::::::::::::::::::::*/
 	
-	// Vérifier si l'étudiant est suspendu
+	// VÃ©rifier si l'Ã©tudiant est suspendu
 	$isSuspended = false;
 	if (isset($profil['suspended']) && $profil['suspended'] == 1) {
 		$dateFin = $profil['date_fin_suspension'];
@@ -49,10 +49,10 @@
 <div class="mt-2 p-4 text-center">
 	<div class="bg-orange-500 text-white p-6 rounded-lg shadow-lg">
 		<i class="bi bi-exclamation-triangle-fill text-5xl"></i>
-		<h3 class="text-xl font-bold mt-3">ÉTUDIANT SUSPENDU</h3>
-		<p class="mt-2">Cet étudiant est actuellement suspendu et ne peut pas prendre de nouveaux cours.</p>
+		<h3 class="text-xl font-bold mt-3">Ã‰TUDIANT SUSPENDU</h3>
+		<p class="mt-2">Cet Ã©tudiant est actuellement suspendu et ne peut pas prendre de nouveaux cours.</p>
 		<?php if (!empty($profil['date_fin_suspension'])) { ?>
-			<p class="mt-2 text-sm">Fin de suspension prévue: <b><?= date('d/m/Y', strtotime($profil['date_fin_suspension'])) ?></b></p>
+			<p class="mt-2 text-sm">Fin de suspension prÃ©vue: <b><?= date('d/m/Y', strtotime($profil['date_fin_suspension'])) ?></b></p>
 		<?php } ?>
 		<?php if (!empty($profil['motif_suspension'])) { ?>
 			<p class="mt-2 text-sm bg-orange-600 p-2 rounded">Motif: <?= htmlspecialchars($profil['motif_suspension']) ?></p>
@@ -60,7 +60,7 @@
 	</div>
 </div>
 <?php
-		return; // Arrêter l'exécution du reste de la page
+		return; // ArrÃªter l'exÃ©cution du reste de la page
 	}
 ?>
 
@@ -84,11 +84,11 @@
 					$session_semester = 1;
 				}elseif ($x == 2) {
 					$session_code = "ETE".$aSs.($aSs+1);
-					$session_name = "Semestre d'été";
+					$session_name = "Semestre d'Ã©tÃ©";
 					$session_semester = 3;
 				}elseif ($x == 3) {
 					$session_code = "DEUX".$aSs.($aSs+1);
-					$session_name = "Deuxième semestre";
+					$session_name = "DeuxiÃ¨me semestre";
 					$session_semester = 2;
 				}elseif ($x == 4) {
 					$session_code = "HIVER".$aSs.($aSs+1);
@@ -127,13 +127,13 @@
 <div id="coursListContainer" class="mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">	
 <?php
 	
-	if ($etude_envisage == "Théologie") {
+	if ($etude_envisage == "ThÃ©ologie") {
 		$eE = 'THEO';
 	}elseif ($etude_envisage == "Gestion") {
 		$eE = 'GEST';
 	}elseif ($etude_envisage == "Informatique") {
 		$eE = 'INFO';
-	}elseif ($etude_envisage == "Sciences Infirmières") {
+	}elseif ($etude_envisage == "Sciences InfirmiÃ¨res") {
 		$eE = 'NURS';
 	}elseif ($etude_envisage == "Education") {
 		$eE = 'EDUC';
@@ -143,6 +143,8 @@
 		$eE = 'LANG';
 	}elseif ($etude_envisage == "Droit") {
 		$eE = 'DROI';
+	}else{
+		$eE = '';
 	}
  	
 /*	if($level<=1) {
@@ -151,7 +153,7 @@
 
  	}elseif($level==2) {
 
- 		if($etude_envisage == "Théologie") {
+ 		if($etude_envisage == "ThÃ©ologie") {
  			$init = 1;
  			$level = 3;
  		}else{
@@ -235,8 +237,8 @@
 					<th class="w-20">Sigle</th>
 					<th class="">Titre du cours</th>
 					<th class="sm:w-2/12 lg:w-3/12">Observations</th>
-					<th class="w-20">Crédits</th>
-					<th class="w-20">Catégorie</th>
+					<th class="w-20">CrÃ©dits</th>
+					<th class="w-20">CatÃ©gorie</th>
 				</tr>	
 			</thead>
 			<tbody class="<?=$bg_four_color?>">
@@ -273,7 +275,7 @@
 			$annee_scolaire = $crs['yearlevel'];
 			$semester = $crs['semester'];
 
-	// Vérifier si le cours existe déjà pour cet étudiant (dans TOUTES les sessions)
+	// VÃ©rifier si le cours existe dÃ©jÃ  pour cet Ã©tudiant (dans TOUTES les sessions)
 	$stmtVerify = $dtb->prepare('SELECT * FROM t_2023_notes WHERE id_cours = :id_cours AND student_id = :student_id AND ajout = 1 AND remove = 0');
 	$stmtVerify->execute(['id_cours' => $note_id, 'student_id' => $student_id]);
 	$validExisting = $stmtVerify->fetch();
@@ -328,17 +330,17 @@
 
 }elseif (!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 10) {
 	
-	echo "<em class='text-red-500'><b>".$validExisting['grade']."</b> de moyenne, en état d'echec.</em>";
+	echo "<em class='text-red-500'><b>".$validExisting['grade']."</b> de moyenne, en Ã©tat d'echec.</em>";
 
 }elseif (!empty($validExisting) AND $validExisting['grade'] == 0){
 
-	echo "<em class='text-orange-400'>Ajouté le - ".substr($validExisting['date_entry'], 0, 10)."</b></em>";
+	echo "<em class='text-orange-400'>AjoutÃ© le - ".substr($validExisting['date_entry'], 0, 10)."</b></em>";
 
 } ?></td>
 					<td><?=$crs['nb_crd']?></td>
 					<td><?php 
 if ($crs['category'] == 0){
-	echo "Général";
+	echo "GÃ©nÃ©ral";
 }elseif ($crs['category'] == 1) {
 	echo "Majeur";
 }elseif ($crs['category'] == 2) {
@@ -402,18 +404,18 @@ $tcredit+= $credit + $crs['nb_crd'];
 						<div class="flex">
 							<div class="w-40 pt-1">
 								<a href="#" id="selectAll<?=$a.$s;?>" class="px-2 py-0 m-1"><i class="bi-arrow-90deg-up"></i> Cocher tout</a>
-								<a href="#" id="deselectAll<?=$a.$s;?>" class="px-2 py-0 m-1 hidden"><i class="bi-arrow-90deg-up"></i> Décocher tout</a>
+								<a href="#" id="deselectAll<?=$a.$s;?>" class="px-2 py-0 m-1 hidden"><i class="bi-arrow-90deg-up"></i> DÃ©cocher tout</a>
 							</div>
 							<div>
 								<b>Session :</b>
 								<select name="semesterSession" class="h-[22px] m-1 py-0 text-black text-sm" id="scolarSs<?=$a.$s;?>">
 									<option <?php if (date('m')>=7) {echo "selected";} ?>>Premier semestre</option>
-									<option>Semestre d'été</option>
-									<option <?php if (date('m')<7) {echo "selected";} ?>>Deuxième semestre</option>
+									<option>Semestre d'Ã©tÃ©</option>
+									<option <?php if (date('m')<7) {echo "selected";} ?>>DeuxiÃ¨me semestre</option>
 									<option>Semestre d'hiver</option>
 								</select>
 
-								<b>Année du cours :</b>
+								<b>AnnÃ©e du cours :</b>
 								<select name="annee_scolaire" class="h-[22px] m-1 py-0 text-black text-sm" id="scolarA<?=$a.$s;?>">
 									<?php
 										$mois = date('m');
@@ -514,14 +516,14 @@ $tcredit+= $credit + $crs['nb_crd'];
 	        window.location.hash = '#year'+a;
 	    };
 
-		// Attacher les événements du formulaire au chargement
+		// Attacher les Ã©vÃ©nements du formulaire au chargement
 		bindFormEvents();
 	});
 	
-	// Déterminer le chemin de base selon le contexte
+	// DÃ©terminer le chemin de base selon le contexte
 	var basePath = window.location.pathname.includes('/inscription/') ? '<?=$app_base?>/app/.student/' : '<?=$app_base?>/app/.student/';
 	
-	// Fonction pour rafraîchir uniquement la liste des cours
+	// Fonction pour rafraÃ®chir uniquement la liste des cours
 	function refreshCoursList() {
 		var scrollTop = $('#coursListContainer').scrollTop();
 		var currentHash = window.location.hash;
@@ -546,17 +548,17 @@ $tcredit+= $credit + $crs['nb_crd'];
 				$('#coursListContainer').html(data).css('opacity', '1');
 				// Restaurer la position du scroll
 				$('#coursListContainer').scrollTop(scrollTop);
-				// Réattacher les événements du formulaire
+				// RÃ©attacher les Ã©vÃ©nements du formulaire
 				bindFormEvents();
 			},
 			error: function() {
 				$('#coursListContainer').css('opacity', '1');
-				Toast.error('Erreur lors du rafraîchissement de la liste');
+				Toast.error('Erreur lors du rafraÃ®chissement de la liste');
 			}
 		});
 	}
 	
-	// Fonction pour réattacher les événements après le rafraîchissement AJAX
+	// Fonction pour rÃ©attacher les Ã©vÃ©nements aprÃ¨s le rafraÃ®chissement AJAX
 	function bindFormEvents() {
 		$(".form-newCours").off('submit').on('submit', function (e) {
 			e.preventDefault();
@@ -565,19 +567,19 @@ $tcredit+= $credit + $crs['nb_crd'];
 			var submitBtn = form.find('button[type="submit"]');
 			var originalText = submitBtn.text();
 			 
-			// Vérifier si au moins une case est cochée
+			// VÃ©rifier si au moins une case est cochÃ©e
 			if (form.find('input[type="checkbox"]:checked').length === 0) {
-				Toast.warning('Veuillez sélectionner au moins un cours');
+				Toast.warning('Veuillez sÃ©lectionner au moins un cours');
 				return;
 			}
 			 
-			// Désactiver le bouton pendant l'envoi
+			// DÃ©sactiver le bouton pendant l'envoi
 			submitBtn.prop('disabled', true).text('Enregistrement...');
 
 			var url = form.data('action');
 			
 			if (!url) {
-				Toast.error('URL du formulaire non trouvée');
+				Toast.error('URL du formulaire non trouvÃ©e');
 				submitBtn.prop('disabled', false).text(originalText);
 				return;
 			}
@@ -585,7 +587,7 @@ $tcredit+= $credit + $crs['nb_crd'];
 			var data = $(this).serialize();
 
 			$.post(url, data, function(response){
-				Toast.success('Cours ajouté au transcript avec succès!');
+				Toast.success('Cours ajoutÃ© au transcript avec succÃ¨s!');
 				
 				submitBtn.prop('disabled', false).text(originalText);
 				refreshCoursList();

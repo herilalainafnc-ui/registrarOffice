@@ -957,7 +957,7 @@
 						<div class="form-group">
 							<label class="shad-label">Privilège</label>
 							<select class="shad-select" name="level" id="levelSelect">
-								<option value="1">� Superadmin</option>
+								<option value="1">👨‍💻 Superadmin</option>
 								<option value="2">🛡️ Administrateur</option>
 								<option value="3" selected>📋 Registraire</option>
 								<option value="4">💰 Comptabilité</option>

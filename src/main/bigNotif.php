@@ -9,7 +9,7 @@
 			<div class="p-2">
 				<!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
 
-			<b class="toolInactive">Info Générale.</b>
+			<b class="toolInactive">Info GÃ©nÃ©rale.</b>
 
 			<div class="w-full gap-2 flex mb-3">
 				<div class="w-2/12">
@@ -26,11 +26,11 @@
 				</div>
 			</div>
 <hr><br>
-			<b class="toolInactive">Détail.</b>
+			<b class="toolInactive">DÃ©tail.</b>
 
 			<div class="w-full gap-2 flex mb-3">
 				<div class="w-2/12">
-					<label>Crédit</label><br>
+					<label>CrÃ©dit</label><br>
  					<select class="input w-full" type="number" name="nb_credit">
  						<option>1</option>
  						<option>2</option>
@@ -55,11 +55,11 @@
  					</select>
 				</div>
 				<div class="w-2/12">
-					<label>Catégorie</label><br>
+					<label>CatÃ©gorie</label><br>
  					<select class="input w-full" type="number" name="category">
- 						<option value="0">Général</option>
+ 						<option value="0">GÃ©nÃ©ral</option>
  						<option value="1">Majeur</option>
- 						<option value="2">Séléctive</option>
+ 						<option value="2">SÃ©lectionnÃ©</option>
  						<option value="3">Additionnel</option>
  					</select>
 				</div>
@@ -104,7 +104,7 @@ while($ct = $cat->fetch()){
 				<div class="w-2/12">
 					<label>Niveau du cours</label><br>
  					<select class="input w-full" type="number" name="yearlevel">
- 						<option value="0">Remise à niveau</option>
+ 						<option value="0">Remise Ã  niveau</option>
  						<option value="1" selected>Licence 1</option>
  						<option value="2">Licence 2</option>
  						<option value="3">Licence 3</option>
@@ -113,7 +113,7 @@ while($ct = $cat->fetch()){
  					</select>
 				</div>
 				<div class="w-2/12">
-					<label>Semèstre</label><br>
+					<label>Semestre</label><br>
  					<select class="input w-full" type="number" name="semester">
  						<option>1</option>
  						<option>2</option>
@@ -215,8 +215,8 @@ while($tch = $teach->fetch()){
 									</div>
 									
 									<div>
-										<label class="block text-sm font-medium text-slate-300 mb-1.5">Prénom</label>
-										<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all" type="text" name="lastName" placeholder="Prénom">
+										<label class="block text-sm font-medium text-slate-300 mb-1.5">PrÃ©nom</label>
+										<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all" type="text" name="lastName" placeholder="PrÃ©nom">
 									</div>
 									
 									<div class="grid grid-cols-2 gap-3">
@@ -232,7 +232,7 @@ while($tch = $teach->fetch()){
 									
 									<div>
 										<label class="block text-sm font-medium text-slate-300 mb-1.5">Adresse <span class="text-red-400">*</span></label>
-										<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all requierd-prof-2" type="text" name="address" placeholder="Adresse complète">
+										<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all requierd-prof-2" type="text" name="address" placeholder="Adresse complÃ¨te">
 									</div>
 									
 									<div class="grid grid-cols-2 gap-3">
@@ -240,7 +240,7 @@ while($tch = $teach->fetch()){
 											<label class="block text-sm font-medium text-slate-300 mb-1.5">Genre</label>
 											<select class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all" name="sex">
 												<option value="1">Masculin</option>
-												<option value="0">Féminin</option>
+												<option value="0">FÃ©minin</option>
 											</select>
 										</div>
 										<div>
@@ -264,7 +264,7 @@ while($tch = $teach->fetch()){
 									</div>
 									
 									<div>
-										<label class="block text-sm font-medium text-slate-300 mb-1.5">Téléphone <span class="text-red-400">*</span></label>
+										<label class="block text-sm font-medium text-slate-300 mb-1.5">TÃ©lÃ©phone <span class="text-red-400">*</span></label>
 										<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all requierd-prof-3" type="text" name="phone" placeholder="034 00 000 00">
 									</div>
 									
@@ -274,7 +274,7 @@ while($tch = $teach->fetch()){
 									</div>
 									
 									<div>
-										<label class="block text-sm font-medium text-slate-300 mb-1.5">Diplôme <span class="text-red-400">*</span></label>
+										<label class="block text-sm font-medium text-slate-300 mb-1.5">DiplÃ´me <span class="text-red-400">*</span></label>
 										<input class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40 transition-all requierd-prof-5" type="text" name="diplome" placeholder="Master, Doctorat...">
 									</div>
 									
@@ -374,7 +374,7 @@ while($tch = $teach->fetch()){
 			var data = $(this).serialize();
 			
 			$.post(url,data,function(response){
-				alert('Opération bien effectué.');
+				alert('Opï¿½ration bien effectuï¿½.');
 				$('#bigNotifCours').css({'display':'none'});
 			});
 		});

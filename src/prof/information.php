@@ -241,22 +241,22 @@
 
 				<div class="field-group">
 					<label class="field-label">Genre</label>
-					<p class="showPers field-value"><?php if($profil['sex'] == '0'){echo 'Féminin';}else{echo 'Masculin';}?></p>
+					<p class="showPers field-value"><?php if($profil['sex'] == '0'){echo 'FÃ©minin';}else{echo 'Masculin';}?></p>
 					<select class="editPers field-input hidden" name="sex">
 						<option value="1" <?php if($profil['sex'] == '1'){echo 'selected';}?>>Masculin</option>
-						<option value="0" <?php if($profil['sex'] == '0'){echo 'selected';}?>>Féminin</option>
+						<option value="0" <?php if($profil['sex'] == '0'){echo 'selected';}?>>FÃ©minin</option>
 					</select>
 				</div>
                 
 				<div class="field-group">
-					<label class="field-label">Diplôme</label>
+					<label class="field-label">DiplÃ´me</label>
 					<p class="showPers field-value"><?=$profil['diplome']?></p>
 					<input class="editPers field-input hidden" type="text" name="diplome" value="<?=$profil['diplome']?>">
 				</div>
     		</div>
 			<div>
 				<div class="field-group">
-					<label class="field-label">Prénom</label>
+					<label class="field-label">PrÃ©nom</label>
 					<p class="showPers field-value"><?=$lastName?></p>
 					<input class="editPers field-input hidden" type="text" name="lastName" value="<?=$lastName?>">
 				</div>
@@ -297,7 +297,7 @@
 		<div class="grid-two-cols">
 			<div>
 				<div class="field-group">
-					<label class="field-label">Téléphone</label>
+					<label class="field-label">TÃ©lÃ©phone</label>
 					<p class="showContact field-value"><?=$profil['phone']?></p>
 					<input id="firstContact" class="editContact field-input hidden" type="text" name="phone" value="<?=$profil['phone']?>">
 				</div>
@@ -311,7 +311,7 @@
 			<div>
 				<div class="field-group">
 					<label class="field-label">Extension</label>
-					<p class="showContact field-value">—</p>
+					<p class="showContact field-value">-</p>
 				</div>
 			</div>
 		</div>

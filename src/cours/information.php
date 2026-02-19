@@ -5,7 +5,7 @@
 	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 		<div class="w-full flex mb-4">
 			<div class="w-8/12">
-				<b>Infos générale</b>	
+				<b>Infos gÃ©nÃ©rale</b>	
 			</div>
 			<div class="w-4/12 text-right">
 				<div class="w-full flex gap-1 relative">
@@ -94,7 +94,7 @@ while ($showTeach = $findTeach->fetch()) {
 	<div class='m-0 p-2 <?=$bg_two_color?> hover:<?=$bg_three_color?> rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
 		<div class="w-full flex mb-4">
 			<div class="w-8/12">
-				<b>Détail...</b>	
+				<b>DÃ©tail...</b>	
 			</div>
 			<div class="w-4/12 text-right">
 				<div class="w-full flex gap-1 relative">
@@ -109,7 +109,7 @@ while ($showTeach = $findTeach->fetch()) {
 			<div class="w-6/12">
 				<label class="text-sm text-slate-400">Niveau</label>
 				<p class="showContact">--<?php if ($profil['yearlevel']==0) {
-											echo "Remise à niveau";
+											echo "Remise Ã  niveau";
 										}elseif($profil['yearlevel']>0 AND $profil['yearlevel']<=3) {
 											echo "Licence ".$profil['yearlevel'];
 										}else{
@@ -123,32 +123,32 @@ while ($showTeach = $findTeach->fetch()) {
 					<option class="<?=$bg_one_color?>" value="5" <?php if($profil['yearlevel'] == 5){echo 'selected';}?>>Master 2</option>
 				</select><br>
 
-				<label class="text-sm text-slate-400">Crédit</label>
-				<p class="showContact">-- <?=$profil['nb_crd']?> Crédits</p>
+				<label class="text-sm text-slate-400">CrÃ©dit</label>
+				<p class="showContact">-- <?=$profil['nb_crd']?> CrÃ©dits</p>
 				<select class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" name="nb_crd">
-					<option class="<?=$bg_one_color?>" value="1" <?php if($profil['nb_crd'] == 1){echo 'selected';}?>>1 Crédits</option>
-					<option class="<?=$bg_one_color?>" value="2" <?php if($profil['nb_crd'] == 2){echo 'selected';}?>>2 Crédits</option>
-					<option class="<?=$bg_one_color?>" value="3" <?php if($profil['nb_crd'] == 3){echo 'selected';}?>>3 Crédits</option>
-					<option class="<?=$bg_one_color?>" value="4" <?php if($profil['nb_crd'] == 4){echo 'selected';}?>>4 Crédits</option>
-					<option class="<?=$bg_one_color?>" value="5" <?php if($profil['nb_crd'] == 5){echo 'selected';}?>>5 Crédits</option>
-					<option class="<?=$bg_one_color?>" value="6" <?php if($profil['nb_crd'] == 6){echo 'selected';}?>>6 Crédits</option>
-					<option class="<?=$bg_one_color?>" value="7" <?php if($profil['nb_crd'] == 7){echo 'selected';}?>>7 Crédits</option>
-					<option class="<?=$bg_one_color?>" value="8" <?php if($profil['nb_crd'] == 8){echo 'selected';}?>>8 Crédits</option>
-					<option class="<?=$bg_one_color?>" value="9" <?php if($profil['nb_crd'] == 9){echo 'selected';}?>>9 Crédits</option>
-					<option class="<?=$bg_one_color?>" value="10" <?php if($profil['nb_crd'] == 10){echo 'selected';}?>>10 Crédits</option>
-					<option class="<?=$bg_one_color?>" value="11" <?php if($profil['nb_crd'] == 11){echo 'selected';}?>>11 Crédits</option>
-					<option class="<?=$bg_one_color?>" value="12" <?php if($profil['nb_crd'] == 12){echo 'selected';}?>>12 Crédits</option>
-					<option class="<?=$bg_one_color?>" value="13" <?php if($profil['nb_crd'] == 13){echo 'selected';}?>>13 Crédits</option>
-					<option class="<?=$bg_one_color?>" value="14" <?php if($profil['nb_crd'] == 14){echo 'selected';}?>>14 Crédits</option>
-					<option class="<?=$bg_one_color?>" value="15" <?php if($profil['nb_crd'] == 15){echo 'selected';}?>>15 Crédits</option>
-					<option class="<?=$bg_one_color?>" value="16" <?php if($profil['nb_crd'] == 16){echo 'selected';}?>>16 Crédits</option>
-					<option class="<?=$bg_one_color?>" value="17" <?php if($profil['nb_crd'] == 17){echo 'selected';}?>>17 Crédits</option>
-					<option class="<?=$bg_one_color?>" value="18" <?php if($profil['nb_crd'] == 18){echo 'selected';}?>>18 Crédits</option>
-					<option class="<?=$bg_one_color?>" value="19" <?php if($profil['nb_crd'] == 19){echo 'selected';}?>>19 Crédits</option>
-					<option class="<?=$bg_one_color?>" value="20" <?php if($profil['nb_crd'] == 20){echo 'selected';}?>>20 Crédits</option>
+					<option class="<?=$bg_one_color?>" value="1" <?php if($profil['nb_crd'] == 1){echo 'selected';}?>>1 CrÃ©dits</option>
+					<option class="<?=$bg_one_color?>" value="2" <?php if($profil['nb_crd'] == 2){echo 'selected';}?>>2 CrÃ©dits</option>
+					<option class="<?=$bg_one_color?>" value="3" <?php if($profil['nb_crd'] == 3){echo 'selected';}?>>3 CrÃ©dits</option>
+					<option class="<?=$bg_one_color?>" value="4" <?php if($profil['nb_crd'] == 4){echo 'selected';}?>>4 CrÃ©dits</option>
+					<option class="<?=$bg_one_color?>" value="5" <?php if($profil['nb_crd'] == 5){echo 'selected';}?>>5 CrÃ©dits</option>
+					<option class="<?=$bg_one_color?>" value="6" <?php if($profil['nb_crd'] == 6){echo 'selected';}?>>6 CrÃ©dits</option>
+					<option class="<?=$bg_one_color?>" value="7" <?php if($profil['nb_crd'] == 7){echo 'selected';}?>>7 CrÃ©dits</option>
+					<option class="<?=$bg_one_color?>" value="8" <?php if($profil['nb_crd'] == 8){echo 'selected';}?>>8 CrÃ©dits</option>
+					<option class="<?=$bg_one_color?>" value="9" <?php if($profil['nb_crd'] == 9){echo 'selected';}?>>9 CrÃ©dits</option>
+					<option class="<?=$bg_one_color?>" value="10" <?php if($profil['nb_crd'] == 10){echo 'selected';}?>>10 CrÃ©dits</option>
+					<option class="<?=$bg_one_color?>" value="11" <?php if($profil['nb_crd'] == 11){echo 'selected';}?>>11 CrÃ©dits</option>
+					<option class="<?=$bg_one_color?>" value="12" <?php if($profil['nb_crd'] == 12){echo 'selected';}?>>12 CrÃ©dits</option>
+					<option class="<?=$bg_one_color?>" value="13" <?php if($profil['nb_crd'] == 13){echo 'selected';}?>>13 CrÃ©dits</option>
+					<option class="<?=$bg_one_color?>" value="14" <?php if($profil['nb_crd'] == 14){echo 'selected';}?>>14 CrÃ©dits</option>
+					<option class="<?=$bg_one_color?>" value="15" <?php if($profil['nb_crd'] == 15){echo 'selected';}?>>15 CrÃ©dits</option>
+					<option class="<?=$bg_one_color?>" value="16" <?php if($profil['nb_crd'] == 16){echo 'selected';}?>>16 CrÃ©dits</option>
+					<option class="<?=$bg_one_color?>" value="17" <?php if($profil['nb_crd'] == 17){echo 'selected';}?>>17 CrÃ©dits</option>
+					<option class="<?=$bg_one_color?>" value="18" <?php if($profil['nb_crd'] == 18){echo 'selected';}?>>18 CrÃ©dits</option>
+					<option class="<?=$bg_one_color?>" value="19" <?php if($profil['nb_crd'] == 19){echo 'selected';}?>>19 CrÃ©dits</option>
+					<option class="<?=$bg_one_color?>" value="20" <?php if($profil['nb_crd'] == 20){echo 'selected';}?>>20 CrÃ©dits</option>
 				</select><br>
 
-				<label class="text-sm text-slate-400">Coût</label>
+				<label class="text-sm text-slate-400">CoÃ»t</label>
 				
 				<p class="showContact">-- <?=$profil['cout'];?> Ar</p>
 				<input class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden" type="text" name="cout" value="<?=$profil['cout'];?>"><br>
@@ -163,10 +163,10 @@ while ($showTeach = $findTeach->fetch()) {
 					<option class="<?=$bg_one_color?>" value="2" <?php if($profil['semester'] == 2){echo 'selected';}?>>Semestre 2</option>
 				</select><br>
 
-				<label class="text-sm text-slate-400">Catégorie</label>
+				<label class="text-sm text-slate-400">CatÃ©gorie</label>
 				<p class="showContact">-- <?php 
 if ($profil['category'] == 0){
-	echo "Général";
+	echo "GÃ©nÃ©ral";
 }elseif ($profil['category'] == 1) {
 	echo "Majeur";
 }elseif ($profil['category'] == -1 OR $profil['category'] == 2) {
@@ -181,7 +181,7 @@ if ($profil['category'] == 0){
  ?></p>
 				<select name="category" class="editContact p-0 bg-transparent h-5 text-sm border-0 w-11/12 hidden">
 					<option class="<?=$bg_one_color?>" ></option>
-					<option class="<?=$bg_one_color?>" value="0" <?php if($profil['category'] == 0){echo 'selected';}?>>Général</option>
+					<option class="<?=$bg_one_color?>" value="0" <?php if($profil['category'] == 0){echo 'selected';}?>>GÃ©nÃ©ral</option>
 					<option class="<?=$bg_one_color?>" value="1" <?php if($profil['category'] == 1){echo 'selected';}?>>Mageur</option>
 					<option class="<?=$bg_one_color?>" value="2" <?php if($profil['category'] == 2){echo 'selected';}?>>Selective</option>
 					<option class="<?=$bg_one_color?>" value="3" <?php if($profil['category'] == 3){echo 'selected';}?>>Additionnel</option>

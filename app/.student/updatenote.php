@@ -4,6 +4,8 @@
 	// Fuseau horaire Madagascar (UTC+3)
 	date_default_timezone_set('Indian/Antananarivo');
 
+	$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+
 	$id = $_GET['id'];
 	$as = $_GET['as'];
 	$nbr = $_GET['nbr'];
@@ -15,6 +17,30 @@
 	}else{
 		$note = $_POST['nb_crd'.$nbr];
 		//str_replace(',', '.', $_POST['note']);
+	}
+
+	// Validation: la note ne doit pas dépasser 20
+	if ($note != -2 && is_numeric($note) && $note > 20) {
+		if ($isAjax) {
+			header('Content-Type: application/json');
+			echo json_encode(['success' => false, 'message' => 'La note ne peut pas dépasser 20. Veuillez saisir une note entre 0 et 20.']);
+			exit;
+		} else {
+			header('location:../../src/student.php?id='.$id.'&page=transcriptSS&error=note_max#semestre'.$as);
+			exit;
+		}
+	}
+
+	// Validation: la note doit être numérique
+	if ($note != -2 && !is_numeric($note)) {
+		if ($isAjax) {
+			header('Content-Type: application/json');
+			echo json_encode(['success' => false, 'message' => 'La note doit être un nombre valide.']);
+			exit;
+		} else {
+			header('location:../../src/student.php?id='.$id.'&page=transcriptSS&error=note_invalid#semestre'.$as);
+			exit;
+		}
 	}
 	
 	$last_change_user_id = $_GET['user_id'];
@@ -77,6 +103,12 @@
 	$updateNote->bindParam(':note_id',$note_id,PDO::PARAM_INT);
 
 	$updateNote->execute();
+
+	if ($isAjax) {
+		header('Content-Type: application/json');
+		echo json_encode(['success' => true, 'message' => 'Note mise à jour avec succès!']);
+		exit;
+	}
 
 	header('location:../../src/student.php?id='.$id.'&page=transcriptSS#semestre'.$as);
  ?>

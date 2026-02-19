@@ -1,4 +1,4 @@
-<div class=" mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">
+<div class=" mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);" id="transcriptSSContainer">
 <?php
 	$anual = substr($annee_scolaire, 0, 4);
 
@@ -118,7 +118,7 @@ if ($crs['cours_category'] == 0){
 	echo "-";
 }
 						 ?></td>
-					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="nb_crd<?=$sessionCount.$nbr;?>" value="<?=$crs['grade']?>"></td>
+					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2 note-input" type="text" name="nb_crd<?=$sessionCount.$nbr;?>" value="<?=$crs['grade']?>" data-action="<?=$app_base?>/app/.student/updatenote?id=<?=$id;?>&nbr=<?=$sessionCount.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$sessionCount?>&user_id=<?=$rg_id?>" data-nbr="<?=$sessionCount.$nbr;?>"></td>
 					<td><?=$notecredi = $crs['credit'] * $crs['grade']?></td>
 					
 					<td class="<?php 
@@ -251,20 +251,18 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 
 				<tr class="<?=$bg_four_color?> text-right">
 					<td colspan="4">Note de Work Education</td>
-					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_work_educ" value="<?=$grade_work_educ?>"></td>
+					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2 promo-input" type="text" name="grade_work_educ" value="<?=$grade_work_educ?>" data-action="<?=$app_base?>/app/.student/updatePromotionNote?id=<?=$id;?>&session_id=<?=$session_id?>&student_id=<?=$student_id;?>&nbr=<?=$sessionCount.$nbr;?>&sessionCount=<?=$sessionCount?>&annee_scolaire=<?=$annee_scolaire?>&user_id=<?=$rg_id?>" data-group="promo-<?=$session_id?>"></td>
 				</tr>
 
 				<tr class="<?=$bg_four_color?> text-right">
 					<td colspan="4">Remarque académique</td>
-					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_remark_acad" value="<?=$grade_remark_acad?>"></td>
+					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2 promo-input" type="text" name="grade_remark_acad" value="<?=$grade_remark_acad?>" data-action="<?=$app_base?>/app/.student/updatePromotionNote?id=<?=$id;?>&session_id=<?=$session_id?>&student_id=<?=$student_id;?>&nbr=<?=$sessionCount.$nbr;?>&sessionCount=<?=$sessionCount?>&annee_scolaire=<?=$annee_scolaire?>&user_id=<?=$rg_id?>" data-group="promo-<?=$session_id?>"></td>
 				</tr>
 
 				<tr class="<?=$bg_four_color?> text-right">
 					<td colspan="4">Note de participation à l'exercice de chapelle et à la semaine de prière</td>
-					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2" type="text" name="grade_chapel_part" value="<?=$grade_chapel_part?>"></td>
+					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2 promo-input" type="text" name="grade_chapel_part" value="<?=$grade_chapel_part?>" data-action="<?=$app_base?>/app/.student/updatePromotionNote?id=<?=$id;?>&session_id=<?=$session_id?>&student_id=<?=$student_id;?>&nbr=<?=$sessionCount.$nbr;?>&sessionCount=<?=$sessionCount?>&annee_scolaire=<?=$annee_scolaire?>&user_id=<?=$rg_id?>" data-group="promo-<?=$session_id?>"></td>
 				</tr>
-
-				<button type="submit" class="hidden"></button>
 </form>		
 <?php 
 	}
@@ -348,58 +346,215 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 <script type="text/javascript">
 $(document).ready(function(){
 	
-	// Gestion de la mise à jour des notes individuelles
-	$('.form-update-note').on('submit', function(e) {
-		e.preventDefault();
-		var form = $(this);
-		var url = form.attr('action');
-		var data = form.serialize();
+	// Fonction pour rafraîchir uniquement la vue des notes (sans recharger toute la page)
+	function refreshTranscriptSS() {
+		var scrollTop = $('#transcriptSSContainer').scrollTop();
+		var currentUrl = window.location.href;
 		
-		$.post(url, data, function(response) {
-			if (typeof Toast !== 'undefined') {
-				Toast.success('Note mise à jour avec succès!');
-			} else {
-				alert('Note mise à jour!');
-			}
-		}).fail(function() {
-			if (typeof Toast !== 'undefined') {
-				Toast.error('Erreur lors de la mise à jour de la note');
-			} else {
-				alert('Erreur!');
+		$.ajax({
+			url: currentUrl,
+			method: 'GET',
+			beforeSend: function() {
+				$('#transcriptSSContainer').css('opacity', '0.5');
+			},
+			success: function(data) {
+				var tempDiv = document.createElement('div');
+				var bodyMatch = data.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+				if (bodyMatch) {
+					tempDiv.innerHTML = bodyMatch[1];
+				} else {
+					tempDiv.innerHTML = data;
+				}
+				var newContainer = tempDiv.querySelector('#transcriptSSContainer');
+				if (newContainer) {
+					$('#transcriptSSContainer').html(newContainer.innerHTML).css('opacity', '1');
+					$('#transcriptSSContainer').scrollTop(scrollTop);
+				} else {
+					$('#transcriptSSContainer').css('opacity', '1');
+					window.location.reload();
+				}
+			},
+			error: function() {
+				$('#transcriptSSContainer').css('opacity', '1');
+				if (typeof Toast !== 'undefined') {
+					Toast.error('Erreur lors du rafraîchissement');
+				}
 			}
 		});
-	});
-	
-	// Gestion de la mise à jour des notes de promotion (Work Education, Chapel, etc.)
-	$('.form-no-refrech').on('submit', function(e) {
-		e.preventDefault();
-		var form = $(this);
-		var url = form.attr('action');
-		var data = form.serialize();
+	}
+
+	// Fonction de validation de note (max 20)
+	function validateNote(value) {
+		if (value === 'ok' || value === 'Ok' || value === 'OK') {
+			return { valid: true };
+		}
+		var numValue = parseFloat(value);
+		if (isNaN(numValue)) {
+			return { valid: false, message: 'La note doit être un nombre valide.' };
+		}
+		if (numValue > 20) {
+			return { valid: false, message: 'La note ne peut pas dépasser 20. Veuillez saisir une note entre 0 et 20.' };
+		}
+		if (numValue < 0) {
+			return { valid: false, message: 'La note ne peut pas être négative.' };
+		}
+		return { valid: true };
+	}
+
+	// ========== MISE A JOUR DES NOTES INDIVIDUELLES ==========
+	// Délégation sur le conteneur - fonctionne même après remplacement AJAX du contenu
+	var noteTimeout;
+	$('#transcriptSSContainer').on('change', '.note-input', function() {
+		var input = $(this);
+		var url = input.data('action');
+		var nbr = input.data('nbr');
+		var noteValue = input.val().trim();
 		
-		$.post(url, data, function(response) {
+		// Validation côté client
+		var validation = validateNote(noteValue);
+		if (!validation.valid) {
 			if (typeof Toast !== 'undefined') {
-				Toast.success('Notes de promotion mises à jour!');
+				Toast.error(validation.message);
 			} else {
-				alert('Notes mises à jour!');
+				alert(validation.message);
 			}
-		}).fail(function() {
-			if (typeof Toast !== 'undefined') {
-				Toast.error('Erreur lors de la mise à jour');
-			} else {
-				alert('Erreur!');
-			}
-		});
+			input.focus();
+			input.css('border', '2px solid red');
+			setTimeout(function() { input.css('border', ''); }, 3000);
+			return;
+		}
+		
+		// Construire les données manuellement (pas de dépendance au <form>)
+		var data = 'nb_crd' + nbr + '=' + encodeURIComponent(noteValue);
+		
+		clearTimeout(noteTimeout);
+		noteTimeout = setTimeout(function() {
+			$.ajax({
+				url: url,
+				method: 'POST',
+				data: data,
+				dataType: 'json',
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+					input.css('opacity', '0.5');
+				},
+				success: function(response) {
+					input.css('opacity', '1');
+					if (response && response.success) {
+						if (typeof Toast !== 'undefined') {
+							Toast.success(response.message || 'Note mise à jour avec succès!');
+						}
+						refreshTranscriptSS();
+					} else {
+						if (typeof Toast !== 'undefined') {
+							Toast.error(response.message || 'Erreur lors de la mise à jour de la note');
+						} else {
+							alert(response.message || 'Erreur!');
+						}
+					}
+				},
+				error: function(xhr) {
+					input.css('opacity', '1');
+					var msg = 'Erreur lors de la mise à jour de la note';
+					try {
+						var resp = JSON.parse(xhr.responseText);
+						if (resp && resp.message) msg = resp.message;
+					} catch(e) {}
+					if (typeof Toast !== 'undefined') {
+						Toast.error(msg);
+					} else {
+						alert(msg);
+					}
+				}
+			});
+		}, 500);
 	});
 	
-	// Gestion de la suppression de cours avec confirmation
-	$('.btn-delete-cours').on('click', function(e) {
+	// ========== MISE A JOUR DES NOTES DE PROMOTION ==========
+	var promoTimeout;
+	$('#transcriptSSContainer').on('change', '.promo-input', function() {
+		var input = $(this);
+		var url = input.data('action');
+		var group = input.data('group');
+		
+		// Collecter toutes les valeurs du même groupe
+		var allInputs = $('#transcriptSSContainer .promo-input[data-group="' + group + '"]');
+		var hasError = false;
+		var data = {};
+		
+		allInputs.each(function() {
+			var val = $(this).val().trim();
+			if (val !== '') {
+				var validation = validateNote(val);
+				if (!validation.valid) {
+					if (typeof Toast !== 'undefined') {
+						Toast.error(validation.message);
+					} else {
+						alert(validation.message);
+					}
+					$(this).focus();
+					$(this).css('border', '2px solid red');
+					var el = $(this);
+					setTimeout(function() { el.css('border', ''); }, 3000);
+					hasError = true;
+					return false; // break
+				}
+			}
+			data[$(this).attr('name')] = val;
+		});
+		
+		if (hasError) return;
+		
+		clearTimeout(promoTimeout);
+		promoTimeout = setTimeout(function() {
+			$.ajax({
+				url: url,
+				method: 'POST',
+				data: data,
+				dataType: 'json',
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+					allInputs.css('opacity', '0.5');
+				},
+				success: function(response) {
+					allInputs.css('opacity', '1');
+					if (response && response.success) {
+						if (typeof Toast !== 'undefined') {
+							Toast.success(response.message || 'Notes de promotion mises à jour!');
+						}
+						refreshTranscriptSS();
+					} else {
+						if (typeof Toast !== 'undefined') {
+							Toast.error(response.message || 'Erreur lors de la mise à jour');
+						} else {
+							alert(response.message || 'Erreur!');
+						}
+					}
+				},
+				error: function(xhr) {
+					allInputs.css('opacity', '1');
+					var msg = 'Erreur lors de la mise à jour';
+					try {
+						var resp = JSON.parse(xhr.responseText);
+						if (resp && resp.message) msg = resp.message;
+					} catch(e) {}
+					if (typeof Toast !== 'undefined') {
+						Toast.error(msg);
+					} else {
+						alert(msg);
+					}
+				}
+			});
+		}, 500);
+	});
+	
+	// ========== SUPPRESSION DE COURS ==========
+	$('#transcriptSSContainer').on('click', '.btn-delete-cours', function(e) {
 		e.preventDefault();
 		var btn = $(this);
 		var url = btn.data('url');
 		var coursName = btn.data('cours');
 		
-		// Confirmation avant suppression
 		if (typeof Toast !== 'undefined' && typeof Toast.confirm === 'function') {
 			Toast.confirm('Voulez-vous vraiment supprimer "' + coursName + '" du transcript?', {
 				title: 'Supprimer ce cours?',
@@ -407,7 +562,6 @@ $(document).ready(function(){
 				cancelText: 'Annuler'
 			}).then(function(confirmed) {
 				if (confirmed) {
-					// Proceed with deletion
 					$.ajax({
 						url: url,
 						type: 'GET',
@@ -418,63 +572,35 @@ $(document).ready(function(){
 						success: function(response) {
 							if (response && response.success) {
 								Toast.success(response.message || 'Cours supprimé avec succès!');
-								setTimeout(function() {
-									window.location.reload();
-								}, 800);
+								setTimeout(function() { refreshTranscriptSS(); }, 800);
 							} else {
 								Toast.error(response.message || 'Erreur lors de la suppression');
 							}
 						},
-						error: function(xhr, status, error) {
-							console.error('Erreur AJAX:', status, error, xhr.responseText);
+						error: function(xhr) {
 							var msg = 'Erreur lors de la suppression';
 							try {
 								var resp = JSON.parse(xhr.responseText);
 								if (resp && resp.message) msg = resp.message;
-							} catch(e) {
-								if (xhr.responseText) msg += ': ' + xhr.responseText.substring(0, 100);
-							}
+							} catch(e) {}
 							Toast.error(msg);
 						}
 					});
 				}
 			});
 		} else {
-			// Fallback to standard confirm
 			if (confirm('Voulez-vous vraiment supprimer "' + coursName + '" du transcript?')) {
 				$.ajax({
-					url: url,
-					type: 'GET',
-					dataType: 'json',
-					beforeSend: function(xhr) {
-						xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-					},
+					url: url, type: 'GET', dataType: 'json',
+					beforeSend: function(xhr) { xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest'); },
 					success: function(response) {
-						if (response && response.success) {
-							alert('Cours supprimé!');
-							window.location.reload();
-						} else {
-							alert(response.message || 'Erreur lors de la suppression');
-						}
+						if (response && response.success) { alert('Cours supprimé!'); refreshTranscriptSS(); }
+						else { alert(response.message || 'Erreur'); }
 					},
-					error: function(xhr, status, error) {
-						console.error('Erreur AJAX:', status, error, xhr.responseText);
-						alert('Erreur lors de la suppression: ' + error);
-					}
+					error: function() { alert('Erreur lors de la suppression'); }
 				});
 			}
 		}
-	});
-	
-	// Auto-save on input change (debounced)
-	var saveTimeout;
-	$('.form-update-note input, .form-no-refrech input').on('change', function() {
-		var form = $(this).closest('form');
-		
-		clearTimeout(saveTimeout);
-		saveTimeout = setTimeout(function() {
-			form.submit();
-		}, 500);
 	});
 	
 });
