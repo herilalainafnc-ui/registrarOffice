@@ -197,7 +197,7 @@ echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];
 								<div id="intModepayement" class="w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-2001 <?php if($isSuspended) echo 'opacity-50 pointer-events-none'; ?>">
 									
 									<i class="bi-cash-coin"></i>
-											Mode de payement
+											Mode de paiement
 								</div>
 
 								<div id="intFicheinscription" class="w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-2001">
@@ -310,7 +310,7 @@ function checkSessionExists() {
 				message.className = 'text-green-500';
 			} else if (response.will_replace) {
 				// Une autre session existe pour cette année - avertir et permettre le remplacement
-				submitBtn.className = 'my-2 px-5 py-2 bg-orange-600 rounded-md';
+				submitBtn.className = 'my-2 px-5 py-2 bg-cyan-600 rounded-md';
 				submitBtn.disabled = false;
 				upStageBtn.className = 'px-5 py-2 rounded-md bg-slate-700 toolInactive';
 				message.innerHTML = '<i class="bi bi-exclamation-triangle-fill"></i> ' + response.message;
@@ -666,16 +666,39 @@ function updateSessionDisplay() {
             	// Utiliser la variable globale currentSessionId (toujours à jour)
             	var session_id = currentSessionId || $("#session_id").text();
             	
-            	$.ajax({
-					url: APP_BASE+'/inscription/stages/mode.payement.php',
-					method:"POST",
-					data:{student_id:student_id,session_id:session_id},
-
-					success:function(data){
-						$('.stage_3').css({'display':'block'});
-						$("#contentModepayement").html(data);
-					}
-				});
+            	// Fonction pour charger le mode de paiement
+            	function loadModePayement(sid) {
+            		$.ajax({
+						url: APP_BASE+'/inscription/stages/mode.payement.php',
+						method:"POST",
+						data:{student_id:student_id, session_id:sid},
+						success:function(data){
+							$('.stage_3').css({'display':'block'});
+							$("#contentModepayement").html(data);
+						}
+					});
+            	}
+            	
+            	if (session_id) {
+            		// session_id disponible, charger directement
+            		loadModePayement(session_id);
+            	} else {
+            		// session_id pas encore disponible (race condition), attendre le chargement de session.php
+            		var retries = 0;
+            		var waitForSession = setInterval(function() {
+            			var sid = currentSessionId || $("#session_id").text();
+            			retries++;
+            			if (sid) {
+            				clearInterval(waitForSession);
+            				currentSessionId = sid;
+            				loadModePayement(sid);
+            			} else if (retries >= 10) {
+            				// Après 2 secondes, charger quand même (le fallback PHP récupérera le session_id)
+            				clearInterval(waitForSession);
+            				loadModePayement('');
+            			}
+            		}, 200);
+            	}
 
 				$('#downStage').click(function(){
 					$('#upStage').attr('class','px-5 py-2 bg-cyan-700 rounded-md');

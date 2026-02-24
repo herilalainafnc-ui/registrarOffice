@@ -990,6 +990,7 @@
 										<span id="selectedStudentText" style="flex:1;font-size:13px;color:#e8f1f8;"></span>
 										<button type="button" onclick="clearStudentSelection()" style="background:none;border:none;color:#f87171;cursor:pointer;font-size:16px;">✕</button>
 									</div>
+						</div>
 						
 						<div class="form-group">
 							<label class="shad-label">Pseudo <span class="text-red-400">*</span></label>

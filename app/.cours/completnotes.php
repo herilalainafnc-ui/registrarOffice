@@ -14,11 +14,43 @@
 	$year = $_GET['year'];
 	$sigle = $_GET['sigle'];
 
+	// Validation: note ne doit pas dépasser 20
+	$gradeNum = floatval($grade);
+	$isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+
+	if ($gradeNum > 20) {
+		if ($isAjax) {
+			header('Content-Type: application/json');
+			echo json_encode(['success' => false, 'message' => 'La note ' . $gradeNum . ' dépasse le barème de 20/20']);
+			exit;
+		} else {
+			header('location:' . $app_base . '/src/cours?id='.$id.'&page=notes#'.$sigle.$year);
+			exit;
+		}
+	}
+
+	if ($gradeNum < 0 && $gradeNum != -2) {
+		if ($isAjax) {
+			header('Content-Type: application/json');
+			echo json_encode(['success' => false, 'message' => 'Note négative non autorisée']);
+			exit;
+		} else {
+			header('location:' . $app_base . '/src/cours?id='.$id.'&page=notes#'.$sigle.$year);
+			exit;
+		}
+	}
+
 	$update = $dtb->prepare("UPDATE t_2023_notes SET grade=:grade WHERE id=:idcours");
 	$update->bindParam(':grade',$grade,PDO::PARAM_STR);
 	$update->bindParam(':idcours',$idcours,PDO::PARAM_INT);
 	$update->execute();
 
-	header('location:' . $app_base . '/course?id='.$id.'&page=notes#'.$sigle.$year);
+	if ($isAjax) {
+		header('Content-Type: application/json');
+		echo json_encode(['success' => true, 'message' => 'Note mise à jour avec succès', 'grade' => $gradeNum]);
+		exit;
+	}
+
+	header('location:' . $app_base . '/src/cours?id='.$id.'&page=notes#'.$sigle.$year);
 
  ?>

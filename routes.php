@@ -65,6 +65,7 @@ $router->get('/teacher/dashboard', 'TeacherController@dashboard');
 // ========================================================================
 $router->get('/professor', 'AdminController@professor');
 $router->get('/course', 'AdminController@course');
+$router->get('/cours', 'AdminController@course');
 
 // ========================================================================
 // ADMINISTRATION
@@ -100,6 +101,13 @@ $router->any('/export/gen-pdf', 'ExportController@genPdf');
 $router->get('/sheet', 'ExportController@sheet');
 
 // ========================================================================
+// FILE D'ATTENTE INSCRIPTIONS
+// ========================================================================
+$router->get('/queue', 'QueueController@index');
+$router->get('/queue/display', 'QueueController@display');
+$router->any('/queue/api', 'QueueController@api');
+
+// ========================================================================
 // DIVERS
 // ========================================================================
 $router->get('/reel', 'AdminController@reel');
@@ -128,6 +136,7 @@ $router->any('/student.dashboard', function() { redirectTo('/student/dashboard')
 $router->any('/teacher.dashboard', function() { redirectTo('/teacher/dashboard'); });
 $router->any('/creat.student', function() { redirectTo('/students/create'); });
 $router->any('/creat.account', function() { redirectTo('/accounts/create'); });
+$router->any('/src/cours', function() { redirectTo('/cours?' . $_SERVER['QUERY_STRING']); });
 
 // ========================================================================
 // PAGE 404 PERSONNALISÉE

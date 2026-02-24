@@ -389,7 +389,7 @@ $modeP = $showPayement['mode_payement'];
  ?>
  <!-- __________________________________________________________________ -->
 
-<!-- MODE DE PAYEMENT -->
+<!-- Mode de paiement -->
 <div>
 	<b class="text-md">Mode de paiement choisi :</b>
 
@@ -408,7 +408,7 @@ $modeP = $showPayement['mode_payement'];
 			<thead>
 				<tr>
 					<th>Pourcentage</th>
-					<th>Mentant</th>
+					<th>Montant</th>
 					<th>Date de paiement</th>
 				</tr>
 			</thead>

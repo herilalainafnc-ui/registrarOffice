@@ -4,6 +4,16 @@
 
 	$student_id = $_POST['student_id'] ?? '';
 	$session_id = $_POST['session_id'] ?? '';
+
+	// Fallback: si session_id est vide, le récupérer depuis la DB
+	if (empty($session_id) && !empty($student_id)) {
+		$stmtSession = $dtb->prepare('SELECT session_id FROM t_2024_inscription_session WHERE student_id = :student_id ORDER BY id DESC LIMIT 1');
+		$stmtSession->execute(['student_id' => $student_id]);
+		$sessionRow = $stmtSession->fetch();
+		if ($sessionRow) {
+			$session_id = $sessionRow['session_id'];
+		}
+	}
 	
 	// Utiliser des requêtes préparées pour éviter l'injection SQL
 	$stmt = $dtb->prepare('SELECT * FROM tbl_2024_etudiant WHERE student_id = :student_id AND remove != 1 LIMIT 1');
@@ -439,7 +449,13 @@ $Montant = $showFin['cout_fraix_generaux'] +
 </form>
 		</div>
 <?php	
-} ?>		
+} else { ?>
+		<div class="w-full bg-slate-700 p-4 rounded-lg text-center">
+			<i class="bi bi-exclamation-circle text-orange-400 text-3xl"></i>
+			<p class="mt-2 text-orange-300">Les options de paiement ne sont pas disponibles.</p>
+			<p class="text-xs text-slate-400 mt-1">Vérifiez que les cours ont bien été ajoutés et que les frais financiers sont configurés pour cette session.</p>
+		</div>
+<?php } ?>		
 	</div>
 
 </div>

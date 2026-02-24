@@ -45,10 +45,10 @@ if (isset($_POST['trie'])) {
 	while ($cours_list = $recupcours->fetch()) {
  ?>
  	<tr id="cours_<?=$cours_nb?>" class="hover:bg-slate-300 hover:bg-slate-600 text-slate-100">	
-									<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><a href="<?=$app_base?>/src/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['Sigle']?></div></a></td>
-									<td><a href="<?=$app_base?>/src/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['title']?></div></a></td>
-									<td><a href="<?=$app_base?>/src/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['dep_desc']?></div></a></td>
-									<td><a href="<?=$app_base?>/src/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
+									<td class="bg-gradient-to-r from-cyan-800 to-cyan-600"><a href="<?=$app_base?>/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['Sigle']?></div></a></td>
+									<td><a href="<?=$app_base?>/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['title']?></div></a></td>
+									<td><a href="<?=$app_base?>/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['dep_desc']?></div></a></td>
+									<td><a href="<?=$app_base?>/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
 if($cours_list['parcours'] == "all") { echo "Tronc comun";}else{
 	$findParcours = $dtb->query('SELECT * FROM filiere_parcours WHERE shortcode = "'.$cours_list['parcours'].'"');
 	$showParcours = $findParcours->fetch();
@@ -57,8 +57,8 @@ if($cours_list['parcours'] == "all") { echo "Tronc comun";}else{
 	}
 }
 								?></div></a></td>
-									<td><a href="<?=$app_base?>/src/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['nb_crd']?></div></a></td>
-									<td><a href="<?=$app_base?>/src/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
+									<td><a href="<?=$app_base?>/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['nb_crd']?></div></a></td>
+									<td><a href="<?=$app_base?>/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
 if ($cours_list['category'] == 0){
 	echo "Général";
 }elseif ($cours_list['category'] == 1) {
@@ -73,7 +73,7 @@ if ($cours_list['category'] == 0){
 	echo "-";
 }
 								?></div></a></td>
-									<td><a href="<?=$app_base?>/src/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php
+									<td><a href="<?=$app_base?>/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php
 										if ($cours_list['yearlevel']==0) {
 											echo "Remise à niveau";
 										}elseif($cours_list['yearlevel']>0 AND $cours_list['yearlevel']<=3) {
@@ -81,8 +81,8 @@ if ($cours_list['category'] == 0){
 										}else{
 											echo "Master ".($cours_list['yearlevel']-3);
 										} ?></div></a></td>
-									<td><a href="<?=$app_base?>/src/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['semester']?></div></a></td>
-									<td><a href="<?=$app_base?>/src/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
+									<td><a href="<?=$app_base?>/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?=$cours_list['semester']?></div></a></td>
+									<td><a href="<?=$app_base?>/cours?id=<?=$cours_list['id']?>&page=information"><div class="w-full"><?php 
 $findTeach = $dtb->query('SELECT * FROM teacher WHERE uid = "'.$cours_list['id_teacher'].'"');
 $showTeach = $findTeach->fetch();
 if(!empty($showTeach)) {

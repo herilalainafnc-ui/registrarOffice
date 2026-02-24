@@ -277,6 +277,16 @@
 <div class="xl:w-2/12 lg:w-3/12 sidebar-menu" id="sidebarMenu" style="height: calc(100vh - 56px);">
 	
 	<nav class="py-2">
+		<!-- Inscription -->
+		<div class="menu-item <?php if(isRoute('/inscription')) { echo "active"; } ?> <?php if($rg_user['level'] > 6) { echo "toolInactive"; } ?>">
+			<a href="<?=$app_base?>/inscription/inscription" target="_blank">
+				<div class="menu-icon-wrapper" style="background: rgba(14, 165, 233, 0.15);">
+					<i class="bi bi-person-fill-add menu-icon" style="color: #0ea5e9;"></i>
+				</div>
+				<span class="menu-title">Inscription</span>
+			</a>
+		</div>
+
 		<!-- Etudiants Section -->
 		<div class="menu-section-header">
 			<span>Étudiants</span>
@@ -364,9 +374,9 @@
 			</a>
 		</div>
 
-		<!-- Emploi du temps Section -->
+		<!-- Application Section -->
 		<div class="menu-section-header">
-			<span>Emploi du temps</span>
+			<span>Application</span>
 		</div>
 		
 		<div class="menu-item <?php if(isRoute('/schedule')) { echo "active"; } ?>">
@@ -377,7 +387,16 @@
 				<span class="menu-title">Emplois du temps</span>
 			</a>
 		</div>
-		
+
+		<div class="menu-item <?php if(isRoute('/queue')) { echo "active"; } ?> <?php if($rg_user['level'] > 1) { echo "toolInactive"; } ?>">
+			<a href="<?=$app_base?>/queue">
+				<div class="menu-icon-wrapper" style="background: rgba(14, 165, 233, 0.15);">
+					<i class="bi bi-people-fill menu-icon" style="color: #0ea5e9;"></i>
+				</div>
+				<span class="menu-title">File d'attente</span>
+			</a>
+		</div>
+
 		<!-- Communication Section -->
 		<div class="menu-section-header">
 			<span>Communication</span>

@@ -1,0 +1,447 @@
+<div class=" mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);" id="notesCoursContainer">
+<!-- DEBUG TEST: Si vous voyez ce texte, le fichier est bien chargé -->
+<div id="debug-notes-test" style="background:red;color:white;padding:10px;font-size:18px;font-weight:bold;text-align:center;margin-bottom:10px;">DEBUG: notes.php modifié OK - <?=date('H:i:s')?></div>
+<?php 
+$year = date('Y')+1;
+for ($i=0; $i < 4 ; $i++) { 
+
+$soustract = $year - $i;
+$preced = $soustract - 1;	
+?>
+
+<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all'>
+<div class="text-center bg-gradient-to-r from-cyan-500">
+	<b>Etudiants en année <?php echo $scolaire = $preced." - ".$soustract; ?></b>
+</div>
+
+	<div>
+
+		<div>
+
+
+			<table class="simpleTbl mb-1">
+				<thead class="<?=$bg_one_color?> text-white">
+					<tr>
+						<td class="w-20">ID</td>
+						<td>Nom et Prénoms</td>
+						<td class="w-20">Niveau</td>
+						<td class="w-20">Semestre</td>
+						<td class="w-20">Notes/20</td>
+						<td class="w-4">Etat</td>
+						<td class="w-4"><span class="bi-trash3-fill"></span></td>
+					</tr>
+				</thead>
+				<tbody class="<?=$bg_four_color?>">
+<?php
+$sigle = $profil['Sigle'];
+$title = $profil['title'];
+$cors = $dtb->query('SELECT * FROM t_2023_notes WHERE Sigle ="'.$sigle.'" AND annee_scolaire = "'.$scolaire.'" AND remove = 0 ORDER BY student_id');
+
+$nbr = 1;
+while ($cours_table = $cors->fetch()) {
+$idcours = $cours_table['id'];
+$noteNbr = $i . $nbr;
+ ?>
+			<form method="post" action="<?=$app_base?>/app/.student/updatenote?id=<?=$id?>&nbr=<?=$noteNbr?>&note_id=<?=$idcours?>&as=<?=$i?>&user_id=<?=$rg_id?>" class="form-update-note">
+					<tr id="<?=$cours_table['Sigle'].$preced.$soustract?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black">
+						<td class="bg-gradient-to-r from-orange-800 to-orange-400"><?=$cours_table['student_id']?></td>
+						<td class="c<?=$nbr.$i;?>"><?php
+
+$jer = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE student_id='".$cours_table['student_id']."'");
+$apotr = $jer->fetch();
+if($apotr){
+	if(is_null($apotr['student_nom']) AND is_null($apotr['student_prenom'])){
+		echo "<em style='color:red'>Non défini</em>";
+	}else{
+		echo $apotr['student_nom']." ".$apotr['student_prenom'];
+	}
+}else{
+	echo "<em style='color:red'>Etudiant supprimé de la base.</em>";
+}
+					?></td>
+					<td class="c<?=$nbr.$soustract;?>">
+<?php 
+if($apotr){
+	echo "L".$apotr['annee_etude'];
+}else{
+	echo "-";
+}
+ ?>						
+							
+						</td>
+					<td class="c<?=$nbr.$soustract;?>"><?=$cours_table['semester']?></td>
+					<td class="<?=$bg_six_color?> text-slate-800 px-0">
+<?php 
+if ($privilege == "registrar" OR $privilege == "administrator") {
+ ?>
+<input class="insimple text-sm bg-transparent px-2 note-input note-input-<?=$soustract?>" type="text" name="nb_crd<?=$noteNbr?>" value="<?=$cours_table['grade'];?>" data-action="<?=$app_base?>/app/.student/updatenote?id=<?=$id?>&nbr=<?=$noteNbr?>&note_id=<?=$idcours?>&as=<?=$i?>&user_id=<?=$rg_id?>" data-nbr="<?=$noteNbr?>" data-idcours="<?=$idcours?>" data-student-id="<?=$cours_table['student_id']?>" data-year="<?=$soustract?>">
+<?php 
+}else{
+	echo "<a class='px-2'>".$cours_table['grade']."</a>";
+}
+ ?>
+					</td>
+					<td class='stp-<?=$nbr.$soustract;?> <?php 
+if ($cours_table['grade'] == -2 OR $cours_table['grade'] >= 10) {
+	echo "bg-green-500";
+
+}elseif ($cours_table['grade'] < 10 and $cours_table['grade'] > 0) {
+	echo "bg-red-500";
+}elseif ($cours_table['grade'] == 0){
+	echo "bg-none";
+} ?> text-center' title="<?php 
+if ($cours_table['grade'] == -2 OR $cours_table['grade'] >= 10) {
+	echo "Succés";
+}elseif ($cours_table['grade'] < 10 and $cours_table['grade'] > 0){
+	echo "Echec";
+}elseif ($cours_table['grade'] == 0){
+	echo "";
+}
+
+							 ?>">
+						<?php 
+	if ($cours_table['grade'] == 0 OR $cours_table['grade'] == "") {
+		echo "";
+	}elseif ($cours_table['grade'] < 10) {
+		echo "E";
+	}elseif ($cours_table['grade'] == -2 OR $cours_table['grade'] >= 10){
+		echo "S";
+	}
+							 ?>
+					</td>
+					<td>
+							<div class="nav-item dropstart" style="list-style: none">
+								<a href="#" class="btn nav-link" type="button" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="bi-three-dots-vertical"></span></a>
+								<ul class="dropdown-menu">
+							        <li>
+<a class="dropdown-item" href="app/.cours/dell-listcours.incours?idSupprCours=<?=$idcours?>&id=<?=$id?>"><span class="bi-trash3-fill" style="color: red;"></span> Supprimer cet étudiant</a></li>
+					          		</ul>
+							</div>
+						</td>
+					</tr>
+			</form>
+<?php 
+
+$nbr++;
+	}
+ ?>
+				</tbody>
+			</table>
+
+<div class="text-center text-white">
+	<b><p style="margin: 0px;">Nombre : <?php 
+if (($nbr-1)<=1) {
+	echo ($nbr-1)." étudiant";
+}else{
+	echo ($nbr-1)." étudiants";
+}
+	?></p></b>
+
+</div>
+
+<?php if (($privilege == "registrar" OR $privilege == "administrator") && ($nbr - 1) > 0) { ?>
+<div class="flex items-center justify-between mt-2 px-2 py-2 rounded-md bg-slate-700">
+	<div id="bulk-alert-<?=$soustract?>" class="text-xs"></div>
+	<button type="button" class="bulk-save-btn px-4 py-2 bg-cyan-700 hover:bg-cyan-600 text-white rounded-md text-sm transition-all flex items-center gap-2" data-year="<?=$soustract?>">
+		<i class="bi-check2-all"></i> Enregistrer toutes les notes (<?=$preced?> - <?=$soustract?>)
+	</button>
+</div>
+<?php } ?>
+
+	</div>
+
+				</div>
+</div>
+<?php 
+	}
+ ?>
+
+<?php if ($privilege == "registrar" OR $privilege == "administrator") { ?>
+<script type="text/javascript">
+$(document).ready(function(){
+
+	console.log('[notes.php] Script chargé, notesCoursContainer trouvé:', $('#notesCoursContainer').length);
+	console.log('[notes.php] Nombre de .note-input trouvés:', $('.note-input').length);
+
+	// Intercepter la soumission native des formulaires (comme dans transcriptSS)
+	$('#notesCoursContainer').on('submit', '.form-update-note', function(e) {
+		e.preventDefault();
+		console.log('[notes.php] Form submit intercepté, déclenchement du change sur l\'input');
+		$(this).find('.note-input').trigger('change');
+	});
+
+	// Fonction de validation (identique à transcriptSS.php)
+	function validateNote(value) {
+		if (value === 'ok' || value === 'Ok' || value === 'OK') {
+			return { valid: true };
+		}
+		var numValue = parseFloat(value);
+		if (isNaN(numValue)) {
+			return { valid: false, message: 'La note doit être un nombre valide.' };
+		}
+		if (numValue > 20) {
+			return { valid: false, message: 'La note ne peut pas dépasser 20. Veuillez saisir une note entre 0 et 20.' };
+		}
+		if (numValue < 0) {
+			return { valid: false, message: 'La note ne peut pas être négative.' };
+		}
+		return { valid: true };
+	}
+
+	// ========== VALIDATION EN TEMPS REEL ==========
+	$('#notesCoursContainer').on('input', '.note-input', function() {
+		var val = $(this).val().replace(',', '.');
+		var numVal = parseFloat(val);
+		var year = $(this).data('year');
+		
+		if (val !== '' && !isNaN(numVal)) {
+			if (numVal > 20) {
+				$(this).css({
+					'border': '2px solid #ef4444',
+					'border-radius': '4px',
+					'background': 'rgba(239, 68, 68, 0.15)'
+				});
+				if (!$(this).next('.note-warning').length) {
+					$(this).after('<span class="note-warning text-[10px] text-red-400 block">⚠ Dépasse 20! Cela faussera la moyenne.</span>');
+				}
+			} else if (numVal < 0 && numVal != -2) {
+				$(this).css({
+					'border': '2px solid #f97316',
+					'border-radius': '4px',
+					'background': 'rgba(249, 115, 22, 0.15)'
+				});
+				if (!$(this).next('.note-warning').length) {
+					$(this).after('<span class="note-warning text-[10px] text-orange-400 block">⚠ Note négative</span>');
+				}
+			} else {
+				$(this).css({ 'border': 'none', 'border-radius': '0px', 'background': 'transparent' });
+				$(this).next('.note-warning').remove();
+			}
+		} else {
+			$(this).css({ 'border': 'none', 'border-radius': '0px', 'background': 'transparent' });
+			$(this).next('.note-warning').remove();
+		}
+		
+		updateBulkAlert(year);
+	});
+
+	// ========== SAUVEGARDE INDIVIDUELLE SUR CHANGE (copié de transcriptSS.php) ==========
+	var noteTimeout;
+	$('#notesCoursContainer').on('change', '.note-input', function() {
+		var input = $(this);
+		var url = input.data('action');
+		var nbr = input.attr('data-nbr');
+		var noteValue = input.val().trim();
+		
+		console.log('[notes.php] Change détecté - nbr:', nbr, 'note:', noteValue, 'url:', url);
+		
+		// Validation côté client (identique à transcriptSS.php)
+		var validation = validateNote(noteValue);
+		if (!validation.valid) {
+			console.log('[notes.php] Validation échouée:', validation.message);
+			if (typeof Toast !== 'undefined') {
+				Toast.error(validation.message);
+			} else {
+				alert(validation.message);
+			}
+			input.focus();
+			input.css('border', '2px solid red');
+			setTimeout(function() { input.css('border', ''); }, 3000);
+			return;
+		}
+		
+		// Construire les données manuellement (identique à transcriptSS.php)
+		var data = 'nb_crd' + nbr + '=' + encodeURIComponent(noteValue);
+		console.log('[notes.php] Envoi AJAX - data:', data);
+		
+		clearTimeout(noteTimeout);
+		noteTimeout = setTimeout(function() {
+			$.ajax({
+				url: url,
+				method: 'POST',
+				data: data,
+				dataType: 'json',
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+					input.css('opacity', '0.5');
+					console.log('[notes.php] AJAX envoyé à:', url);
+				},
+				success: function(response) {
+					console.log('[notes.php] AJAX succès - response:', response);
+					input.css('opacity', '1');
+					if (response && response.success) {
+						if (typeof Toast !== 'undefined') {
+							Toast.success(response.message || 'Note mise à jour avec succès!');
+						}
+						
+						// Mettre à jour l'état visuel (S/E)
+						var numVal = parseFloat(noteValue.replace(',', '.'));
+						var row = input.closest('tr');
+						var statusCell = row.find('td[class*="stp-"]');
+						
+						input.css({ 'border': 'none', 'border-radius': '0px', 'background': 'none' });
+						input.blur();
+						
+						if (numVal == 0) {
+							statusCell.css('background', 'none').text('');
+						} else if (numVal == -2 || numVal >= 10) {
+							statusCell.css({ 'background': '#15dd2a', 'color': 'white' }).text('S');
+						} else if (numVal < 10 && numVal > 0) {
+							statusCell.css({ 'background': '#ff0000', 'color': 'white' }).text('E');
+						}
+					} else {
+						if (typeof Toast !== 'undefined') {
+							Toast.error(response.message || 'Erreur lors de la mise à jour de la note');
+						} else {
+							alert(response.message || 'Erreur!');
+						}
+					}
+				},
+				error: function(xhr, status, error) {
+					console.log('[notes.php] AJAX erreur - status:', status, 'error:', error, 'response:', xhr.responseText);
+					input.css('opacity', '1');
+					var msg = 'Erreur lors de la mise à jour de la note';
+					try {
+						var resp = JSON.parse(xhr.responseText);
+						if (resp && resp.message) msg = resp.message;
+					} catch(e) {}
+					if (typeof Toast !== 'undefined') {
+						Toast.error(msg);
+					} else {
+						alert(msg);
+					}
+				}
+			});
+		}, 500);
+	});
+
+	// ========== ALERTE GLOBAL PAR ANNEE ==========
+	function updateBulkAlert(year) {
+		var invalidCount = 0;
+		$('.note-input-' + year).each(function() {
+			var val = parseFloat($(this).val().replace(',', '.'));
+			if (!isNaN(val) && (val > 20 || (val < 0 && val != -2))) {
+				invalidCount++;
+			}
+		});
+		
+		var alertDiv = $('#bulk-alert-' + year);
+		var btn = $('.bulk-save-btn[data-year="' + year + '"]');
+		if (invalidCount > 0) {
+			alertDiv.html('<span class="text-red-400"><i class="bi bi-exclamation-triangle-fill"></i> ' + invalidCount + ' note(s) invalide(s) — les notes > 20 fausseront la moyenne</span>');
+			btn.attr('class', 'bulk-save-btn px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-md text-sm transition-all flex items-center gap-2 animate-pulse');
+		} else {
+			alertDiv.html('');
+			btn.attr('class', 'bulk-save-btn px-4 py-2 bg-cyan-700 hover:bg-cyan-600 text-white rounded-md text-sm transition-all flex items-center gap-2');
+		}
+	}
+
+	// ========== BOUTON ENREGISTRER TOUTES LES NOTES PAR ANNEE ==========
+	$('#notesCoursContainer').on('click', '.bulk-save-btn', function() {
+		var btn = $(this);
+		var year = btn.data('year');
+		var inputs = $('.note-input-' + year);
+		var notes = [];
+		var hasInvalid = false;
+		
+		inputs.each(function() {
+			var val = $(this).val().replace(',', '.');
+			var numVal = parseFloat(val);
+			
+			if (val !== '' && !isNaN(numVal)) {
+				if (numVal > 20) {
+					hasInvalid = true;
+				}
+				notes.push({
+					idcours: $(this).data('idcours'),
+					student_id: $(this).data('student-id'),
+					grade: val
+				});
+			}
+		});
+		
+		if (hasInvalid) {
+			if (!confirm('⚠ ATTENTION: Certaines notes dépassent 20/20.\nLes notes > 20 seront ignorées et non enregistrées.\n\nVoulez-vous continuer avec les notes valides uniquement?')) {
+				return;
+			}
+		}
+		
+		if (notes.length === 0) {
+			if (typeof Toast !== 'undefined') {
+				Toast.warning('Aucune note à enregistrer');
+			} else {
+				alert('Aucune note à enregistrer');
+			}
+			return;
+		}
+		
+		if (!hasInvalid && !confirm('Enregistrer ' + notes.length + ' note(s) pour l\'année ' + (year-1) + ' - ' + year + ' ?')) {
+			return;
+		}
+		
+		var originalHtml = btn.html();
+		btn.prop('disabled', true).html('<i class="bi-hourglass-split"></i> Enregistrement...');
+		
+		$.ajax({
+			url: APP_BASE + '/app/.cours/bulksavenotes',
+			method: 'POST',
+			contentType: 'application/json',
+			data: JSON.stringify({ notes: notes }),
+			success: function(response) {
+				if (typeof response === 'string') {
+					try { response = JSON.parse(response); } catch(e) { response = { success: false }; }
+				}
+				
+				if (response.saved > 0) {
+					if (typeof Toast !== 'undefined') {
+						Toast.success(response.message || (response.saved + ' note(s) enregistrée(s)'));
+					}
+					
+					// Mettre à jour visuellement les états
+					inputs.each(function() {
+						var val = parseFloat($(this).val().replace(',', '.'));
+						var row = $(this).closest('tr');
+						var statusCell = row.find('td[class*="stp-"]');
+						
+						if (!isNaN(val) && val <= 20) {
+							$(this).css({ 'border': 'none', 'border-radius': '0px', 'background': 'none' });
+							
+							if (val == 0) {
+								statusCell.css('background', 'none').text('');
+							} else if (val == -2 || val >= 10) {
+								statusCell.css({ 'background': '#15dd2a', 'color': 'white' }).text('S');
+							} else if (val < 10 && val > 0) {
+								statusCell.css({ 'background': '#ff0000', 'color': 'white' }).text('E');
+							}
+						}
+					});
+				}
+				
+				if (response.errors && response.errors.length > 0) {
+					var errMsg = response.errors.map(function(e) { return e.message; }).join('\n');
+					if (typeof Toast !== 'undefined') {
+						Toast.error(errMsg);
+					} else {
+						alert(errMsg);
+					}
+				}
+				
+				btn.prop('disabled', false).html(originalHtml);
+				updateBulkAlert(year);
+			},
+			error: function() {
+				if (typeof Toast !== 'undefined') {
+					Toast.error('Erreur lors de l\'enregistrement des notes');
+				} else {
+					alert('Erreur lors de l\'enregistrement des notes');
+				}
+				btn.prop('disabled', false).html(originalHtml);
+			}
+		});
+	});
+
+});
+</script>
+<?php } ?>
+
+</div>

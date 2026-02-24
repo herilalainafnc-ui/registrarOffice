@@ -42,7 +42,7 @@ if (!empty($show_stape)) {
 			<span target="_blank" id="stageMark_4" class="text-xs p-1 <?php if ($show_stape['mode_payement'] != 1) { echo "toolInactive"; } else { $stage = 4;}?> ?>">
 				<center>
 					<i class="bi-4-square-fill text-2xl"></i><br>
-						Mode de payement
+						Mode de paiement
 				</center>
 			</span>
 
@@ -88,7 +88,7 @@ if (!empty($show_stape)) {
 			<span target="_blank" id="stageMark_4" class="text-xs p-1 <?php if ($show_stape['mode_payement'] != 1) { echo "toolInactive"; } else { $stage = 4;}?> ?>">
 				<center>
 					<i class="bi-4-square-fill text-2xl"></i><br>
-						Mode de payement
+						Mode de paiement
 				</center>
 			</span>
 

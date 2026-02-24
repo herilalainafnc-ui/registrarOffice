@@ -1,3 +1,7 @@
+<?php
+// Toolbar réservée aux superadmin (1), administrateur (2) et registraire (3)
+if (!isset($rg_user['level']) || $rg_user['level'] > 3) { return; }
+?>
 <style type="text/css">
 	/* ============================================
 	   BLEU NUIT TOOLBAR STYLES
@@ -424,18 +428,8 @@
 		
 	</div>
 
-	<!-- SECTION 3: Inscription & Work -->	
+	<!-- SECTION 3: Work -->	
 	<div class="toolbar-section flex-shrink-0 flex px-1">
-		
-		<a target='_blank' href="<?=$app_base?>/inscription/inscription" class="tool-btn text-xs flex-1 <?php 
-		if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
-			echo "toolInactive";
-		} ?><?php if($rg_user['level'] <=6) { echo "";}else{ echo " toolInactive";}?>">
-			<div class="tool-icon">
-				<i class="bi bi-person-fill-add"></i>
-			</div>
-			<span class="tool-label">Inscription</span>
-		</a>
 		
 		<a href="#" id="worked" class="tool-btn text-xs flex-1 <?php 
 		if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
