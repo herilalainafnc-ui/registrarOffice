@@ -6,7 +6,7 @@ $yearScoolNow = $_POST['yearStatistic'];
  ?>
 <div class="" style="page-break-inside: avoid;">
 
-<b>Statistique par Résidence </b><em class="text-xs">- Année <?=$yearScoolNow?></em>
+<b>Statistique par Résidence </b><em class="text-xs"> • <b>Session : </b> <?=$semestre." ".$yearScoolNow?></em>
 	<table class="tbl" style="page-break-inside: avoid;">
 		<thead>
 			<tr style="page-break-inside: avoid;">
@@ -31,7 +31,7 @@ $yearScoolNow = $_POST['yearStatistic'];
 		<tbody>
 			<?php
 
- $mentio = $dtb->query('SELECT * FROM filiere WHERE filiere_sigle !="CPRE"');
+ $mentio = $dtb->query('SELECT * FROM filiere WHERE filiere_sigle !="CPRE" AND filiere_sigle !="EDUC"');
 
  // Requête SQL pour récupérer les données groupées
 $interne_H = 0;
@@ -44,17 +44,20 @@ $thorizontal = 0;
 
 	while($mt = $mentio->fetch()){
 		
+		$filiere_sigle = $mt['filiere_sigle'];
 		$mention = $mt['filiere_description'];
 
 $result = $dtb->query('SELECT *,
-           SUM(CASE WHEN status = "Interne" AND sex = 1 THEN 1 ELSE 0 END) AS Interne_H,
-           SUM(CASE WHEN status = "Interne" AND sex = 0 THEN 1 ELSE 0 END) AS Interne_F,
-           SUM(CASE WHEN status = "Bungalow" AND sex = 1 THEN 1 ELSE 0 END) AS Bungalow_H,
-           SUM(CASE WHEN status = "Bungalow" AND sex = 0 THEN 1 ELSE 0 END) AS Bungalow_F,
-           SUM(CASE WHEN (status = "Externe" OR status = "") AND sex = 1 THEN 1 ELSE 0 END) AS Externe_H,
-           SUM(CASE WHEN (status = "Externe" OR status = "") AND sex = 0 THEN 1 ELSE 0 END) AS Externe_F
+           SUM(CASE WHEN ins.status = "Interne" AND std.sex = 1 THEN 1 ELSE 0 END) AS Interne_H,
+           SUM(CASE WHEN ins.status = "Interne" AND std.sex = 0 THEN 1 ELSE 0 END) AS Interne_F,
+           SUM(CASE WHEN ins.status = "Bungalow" AND std.sex = 1 THEN 1 ELSE 0 END) AS Bungalow_H,
+           SUM(CASE WHEN ins.status = "Bungalow" AND std.sex = 0 THEN 1 ELSE 0 END) AS Bungalow_F,
+           SUM(CASE WHEN (ins.status = "Externe" OR ins.status = "") AND std.sex = 1 THEN 1 ELSE 0 END) AS Externe_H,
+           SUM(CASE WHEN (ins.status = "Externe" OR ins.status = "") AND std.sex = 0 THEN 1 ELSE 0 END) AS Externe_F
 
-    FROM tbl_2024_etudiant WHERE etude_envisage = "'.$mention.'" AND annee_scolaire = "'.$yearScoolNow.'" AND (graduated IS NULL OR graduated != 1) ORDER BY etude_envisage');
+    FROM t_2024_inscription_session ins
+    INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id
+    WHERE ins.etude_mention = "'.$filiere_sigle.'" AND ins.session_id = "'.$session_id.'" AND (std.graduated IS NULL OR std.graduated != 1) AND (std.suspended IS NULL OR std.suspended != 1) AND (std.retrait_universite IS NULL OR std.retrait_universite = 0) ORDER BY ins.etude_mention');
 
 
            $row = $result->fetch();
@@ -71,13 +74,13 @@ $result = $dtb->query('SELECT *,
     			echo "</tr>";
     		
 
-$interne_H =+ $interne_H + $row['Interne_H'];
-$interne_F =+ $interne_F + $row['Interne_F'];
-$bungalow_H =+ $bungalow_H + $row['Bungalow_H'];
-$bungalow_F =+ $bungalow_F + $row['Bungalow_F'];
-$externe_H =+ $externe_H + $row['Externe_H'];
-$externe_F =+ $externe_F + $row['Externe_F'];
-$thorizontal =+ intval($thorizontal) + intval($sommeHoriz);      
+$interne_H += $row['Interne_H'];
+$interne_F += $row['Interne_F'];
+$bungalow_H += $row['Bungalow_H'];
+$bungalow_F += $row['Bungalow_F'];
+$externe_H += $row['Externe_H'];
+$externe_F += $row['Externe_F'];
+$thorizontal += intval($sommeHoriz);      
 	}
         ?>
 		</tbody>

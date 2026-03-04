@@ -131,7 +131,7 @@ if(empty($_POST['cours'])){
 		if ($exportation == "internat") {
 			$sql .= " AND ins.status = 'Interne'";
 		} elseif ($exportation == "abnment") {
-			$sql .= " AND ins.abonment_std = 1";
+			$sql .= " AND std.abonment = 1";
 		} elseif ($exportation == "adventiste") {
 			$sql .= " AND (std.religion = 'Adventiste' OR std.religion = 'Adventiste du Septieme-jour')";
 		} elseif ($exportation == "non_adventiste") {

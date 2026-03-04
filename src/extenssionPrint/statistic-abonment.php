@@ -9,10 +9,8 @@ $findSessionOnSS = $dtb->query('SELECT * FROM t_2023_session WHERE session_name 
 $showSessionOnSS = $findSessionOnSS->fetch();
 $session_id = $showSessionOnSS['session_id'];
 
-// Définir l'année scolaire actuelle
-$annee_scolaire = "2025 - 2026";
-// Compter le nombre d'étudiants abonnés pour l'année scolaire (unique students from tbl_2024_etudiant)
-$countAbonnesQ = $dtb->query('SELECT COUNT(*) AS total_abonnes FROM tbl_2024_etudiant WHERE abonment = 1 AND annee_scolaire = "'.$annee_scolaire.'" AND (graduated IS NULL OR graduated != 1)');
+// Compter le nombre d'étudiants abonnés pour la session (inscrits et abonnés)
+$countAbonnesQ = $dtb->query('SELECT COUNT(*) AS total_abonnes FROM t_2024_inscription_session ins INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id WHERE std.abonment = 1 AND ins.session_id = "'.$session_id.'" AND (std.graduated IS NULL OR std.graduated != 1) AND (std.suspended IS NULL OR std.suspended != 1) AND (std.retrait_universite IS NULL OR std.retrait_universite = 0)');
 $countAbonnesR = $countAbonnesQ->fetch();
 $totalAbonnesAnnee = intval($countAbonnesR['total_abonnes']);
  ?>
@@ -56,12 +54,13 @@ $thorizontal = 0;
 	
 
         $result = $dtb->query('SELECT
-            SUM(CASE WHEN e.abonment = 1 AND e.sex = 1 THEN 1 ELSE 0 END) AS Abonnee_H,
-            SUM(CASE WHEN e.abonment = 1 AND e.sex = 0 THEN 1 ELSE 0 END) AS Abonnee_F,
-            SUM(CASE WHEN e.abonment = 0 AND e.sex = 1 THEN 1 ELSE 0 END) AS NonAbonnee_H,
-            SUM(CASE WHEN e.abonment = 0 AND e.sex = 0 THEN 1 ELSE 0 END) AS NonAbonnee_F
-        FROM tbl_2024_etudiant e
-        WHERE e.etude_envisage = "'.$mention.'" AND e.annee_scolaire = "'.$annee_scolaire.'" AND (e.graduated IS NULL OR e.graduated != 1)');		$row = $result->fetch();
+            SUM(CASE WHEN std.abonment = 1 AND std.sex = 1 THEN 1 ELSE 0 END) AS Abonnee_H,
+            SUM(CASE WHEN std.abonment = 1 AND std.sex = 0 THEN 1 ELSE 0 END) AS Abonnee_F,
+            SUM(CASE WHEN (std.abonment = 0 OR std.abonment IS NULL) AND std.sex = 1 THEN 1 ELSE 0 END) AS NonAbonnee_H,
+            SUM(CASE WHEN (std.abonment = 0 OR std.abonment IS NULL) AND std.sex = 0 THEN 1 ELSE 0 END) AS NonAbonnee_F
+        FROM t_2024_inscription_session ins
+        INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id
+        WHERE ins.etude_mention = "'.$filiere_sigle.'" AND ins.session_id = "'.$session_id.'" AND (std.graduated IS NULL OR std.graduated != 1) AND (std.suspended IS NULL OR std.suspended != 1) AND (std.retrait_universite IS NULL OR std.retrait_universite = 0)');		$row = $result->fetch();
 
 		// Normaliser
 		$row['Abonnee_H'] = isset($row['Abonnee_H']) ? intval($row['Abonnee_H']) : 0;

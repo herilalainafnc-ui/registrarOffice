@@ -417,24 +417,24 @@ $modeP = $showPayement['mode_payement'];
 					<tr>
 						<td>100 %</td>
 						<td class="text-right"><?=number_format($Montant_sans_fraix_Generaux, 0, '', ' ') ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="03 octobre 2025"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="13 mars 2026"></td>
 					</tr>
 				<?php }elseif ($modeP == 'B') {  ?>
 					<tr>
 						<td>50 %</td>
 						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *50) /100, 0, '', ' ') ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="03 octobre 2025"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="13 mars 2026"></td>
 					</tr>
 					<tr>
 						<td>50 %</td>
 						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *50) /100, 0, '', ' ') ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="30 janvier 2026"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="24 avril 2026"></td>
 					</tr>
 				<?php }elseif ($modeP == 'C') {  ?>
 					<tr>
 						<td>75 %</td>
 						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *75) /100, 0, '', ' ') ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="03 octobre 2025"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="24 avril 2026"></td>
 					</tr>
 					<tr>
 						<td>25 %</td>
@@ -461,22 +461,22 @@ $modeP = $showPayement['mode_payement'];
 					<tr>
 						<td>25 %</td>
 						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *25) /100, 0, '', ' ') ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="24 octobre 2025"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="24 avril 2026"></td>
 					</tr>
 					<tr>
 						<td>25 %</td>
 						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *25) /100, 0, '', ' ') ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="28 novembre 2025"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="29 mai 2026"></td>
 					</tr>
 					<tr>
 						<td>25 %</td>
 						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *25) /100, 0, '', ' ') ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="19 decembre 2025"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="26 juin 2026"></td>
 					</tr>
 					<tr>
 						<td>25 %</td>
 						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *25) /100, 0, '', ' ') ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="30 janvier 2026"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="31 juillet 2026"></td>
 					</tr>
 				<?php } ?>
 			</tbody>

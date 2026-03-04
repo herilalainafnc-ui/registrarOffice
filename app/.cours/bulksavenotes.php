@@ -33,7 +33,7 @@
 			continue; // Ignorer les notes vides
 		}
 
-		$gradeNum = floatval($grade);
+		$gradeNum = round(floatval($grade), 2);
 
 		// Validation: note ne doit pas dépasser 20
 		if ($gradeNum > 20) {
@@ -56,7 +56,7 @@
 		}
 
 		try {
-			$update->execute([':grade' => $grade, ':idcours' => $idcours]);
+			$update->execute([':grade' => $gradeNum, ':idcours' => $idcours]);
 			$saved++;
 		} catch (Exception $e) {
 			$errors[] = [

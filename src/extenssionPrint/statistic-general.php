@@ -84,7 +84,7 @@ $result = $dtb->query('SELECT *,
 
  FROM t_2024_inscription_session ins
  INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id
- WHERE ins.etude_mention = "'.$filiere_sigle.'" AND ins.session_id = "'.$session_id.'" AND (std.graduated IS NULL OR std.graduated != 1) ORDER BY ins.etude_mention');
+ WHERE ins.etude_mention = "'.$filiere_sigle.'" AND ins.session_id = "'.$session_id.'" AND (std.graduated IS NULL OR std.graduated != 1) AND (std.suspended IS NULL OR std.suspended != 1) AND (std.retrait_universite IS NULL OR std.retrait_universite = 0) ORDER BY ins.etude_mention');
 
            $row = $result->fetch();
 
@@ -104,13 +104,13 @@ $result = $dtb->query('SELECT *,
 	                echo "<td>" . $row['Master2_A'] . "</td>";
 	 				echo "<td>".$sommeHoriz_N =  
 	                $row['RM_N']
-			  + $row['RM_A']
 	                + $row['Licence1_N']
 	                + $row['Licence2_N']
 	                + $row['Licence3_N']
 	                + $row['Master1_N']
 	                + $row['Master2_N']."</td>";
 	                echo "<td>".$sommeHoriz_A =  
+	                $row['RM_A']
 	                + $row['Licence1_A']
 	                + $row['Licence2_A']
 	                + $row['Licence3_A']
@@ -119,20 +119,20 @@ $result = $dtb->query('SELECT *,
 
     			echo "</tr>";
     		
-$rm_N =+ $rm_N + $row['RM_N'];
-$rm_A =+ $rm_A + $row['RM_A'];
-$licence1_N =+ $licence1_N + $row['Licence1_N'];
-$licence1_A =+ $licence1_A + $row['Licence1_A'];
-$licence2_N =+ $licence2_N + $row['Licence2_N'];
-$licence2_A =+ $licence2_A + $row['Licence2_A'];
-$licence3_N =+ $licence3_N + $row['Licence3_N'];
-$licence3_A =+ $licence3_A + $row['Licence3_A'];
-$master1_N =+ $master1_N + $row['Master1_N'];
-$master1_A =+ $master1_A + $row['Master1_A'];
-$master2_N =+ $master2_N + $row['Master2_N'];
-$master2_A =+ $master2_A + $row['Master2_A'];
-$thorizontal_N =+ intval($thorizontal_N) + intval($sommeHoriz_N);
-$thorizontal_A =+ intval($thorizontal_A) + intval($sommeHoriz_A);
+$rm_N += $row['RM_N'];
+$rm_A += $row['RM_A'];
+$licence1_N += $row['Licence1_N'];
+$licence1_A += $row['Licence1_A'];
+$licence2_N += $row['Licence2_N'];
+$licence2_A += $row['Licence2_A'];
+$licence3_N += $row['Licence3_N'];
+$licence3_A += $row['Licence3_A'];
+$master1_N += $row['Master1_N'];
+$master1_A += $row['Master1_A'];
+$master2_N += $row['Master2_N'];
+$master2_A += $row['Master2_A'];
+$thorizontal_N += intval($sommeHoriz_N);
+$thorizontal_A += intval($sommeHoriz_A);
    
 	}
         ?>

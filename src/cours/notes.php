@@ -150,15 +150,35 @@ $(function(){
 		}
 	});
 
+	// ===== Arrondir à 2 décimales au blur =====
+	$(document).on('blur', '.note-input', function() {
+		var el = $(this);
+		var val = el.val().replace(',', '.');
+		var n = parseFloat(val);
+		if (val !== '' && !isNaN(n) && n != -2) {
+			var rounded = Math.round(n * 100) / 100;
+			if (rounded !== n) {
+				el.val(rounded);
+			}
+		}
+	});
+
 	// ===== SAUVEGARDE INDIVIDUELLE AU CHANGE (même pattern que transcriptSS.php) =====
 	var noteTimeout;
 	$(document).on('change', '.note-input', function() {
 		var input = $(this);
 		var url = input.attr('data-action');
 		var nbr = input.attr('data-nbr');
-		var noteValue = input.val().trim();
+		var noteValue = input.val().trim().replace(',', '.');
 
 		if (noteValue === '') return;
+
+		// Arrondir à 2 décimales
+		var nVal = parseFloat(noteValue);
+		if (!isNaN(nVal) && nVal != -2) {
+			noteValue = '' + (Math.round(nVal * 100) / 100);
+			input.val(noteValue);
+		}
 
 		var v = validateNote(noteValue);
 		if (!v.valid) {

@@ -69,13 +69,16 @@ if ($showCours['category'] == 0){
  <table class="tbl">
  	<thead>
  		<tr>
- 			<th class="py-1 border-l border-slate-400 w-[40px]">No</th>
- 			<th class="py-1 border-l border-slate-400 w-[80px]">Matricule</th>
+ 			<th class="py-1 border-l border-slate-400 w-[30px]">No</th>
+ 			<th class="py-1 border-l border-slate-400 w-[65px]">Matricule</th>
  			<th class="py-1 border-l border-slate-400">Noms</th>
- 			<th class="py-1 border-l border-slate-400 w-[80px]">Niveau</th>
- 			<th class="py-1 border-l border-slate-400 w-[80px]">Examen<br>Mi sem__%</th>
- 			<th class="py-1 border-l border-slate-400 w-[80px]">Examen<br>Final__%</th>
- 			<th class="py-1 border-l border-slate-400 w-[80px]">Notes<br>Final/20</th>
+ 			<th class="py-1 border-l border-slate-400 w-[55px]">Niveau</th>
+ 			<th class="py-1 border-l border-slate-400 w-[55px]">Quiz<br>__%</th>
+ 			<th class="py-1 border-l border-slate-400 w-[55px]">Recherche<br>__%</th>
+ 			<th class="py-1 border-l border-slate-400 w-[55px]">Autres<br>__%</th>
+ 			<th class="py-1 border-l border-slate-400 w-[55px]">Examen<br>Mi sem__%</th>
+ 			<th class="py-1 border-l border-slate-400 w-[55px]">Examen<br>Final__%</th>
+ 			<th class="py-1 border-l border-slate-400 w-[55px]">Notes<br>Final/20</th>
  		</tr>
  	</thead>
  	<tbody>
@@ -113,6 +116,9 @@ if($apotr){
 	echo "-";
 }
 				?></td>
+ 			<td class="py-1 border-l border-t border-slate-400"></td>
+ 			<td class="py-1 border-l border-t border-slate-400"></td>
+ 			<td class="py-1 border-l border-t border-slate-400"></td>
  			<td class="py-1 border-l border-t border-slate-400"></td>
  			<td class="py-1 border-l border-t border-slate-400"></td>
  			<td class="py-1 border-l border-t border-slate-400 text-bold text-center" style="color: <?php if ($showStdInCours['grade'] >= 10) { echo "blue"; }else{ echo "red"; } ?>"><?php if ($showStdInCours['grade'] != 0) { echo $showStdInCours['grade'];	}?></td>

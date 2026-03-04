@@ -11,12 +11,51 @@ header('Content-Type: application/json; charset=utf-8');
 
 $action = $_REQUEST['action'] ?? '';
 
-// Auto-migration: add playlist columns if they don't exist
+// Auto-migration: create global music table if it doesn't exist
 try {
-    $dtb->query("SELECT music_playlist FROM t_queue_sessions LIMIT 0");
+    $dtb->query("SELECT id FROM t_queue_global_music LIMIT 0");
 } catch(Exception $e) {
-    try { $dtb->exec("ALTER TABLE t_queue_sessions ADD COLUMN music_playlist TEXT DEFAULT NULL"); } catch(Exception $e2) {}
-    try { $dtb->exec("ALTER TABLE t_queue_sessions ADD COLUMN music_current_index INT DEFAULT 0"); } catch(Exception $e2) {}
+    try {
+        $dtb->exec("
+            CREATE TABLE IF NOT EXISTS t_queue_global_music (
+                id INT PRIMARY KEY DEFAULT 1,
+                music_playlist TEXT DEFAULT NULL,
+                music_current_index INT DEFAULT 0,
+                music_youtube_url VARCHAR(255) DEFAULT NULL,
+                music_playing TINYINT(1) DEFAULT 0,
+                music_volume INT DEFAULT 50,
+                video_fullscreen TINYINT(1) DEFAULT 0
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ");
+        $dtb->exec("INSERT IGNORE INTO t_queue_global_music (id) VALUES (1)");
+        // Migrate existing playlist from active session if any
+        try {
+            $migRow = $dtb->query("SELECT music_playlist, music_current_index, music_youtube_url, music_playing, music_volume FROM t_queue_sessions WHERE status = 'active' AND music_playlist IS NOT NULL ORDER BY id DESC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+            if ($migRow && !empty($migRow['music_playlist'])) {
+                $dtb->prepare("UPDATE t_queue_global_music SET music_playlist = :pl, music_current_index = :idx, music_youtube_url = :url, music_playing = :playing, music_volume = :vol WHERE id = 1")
+                    ->execute(['pl' => $migRow['music_playlist'], 'idx' => $migRow['music_current_index'], 'url' => $migRow['music_youtube_url'], 'playing' => $migRow['music_playing'], 'vol' => $migRow['music_volume']]);
+            }
+        } catch(Exception $e3) {}
+    } catch(Exception $e2) {}
+}
+
+// Auto-migration: add video_fullscreen column if missing
+try {
+    $dtb->query("SELECT video_fullscreen FROM t_queue_global_music LIMIT 0");
+} catch(Exception $e) {
+    try {
+        $dtb->exec("ALTER TABLE t_queue_global_music ADD COLUMN video_fullscreen TINYINT(1) DEFAULT 0");
+    } catch(Exception $e2) {}
+}
+
+// Helper: get global music row
+function getGlobalMusic(PDO $dtb): array {
+    $row = $dtb->query("SELECT * FROM t_queue_global_music WHERE id = 1")->fetch(PDO::FETCH_ASSOC);
+    if (!$row) {
+        $dtb->exec("INSERT IGNORE INTO t_queue_global_music (id) VALUES (1)");
+        $row = ['id' => 1, 'music_playlist' => null, 'music_current_index' => 0, 'music_youtube_url' => null, 'music_playing' => 0, 'music_volume' => 50, 'video_fullscreen' => 0];
+    }
+    return $row;
 }
 
 // Fonction utilitaire : vérification de niveau adaptée à l'API JSON
@@ -92,6 +131,69 @@ try {
             $stmt->execute(['id' => $session_id]);
 
             echo json_encode(['success' => true, 'message' => 'Session fermée']);
+            break;
+
+        case 'get_all_sessions':
+            apiRequireLevel(ROLE_REGISTRAR);
+
+            $sessions = $dtb->query("
+                SELECT s.*, 
+                    (SELECT COUNT(*) FROM t_queue_tickets WHERE session_id = s.id) as total_tickets,
+                    (SELECT COUNT(*) FROM t_queue_tickets WHERE session_id = s.id AND status = 'waiting') as waiting,
+                    (SELECT COUNT(*) FROM t_queue_tickets WHERE session_id = s.id AND status = 'done') as done,
+                    (SELECT COUNT(*) FROM t_queue_tickets WHERE session_id = s.id AND status = 'serving') as serving,
+                    (SELECT COUNT(*) FROM t_queue_tickets WHERE session_id = s.id AND status = 'called') as called
+                FROM t_queue_sessions s 
+                ORDER BY s.id DESC
+            ")->fetchAll(PDO::FETCH_ASSOC);
+
+            echo json_encode(['success' => true, 'sessions' => $sessions]);
+            break;
+
+        case 'reactivate_session':
+            apiRequireLevel(ROLE_REGISTRAR);
+            apiRequireCsrf();
+
+            $session_id = (int)($_POST['session_id'] ?? 0);
+            if ($session_id <= 0) throw new Exception('Session invalide.');
+
+            // Vérifier que la session existe
+            $check = $dtb->prepare("SELECT id, status FROM t_queue_sessions WHERE id = :id");
+            $check->execute(['id' => $session_id]);
+            $sess = $check->fetch(PDO::FETCH_ASSOC);
+            if (!$sess) throw new Exception('Session introuvable.');
+            if ($sess['status'] === 'active') throw new Exception('Cette session est déjà active.');
+
+            // Fermer toute session active existante
+            $dtb->exec("UPDATE t_queue_sessions SET status = 'closed', closed_at = NOW() WHERE status = 'active'");
+
+            // Réactiver la session choisie
+            $dtb->prepare("UPDATE t_queue_sessions SET status = 'active', closed_at = NULL WHERE id = :id")
+                ->execute(['id' => $session_id]);
+
+            echo json_encode(['success' => true, 'message' => 'Session réactivée avec succès']);
+            break;
+
+        case 'delete_session':
+            apiRequireLevel(ROLE_REGISTRAR);
+            apiRequireCsrf();
+
+            $session_id = (int)($_POST['session_id'] ?? 0);
+            if ($session_id <= 0) throw new Exception('Session invalide.');
+
+            // Vérifier que la session n'est pas active
+            $check = $dtb->prepare("SELECT status FROM t_queue_sessions WHERE id = :id");
+            $check->execute(['id' => $session_id]);
+            $sess = $check->fetch(PDO::FETCH_ASSOC);
+            if (!$sess) throw new Exception('Session introuvable.');
+            if ($sess['status'] === 'active') throw new Exception('Impossible de supprimer une session active. Fermez-la d\'abord.');
+
+            // Supprimer les tickets et appels associés puis la session
+            $dtb->prepare("DELETE FROM t_queue_batch_calls WHERE session_id = :id")->execute(['id' => $session_id]);
+            $dtb->prepare("DELETE FROM t_queue_tickets WHERE session_id = :id")->execute(['id' => $session_id]);
+            $dtb->prepare("DELETE FROM t_queue_sessions WHERE id = :id")->execute(['id' => $session_id]);
+
+            echo json_encode(['success' => true, 'message' => 'Session supprimée']);
             break;
 
         // =====================================================================
@@ -257,7 +359,7 @@ try {
 
             $stmt = $dtb->prepare("
                 UPDATE t_queue_tickets SET status = 'called', called_at = NOW(), called_by = :user_id 
-                WHERE session_id = :session_id AND ticket_number = :number AND status IN ('waiting', 'skipped', 'called')
+                WHERE session_id = :session_id AND ticket_number = :number AND status IN ('waiting', 'skipped', 'called', 'absent')
             ");
             $stmt->execute([
                 'user_id' => $_SESSION['user_id'],
@@ -319,6 +421,16 @@ try {
                  ->execute(['id' => $ticket_id]);
 
             echo json_encode(['success' => true, 'message' => 'Ticket passé']);
+            break;
+
+        case 'mark_absent':
+            apiRequireLevel(ROLE_REGISTRAR);
+
+            $ticket_id = (int)($_POST['ticket_id'] ?? 0);
+            $dtb->prepare("UPDATE t_queue_tickets SET status = 'absent' WHERE id = :id AND status IN ('called', 'serving')")
+                 ->execute(['id' => $ticket_id]);
+
+            echo json_encode(['success' => true, 'message' => 'Ticket marqué absent']);
             break;
 
         // =====================================================================
@@ -414,20 +526,20 @@ try {
                 }, $waitingTickets),
                 'last_batch' => $lastBatchData,
                 'stats' => $stats,
-                'music' => [
-                    'youtube_url' => $session['music_youtube_url'] ?? '',
-                    'video_id' => (function() use ($session) {
-                        if (!empty($session['music_youtube_url']) && preg_match('/v=([a-zA-Z0-9_-]{11})/', $session['music_youtube_url'], $m)) return $m[1];
-                        return '';
-                    })(),
-                    'playing' => (int)($session['music_playing'] ?? 0),
-                    'volume' => (int)($session['music_volume'] ?? 50),
-                    'playlist' => (function() use ($session) {
-                        $p = !empty($session['music_playlist']) ? json_decode($session['music_playlist'], true) : [];
-                        return is_array($p) ? $p : [];
-                    })(),
-                    'current_index' => (int)($session['music_current_index'] ?? 0)
-                ],
+                'music' => (function() use ($dtb) {
+                    $gm = getGlobalMusic($dtb);
+                    $video_id = '';
+                    if (!empty($gm['music_youtube_url']) && preg_match('/v=([a-zA-Z0-9_-]{11})/', $gm['music_youtube_url'], $m)) $video_id = $m[1];
+                    $pl = !empty($gm['music_playlist']) ? json_decode($gm['music_playlist'], true) : [];
+                    return [
+                        'youtube_url' => $gm['music_youtube_url'] ?? '',
+                        'video_id' => $video_id,
+                        'playing' => (int)($gm['music_playing'] ?? 0),
+                        'volume' => (int)($gm['music_volume'] ?? 50),
+                        'playlist' => is_array($pl) ? $pl : [],
+                        'current_index' => (int)($gm['music_current_index'] ?? 0)
+                    ];
+                })(),
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             break;
@@ -438,14 +550,9 @@ try {
         case 'set_music':
             apiRequireLevel(ROLE_REGISTRAR);
 
-            $session_id = (int)($_POST['session_id'] ?? 0);
             $youtube_url = trim($_POST['youtube_url'] ?? '');
             $playing = (int)($_POST['playing'] ?? 0);
             $volume = max(0, min(100, (int)($_POST['volume'] ?? 50)));
-
-            if ($session_id <= 0) {
-                throw new Exception('Session invalide.');
-            }
 
             // Extraire l'ID YouTube de l'URL
             $video_id = '';
@@ -459,67 +566,56 @@ try {
                 }
             }
 
-            $stmt = $dtb->prepare("UPDATE t_queue_sessions SET music_youtube_url = :url, music_playing = :playing, music_volume = :volume WHERE id = :id");
-            $stmt->execute([
-                'url' => $youtube_url ?: null,
-                'playing' => $playing ? 1 : 0,
-                'volume' => $volume,
-                'id' => $session_id
-            ]);
+            $dtb->prepare("UPDATE t_queue_global_music SET music_youtube_url = :url, music_playing = :playing, music_volume = :volume WHERE id = 1")
+                ->execute(['url' => $youtube_url ?: null, 'playing' => $playing ? 1 : 0, 'volume' => $volume]);
 
             echo json_encode(['success' => true, 'message' => 'Musique mise \u00e0 jour', 'video_id' => $video_id]);
             break;
 
         case 'get_music':
             // Public - pas d'auth requise pour que l'\u00e9cran public puisse lire
-            $session_id = (int)($_REQUEST['session_id'] ?? 0);
-            if ($session_id <= 0) {
-                $activeSession = $dtb->query("SELECT id FROM t_queue_sessions WHERE status = 'active' ORDER BY id DESC LIMIT 1")->fetch();
-                $session_id = $activeSession ? $activeSession['id'] : 0;
-            }
-
-            if ($session_id <= 0) {
-                echo json_encode(['success' => false, 'message' => 'Aucune session active']);
-                break;
-            }
-
-            $stmt = $dtb->prepare("SELECT music_youtube_url, music_playing, music_volume, music_playlist, music_current_index FROM t_queue_sessions WHERE id = :id");
-            $stmt->execute(['id' => $session_id]);
-            $music = $stmt->fetch(PDO::FETCH_ASSOC);
+            $gm = getGlobalMusic($dtb);
 
             $video_id = '';
-            if (!empty($music['music_youtube_url'])) {
-                if (preg_match('/v=([a-zA-Z0-9_-]{11})/', $music['music_youtube_url'], $m)) {
+            if (!empty($gm['music_youtube_url'])) {
+                if (preg_match('/v=([a-zA-Z0-9_-]{11})/', $gm['music_youtube_url'], $m)) {
                     $video_id = $m[1];
                 }
             }
 
-            $playlist = !empty($music['music_playlist']) ? json_decode($music['music_playlist'], true) : [];
+            $playlist = !empty($gm['music_playlist']) ? json_decode($gm['music_playlist'], true) : [];
             if (!is_array($playlist)) $playlist = [];
 
             echo json_encode([
                 'success' => true,
                 'music' => [
-                    'youtube_url' => $music['music_youtube_url'] ?? '',
+                    'youtube_url' => $gm['music_youtube_url'] ?? '',
                     'video_id' => $video_id,
-                    'playing' => (int)($music['music_playing'] ?? 0),
-                    'volume' => (int)($music['music_volume'] ?? 50),
+                    'playing' => (int)($gm['music_playing'] ?? 0),
+                    'volume' => (int)($gm['music_volume'] ?? 50),
                     'playlist' => $playlist,
-                    'current_index' => (int)($music['music_current_index'] ?? 0)
+                    'current_index' => (int)($gm['music_current_index'] ?? 0),
+                    'video_fullscreen' => (int)($gm['video_fullscreen'] ?? 0)
                 ]
             ]);
             break;
 
+        case 'set_video_fullscreen':
+            apiRequireLevel(ROLE_REGISTRAR);
+            $fullscreen = (int)($_POST['fullscreen'] ?? 0);
+            $dtb->prepare("UPDATE t_queue_global_music SET video_fullscreen = :fs WHERE id = 1")
+                ->execute(['fs' => $fullscreen ? 1 : 0]);
+            echo json_encode(['success' => true, 'video_fullscreen' => $fullscreen ? 1 : 0]);
+            break;
+
         // =====================================================================
-        // PLAYLIST - Gestion de la liste de lecture vidéo
+        // PLAYLIST - Gestion de la liste de lecture vidéo (GLOBALE)
         // =====================================================================
         case 'add_to_playlist':
             apiRequireLevel(ROLE_REGISTRAR);
-            $session_id = (int)($_POST['session_id'] ?? 0);
             $youtube_url = trim($_POST['youtube_url'] ?? '');
             $title = trim($_POST['title'] ?? '');
 
-            if ($session_id <= 0) throw new Exception('Session invalide.');
             if (empty($youtube_url)) throw new Exception('URL YouTube requise.');
 
             $video_id = '';
@@ -530,45 +626,49 @@ try {
             }
             if (empty($video_id)) throw new Exception('URL YouTube invalide.');
 
-            $stmt = $dtb->prepare("SELECT music_playlist, music_current_index, music_youtube_url FROM t_queue_sessions WHERE id = :id");
-            $stmt->execute(['id' => $session_id]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            $playlist = !empty($row['music_playlist']) ? json_decode($row['music_playlist'], true) : [];
+            $gm = getGlobalMusic($dtb);
+            $playlist = !empty($gm['music_playlist']) ? json_decode($gm['music_playlist'], true) : [];
             if (!is_array($playlist)) $playlist = [];
+
+            // Récupérer le titre YouTube via oEmbed (gratuit, sans clé API)
+            if (empty($title)) {
+                $oembed_url = 'https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=' . $video_id . '&format=json';
+                $ctx = stream_context_create(['http' => ['timeout' => 5, 'ignore_errors' => true]]);
+                $oembed_json = @file_get_contents($oembed_url, false, $ctx);
+                if ($oembed_json) {
+                    $oembed_data = json_decode($oembed_json, true);
+                    if (!empty($oembed_data['title'])) {
+                        $title = $oembed_data['title'];
+                    }
+                }
+            }
 
             $playlist[] = [
                 'video_id' => $video_id,
                 'url' => 'https://www.youtube.com/watch?v=' . $video_id,
-                'title' => $title ?: 'Vidéo ' . count($playlist) + 1
+                'title' => $title ?: 'Vidéo ' . (count($playlist) + 1)
             ];
 
-            $currentIndex = (int)($row['music_current_index'] ?? 0);
-            $syncUrl = $row['music_youtube_url'] ?? '';
+            $currentIndex = (int)($gm['music_current_index'] ?? 0);
+            $syncUrl = $gm['music_youtube_url'] ?? '';
             if (count($playlist) === 1) {
                 $currentIndex = 0;
                 $syncUrl = $playlist[0]['url'];
             }
 
-            $dtb->prepare("UPDATE t_queue_sessions SET music_playlist = :playlist, music_current_index = :idx, music_youtube_url = :url WHERE id = :id")
-                ->execute(['playlist' => json_encode($playlist), 'idx' => $currentIndex, 'url' => $syncUrl, 'id' => $session_id]);
+            $dtb->prepare("UPDATE t_queue_global_music SET music_playlist = :playlist, music_current_index = :idx, music_youtube_url = :url WHERE id = 1")
+                ->execute(['playlist' => json_encode($playlist), 'idx' => $currentIndex, 'url' => $syncUrl]);
 
             echo json_encode(['success' => true, 'playlist' => $playlist, 'current_index' => $currentIndex, 'video_id' => $video_id, 'message' => 'Vidéo ajoutée']);
             break;
 
         case 'remove_from_playlist':
             apiRequireLevel(ROLE_REGISTRAR);
-            $session_id = (int)($_POST['session_id'] ?? 0);
             $index = (int)($_POST['index'] ?? -1);
 
-            if ($session_id <= 0) throw new Exception('Session invalide.');
-
-            $stmt = $dtb->prepare("SELECT music_playlist, music_current_index FROM t_queue_sessions WHERE id = :id");
-            $stmt->execute(['id' => $session_id]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            $playlist = !empty($row['music_playlist']) ? json_decode($row['music_playlist'], true) : [];
-            $currentIndex = (int)($row['music_current_index'] ?? 0);
+            $gm = getGlobalMusic($dtb);
+            $playlist = !empty($gm['music_playlist']) ? json_decode($gm['music_playlist'], true) : [];
+            $currentIndex = (int)($gm['music_current_index'] ?? 0);
 
             if ($index < 0 || $index >= count($playlist)) throw new Exception('Index invalide.');
 
@@ -582,92 +682,139 @@ try {
                 $syncUrl = $playlist[$currentIndex]['url'] ?? '';
             }
 
-            $dtb->prepare("UPDATE t_queue_sessions SET music_playlist = :playlist, music_current_index = :idx, music_youtube_url = :url WHERE id = :id")
-                ->execute(['playlist' => json_encode($playlist), 'idx' => $currentIndex, 'url' => $syncUrl ?: null, 'id' => $session_id]);
+            $dtb->prepare("UPDATE t_queue_global_music SET music_playlist = :playlist, music_current_index = :idx, music_youtube_url = :url WHERE id = 1")
+                ->execute(['playlist' => json_encode($playlist), 'idx' => $currentIndex, 'url' => $syncUrl ?: null]);
 
             echo json_encode(['success' => true, 'playlist' => $playlist, 'current_index' => $currentIndex, 'message' => 'Vidéo retirée']);
             break;
 
         case 'playlist_next':
             apiRequireLevel(ROLE_REGISTRAR);
-            $session_id = (int)($_POST['session_id'] ?? 0);
-            if ($session_id <= 0) throw new Exception('Session invalide.');
 
-            $stmt = $dtb->prepare("SELECT music_playlist, music_current_index FROM t_queue_sessions WHERE id = :id");
-            $stmt->execute(['id' => $session_id]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            $playlist = !empty($row['music_playlist']) ? json_decode($row['music_playlist'], true) : [];
+            $gm = getGlobalMusic($dtb);
+            $playlist = !empty($gm['music_playlist']) ? json_decode($gm['music_playlist'], true) : [];
             if (empty($playlist)) throw new Exception('Playlist vide.');
 
-            $currentIndex = ((int)($row['music_current_index'] ?? 0) + 1) % count($playlist);
+            $currentIndex = ((int)($gm['music_current_index'] ?? 0) + 1) % count($playlist);
             $syncUrl = $playlist[$currentIndex]['url'] ?? '';
 
-            $dtb->prepare("UPDATE t_queue_sessions SET music_current_index = :idx, music_youtube_url = :url, music_playing = 1 WHERE id = :id")
-                ->execute(['idx' => $currentIndex, 'url' => $syncUrl, 'id' => $session_id]);
+            $dtb->prepare("UPDATE t_queue_global_music SET music_current_index = :idx, music_youtube_url = :url, music_playing = 1 WHERE id = 1")
+                ->execute(['idx' => $currentIndex, 'url' => $syncUrl]);
 
             echo json_encode(['success' => true, 'current_index' => $currentIndex, 'video_id' => $playlist[$currentIndex]['video_id'] ?? '']);
             break;
 
         case 'playlist_prev':
             apiRequireLevel(ROLE_REGISTRAR);
-            $session_id = (int)($_POST['session_id'] ?? 0);
-            if ($session_id <= 0) throw new Exception('Session invalide.');
 
-            $stmt = $dtb->prepare("SELECT music_playlist, music_current_index FROM t_queue_sessions WHERE id = :id");
-            $stmt->execute(['id' => $session_id]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            $playlist = !empty($row['music_playlist']) ? json_decode($row['music_playlist'], true) : [];
+            $gm = getGlobalMusic($dtb);
+            $playlist = !empty($gm['music_playlist']) ? json_decode($gm['music_playlist'], true) : [];
             if (empty($playlist)) throw new Exception('Playlist vide.');
 
-            $currentIndex = ((int)($row['music_current_index'] ?? 0) - 1 + count($playlist)) % count($playlist);
+            $currentIndex = ((int)($gm['music_current_index'] ?? 0) - 1 + count($playlist)) % count($playlist);
             $syncUrl = $playlist[$currentIndex]['url'] ?? '';
 
-            $dtb->prepare("UPDATE t_queue_sessions SET music_current_index = :idx, music_youtube_url = :url, music_playing = 1 WHERE id = :id")
-                ->execute(['idx' => $currentIndex, 'url' => $syncUrl, 'id' => $session_id]);
+            $dtb->prepare("UPDATE t_queue_global_music SET music_current_index = :idx, music_youtube_url = :url, music_playing = 1 WHERE id = 1")
+                ->execute(['idx' => $currentIndex, 'url' => $syncUrl]);
 
             echo json_encode(['success' => true, 'current_index' => $currentIndex, 'video_id' => $playlist[$currentIndex]['video_id'] ?? '']);
             break;
 
         case 'set_playlist_index':
             apiRequireLevel(ROLE_REGISTRAR);
-            $session_id = (int)($_POST['session_id'] ?? 0);
             $index = (int)($_POST['index'] ?? 0);
-            if ($session_id <= 0) throw new Exception('Session invalide.');
 
-            $stmt = $dtb->prepare("SELECT music_playlist FROM t_queue_sessions WHERE id = :id");
-            $stmt->execute(['id' => $session_id]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            $playlist = !empty($row['music_playlist']) ? json_decode($row['music_playlist'], true) : [];
+            $gm = getGlobalMusic($dtb);
+            $playlist = !empty($gm['music_playlist']) ? json_decode($gm['music_playlist'], true) : [];
             if ($index < 0 || $index >= count($playlist)) throw new Exception('Index invalide.');
 
             $syncUrl = $playlist[$index]['url'] ?? '';
 
-            $dtb->prepare("UPDATE t_queue_sessions SET music_current_index = :idx, music_youtube_url = :url, music_playing = 1 WHERE id = :id")
-                ->execute(['idx' => $index, 'url' => $syncUrl, 'id' => $session_id]);
+            $dtb->prepare("UPDATE t_queue_global_music SET music_current_index = :idx, music_youtube_url = :url, music_playing = 1 WHERE id = 1")
+                ->execute(['idx' => $index, 'url' => $syncUrl]);
 
             echo json_encode(['success' => true, 'current_index' => $index, 'video_id' => $playlist[$index]['video_id'] ?? '']);
             break;
 
+        case 'reorder_playlist':
+            apiRequireLevel(ROLE_REGISTRAR);
+            $from = (int)($_POST['from_index'] ?? -1);
+            $to = (int)($_POST['to_index'] ?? -1);
+
+            $gm = getGlobalMusic($dtb);
+            $playlist = !empty($gm['music_playlist']) ? json_decode($gm['music_playlist'], true) : [];
+            if (!is_array($playlist)) $playlist = [];
+            $currentIndex = (int)($gm['music_current_index'] ?? 0);
+
+            if ($from < 0 || $from >= count($playlist) || $to < 0 || $to >= count($playlist)) throw new Exception('Index invalide.');
+
+            // Move item
+            $item = array_splice($playlist, $from, 1)[0];
+            array_splice($playlist, $to, 0, [$item]);
+
+            // Track the currently playing item
+            if ($currentIndex === $from) {
+                $currentIndex = $to;
+            } elseif ($from < $currentIndex && $to >= $currentIndex) {
+                $currentIndex--;
+            } elseif ($from > $currentIndex && $to <= $currentIndex) {
+                $currentIndex++;
+            }
+
+            $syncUrl = !empty($playlist[$currentIndex]) ? ($playlist[$currentIndex]['url'] ?? '') : '';
+
+            $dtb->prepare("UPDATE t_queue_global_music SET music_playlist = :playlist, music_current_index = :idx, music_youtube_url = :url WHERE id = 1")
+                ->execute(['playlist' => json_encode($playlist), 'idx' => $currentIndex, 'url' => $syncUrl]);
+
+            echo json_encode(['success' => true, 'playlist' => $playlist, 'current_index' => $currentIndex, 'message' => 'Playlist réorganisée']);
+            break;
+
+        case 'refresh_playlist_titles':
+            apiRequireLevel(ROLE_REGISTRAR);
+
+            $gm = getGlobalMusic($dtb);
+            $playlist = !empty($gm['music_playlist']) ? json_decode($gm['music_playlist'], true) : [];
+            if (!is_array($playlist) || empty($playlist)) throw new Exception('Playlist vide.');
+
+            $ctx = stream_context_create(['http' => ['timeout' => 5, 'ignore_errors' => true]]);
+            $updated = 0;
+            foreach ($playlist as &$item) {
+                if (!empty($item['video_id'])) {
+                    $oembed_url = 'https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=' . $item['video_id'] . '&format=json';
+                    $oembed_json = @file_get_contents($oembed_url, false, $ctx);
+                    if ($oembed_json) {
+                        $oembed_data = json_decode($oembed_json, true);
+                        if (!empty($oembed_data['title'])) {
+                            $item['title'] = $oembed_data['title'];
+                            $updated++;
+                        }
+                    }
+                }
+            }
+            unset($item);
+
+            $dtb->prepare("UPDATE t_queue_global_music SET music_playlist = :playlist WHERE id = 1")
+                ->execute(['playlist' => json_encode($playlist)]);
+
+            echo json_encode(['success' => true, 'playlist' => $playlist, 'message' => $updated . ' titre(s) mis à jour']);
+            break;
+
         case 'clear_playlist':
             apiRequireLevel(ROLE_REGISTRAR);
-            $session_id = (int)($_POST['session_id'] ?? 0);
-            if ($session_id <= 0) throw new Exception('Session invalide.');
 
-            $dtb->prepare("UPDATE t_queue_sessions SET music_playlist = NULL, music_current_index = 0, music_youtube_url = NULL, music_playing = 0 WHERE id = :id")
-                ->execute(['id' => $session_id]);
+            $dtb->prepare("UPDATE t_queue_global_music SET music_playlist = NULL, music_current_index = 0, music_youtube_url = NULL, music_playing = 0 WHERE id = 1")
+                ->execute();
 
             echo json_encode(['success' => true, 'message' => 'Playlist vidée']);
             break;
 
         case 'playlist_auto_next':
             // Public endpoint - auto-advance when video ends on display screen
-            $session = $dtb->query("SELECT id, music_playlist, music_current_index FROM t_queue_sessions WHERE status = 'active' ORDER BY id DESC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
-            if (!$session) { echo json_encode(['success' => false]); break; }
+            $gm = getGlobalMusic($dtb);
 
-            $playlist = json_decode($session['music_playlist'] ?? '[]', true) ?: [];
+            $playlist = !empty($gm['music_playlist']) ? json_decode($gm['music_playlist'], true) : [];
+            if (!is_array($playlist)) $playlist = [];
+
             if (count($playlist) <= 1) {
                 if (count($playlist) === 1) {
                     echo json_encode(['success' => true, 'action' => 'loop', 'video_id' => $playlist[0]['video_id'] ?? '']);
@@ -677,11 +824,11 @@ try {
                 break;
             }
 
-            $newIndex = ((int)$session['music_current_index'] + 1) % count($playlist);
+            $newIndex = ((int)($gm['music_current_index'] ?? 0) + 1) % count($playlist);
             $newUrl = $playlist[$newIndex]['url'] ?? '';
 
-            $dtb->prepare("UPDATE t_queue_sessions SET music_current_index = :idx, music_youtube_url = :url WHERE id = :id")
-                ->execute(['idx' => $newIndex, 'url' => $newUrl, 'id' => $session['id']]);
+            $dtb->prepare("UPDATE t_queue_global_music SET music_current_index = :idx, music_youtube_url = :url WHERE id = 1")
+                ->execute(['idx' => $newIndex, 'url' => $newUrl]);
 
             echo json_encode(['success' => true, 'action' => 'next', 'current_index' => $newIndex, 'video_id' => $playlist[$newIndex]['video_id'] ?? '']);
             break;
@@ -706,12 +853,13 @@ function getQueueSessionStats(PDO $dtb, int $session_id): array {
             SUM(CASE WHEN status = 'called' THEN 1 ELSE 0 END) as called,
             SUM(CASE WHEN status = 'serving' THEN 1 ELSE 0 END) as serving,
             SUM(CASE WHEN status = 'done' THEN 1 ELSE 0 END) as done,
-            SUM(CASE WHEN status = 'skipped' THEN 1 ELSE 0 END) as skipped
+            SUM(CASE WHEN status = 'skipped' THEN 1 ELSE 0 END) as skipped,
+            SUM(CASE WHEN status = 'absent' THEN 1 ELSE 0 END) as absent
         FROM t_queue_tickets WHERE session_id = :id
     ");
     $stats->execute(['id' => $session_id]);
     return $stats->fetch(PDO::FETCH_ASSOC) ?: [
         'total' => 0, 'waiting' => 0, 'called' => 0,
-        'serving' => 0, 'done' => 0, 'skipped' => 0
+        'serving' => 0, 'done' => 0, 'skipped' => 0, 'absent' => 0
     ];
 }

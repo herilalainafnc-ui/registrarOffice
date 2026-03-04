@@ -392,7 +392,7 @@ $Montant = $showFin['cout_fraix_generaux'] +
 				</div>
 				
 			</label><hr class="border-1 border-slate-900">
-
+<!-- 
 			<label class="m-2 flex hover:bg-slate-500 py-2 px-3 rounded-md">
 				<div class="w-1/12 py-2">
 					<input class="in" type="radio" name="modePayement" id="c" value="C">
@@ -422,7 +422,7 @@ $Montant = $showFin['cout_fraix_generaux'] +
 					<a class="text-[10px] text-green-300 paie30"><?=number_format(($Montant_sans_fraix_Generaux*30) /100, 0, '', ' ')?> ar</a>
 				</div>
 				
-			</label><hr class="border-1 border-slate-900">
+			</label><hr class="border-1 border-slate-900"> -->
 
 			<label class="m-2 flex hover:bg-slate-500 py-2 px-3 rounded-md">
 				<div class="w-1/12 py-2">

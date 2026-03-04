@@ -67,8 +67,10 @@
 	// Récapitulatif général
 	$totalCoursValides = 0;
 	$totalCoursEchoues = 0;
+	$totalCoursIncomplete = 0;
 	$totalCreditsValides = 0;
 	$totalCreditsEchoues = 0;
+	$totalCreditsIncomplete = 0;
 	$totalCours = 0;
 
 	// Construire la requête avec filtres optionnels
@@ -143,11 +145,14 @@
 			// Compteurs pour session
 			$coursValides = 0;
 			$coursEchoues = 0;
+			$coursIncomplete = 0;
 			$creditsValides = 0;
 			$creditsEchoues = 0;
+			$creditsIncomplete = 0;
 			
 			while($crs = $cours->fetch()){
-				$notecredi = $crs['credit'] * $crs['grade'];
+				$isIncomplete = ($crs['grade'] == 0);
+				$notecredi = $isIncomplete ? 0 : $crs['credit'] * $crs['grade'];
 				?>
 				<tbody>
 					<tr>
@@ -169,19 +174,21 @@
 								echo "-";
 							}
 						?></td>
-						<td><?=$crs['grade']?></td>
-						<td><?=$notecredi?></td>
+						<td><?php if($isIncomplete){ echo '<span style="color:#b91c1c;font-style:italic;">--</span>'; }else{ echo $crs['grade']; } ?></td>
+						<td><?php if($isIncomplete){ echo '<span style="color:#b91c1c;font-style:italic;">--</span>'; }else{ echo $notecredi; } ?></td>
 						<td class="text-center"><?php 
 							if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
-								echo "S";
+								echo '<span style="color:#15803d;font-weight:bold;">S</span>';
 								$coursValides++;
 								$creditsValides += $crs['credit'];
 							}elseif($crs['grade'] < 10 and $crs['grade'] > 0){
-								echo "E";
+								echo '<span style="color:#b91c1c;font-weight:bold;">E</span>';
 								$coursEchoues++;
 								$creditsEchoues += $crs['credit'];
-							}elseif ($crs['grade'] == 0){
-								echo "";
+							}elseif ($isIncomplete){
+								echo '<span style="background:#fef2f2;color:#b91c1c;font-weight:bold;padding:0 3px;border-radius:2px;font-size:8px;">Incomplet</span>';
+								$coursIncomplete++;
+								$creditsIncomplete += $crs['credit'];
 							}
 						?></td>					
 					</tr>
@@ -207,8 +214,10 @@
 			// Ajout aux totaux généraux
 			$totalCoursValides += $coursValides;
 			$totalCoursEchoues += $coursEchoues;
+			$totalCoursIncomplete += $coursIncomplete;
 			$totalCreditsValides += $creditsValides;
 			$totalCreditsEchoues += $creditsEchoues;
+			$totalCreditsIncomplete += $creditsIncomplete;
 			$totalCours += $nbr;
 			?>
 			<tfoot>
@@ -256,8 +265,9 @@
 					<th colspan="7" class="text-left text-[8px] p-0.5">
 						<b>Récapitulatif :</b> 
 						<?=$nbr?> cours | 
-						<span class="text-green-700"><?=$coursValides?> validé(s) (<?=$creditsValides?> crédits)</span> | 
-						<span class="text-red-700"><?=$coursEchoues?> échoué(s) (<?=$creditsEchoues?> crédits)</span> | 
+						<span style="color:#15803d;"><?=$coursValides?> validé(s) (<?=$creditsValides?> crédits)</span> | 
+						<span style="color:#b91c1c;"><?=$coursEchoues?> échoué(s) (<?=$creditsEchoues?> crédits)</span><?php if($coursIncomplete > 0){ ?> | 
+						<span style="color:#b45309;"><?=$coursIncomplete?> incomplet(s) - note non remise (<?=$creditsIncomplete?> crédits)</span><?php } ?> | 
 						Total : <?=$tcredit?> crédits
 					</th>
 				</tr>
@@ -303,6 +313,12 @@
 				<td class="text-xs p-1 w-6/12 text-red-700">Cours échoués (Échec)</td>
 				<td class="text-xs px-2 w-6/12 font-bold text-red-700"><?=$totalCoursEchoues?> cours (<?=$totalCreditsEchoues?> crédits)</td>
 			</tr>
+			<?php if($totalCoursIncomplete > 0){ ?>
+			<tr>
+				<td class="text-xs p-1 w-6/12" style="color:#b45309;">Cours incomplets (Note non remise)</td>
+				<td class="text-xs px-2 w-6/12 font-bold" style="color:#b45309;"><?=$totalCoursIncomplete?> cours (<?=$totalCreditsIncomplete?> crédits)</td>
+			</tr>
+			<?php } ?>
 			<tr>
 				<td class="text-xs p-1 w-6/12">Total des crédits</td>
 				<td class="text-xs px-2 w-6/12 font-bold"><?=$cumulCredit?> crédits</td>
@@ -341,6 +357,17 @@
 			</tr>
 		</thead>
 	</table>
+</div>
+<!-- LÉGENDE -->
+<div class='p-1 mt-1 text-[8px]' style="border-top: 1px solid #cbd5e1;">
+	<b>Légende :</b>
+	<span style="color:#15803d;font-weight:bold;">S</span> = Succès (note ≥ 10)
+	&nbsp;|&nbsp;
+	<span style="color:#b91c1c;font-weight:bold;">E</span> = Échec (note &lt; 10)
+	&nbsp;|&nbsp;
+	<span style="background:#fef2f2;color:#b91c1c;font-weight:bold;padding:0 3px;border-radius:2px;">Incomplet</span> = Note non encore remise par l'enseignant
+	&nbsp;|&nbsp;
+	<span style="color:#b91c1c;font-style:italic;">--</span> = En attente de notation
 </div>
 <?php
 	}

@@ -137,6 +137,7 @@ $router->any('/teacher.dashboard', function() { redirectTo('/teacher/dashboard')
 $router->any('/creat.student', function() { redirectTo('/students/create'); });
 $router->any('/creat.account', function() { redirectTo('/accounts/create'); });
 $router->any('/src/cours', function() { redirectTo('/cours?' . $_SERVER['QUERY_STRING']); });
+$router->any('/prof', function() { redirectTo('/professor?' . $_SERVER['QUERY_STRING']); });
 
 // ========================================================================
 // PAGE 404 PERSONNALISÉE

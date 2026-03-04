@@ -6,7 +6,7 @@ $yearScoolNow = $_POST['yearStatistic'];
  ?>
 <div class="" style="page-break-inside: avoid;">
 
-<b>Statistique par Mention </b><em class="text-xs">- Année <?=$yearScoolNow?></em>
+<b>Statistique par Mention </b><em class="text-xs"> • <b>Session : </b> <?=$semestre." ".$yearScoolNow?></em>
 	<table class="tbl" style="page-break-inside: avoid;">
 		<thead>
 			<tr style="page-break-inside: avoid;">
@@ -40,7 +40,7 @@ $yearScoolNow = $_POST['yearStatistic'];
 		<tbody>
 			<?php
 
- $mentio = $dtb->query('SELECT * FROM filiere WHERE filiere_sigle !="CPRE"');
+ $mentio = $dtb->query('SELECT * FROM filiere WHERE filiere_sigle !="CPRE" AND filiere_sigle !="EDUC"');
 
  // Requête SQL pour récupérer les données groupées
 $rm_H = 0;
@@ -59,23 +59,26 @@ $thorizontal = 0;
 
 	while($mt = $mentio->fetch()){
 		
+		$filiere_sigle = $mt['filiere_sigle'];
 		$mention = $mt['filiere_description'];
 
 $result = $dtb->query('SELECT *,
-           SUM(CASE WHEN annee_etude = 0 AND sex = 1 THEN 1 ELSE 0 END) AS RM_H,
-           SUM(CASE WHEN annee_etude = 0 AND sex = 0 THEN 1 ELSE 0 END) AS RM_F,
-           SUM(CASE WHEN annee_etude = 1 AND sex = 1 THEN 1 ELSE 0 END) AS Licence1_H,
-           SUM(CASE WHEN annee_etude = 1 AND sex = 0 THEN 1 ELSE 0 END) AS Licence1_F,
-           SUM(CASE WHEN annee_etude = 2 AND sex = 1 THEN 1 ELSE 0 END) AS Licence2_H,
-           SUM(CASE WHEN annee_etude = 2 AND sex = 0 THEN 1 ELSE 0 END) AS Licence2_F,
-           SUM(CASE WHEN annee_etude = 3 AND sex = 1 THEN 1 ELSE 0 END) AS Licence3_H,
-           SUM(CASE WHEN annee_etude = 3 AND sex = 0 THEN 1 ELSE 0 END) AS Licence3_F,
-           SUM(CASE WHEN annee_etude = 4 AND sex = 1 THEN 1 ELSE 0 END) AS Master1_H,
-           SUM(CASE WHEN annee_etude = 4 AND sex = 0 THEN 1 ELSE 0 END) AS Master1_F,
-           SUM(CASE WHEN annee_etude = 5 AND sex = 1 THEN 1 ELSE 0 END) AS Master2_H,
-           SUM(CASE WHEN annee_etude = 5 AND sex = 0 THEN 1 ELSE 0 END) AS Master2_F
+           SUM(CASE WHEN ins.niveau_std = 0 AND std.sex = 1 THEN 1 ELSE 0 END) AS RM_H,
+           SUM(CASE WHEN ins.niveau_std = 0 AND std.sex = 0 THEN 1 ELSE 0 END) AS RM_F,
+           SUM(CASE WHEN ins.niveau_std = 1 AND std.sex = 1 THEN 1 ELSE 0 END) AS Licence1_H,
+           SUM(CASE WHEN ins.niveau_std = 1 AND std.sex = 0 THEN 1 ELSE 0 END) AS Licence1_F,
+           SUM(CASE WHEN ins.niveau_std = 2 AND std.sex = 1 THEN 1 ELSE 0 END) AS Licence2_H,
+           SUM(CASE WHEN ins.niveau_std = 2 AND std.sex = 0 THEN 1 ELSE 0 END) AS Licence2_F,
+           SUM(CASE WHEN ins.niveau_std = 3 AND std.sex = 1 THEN 1 ELSE 0 END) AS Licence3_H,
+           SUM(CASE WHEN ins.niveau_std = 3 AND std.sex = 0 THEN 1 ELSE 0 END) AS Licence3_F,
+           SUM(CASE WHEN ins.niveau_std = 4 AND std.sex = 1 THEN 1 ELSE 0 END) AS Master1_H,
+           SUM(CASE WHEN ins.niveau_std = 4 AND std.sex = 0 THEN 1 ELSE 0 END) AS Master1_F,
+           SUM(CASE WHEN ins.niveau_std = 5 AND std.sex = 1 THEN 1 ELSE 0 END) AS Master2_H,
+           SUM(CASE WHEN ins.niveau_std = 5 AND std.sex = 0 THEN 1 ELSE 0 END) AS Master2_F
 
-    FROM tbl_2024_etudiant WHERE etude_envisage = "'.$mention.'" AND annee_scolaire = "'.$yearScoolNow.'" AND (graduated IS NULL OR graduated != 1) ORDER BY etude_envisage');
+    FROM t_2024_inscription_session ins
+    INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id
+    WHERE ins.etude_mention = "'.$filiere_sigle.'" AND ins.session_id = "'.$session_id.'" AND (std.graduated IS NULL OR std.graduated != 1) AND (std.suspended IS NULL OR std.suspended != 1) AND (std.retrait_universite IS NULL OR std.retrait_universite = 0) ORDER BY ins.etude_mention');
 
 
            $row = $result->fetch();
@@ -110,19 +113,19 @@ $result = $dtb->query('SELECT *,
 
     			echo "</tr>";
     		
-$rm_H =+ $rm_H + $row['RM_H'];
-$rm_F =+ $rm_F + $row['RM_F'];
-$licence1_H =+ $licence1_H + $row['Licence1_H'];
-$licence1_F =+ $licence1_F + $row['Licence1_F'];
-$licence2_H =+ $licence2_H + $row['Licence2_H'];
-$licence2_F =+ $licence2_F + $row['Licence2_F'];
-$licence3_H =+ $licence3_H + $row['Licence3_H'];
-$licence3_F =+ $licence3_F + $row['Licence3_F'];
-$master1_H =+ $master1_H + $row['Master1_H'];
-$master1_F =+ $master1_F + $row['Master1_F'];
-$master2_H =+ $master2_H + $row['Master2_H'];
-$master2_F =+ $master2_F + $row['Master2_F'];
-$thorizontal =+ intval($thorizontal) + intval($sommeHoriz);
+$rm_H += $row['RM_H'];
+$rm_F += $row['RM_F'];
+$licence1_H += $row['Licence1_H'];
+$licence1_F += $row['Licence1_F'];
+$licence2_H += $row['Licence2_H'];
+$licence2_F += $row['Licence2_F'];
+$licence3_H += $row['Licence3_H'];
+$licence3_F += $row['Licence3_F'];
+$master1_H += $row['Master1_H'];
+$master1_F += $row['Master1_F'];
+$master2_H += $row['Master2_H'];
+$master2_F += $row['Master2_F'];
+$thorizontal += intval($sommeHoriz);
    
 	}
         ?>

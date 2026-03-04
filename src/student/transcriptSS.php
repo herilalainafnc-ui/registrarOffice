@@ -408,7 +408,14 @@ $(document).ready(function(){
 		var input = $(this);
 		var url = input.data('action');
 		var nbr = input.data('nbr');
-		var noteValue = input.val().trim();
+		var noteValue = input.val().trim().replace(',', '.');
+
+		// Arrondir à 2 décimales
+		var nVal = parseFloat(noteValue);
+		if (!isNaN(nVal) && nVal != -2) {
+			noteValue = '' + (Math.round(nVal * 100) / 100);
+			input.val(noteValue);
+		}
 		
 		// Validation côté client
 		var validation = validateNote(noteValue);

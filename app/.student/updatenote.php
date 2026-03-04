@@ -20,8 +20,11 @@
 	if ($_POST['nb_crd'.$nbr] == "ok" OR $_POST['nb_crd'.$nbr] == "Ok" OR  $_POST['nb_crd'.$nbr] == "OK") {
 		$note = -2;	
 	}else{
-		$note = $_POST['nb_crd'.$nbr];
-		//str_replace(',', '.', $_POST['note']);
+		$note = str_replace(',', '.', $_POST['nb_crd'.$nbr]);
+		// Arrondir à 2 décimales si la note est numérique
+		if (is_numeric($note)) {
+			$note = round(floatval($note), 2);
+		}
 	}
 
 	// Validation: la note ne doit pas dépasser 20

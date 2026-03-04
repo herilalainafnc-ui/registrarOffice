@@ -6,7 +6,7 @@ $yearScoolNow = $_POST['yearStatistic'];
  ?>
 <div class="" style="page-break-inside: avoid;">
 
-<b>Statistique par Religion </b><em class="text-xs">- Année <?=$yearScoolNow?></em>
+<b>Statistique par Religion </b><em class="text-xs"> • <b>Session : </b> <?=$semestre." ".$yearScoolNow?></em>
 	<table class="tbl" style="page-break-inside: avoid;">
 		<thead>
 			<tr style="page-break-inside: avoid;">
@@ -28,7 +28,7 @@ $yearScoolNow = $_POST['yearStatistic'];
 		<tbody>
 			<?php
 
- $mentio = $dtb->query('SELECT * FROM filiere WHERE filiere_sigle !="CPRE"');
+ $mentio = $dtb->query('SELECT * FROM filiere WHERE filiere_sigle !="CPRE" AND filiere_sigle !="EDUC"');
 
  // Requête SQL pour récupérer les données groupées
 $adventiste_H = 0;
@@ -39,15 +39,18 @@ $thorizontal = 0;
 
 	while($mt = $mentio->fetch()){
 		
+		$filiere_sigle = $mt['filiere_sigle'];
 		$mention = $mt['filiere_description'];
 
 $result = $dtb->query('SELECT *,
-           SUM(CASE WHEN religion = "Adventiste" AND sex = 1 THEN 1 ELSE 0 END) AS Adventiste_H,
-           SUM(CASE WHEN religion = "Adventiste" AND sex = 0 THEN 1 ELSE 0 END) AS Adventiste_F,
-           SUM(CASE WHEN religion != "Adventiste" AND sex = 1 THEN 1 ELSE 0 END) AS NonAdventiste_H,
-           SUM(CASE WHEN religion != "Adventiste" AND sex = 0 THEN 1 ELSE 0 END) AS NonAdventiste_F
+           SUM(CASE WHEN (std.religion = "Adventiste" OR std.religion = "Adventiste du Septieme-jour") AND std.sex = 1 THEN 1 ELSE 0 END) AS Adventiste_H,
+           SUM(CASE WHEN (std.religion = "Adventiste" OR std.religion = "Adventiste du Septieme-jour") AND std.sex = 0 THEN 1 ELSE 0 END) AS Adventiste_F,
+           SUM(CASE WHEN std.religion != "Adventiste" AND std.religion != "Adventiste du Septieme-jour" AND std.sex = 1 THEN 1 ELSE 0 END) AS NonAdventiste_H,
+           SUM(CASE WHEN std.religion != "Adventiste" AND std.religion != "Adventiste du Septieme-jour" AND std.sex = 0 THEN 1 ELSE 0 END) AS NonAdventiste_F
        
-    FROM tbl_2024_etudiant WHERE etude_envisage = "'.$mention.'" AND annee_scolaire = "'.$yearScoolNow.'" AND (graduated IS NULL OR graduated != 1) ORDER BY etude_envisage');
+    FROM t_2024_inscription_session ins
+    INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id
+    WHERE ins.etude_mention = "'.$filiere_sigle.'" AND ins.session_id = "'.$session_id.'" AND (std.graduated IS NULL OR std.graduated != 1) AND (std.suspended IS NULL OR std.suspended != 1) AND (std.retrait_universite IS NULL OR std.retrait_universite = 0) ORDER BY ins.etude_mention');
 
 
            $row = $result->fetch();
@@ -67,11 +70,11 @@ $result = $dtb->query('SELECT *,
     			echo "</tr>";
     		
 
-$adventiste_H =+ $adventiste_H + $row['Adventiste_H'];
-$adventiste_F =+ $adventiste_F + $row['Adventiste_F'];
-$nonAdventiste_H =+ $nonAdventiste_H + $row['NonAdventiste_H'];
-$nonAdventiste_F =+ $nonAdventiste_F + $row['NonAdventiste_F'];
-$thorizontal =+ intval($thorizontal) +  intval($sommeHoriz);      
+$adventiste_H += $row['Adventiste_H'];
+$adventiste_F += $row['Adventiste_F'];
+$nonAdventiste_H += $row['NonAdventiste_H'];
+$nonAdventiste_F += $row['NonAdventiste_F'];
+$thorizontal += intval($sommeHoriz);      
 	}
         ?>
 		</tbody>
