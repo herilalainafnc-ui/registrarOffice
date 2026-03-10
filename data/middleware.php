@@ -56,6 +56,9 @@ if (!defined('ROLE_LABELS')) {
     ]);
 }
 
+// Durée de vie de la session (10 heures)
+if (!defined('SESSION_LIFETIME')) define('SESSION_LIFETIME', 10 * 60 * 60);
+
 // Durée de vie du cookie "Se souvenir de moi" (20 jours)
 if (!defined('REMEMBER_ME_DURATION')) define('REMEMBER_ME_DURATION', 20 * 24 * 60 * 60);
 
@@ -86,6 +89,10 @@ class Middleware {
      */
     public static function startSecureSession() {
         if (session_status() === PHP_SESSION_NONE) {
+            // Durée de vie de la session : 10 heures
+            ini_set('session.gc_maxlifetime', SESSION_LIFETIME);
+            ini_set('session.cookie_lifetime', SESSION_LIFETIME);
+            
             // Configuration sécurisée des sessions
             ini_set('session.use_strict_mode', 1);
             ini_set('session.use_only_cookies', 1);
@@ -100,7 +107,7 @@ class Middleware {
             // Régénérer l'ID de session périodiquement pour éviter le fixation
             if (!isset($_SESSION['last_regeneration'])) {
                 $_SESSION['last_regeneration'] = time();
-            } elseif (time() - $_SESSION['last_regeneration'] > 300) { // 5 minutes
+            } elseif (time() - $_SESSION['last_regeneration'] > 1800) { // 30 minutes
                 session_regenerate_id(true);
                 $_SESSION['last_regeneration'] = time();
             }
