@@ -440,6 +440,35 @@
 							</div>
 						</div>
 
+						<!-- Annonce vocale personnalisée -->
+						<div class="q-card" style="--grid-area: tts">
+							<div class="q-head">
+								<span class="<?=$txt_one_color?>"><i class="bi bi-chat-square-text-fill me-2"></i>Annonce vocale</span>
+								<button onclick="clearTtsMessage()" class="btn-sm text-red-400" title="Effacer l'annonce">
+									<i class="bi bi-x-lg"></i>
+								</button>
+							</div>
+							<div class="q-body">
+								<div class="flex flex-wrap gap-1 mb-2">
+									<button class="tts-preset" onclick="setTtsPreset('Votre attention s\'il vous plaît. Un problème technique est en cours de résolution. Merci de votre patience.')">Problème technique</button>
+									<button class="tts-preset" onclick="setTtsPreset('Merci de votre patience. Le service reprendra dans quelques instants.')">Merci patience</button>
+									<button class="tts-preset" onclick="setTtsPreset('L\'inscription est temporairement suspendue. Veuillez patienter.')">Inscription suspendue</button>
+									<button class="tts-preset" onclick="setTtsPreset('Attention! Veuillez préparer vos documents avant de vous présenter au guichet.')">Préparer documents</button>
+									<button class="tts-preset" onclick="setTtsPreset('La pause déjeuner commence. Le service reprendra à 14 heures. Merci.')">Pause déjeuner</button>
+								</div>
+								<textarea id="ttsMessage" class="q-input mb-2" rows="2" placeholder="Tapez votre message ici..."></textarea>
+								<div class="flex gap-2">
+									<button onclick="sendTtsMessage()" class="btn-gen flex-1 text-center">
+										<i class="bi bi-megaphone-fill me-1"></i> Diffuser l'annonce
+									</button>
+									<button onclick="previewTts()" class="btn-sm text-cyan-400" title="Écouter ici">
+										<i class="bi bi-volume-up-fill"></i>
+									</button>
+								</div>
+								<p class="text-xs text-slate-500 mt-2" id="ttsStatus">Aucune annonce en cours</p>
+							</div>
+						</div>
+
 						<!-- Playlist -->
 						<div class="q-card" style="--grid-area: playlist">
 							<div class="q-head">
@@ -1219,6 +1248,117 @@ function refreshPlaylistTitles() {
 	}, 'json').fail(function() {
 		Toast.error('Erreur de connexion');
 	});
+}
+
+// =====================================================================
+// ANNONCE VOCALE PERSONNALISÉE (TTS)
+// =====================================================================
+function setTtsPreset(text) {
+	$('#ttsMessage').val(text);
+}
+
+function sendTtsMessage() {
+	const message = $('#ttsMessage').val().trim();
+	if (!message) { Toast.error('Entrez un message à diffuser.'); return; }
+
+	$.post(QUEUE_API, {
+		action: 'set_tts_message',
+		message: message
+	}, function(res) {
+		if (res.success) {
+			Toast.success('Annonce diffusée sur l\'écran public');
+			$('#ttsStatus').text('Annonce envoyée : ' + message.substring(0, 50) + (message.length > 50 ? '...' : ''));
+		} else {
+			Toast.error(res.message);
+		}
+	}, 'json').fail(function() {
+		Toast.error('Erreur de connexion');
+	});
+}
+
+function clearTtsMessage() {
+	$.post(QUEUE_API, {
+		action: 'clear_tts_message'
+	}, function(res) {
+		if (res.success) {
+			Toast.info('Annonce effacée');
+			$('#ttsStatus').text('Aucune annonce en cours');
+		}
+	}, 'json');
+}
+
+function previewTts() {
+	const message = $('#ttsMessage').val().trim();
+	if (!message) { Toast.error('Entrez un message à écouter.'); return; }
+	if ('speechSynthesis' in window) {
+		speechSynthesis.cancel();
+		const utterance = new SpeechSynthesisUtterance(message);
+		utterance.lang = 'fr-FR';
+		utterance.rate = 0.9;
+		utterance.pitch = 1.05;
+		const voices = speechSynthesis.getVoices();
+		const frVoice = voices.find(v => v.lang.startsWith('fr'));
+		if (frVoice) utterance.voice = frVoice;
+		speechSynthesis.speak(utterance);
+	} else {
+		Toast.error('Synthèse vocale non supportée par ce navigateur.');
+	}
+}
+
+// =====================================================================
+// ANNONCE VOCALE PERSONNALISÉE (TTS)
+// =====================================================================
+function setTtsPreset(text) {
+	$('#ttsMessage').val(text);
+}
+
+function sendTtsMessage() {
+	const message = $('#ttsMessage').val().trim();
+	if (!message) { Toast.error('Entrez un message à diffuser.'); return; }
+
+	$.post(QUEUE_API, {
+		action: 'set_tts_message',
+		message: message
+	}, function(res) {
+		if (res.success) {
+			Toast.success('Annonce diffusée sur l\'écran public');
+			$('#ttsStatus').text('Annonce envoyée : ' + message.substring(0, 50) + (message.length > 50 ? '...' : ''));
+		} else {
+			Toast.error(res.message);
+		}
+	}, 'json').fail(function() {
+		Toast.error('Erreur de connexion');
+	});
+}
+
+function clearTtsMessage() {
+	$.post(QUEUE_API, {
+		action: 'clear_tts_message'
+	}, function(res) {
+		if (res.success) {
+			Toast.info('Annonce effacée');
+			$('#ttsMessage').val('');
+			$('#ttsStatus').text('Aucune annonce en cours');
+		}
+	}, 'json');
+}
+
+function previewTts() {
+	const message = $('#ttsMessage').val().trim();
+	if (!message) { Toast.error('Entrez un message à écouter.'); return; }
+	if ('speechSynthesis' in window) {
+		speechSynthesis.cancel();
+		const utterance = new SpeechSynthesisUtterance(message);
+		utterance.lang = 'fr-FR';
+		utterance.rate = 0.9;
+		utterance.pitch = 1.05;
+		const voices = speechSynthesis.getVoices();
+		const frVoice = voices.find(v => v.lang.startsWith('fr'));
+		if (frVoice) utterance.voice = frVoice;
+		speechSynthesis.speak(utterance);
+	} else {
+		Toast.error('Synthèse vocale non supportée par ce navigateur.');
+	}
 }
 
 // Son de confirmation d'appel (côté agent)

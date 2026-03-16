@@ -171,7 +171,7 @@
 												<input class="field-input" type="email" name="student_email" id="student_email" placeholder="email@example.com">
 											</div>
 											<div class="field-group">
-												<label class="field-label">Pays d'origine <span class="text-red-400">*</span></label>
+												<label class="field-label">Adresse d'origine <span class="text-red-400">*</span></label>
 												<input class="field-input requierd-5" type="text" name="pays_origine" placeholder="Madagascar">
 											</div>
 											<div class="field-group">

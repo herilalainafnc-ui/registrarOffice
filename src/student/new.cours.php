@@ -6,6 +6,29 @@
 	if (!isset($profil) && (isset($_GET['student_id']) || isset($_GET['id']))) {
 		require_once('../../data/backdb.php');
 		
+		// Démarrer la session pour accéder aux variables de couleur et utilisateur
+		if (session_status() === PHP_SESSION_NONE) {
+			ini_set('session.gc_maxlifetime', 36000);
+			ini_set('session.cookie_lifetime', 36000);
+			session_start();
+		}
+		
+		// Calculer app_base (même logique que init/head.php)
+		$_doc_root = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+		$_app_root = rtrim(str_replace('\\', '/', dirname(__DIR__, 2)), '/');
+		$app_base = substr($_app_root, strlen($_doc_root));
+		if ($app_base === false || $app_base === '/' || $app_base === '.') $app_base = '';
+		
+		// Récupérer l'ID utilisateur depuis la session
+		$rg_id = $_SESSION['user_id'] ?? 0;
+		
+		// Récupérer les couleurs depuis la session
+		$bg_one_color = $_SESSION['bg_one_color'] ?? 'bg-[#0a1628]';
+		$bg_two_color = $_SESSION['bg_two_color'] ?? 'bg-[#0d1f3c]';
+		$bg_three_color = $_SESSION['bg_three_color'] ?? 'bg-[#0f2847]';
+		$bg_four_color = $_SESSION['bg_four_color'] ?? 'bg-[#1a3a5c]';
+		$bg_five_color = $_SESSION['bg_five_color'] ?? 'bg-[#264d73]';
+		
 		$student_id = $_GET['student_id'] ?? '';
 		$id = $_GET['id'] ?? '';
 		$ajax_session_id = $_GET['session_id'] ?? '';
@@ -285,13 +308,13 @@
 
 				id="cours<?=$a.$s.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black"
 
-<?php }elseif(!empty($validExisting) AND ($validExisting['grade'] >= 12 OR $validExisting['grade'] == 0)) { ?>
+<?php }elseif(!empty($validExisting) AND ($validExisting['grade'] >= 10 OR $validExisting['grade'] == -2 OR $validExisting['grade'] == 0)) { ?>
 
 				class="bg-slate-700"
 
-<?php }elseif(!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 12){ ?>
+<?php }elseif(!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 10){ ?>
 
-				id="cours<?=$a.$s.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black bg-slate-700"
+				id="cours<?=$a.$s.$nbr;?>" class="hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black bg-red-900/30 border-l-2 border-red-500"
 
 <?php } ?>>
 					<td class="p-0 text-center" style="height: 15px;">
@@ -303,13 +326,13 @@
 
 						<input id="chk<?=$a.$s.$nbr;?>" type="checkbox" name="checklist[]" value="<?=$note_id?>" style="width: 100%; height: 100%;margin: none; border: none;">
 
-<?php }elseif(!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 12){ ?>
+<?php }elseif(!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 10){ ?>
 
-						<input id="chk<?=$a.$s.$nbr;?>" type="checkbox" name="checklist[]" value="<?=$note_id?>" style="width: 100%; height: 100%;margin: none; border: none;">	
+						<input id="chk<?=$a.$s.$nbr;?>" type="checkbox" name="checklist[]" value="<?=$note_id?>" style="width: 100%; height: 100%;margin: none; border: none;" data-retake="1">	
 
-<?php }elseif(!empty($validExisting) AND ($validExisting['grade'] >= 12 OR $validExisting['grade'] == 0)){ ?>	
+<?php }elseif(!empty($validExisting) AND ($validExisting['grade'] >= 10 OR $validExisting['grade'] == -2 OR $validExisting['grade'] == 0)){ ?>	
 
-						<i class="bi-x-lg text-red-300"></i>	
+						<i class="bi-check-lg text-green-400"></i>	
 
 <?php } ?>		
 					
@@ -324,13 +347,17 @@
 							}
 					?>
 					</td>
-					<td><?php if (!empty($validExisting) AND $validExisting['grade'] >= 10) {
+					<td><?php if (!empty($validExisting) AND $validExisting['grade'] == -2) {
+
+	echo "<em class='text-green-400'><b>OK</b> - Validé</em>";
+
+}elseif (!empty($validExisting) AND $validExisting['grade'] >= 10) {
 	
 	echo "<em class='text-green-400'><b>".$validExisting['grade']."</b> de moyenne</em>";
 
 }elseif (!empty($validExisting) AND $validExisting['grade'] > 0 AND $validExisting['grade'] < 10) {
 	
-	echo "<em class='text-red-500'><b>".$validExisting['grade']."</b> de moyenne, en état d'echec.</em>";
+	echo "<em class='text-red-500'><i class='bi-arrow-repeat'></i> <b>".$validExisting['grade']."</b> de moyenne, en état d'échec. <span class='text-orange-400'>Reprise possible</span></em>";
 
 }elseif (!empty($validExisting) AND $validExisting['grade'] == 0){
 
@@ -518,7 +545,82 @@ $tcredit+= $credit + $crs['nb_crd'];
 
 		// Attacher les événements du formulaire au chargement
 		bindFormEvents();
+		bindCoursEvents();
 	});
+	
+	var hoverClass = "hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black";
+	
+	// Délégation d'événements pour les clics sur les lignes et checkboxes de cours
+	// Ces événements survivent au remplacement du DOM via AJAX
+	function bindCoursEvents() {
+		var container = $('#coursListContainer');
+		
+		// Clic sur une ligne de cours (tr avec id commençant par "cours")
+		container.off('click', 'tr[id^="cours"]').on('click', 'tr[id^="cours"]', function(e) {
+			// Ignorer si le clic est directement sur la checkbox
+			if ($(e.target).is('input[type="checkbox"]')) return;
+			var id = $(this).attr('id');
+			var chkId = id.replace('cours', 'chk');
+			var chk = $('#' + chkId);
+			if (chk.prop("checked") == false) {
+				$(this).attr("class", "bg-blue-500");
+				chk.prop("checked", true);
+			} else {
+				$(this).attr("class", hoverClass);
+				chk.prop("checked", false);
+			}
+		});
+		
+		// Clic sur une checkbox (change la couleur de la ligne)
+		container.off('change', 'input[id^="chk"]').on('change', 'input[id^="chk"]', function() {
+			var id = $(this).attr('id');
+			var rowId = id.replace('chk', 'cours');
+			var row = $('#' + rowId);
+			if ($(this).prop("checked")) {
+				row.attr("class", "bg-blue-500");
+			} else {
+				row.attr("class", hoverClass);
+			}
+		});
+		
+		// Cocher tout
+		container.off('click', 'a[id^="selectAll"]').on('click', 'a[id^="selectAll"]', function(e) {
+			e.preventDefault();
+			var suffix = $(this).attr('id').replace('selectAll', '');
+			$(this).addClass('hidden');
+			$('#deselectAll' + suffix).removeClass('hidden');
+			$('input[id^="chk' + suffix + '"]').each(function() {
+				$(this).prop("checked", true);
+				var rowId = $(this).attr('id').replace('chk', 'cours');
+				$('#' + rowId).attr("class", "bg-blue-500");
+			});
+		});
+		
+		// Décocher tout
+		container.off('click', 'a[id^="deselectAll"]').on('click', 'a[id^="deselectAll"]', function(e) {
+			e.preventDefault();
+			var suffix = $(this).attr('id').replace('deselectAll', '');
+			$(this).addClass('hidden');
+			$('#selectAll' + suffix).removeClass('hidden');
+			$('input[id^="chk' + suffix + '"]').each(function() {
+				$(this).prop("checked", false);
+				var rowId = $(this).attr('id').replace('chk', 'cours');
+				$('#' + rowId).attr("class", hoverClass);
+			});
+		});
+		
+		// Changement de session/année → activer le bouton submit
+		container.off('change', 'select[id^="scolarA"], select[id^="scolarSs"]').on('change', 'select[id^="scolarA"], select[id^="scolarSs"]', function() {
+			var id = $(this).attr('id');
+			// Extraire le suffixe (ex: "11", "12", "21", etc.)
+			var suffix = id.replace('scolarA', '').replace('scolarSs', '');
+			var scolarA = $('#scolarA' + suffix).val();
+			var scolarSs = $('#scolarSs' + suffix).val();
+			if (scolarA != '' && scolarSs != '') {
+				$('#submit' + suffix).attr('class', 'submiting px-2 text-center py-0 m-1 text-white bg-black');
+			}
+		});
+	}
 	
 	// Déterminer le chemin de base selon le contexte
 	var basePath = window.location.pathname.includes('/inscription/') ? '<?=$app_base?>/app/.student/' : '<?=$app_base?>/app/.student/';

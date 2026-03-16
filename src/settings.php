@@ -37,6 +37,14 @@
 							<p class="text-slate-500">Voir les coordonnées GPS des connexions utilisateurs sur une carte.</p>
 							</div>
 						</a>
+						<?php if($rg_user['level'] == 1 || $rg_user['level'] == 3 || $rg_user['level'] == 4) { ?>
+						<a href="<?=$app_base?>/finance/authorized-reinscription">
+							<div class='m-0 p-3 <?=$bg_one_color?> hover:bg-slate-700 rounded-md border-2 border-slate-800 hover:border-cyan-500 transition-all text-white h-[160px]'>
+							<b class="text-lg"><i class="bi-check-circle"></i>&nbsp;&nbsp; Autorisation Réinscription</b><br><br>
+							<p class="text-slate-500">Autoriser ou refuser les réinscriptions des étudiants (validation caisse / dossier registraire).</p>
+							</div>
+						</a>
+						<?php } ?>
 					</div>
 				</div>
 				

@@ -171,8 +171,8 @@ $date = 'h_'.date($h.'-i-s').' date_'.date('d-m-Y');
 
     function printThisContent(){
 
-        var scl = parseFloat('<?=$scale?>');
-        var qlt = parseFloat('<?=$quality?>');
+        var scl = parseFloat(<?= json_encode((float)($scale ?? 3)) ?>);
+        var qlt = parseFloat(<?= json_encode((float)($quality ?? 3)) ?>);
 
         alert('Download PDF processing ! quality '+qlt+', scale '+scl);
 
@@ -180,7 +180,7 @@ $date = 'h_'.date($h.'-i-s').' date_'.date('d-m-Y');
 
         var opt = {
             margin:     0.5,
-            filename:   '<?=$printName?>-image_<?=$date?>.pdf',
+            filename:   <?= json_encode((($printName ?? 'export').'-image_'.$date.'.pdf')) ?>,
             image:      { type: 'jpeg', quality: qlt },
             html2canvas:{ scale: scl, logging: true, useCORS: true },
             jsPDF:      { unit: 'in', format: 'a4', orientation: 'portrait' }
@@ -188,9 +188,6 @@ $date = 'h_'.date($h.'-i-s').' date_'.date('d-m-Y');
 
          // New Promise-based usage:
          html2pdf().set(opt).from(printConge).save();
-
-         // Old monolithic-style usage:
-         html2pdf(printConge, opt);
 
         }
 
@@ -202,25 +199,32 @@ $date = 'h_'.date($h.'-i-s').' date_'.date('d-m-Y');
 </script>
 
 <script>
-        // Connexion au serveur WebSocket
-        const socket = new WebSocket('ws://localhost:8080');
-
-        // Gérer la connexion
-        socket.onopen = function() {
-            console.log('Connecté au serveur WebSocket PHP');
-        };
-
-        // Afficher les messages reçus
-        socket.onmessage = function(event) {
+        // Initialize WebSocket only when related UI exists.
+        (function initOptionalWebSocket() {
             const messagesDiv = document.getElementById('messages');
-            messagesDiv.innerHTML += `<p>${event.data}</p>`;
-        };
-
-        // Envoyer un message au serveur
-        function sendMessage() {
             const input = document.getElementById('messageInput');
-            const message = input.value;
-            socket.send(message);
-            input.value = '';
-        }
+
+            if (!messagesDiv || !input) {
+                return;
+            }
+
+            const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+            const socket = new WebSocket(`${wsProtocol}://localhost:8080`);
+
+            socket.onopen = function() {
+                console.log('Connected to WebSocket server');
+            };
+
+            socket.onmessage = function(event) {
+                messagesDiv.innerHTML += `<p>${event.data}</p>`;
+            };
+
+            window.sendMessage = function() {
+                const message = input.value;
+                if (socket.readyState === WebSocket.OPEN && message.trim() !== '') {
+                    socket.send(message);
+                    input.value = '';
+                }
+            };
+        })();
 </script>

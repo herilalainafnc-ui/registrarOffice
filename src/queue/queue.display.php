@@ -1205,6 +1205,76 @@ if ('speechSynthesis' in window) {
 }
 
 // =====================================================================
+// ANNONCES VOCALES PERSONNALISÉES (TTS via admin)
+// =====================================================================
+let lastTtsTimestamp = null;
+
+function pollTtsMessage() {
+	$.getJSON(API_URL, { action: 'get_tts_message' }, function(res) {
+		if (res.success && res.tts_message && res.tts_timestamp) {
+			if (res.tts_timestamp !== lastTtsTimestamp) {
+				lastTtsTimestamp = res.tts_timestamp;
+				speakAnnouncement(res.tts_message);
+			}
+		}
+	});
+}
+
+function speakAnnouncement(text) {
+	if (!audioActivated || !('speechSynthesis' in window)) return;
+
+	// Baisser le volume YouTube pendant l'annonce
+	if (window.ytVisibleReady && window.ytVisiblePlayer && ytTargetPlaying && typeof window.ytVisiblePlayer.setVolume === 'function') {
+		ytDucking = true;
+		window.ytVisiblePlayer.setVolume(Math.max(5, Math.round(ytTargetVolume * 0.15)));
+	}
+
+	// Carillon d'annonce (2 tons doux)
+	try {
+		if (!sharedAudioCtx) sharedAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+		if (sharedAudioCtx.state === 'suspended') sharedAudioCtx.resume();
+		playTone(sharedAudioCtx, 880, 0, 0.3, 0.5, 'sine');
+		playTone(sharedAudioCtx, 1100, 0.25, 0.4, 0.5, 'sine');
+	} catch(e) {}
+
+	setTimeout(function() {
+		speechSynthesis.cancel();
+		const utterance = new SpeechSynthesisUtterance(text);
+		utterance.lang = 'fr-FR';
+		utterance.rate = 0.9;
+		utterance.pitch = 1.05;
+		utterance.volume = 1.0;
+
+		const voices = speechSynthesis.getVoices();
+		const frVoice = voices.find(v => v.lang.startsWith('fr'));
+		if (frVoice) utterance.voice = frVoice;
+
+		utterance.onend = function() {
+			// Rétablir le volume YouTube
+			if (ytDucking && window.ytVisibleReady && window.ytVisiblePlayer && ytTargetPlaying) {
+				window.ytVisiblePlayer.setVolume(ytTargetVolume);
+			}
+			ytDucking = false;
+		};
+
+		speechSynthesis.speak(utterance);
+	}, 800);
+
+	// Sécurité: rétablir le volume après 30s max
+	setTimeout(function() {
+		if (ytDucking) {
+			if (window.ytVisibleReady && window.ytVisiblePlayer && ytTargetPlaying) {
+				window.ytVisiblePlayer.setVolume(ytTargetVolume);
+			}
+			ytDucking = false;
+		}
+	}, 30000);
+}
+
+// Polling TTS toutes les 3 secondes
+setInterval(pollTtsMessage, 3000);
+
+// =====================================================================
 // LECTEUR YOUTUBE (contrôlé par l'admin via API)
 // =====================================================================
 let ytPlayer = null;

@@ -81,7 +81,14 @@ if ($showCours['category'] == 0){
  	</thead>
  	<tbody>
  <?php 
- $findStdInCours = $dtb->query('SELECT * FROM t_2023_notes WHERE id_cours = "'.$cours_id.'" AND annee_scolaire = "'.$yearForCours.'" AND remove = 0 ORDER BY student_id');
+ // Keep export criteria consistent with src/cours/etudiants.php (Sigle + year).
+ // Notes of previous years may reference a different id_cours for the same course code.
+ $sigleCours = $showCours['Sigle'];
+ $findStdInCours = $dtb->prepare('SELECT * FROM t_2023_notes WHERE Sigle = :sigle AND annee_scolaire = :annee_scolaire AND remove = 0 ORDER BY student_id');
+ $findStdInCours->execute([
+ 	'sigle' => $sigleCours,
+ 	'annee_scolaire' => $yearForCours
+ ]);
  $nbr = 1;
  while($showStdInCours = $findStdInCours->fetch()) {
   ?>

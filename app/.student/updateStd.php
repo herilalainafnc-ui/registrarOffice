@@ -12,6 +12,21 @@ if ($isAjax) {
 	ini_set('display_errors', 0);
 }
 
+// Vérification d'autorisation : niveaux <= 2 (superadmin, admin) ou niveau 6 (chef de mention)
+if (session_status() === PHP_SESSION_NONE) { ini_set('session.gc_maxlifetime', 36000); ini_set('session.cookie_lifetime', 36000); session_start(); }
+$currentUserLevel = isset($_SESSION['user_level']) ? (int)$_SESSION['user_level'] : 99;
+if ($currentUserLevel > 2 && $currentUserLevel != 6) {
+	if ($isAjax) {
+		http_response_code(403);
+		echo 'Accès refusé. Vous n\'avez pas la permission de modifier les informations de l\'\u00e9tudiant.';
+		exit;
+	} else {
+		$id = $_GET['id'] ?? 0;
+		header('location:' . $app_base . '/student?id='.$id.'&page=information&error=access_denied');
+		exit;
+	}
+}
+
 require '../../data/backdb.php';
 require 'student_history_helper.php';
 	
@@ -47,10 +62,12 @@ require 'student_history_helper.php';
 	$etude_envisage = $_GET['etude_envisage'];
 
 // Récupérer les anciennes données pour l'historique
-$getOldData = $dtb->query("SELECT * FROM tbl_2024_etudiant WHERE id = '".$id."'");
+$getOldData = $dtb->prepare("SELECT * FROM tbl_2024_etudiant WHERE id = :id");
+$getOldData->execute(['id' => $id]);
 $oldStudentData = $getOldData->fetch(PDO::FETCH_ASSOC);
 
-$findInfiliere = $dtb->query('SELECT * FROM filiere WHERE filiere_description = "'.$etude_envisage.'"');
+$findInfiliere = $dtb->prepare('SELECT * FROM filiere WHERE filiere_description = :etude_envisage');
+$findInfiliere->execute(['etude_envisage' => $etude_envisage]);
 $showInfiliere = $findInfiliere->fetch();
 $etude_envisage_sign = $showInfiliere['filiere_sigle'] ?? '';
 
@@ -85,20 +102,23 @@ $etude_envisage_sign = $showInfiliere['filiere_sigle'] ?? '';
 	$annee_scolaireForInformation = $_POST['annee_scolaireForInformation'] ?? '';
 
 
-	$verificationOldStatus = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'"');
+	$verificationOldStatus = $dtb->prepare('SELECT * FROM tbl_2024_etudiant WHERE student_id = :student_id');
+	$verificationOldStatus->execute(['student_id' => $student_id]);
  	$oldStatusConfirmed = $verificationOldStatus->fetch();
  	$oldStatus = $oldStatusConfirmed['status'] ?? '';
 
  	
 /*========================================== UPDATE STUDENT ON SESSION ==========================*/	
 
-$findSessionOnSS = $dtb->query('SELECT * FROM t_2023_session WHERE session_name ="'.$semesterForInformation.'" AND session_year = "'.$annee_scolaireForInformation.'"');
+$findSessionOnSS = $dtb->prepare('SELECT * FROM t_2023_session WHERE session_name = :session_name AND session_year = :session_year');
+$findSessionOnSS->execute(['session_name' => $semesterForInformation, 'session_year' => $annee_scolaireForInformation]);
 
 $showSessionOnSS = $findSessionOnSS->fetch();
 $session_id_for_modification = $showSessionOnSS['session_id'] ?? 0;
 $nbr_semester = $showSessionOnSS['session_semester'] ?? '';
 
-$verification = $dtb->query('SELECT * FROM t_2024_inscription_session WHERE student_id = "'.$student_id.'" AND session_id = "'.$session_id_for_modification.'"');
+$verification = $dtb->prepare('SELECT * FROM t_2024_inscription_session WHERE student_id = :student_id AND session_id = :session_id');
+$verification->execute(['student_id' => $student_id, 'session_id' => $session_id_for_modification]);
 
 $answering = $verification->fetch();
 
@@ -352,7 +372,8 @@ if (!empty($answering)) {
 		$serie_bacc = $_POST['serie_bacc'];
 		$obtention_bacc = $_POST['obtention_bacc'];
 
-		$searchBacc = $dtb->query('SELECT * FROM t_2024_bacc WHERE student_id = "'.$student_id.'"');
+		$searchBacc = $dtb->prepare('SELECT * FROM t_2024_bacc WHERE student_id = :student_id');
+		$searchBacc->execute(['student_id' => $student_id]);
 		$trouveBacc = $searchBacc->fetch();
 		
 		if (!empty($trouveBacc)) {
@@ -401,7 +422,8 @@ if (!empty($answering)) {
 		$diplome_preced = $_POST['diplome_preced'];
 		$date_obtent_diplome_preced = $_POST['date_obtent_diplome_preced'];
 
-		$searchDiplome = $dtb->query('SELECT * FROM t_2024_diplome_preced WHERE student_id = "'.$student_id.'"');
+		$searchDiplome = $dtb->prepare('SELECT * FROM t_2024_diplome_preced WHERE student_id = :student_id');
+		$searchDiplome->execute(['student_id' => $student_id]);
 		$trouveDiplome = $searchDiplome->fetch();
 		
 		if (!empty($trouveDiplome)) {
@@ -445,15 +467,11 @@ if (!empty($answering)) {
 	}
 
 
-	$verification_finance = $dtb->query(
+	$verification_finance = $dtb->prepare(
 		'SELECT * FROM t_2024_finance_detail_licence 
-		 WHERE
-		 std_status = "'.$status.'" 
-		 AND std_mention = "'.$etude_envisage_sign.'" 
-		 AND level = "'.$annee_etude.'" 
-		 AND semester = "'.$nbr_semester.'" 
-		 LIMIT 1'
+		 WHERE std_status = :status AND std_mention = :mention AND level = :level AND semester = :semester LIMIT 1'
 	);
+	$verification_finance->execute(['status' => $status, 'mention' => $etude_envisage_sign, 'level' => $annee_etude, 'semester' => $nbr_semester]);
 
 	$verif_Fnc = $verification_finance->fetch();
 

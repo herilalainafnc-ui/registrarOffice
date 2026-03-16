@@ -90,6 +90,7 @@ $tTFinale = 0;
 $tMaj = 0;
 $tTMaj = 0;
 $tcredit = 0;
+$tcreditGPA = 0;
 $tnote = 0;
 $tnotecredit = 0;
 					$note_id = 0;				
@@ -118,13 +119,14 @@ if ($crs['cours_category'] == 0){
 	echo "-";
 }
 						 ?></td>
-					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2 note-input" type="text" name="nb_crd<?=$sessionCount.$nbr;?>" value="<?=$crs['grade']?>" data-action="<?=$app_base?>/app/.student/updatenote?id=<?=$id;?>&nbr=<?=$sessionCount.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$sessionCount?>&user_id=<?=$rg_id?>" data-nbr="<?=$sessionCount.$nbr;?>"></td>
-					<td><?=$notecredi = $crs['credit'] * $crs['grade']?></td>
+					<td class="<?=$bg_six_color?> text-slate-800 px-0"><?php if ($crs['cours_category'] == 5): ?><span class="px-2"><?php echo ($crs['grade'] == -2 || $crs['grade'] >= 10) ? '<span style="color:#15803d;font-weight:bold;">V</span>' : '<span style="color:#b91c1c;font-weight:bold;">E</span>'; ?></span><?php elseif ($rg_level <= 3): ?><input class="insimple text-sm bg-transparent px-2 note-input" type="text" name="nb_crd<?=$sessionCount.$nbr;?>" value="<?=$crs['grade']?>" data-action="<?=$app_base?>/app/.student/updatenote?id=<?=$id;?>&nbr=<?=$sessionCount.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$sessionCount?>&user_id=<?=$rg_id?>" data-nbr="<?=$sessionCount.$nbr;?>"><?php elseif ($rg_level <= 6): ?><span class="px-2"><?= $crs['grade'] == -2 ? 'OK' : $crs['grade'] ?></span><?php else: ?><em class="px-2">masqué</em><?php endif; ?></td>
+					<td><?php if($crs['cours_category'] == 5){ $notecredi = 0; echo '--'; }else{ echo $notecredi = $crs['credit'] * $crs['grade']; } ?></td>
 					
 					<td class="<?php 
-if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
+if ($crs['cours_category'] == 5) {
+	if ($crs['grade'] == -2 OR $crs['grade'] >= 10) { echo "bg-green-500"; } elseif ($crs['grade'] > 0) { echo "bg-red-500"; } else { echo "bg-none"; }
+}elseif ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 	echo "bg-green-500";
-
 }elseif ($crs['grade'] < 10 and $crs['grade'] > 0) {
 	echo "bg-red-500";
 }elseif ($crs['grade'] == 0){
@@ -132,7 +134,9 @@ if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 }
 
 					 ?> text-center" title="<?php 
-if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
+if ($crs['cours_category'] == 5) {
+	echo ($crs['grade'] == -2 || $crs['grade'] >= 10) ? 'Validé' : 'Echec';
+}elseif ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 	echo "Succès";
 }elseif ($crs['grade'] < 10 and $crs['grade'] > 0){
 	echo "Echec";
@@ -141,7 +145,9 @@ if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 }
 
 							 ?>"><?php 
-if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
+if ($crs['cours_category'] == 5) {
+	echo ($crs['grade'] == -2 || $crs['grade'] >= 10) ? 'V' : 'E';
+}elseif ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 	echo "S";
 }elseif($crs['grade'] < 10 and $crs['grade'] > 0){
 	echo "E";
@@ -150,7 +156,7 @@ if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 }
 
 							 ?></td>
-					<td><div class="relative">
+					<td><?php if ($rg_level <= 3): ?><div class="relative">
 						<a href="#" id="coursPush<?=$sessionCount.$nbr?>" data-bs-toggle="dropdown" aria-expanded="false" title="Historique de solde"><span class="bi-three-dots-vertical"></span></a>
 
 							<ul class="dropdown-menu absolute border <?=$bg_six_color?> text-black p-0 rounded-0 text-xs">
@@ -168,7 +174,7 @@ if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 
 							
 						</div>
-					</td>
+					<?php endif; ?></td>
 					
 
 <?php 
@@ -187,9 +193,13 @@ if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 
 $credit = 0;
 $notes = 0;
+$isPassFail = ($crs['cours_category'] == 5);
 $tcredit+= $credit + $crs['credit'];
-$tnote+= $note + $crs['grade'];
-$tnotecredit+= $notecredit + $notecredi;
+if (!$isPassFail) {
+	$tcreditGPA += $crs['credit'];
+	$tnote+= $note + $crs['grade'];
+	$tnotecredit+= $notecredit + $notecredi;
+}
 
 
 /* --- CALCULE DES NOTES MAJEURS --- */
@@ -251,17 +261,17 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 
 				<tr class="<?=$bg_four_color?> text-right">
 					<td colspan="4">Note de Work Education</td>
-					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2 promo-input" type="text" name="grade_work_educ" value="<?=$grade_work_educ?>" data-action="<?=$app_base?>/app/.student/updatePromotionNote?id=<?=$id;?>&session_id=<?=$session_id?>&student_id=<?=$student_id;?>&nbr=<?=$sessionCount.$nbr;?>&sessionCount=<?=$sessionCount?>&annee_scolaire=<?=$annee_scolaire?>&user_id=<?=$rg_id?>" data-group="promo-<?=$session_id?>"></td>
+					<td class="<?=$bg_six_color?> text-slate-800 px-0"><?php if ($rg_level <= 3): ?><input class="insimple text-sm bg-transparent px-2 promo-input" type="text" name="grade_work_educ" value="<?=$grade_work_educ?>" data-action="<?=$app_base?>/app/.student/updatePromotionNote?id=<?=$id;?>&session_id=<?=$session_id?>&student_id=<?=$student_id;?>&nbr=<?=$sessionCount.$nbr;?>&sessionCount=<?=$sessionCount?>&annee_scolaire=<?=$annee_scolaire?>&user_id=<?=$rg_id?>" data-group="promo-<?=$session_id?>"><?php else: ?><span class="px-2"><?= $grade_work_educ ?></span><?php endif; ?></td>
 				</tr>
 
 				<tr class="<?=$bg_four_color?> text-right">
 					<td colspan="4">Remarque académique</td>
-					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2 promo-input" type="text" name="grade_remark_acad" value="<?=$grade_remark_acad?>" data-action="<?=$app_base?>/app/.student/updatePromotionNote?id=<?=$id;?>&session_id=<?=$session_id?>&student_id=<?=$student_id;?>&nbr=<?=$sessionCount.$nbr;?>&sessionCount=<?=$sessionCount?>&annee_scolaire=<?=$annee_scolaire?>&user_id=<?=$rg_id?>" data-group="promo-<?=$session_id?>"></td>
+					<td class="<?=$bg_six_color?> text-slate-800 px-0"><?php if ($rg_level <= 3): ?><input class="insimple text-sm bg-transparent px-2 promo-input" type="text" name="grade_remark_acad" value="<?=$grade_remark_acad?>" data-action="<?=$app_base?>/app/.student/updatePromotionNote?id=<?=$id;?>&session_id=<?=$session_id?>&student_id=<?=$student_id;?>&nbr=<?=$sessionCount.$nbr;?>&sessionCount=<?=$sessionCount?>&annee_scolaire=<?=$annee_scolaire?>&user_id=<?=$rg_id?>" data-group="promo-<?=$session_id?>"><?php else: ?><span class="px-2"><?= $grade_remark_acad ?></span><?php endif; ?></td>
 				</tr>
 
 				<tr class="<?=$bg_four_color?> text-right">
 					<td colspan="4">Note de participation à l'exercice de chapelle et à la semaine de prière</td>
-					<td class="<?=$bg_six_color?> text-slate-800 px-0"><input class="insimple text-sm bg-transparent px-2 promo-input" type="text" name="grade_chapel_part" value="<?=$grade_chapel_part?>" data-action="<?=$app_base?>/app/.student/updatePromotionNote?id=<?=$id;?>&session_id=<?=$session_id?>&student_id=<?=$student_id;?>&nbr=<?=$sessionCount.$nbr;?>&sessionCount=<?=$sessionCount?>&annee_scolaire=<?=$annee_scolaire?>&user_id=<?=$rg_id?>" data-group="promo-<?=$session_id?>"></td>
+					<td class="<?=$bg_six_color?> text-slate-800 px-0"><?php if ($rg_level <= 3): ?><input class="insimple text-sm bg-transparent px-2 promo-input" type="text" name="grade_chapel_part" value="<?=$grade_chapel_part?>" data-action="<?=$app_base?>/app/.student/updatePromotionNote?id=<?=$id;?>&session_id=<?=$session_id?>&student_id=<?=$student_id;?>&nbr=<?=$sessionCount.$nbr;?>&sessionCount=<?=$sessionCount?>&annee_scolaire=<?=$annee_scolaire?>&user_id=<?=$rg_id?>" data-group="promo-<?=$session_id?>"><?php else: ?><span class="px-2"><?= $grade_chapel_part ?></span><?php endif; ?></td>
 				</tr>
 </form>		
 <?php 
@@ -279,7 +289,7 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 				<!--  -->
 				<tr>
 					<th colspan="4" class="text-right">Moyenne Générale</th>
-					<th class="px-2 bg-cyan-700"><?php if($nbrFinale != 0){echo $moyenFinale = round(($tnotecredit/$tcredit),2);}else{echo 0;$moyenFinale =0;}?></th>
+					<th class="px-2 bg-cyan-700"><?php if($nbrFinale != 0){echo $moyenFinale = round(($tnotecredit/$tcreditGPA),2);}else{echo 0;$moyenFinale =0;}?></th>
 				</tr>
 			</tfoot>
 							

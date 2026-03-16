@@ -84,7 +84,7 @@ $result = $dtb->query('SELECT *,
 
  FROM t_2024_inscription_session ins
  INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id
- WHERE ins.etude_mention = "'.$filiere_sigle.'" AND ins.session_id = "'.$session_id.'" AND (std.graduated IS NULL OR std.graduated != 1) AND (std.suspended IS NULL OR std.suspended != 1) AND (std.retrait_universite IS NULL OR std.retrait_universite = 0) ORDER BY ins.etude_mention');
+ WHERE ins.etude_mention = "'.$filiere_sigle.'" AND ins.session_id = "'.$session_id.'" AND (std.suspended IS NULL OR std.suspended != 1) AND (std.retrait_universite IS NULL OR std.retrait_universite = 0) ORDER BY ins.etude_mention');
 
            $row = $result->fetch();
 

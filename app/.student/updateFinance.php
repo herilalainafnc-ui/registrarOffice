@@ -16,20 +16,23 @@ require '../../data/backdb.php';
 	$graduated = $_GET['graduated'];
 	$new_student = $_GET['new_student'];
 
-	$verifySession = $dtb->query('SELECT * FROM t_2023_session WHERE session_id = "'.$session_id.'"');
+	$verifySession = $dtb->prepare('SELECT * FROM t_2023_session WHERE session_id = :session_id');
+	$verifySession->execute(['session_id' => $session_id]);
 
 	$showSession = $verifySession->fetch();
 
 	$semester = $showSession['session_semester'];
 
-	$findMention = $dtb->query('SELECT * FROM filiere WHERE filiere_description = "'.$etude_envisage.'"');
-	
+	$findMention = $dtb->prepare('SELECT * FROM filiere WHERE filiere_description = :etude_envisage');
+	$findMention->execute(['etude_envisage' => $etude_envisage]);
+
 		$showMention = $findMention->fetch();
 		
 		$etude_mention = $showMention['filiere_sigle'];
 
 
-	$verification_finance_licence = $dtb->query('SELECT * FROM t_2024_finance_detail_licence WHERE std_status = "'.$status.'" AND std_mention = "'.$etude_mention.'"');
+	$verification_finance_licence = $dtb->prepare('SELECT * FROM t_2024_finance_detail_licence WHERE std_status = :status AND std_mention = :mention');
+	$verification_finance_licence->execute(['status' => $status, 'mention' => $etude_mention]);
 
 		$result_finance = $verification_finance_licence->fetch();
 
@@ -124,12 +127,25 @@ require '../../data/backdb.php';
 	
 	if ($semester == 1) {
 
+		// Semestre 1 → frais de voyage normal
 		$frais_voyage = $result_finance['frais_voyage'];
 
-	}else{
-
-		$frais_voyage = 0;
-
+	} else {
+		// Semestre 2 → vérifier si l'étudiant était inscrit au premier semestre
+		$annee_scolaire_current = $showSession['session_year'];
+		$checkSem1 = $dtb->prepare('SELECT COUNT(*) as cnt FROM t_2024_inscription_session ins 
+			INNER JOIN t_2023_session ses ON ins.session_id = ses.session_id 
+			WHERE ins.student_id = :student_id AND ses.session_year = :annee_scolaire AND ses.session_semester = 1');
+		$checkSem1->execute(['student_id' => $student_id, 'annee_scolaire' => $annee_scolaire_current]);
+		$hasSem1 = $checkSem1->fetch();
+		
+		if ($hasSem1['cnt'] > 0) {
+			// Ancien étudiant (inscrit au sem. 1) → frais de voyage normal (150 000)
+			$frais_voyage = $result_finance['frais_voyage'];
+		} else {
+			// Nouvel étudiant au semestre 2 → frais de voyage doublés (300 000)
+			$frais_voyage = floatval($result_finance['frais_voyage']) * 2;
+		}
 	}
 
 $financement = $dtb->prepare("UPDATE t_2024_etudiant_finace SET 
@@ -156,7 +172,7 @@ $financement = $dtb->prepare("UPDATE t_2024_etudiant_finace SET
 	$financement->bindParam(':cout_abonment',$cout_abonment,PDO::PARAM_STR);
 	$financement->bindParam(':cout_frais_graduation',$cout_frais_graduation,PDO::PARAM_STR);
 	$financement->bindParam(':cout_costume',$frais_costume,PDO::PARAM_STR);
-	$financement->bindParam('cout_voyage',$frais_voyage,PDO::PARAM_STR);
+	$financement->bindParam(':cout_voyage',$frais_voyage,PDO::PARAM_STR);
 	$financement->bindParam(':last_change_datetime',$last_change_datetime,PDO::PARAM_STR);
 	$financement->bindParam(':student_id',$student_id,PDO::PARAM_STR);
 	$financement->bindParam(':session_id',$session_id,PDO::PARAM_INT);

@@ -6,7 +6,8 @@
 	$student_id = $_REQUEST['student_id'] ?? $_GET['student_id'] ?? null;
 
 	// Vérification si l'étudiant est suspendu
-	$checkSuspension = $dtb->query('SELECT suspended, date_fin_suspension FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'"');
+	$checkSuspension = $dtb->prepare('SELECT suspended, date_fin_suspension FROM tbl_2024_etudiant WHERE student_id = :student_id');
+	$checkSuspension->execute(['student_id' => $student_id]);
 	$suspensionData = $checkSuspension->fetch();
 	
 	if ($suspensionData && $suspensionData['suspended'] == 1) {
@@ -43,7 +44,8 @@
 /*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
 	$etude_envisage = $_REQUEST['etude_envisage'] ?? $_GET['etude_envisage'] ?? null;
 
-	$findInfiliere = $dtb->query('SELECT * FROM filiere WHERE filiere_description = "'.$etude_envisage.'"');
+	$findInfiliere = $dtb->prepare('SELECT * FROM filiere WHERE filiere_description = :etude_envisage');
+	$findInfiliere->execute(['etude_envisage' => $etude_envisage]);
 	$showInfiliere = $findInfiliere->fetch();
 	$etude_envisage_sign = $showInfiliere['filiere_sigle'];
 
@@ -64,7 +66,8 @@
 
 /*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
 
-	$searchSs = $dtb->query('SELECT * FROM t_2023_session WHERE session_name="'.$semesterSession.'" AND session_year="'.$annee_scolaire.'"');
+	$searchSs = $dtb->prepare('SELECT * FROM t_2023_session WHERE session_name = :session_name AND session_year = :session_year');
+	$searchSs->execute(['session_name' => $semesterSession, 'session_year' => $annee_scolaire]);
 
 	$showSs = $searchSs->fetch();
 	$session_id = $showSs['session_id'];
@@ -73,7 +76,8 @@
 	if(isset($_POST['checklist'])) {
 		/*========================================== UPDATE STUDENT ON SESSION ==========================*/	
 
-		$verification = $dtb->query('SELECT * FROM t_2024_inscription_session WHERE student_id = "'.$student_id.'" AND session_id = "'.$session_id.'"');
+		$verification = $dtb->prepare('SELECT * FROM t_2024_inscription_session WHERE student_id = :student_id AND session_id = :session_id');
+		$verification->execute(['student_id' => $student_id, 'session_id' => $session_id]);
 
 		$answering = $verification->fetch();
 
@@ -194,6 +198,50 @@
 				'date_entry' => $date_entry
 
 			));
+
+			// Créer aussi la ligne finance si elle n'existe pas
+			$checkFinanceExists = $dtb->prepare('SELECT id FROM t_2024_etudiant_finace WHERE student_id = :student_id AND session_id = :session_id');
+			$checkFinanceExists->execute(['student_id' => $student_id, 'session_id' => $session_id]);
+			if (!$checkFinanceExists->fetch()) {
+				$financeConfig = $dtb->prepare('SELECT * FROM t_2024_finance_detail_licence WHERE std_status = :status AND std_mention = :mention AND level = :level AND semester = :semester');
+				$financeConfig->execute(['status' => $status, 'mention' => $etude_envisage_sign, 'level' => $annee_etude, 'semester' => $nbr_semester]);
+				$fConfig = $financeConfig->fetch();
+				if ($fConfig) {
+					$fc_nbr_day = intval($fConfig['nb_jours_semestre']);
+					$fc_logement = floatval($fConfig['dortoir']) * $fc_nbr_day;
+					$fc_fraix = floatval($fConfig['frais_generaux']);
+					$fc_abonment = ($abonment == 1) ? floatval($fConfig['cafeteria']) * $fc_nbr_day : 0;
+					$fc_voyage = floatval($fConfig['frais_voyage']);
+					$fc_graduation = ($graduated == 1) ? floatval($fConfig['frais_graduation']) : 0;
+					$fc_costume = ($annee_etude == 1 && $new_student == 1) ? floatval($fConfig['frais_costume']) : 0;
+					$fc_depot = ($annee_etude == 1 && $status == 'Interne') ? floatval($fConfig['fond_depot']) : 0;
+
+					$createFinance = $dtb->prepare('INSERT INTO t_2024_etudiant_finace (
+						student_id, session_id, mention, level, status,
+						cout_logement, cout_fraix_generaux, cout_fondDepot_dortoir,
+						cout_abonment, cout_frais_graduation, cout_costume, cout_voyage, date_entry
+					) VALUES (
+						:student_id, :session_id, :mention, :level, :status,
+						:cout_logement, :cout_fraix_generaux, :cout_fondDepot_dortoir,
+						:cout_abonment, :cout_frais_graduation, :cout_costume, :cout_voyage, :date_entry
+					)');
+					$createFinance->execute([
+						'student_id' => $student_id,
+						'session_id' => $session_id,
+						'mention' => $etude_envisage_sign,
+						'level' => $annee_etude,
+						'status' => $status,
+						'cout_logement' => $fc_logement,
+						'cout_fraix_generaux' => $fc_fraix,
+						'cout_fondDepot_dortoir' => $fc_depot,
+						'cout_abonment' => $fc_abonment,
+						'cout_frais_graduation' => $fc_graduation,
+						'cout_costume' => $fc_costume,
+						'cout_voyage' => $fc_voyage,
+						'date_entry' => $date_entry
+					]);
+				}
+			}
 		}
 /*====================================================================*/
 		
@@ -204,13 +252,59 @@
 
 		foreach($_POST['checklist'] as $i){
 			
-			// Vérifier si le cours existe déjà pour cet étudiant (éviter les doublons)
-			$checkExisting = $dtb->prepare('SELECT id FROM t_2023_notes WHERE id_cours = :id_cours AND student_id = :student_id AND ajout = 1 AND remove = 0');
+			// Vérifier si le cours existe déjà pour cet étudiant
+			$checkExisting = $dtb->prepare('SELECT id, grade FROM t_2023_notes WHERE id_cours = :id_cours AND student_id = :student_id AND ajout = 1 AND remove = 0');
 			$checkExisting->execute(['id_cours' => $i, 'student_id' => $student_id]);
+			$existingNote = $checkExisting->fetch();
 			
-			if ($checkExisting->fetch()) {
-				// Le cours existe déjà, passer au suivant
-				continue;
+			if ($existingNote) {
+				// Si le cours est en échec (note > 0 et < 10), autoriser la reprise dans une nouvelle session
+				if ($existingNote['grade'] > 0 && $existingNote['grade'] < 10) {
+					// Marquer l'ancien cours comme retiré (historique) avant d'ajouter la reprise
+					$archiveOld = $dtb->prepare('UPDATE t_2023_notes SET remove = 1, ajout = 0, retrait_date = :retrait_date, last_change_user_id = :user_id, last_change_datetime = :datetime WHERE id = :id');
+					$archiveOld->execute([
+						'retrait_date' => date('Y-m-d H:i:s'),
+						'user_id' => $user_id_entry,
+						'datetime' => date('Y-m-d H:i:s'),
+						'id' => $existingNote['id']
+					]);
+					
+					// Enregistrer dans l'historique des modifications de notes (reprise)
+					try {
+						$getCourseInfo = $dtb->prepare('SELECT * FROM t_2023_notes WHERE id = :id');
+						$getCourseInfo->execute(['id' => $existingNote['id']]);
+						$courseInfo = $getCourseInfo->fetch();
+						if ($courseInfo) {
+							$insertHistory = $dtb->prepare('INSERT INTO t_notes_modification_history (
+								note_id, student_id, session_id, cours_sigle, cours_titre,
+								old_grade, new_grade, action_type, action_by, action_date, ip_address, commentaire
+							) VALUES (
+								:note_id, :student_id, :session_id, :cours_sigle, :cours_titre,
+								:old_grade, :new_grade, :action_type, :action_by, :action_date, :ip_address, :commentaire
+							)');
+							$insertHistory->execute([
+								'note_id' => $existingNote['id'],
+								'student_id' => $student_id,
+								'session_id' => $courseInfo['session_id'],
+								'cours_sigle' => $courseInfo['Sigle'],
+								'cours_titre' => $courseInfo['title_cours'],
+								'old_grade' => $existingNote['grade'],
+								'new_grade' => null,
+								'action_type' => 'suppression',
+								'action_by' => $user_id_entry,
+								'action_date' => date('Y-m-d H:i:s'),
+								'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
+								'commentaire' => 'Reprise du cours suite à échec (note: ' . $existingNote['grade'] . '/20)'
+							]);
+						}
+					} catch (PDOException $e) {
+						// Ignorer l'erreur d'historique
+					}
+					// Continuer pour créer le nouveau cours dans la nouvelle session
+				} else {
+					// Le cours est réussi ou en attente, ne pas ajouter de doublon
+					continue;
+				}
 			}
 			
 			$grade = 0;
@@ -230,7 +324,8 @@
 					$yearlevel = $affiche['yearlevel'];
 					$teacher_id = $affiche['id_teacher'];
 				
-				$verification_finance_licence = $dtb->query('SELECT * FROM t_2024_finance_detail_licence WHERE std_mention = "'.$etude_envisage_sign.'" AND level = "'.$yearlevel.'" AND semester = "'.$semester.'"');
+				$verification_finance_licence = $dtb->prepare('SELECT * FROM t_2024_finance_detail_licence WHERE std_mention = :mention AND level = :level AND semester = :semester');
+				$verification_finance_licence->execute(['mention' => $etude_envisage_sign, 'level' => $yearlevel, 'semester' => $semester]);
 
 				$result_finance = $verification_finance_licence->fetch();
 

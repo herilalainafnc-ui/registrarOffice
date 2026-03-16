@@ -48,6 +48,15 @@ try {
     } catch(Exception $e2) {}
 }
 
+// Auto-migration: add tts_message and tts_timestamp columns if missing
+try {
+    $dtb->query("SELECT tts_message FROM t_queue_global_music LIMIT 0");
+} catch(Exception $e) {
+    try {
+        $dtb->exec("ALTER TABLE t_queue_global_music ADD COLUMN tts_message TEXT DEFAULT NULL, ADD COLUMN tts_timestamp VARCHAR(30) DEFAULT NULL");
+    } catch(Exception $e2) {}
+}
+
 // Helper: get global music row
 function getGlobalMusic(PDO $dtb): array {
     $row = $dtb->query("SELECT * FROM t_queue_global_music WHERE id = 1")->fetch(PDO::FETCH_ASSOC);
@@ -831,6 +840,35 @@ try {
                 ->execute(['idx' => $newIndex, 'url' => $newUrl]);
 
             echo json_encode(['success' => true, 'action' => 'next', 'current_index' => $newIndex, 'video_id' => $playlist[$newIndex]['video_id'] ?? '']);
+            break;
+
+        // =====================================================================
+        // ANNONCE VOCALE PERSONNALISÉE (TTS)
+        // =====================================================================
+        case 'set_tts_message':
+            apiRequireLevel(ROLE_REGISTRAR);
+            $message = trim($_POST['message'] ?? '');
+            if (empty($message)) throw new Exception('Le message ne peut pas être vide.');
+            $timestamp = date('Y-m-d H:i:s') . '.' . substr(microtime(true), 11);
+            $dtb->prepare("UPDATE t_queue_global_music SET tts_message = :msg, tts_timestamp = :ts WHERE id = 1")
+                ->execute(['msg' => $message, 'ts' => $timestamp]);
+            echo json_encode(['success' => true, 'message' => 'Annonce envoyée', 'tts_timestamp' => $timestamp]);
+            break;
+
+        case 'clear_tts_message':
+            apiRequireLevel(ROLE_REGISTRAR);
+            $dtb->exec("UPDATE t_queue_global_music SET tts_message = NULL, tts_timestamp = NULL WHERE id = 1");
+            echo json_encode(['success' => true, 'message' => 'Annonce effacée']);
+            break;
+
+        case 'get_tts_message':
+            // Public - pour que l'écran public puisse lire
+            $gm = getGlobalMusic($dtb);
+            echo json_encode([
+                'success' => true,
+                'tts_message' => $gm['tts_message'] ?? null,
+                'tts_timestamp' => $gm['tts_timestamp'] ?? null
+            ]);
             break;
 
         default:

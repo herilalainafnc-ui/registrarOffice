@@ -7,6 +7,9 @@
 require('../../data/backdb.php');
 
 // Démarrer la session pour récupérer les variables de couleur
+// Durée de vie de la session : 10 heures
+ini_set('session.gc_maxlifetime', 36000);
+ini_set('session.cookie_lifetime', 36000);
 session_start();
 
 // Définir les variables de couleur depuis la session
@@ -266,64 +269,3 @@ for ($a = $init; $a <= $level; $a++) {
     echo "</div>";
 }
 ?>
-
-<script type="text/javascript">
-$(document).ready(function() {
-    // Réattacher les événements de click sur les lignes de cours
-    <?php
-    // Reset et régénérer les scripts pour les interactions
-    for ($a = $init; $a <= $level; $a++) {
-        for ($s = 1; $s <= 2; $s++) {
-            $cours = $dtb->prepare("SELECT COUNT(*) as count FROM t_2023_cours WHERE dep_desc = :dep AND yearlevel = :level AND semester = :sem AND (parcours = :parcours OR parcours = :tout)");
-            $cours->execute([
-                'dep' => $eE,
-                'level' => $a,
-                'sem' => $s,
-                'parcours' => $parcours ?? '',
-                'tout' => 'all'
-            ]);
-            $countRow = $cours->fetch();
-            $nbr = $countRow['count'];
-    ?>
-    var nbr<?=$a.$s?> = <?=$nbr?>;
-    
-    $('#selectAll<?=$a.$s?>').off('click').on('click', function(e) {
-        e.preventDefault();
-        $(this).addClass('hidden');
-        $('#deselectAll<?=$a.$s?>').removeClass('hidden');
-        for (var i = 0; i < nbr<?=$a.$s?>; i++) {
-            $('#chk<?=$a.$s?>' + i).prop("checked", true);
-            $('#cours<?=$a.$s?>' + i).attr("class", "bg-blue-500");
-        }
-    });
-
-    $('#deselectAll<?=$a.$s?>').off('click').on('click', function(e) {
-        e.preventDefault();
-        $(this).addClass('hidden');
-        $('#selectAll<?=$a.$s?>').removeClass('hidden');
-        for (var i = 0; i < nbr<?=$a.$s?>; i++) {
-            $('#chk<?=$a.$s?>' + i).prop("checked", false);
-            $('#cours<?=$a.$s?>' + i).attr("class", "hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black");
-        }
-    });
-    
-    for (var i = 0; i < nbr<?=$a.$s?>; i++) {
-        (function(idx) {
-            $('#cours<?=$a.$s?>' + idx).off('click').on('click', function() {
-                var chk = $('#chk<?=$a.$s?>' + idx);
-                if (chk.prop("checked") == false) {
-                    $(this).attr("class", "bg-blue-500");
-                    chk.prop("checked", true);
-                } else {
-                    $(this).attr("class", "hover:transition-all duration-75 hover:<?=$bg_five_color?> hover:text-black");
-                    chk.prop("checked", false);
-                }
-            });
-        })(i);
-    }
-    <?php
-        }
-    }
-    ?>
-});
-</script>

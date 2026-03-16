@@ -53,14 +53,14 @@ try {
             'message' => 'La session a déjà été créée pour ce semestre.'
         ]);
     } elseif ($otherSession) {
-        // L'étudiant a une autre session pour cette année - il peut la remplacer
+        // L'étudiant a une autre session pour cette année - la nouvelle sera ajoutée en complément
         echo json_encode([
             'exists' => false, 
             'session_found' => true,
             'session_id' => $session_id,
-            'will_replace' => true,
+            'will_replace' => false,
             'old_session_name' => $otherSession['session_name'],
-            'message' => 'Attention: Une inscription existe pour "' . $otherSession['session_name'] . '". Elle sera remplacée.'
+            'message' => 'Note: Une inscription existe déjà pour "' . $otherSession['session_name'] . '". La nouvelle session sera ajoutée sans affecter l\'ancienne.'
         ]);
     } else {
         echo json_encode([

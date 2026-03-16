@@ -176,7 +176,7 @@ if(isset($_GET['page']) and $_GET['page'] == "information") {
 									</div>
 								</a>
 		
-								<a href="?id=<?=$id;?>&page=transcriptSS" <?php if($rg_user['level'] <= 3) { echo "";}else{ echo "class='toolInactive'";}?>>
+								<a href="?id=<?=$id;?>&page=transcriptSS" <?php if($rg_user['level'] <= 3 || $rg_user['level'] == ROLE_CHEF_MENTION) { echo "";}else{ echo "class='toolInactive'";}?>>
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
 if(isset($_GET['page']) and $_GET['page'] == "transcriptSS") {
 	echo "bg-cyan-700 text-white";
@@ -209,7 +209,7 @@ if(isset($_GET['page']) and $_GET['page'] == "bulletin") {
 									</div>
 								</a>
 								
-								<a href="?id=<?=$id;?>&page=histNotes" <?php if($rg_user['level'] <= 3) { echo "";}else{ echo "class='toolInactive'";}?>>
+								<a href="?id=<?=$id;?>&page=histNotes" <?php if($rg_user['level'] <= 3 || $rg_user['level'] == ROLE_CHEF_MENTION) { echo "";}else{ echo "class='toolInactive'";}?>>
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
 if(isset($_GET['page']) and $_GET['page'] == "histNotes") {
 	echo "bg-cyan-700 text-white";

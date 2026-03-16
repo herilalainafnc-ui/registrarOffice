@@ -137,6 +137,7 @@
 			$nbr = 0;
 			$nbrMaj = 0;
 			$tcredit = 0;
+			$tcreditGPA = 0;
 			$tcreditMaj = 0;
 			$tnote = 0;
 			$tnotecredit = 0;
@@ -152,7 +153,8 @@
 			
 			while($crs = $cours->fetch()){
 				$isIncomplete = ($crs['grade'] == 0);
-				$notecredi = $isIncomplete ? 0 : $crs['credit'] * $crs['grade'];
+				$isPassFail = ($crs['cours_category'] == 5);
+				$notecredi = ($isIncomplete || $isPassFail) ? 0 : $crs['credit'] * $crs['grade'];
 				?>
 				<tbody>
 					<tr>
@@ -174,10 +176,24 @@
 								echo "-";
 							}
 						?></td>
-						<td><?php if($isIncomplete){ echo '<span style="color:#b91c1c;font-style:italic;">--</span>'; }else{ echo $crs['grade']; } ?></td>
-						<td><?php if($isIncomplete){ echo '<span style="color:#b91c1c;font-style:italic;">--</span>'; }else{ echo $notecredi; } ?></td>
+						<td><?php if($isPassFail){ echo ($crs['grade'] == -2 || $crs['grade'] >= 10) ? '<span style="color:#15803d;font-weight:bold;">V</span>' : '<span style="color:#b91c1c;font-weight:bold;">E</span>'; }elseif($isIncomplete){ echo '<span style="color:#b91c1c;font-style:italic;">--</span>'; }else{ echo $crs['grade']; } ?></td>
+						<td><?php if($isPassFail){ echo '--'; }elseif($isIncomplete){ echo '<span style="color:#b91c1c;font-style:italic;">--</span>'; }else{ echo $notecredi; } ?></td>
 						<td class="text-center"><?php 
-							if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
+							if($isPassFail){
+								if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
+									echo '<span style="color:#15803d;font-weight:bold;">V</span>';
+									$coursValides++;
+									$creditsValides += $crs['credit'];
+								}elseif($crs['grade'] > 0){
+									echo '<span style="color:#b91c1c;font-weight:bold;">E</span>';
+									$coursEchoues++;
+									$creditsEchoues += $crs['credit'];
+								}elseif($isIncomplete){
+									echo '<span style="background:#fef2f2;color:#b91c1c;font-weight:bold;padding:0 3px;border-radius:2px;font-size:8px;">Incomplet</span>';
+									$coursIncomplete++;
+									$creditsIncomplete += $crs['credit'];
+								}
+							}elseif ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 								echo '<span style="color:#15803d;font-weight:bold;">S</span>';
 								$coursValides++;
 								$creditsValides += $crs['credit'];
@@ -195,8 +211,11 @@
 				</tbody>
 				<?php
 				$tcredit += $crs['credit'];
-				$tnote += $crs['grade'];
-				$tnotecredit += $notecredi;
+				if (!$isPassFail) {
+					$tcreditGPA += $crs['credit'];
+					$tnote += $crs['grade'];
+					$tnotecredit += $notecredi;
+				}
 				
 				// Calcul majeur (même logique que page web)
 				if ($crs['cours_category'] == 1) {
@@ -208,7 +227,7 @@
 			}
 			
 			// Calcul des moyennes (même formule que page web)
-			$moyenGenSem = ($tcredit > 0) ? round($tnotecredit / $tcredit, 2) : 0;
+			$moyenGenSem = ($tcreditGPA > 0) ? round($tnotecredit / $tcreditGPA, 2) : 0;
 			$moyenMajSem = ($nbrMaj > 0) ? round($tTMaj / $nbrMaj, 2) : 0;
 			
 			// Ajout aux totaux généraux
@@ -240,10 +259,6 @@
 				<tr class="text-right">
 					<td colspan="4">Note de Work Education</td>
 					<td class="text-left"><?=$grade_work_educ?></td>
-				</tr>
-				<tr class="text-right">
-					<td colspan="4">Remarque académique</td>
-					<td class="text-left"><?=$grade_remark_acad?></td>
 				</tr>
 				<tr class="text-right">
 					<td colspan="4">Note de participation à l'exercice de chapelle et à la semaine de prière</td>
@@ -287,8 +302,8 @@
 	if($sessionCount == 0) {
 		echo '<div class="text-center py-8"><p>Aucune session trouvée pour cet étudiant.</p></div>';
 	} else {
-		// Moyenne cumulative
-		$moyenneCumulative = ($cumulCredit > 0) ? round($cumulNoteCredit / $cumulCredit, 2) : 0;
+		// Moyenne cumulative (divisée par le nombre de sessions exportées)
+		$moyenneCumulative = ($sessionCount > 0) ? round($cumulGen / $sessionCount, 2) : 0;
 		$tauxReussite = ($totalCours > 0) ? round(($totalCoursValides / $totalCours) * 100, 1) : 0;
 ?>
 

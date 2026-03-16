@@ -37,9 +37,14 @@ if (isset($_POST['student_id']) OR isset($_GET['student_id'])) {
 		}
 		
 		// Utiliser des requêtes préparées pour éviter l'injection SQL
-		$searchParam = '%' . $search . '%';
-		$stmt = $dtb->prepare('SELECT * FROM tbl_2024_etudiant WHERE (student_id LIKE :search1 OR student_nom LIKE :search2 OR student_prenom LIKE :search3) AND remove != 1 LIMIT 1');
-		$stmt->execute(['search1' => $searchParam, 'search2' => $searchParam, 'search3' => $searchParam]);
+		// Prioriser la correspondance exacte sur student_id, sinon LIKE
+		$stmt = $dtb->prepare('SELECT * FROM tbl_2024_etudiant WHERE student_id = :exact AND remove != 1 LIMIT 1');
+		$stmt->execute(['exact' => $search]);
+		if ($stmt->rowCount() === 0) {
+			$searchParam = '%' . $search . '%';
+			$stmt = $dtb->prepare('SELECT * FROM tbl_2024_etudiant WHERE (student_id LIKE :search1 OR student_nom LIKE :search2 OR student_prenom LIKE :search3) AND remove != 1 ORDER BY (student_id = :exact_order) DESC LIMIT 1');
+			$stmt->execute(['search1' => $searchParam, 'search2' => $searchParam, 'search3' => $searchParam, 'exact_order' => $search]);
+		}
 		$recupsdt = $stmt;
 
 ?>
@@ -168,6 +173,12 @@ if($profil['annee_etude'] == 0) {
 							<?php } ?>
 						</div>
 						<?php } ?>
+						<?php 
+						// Vérification si l'étudiant est autorisé pour la réinscription
+						$isAuthorizedReinscription = isset($profil['authorized_reinscription']) && $profil['authorized_reinscription'] == 1;
+						// Vérification si le dossier est en ordre côté registraire
+						$isDossierOk = isset($profil['dossier_ok']) && $profil['dossier_ok'] == 1;
+						?>
 						<div class="w-full py-2 text-sm  text-white">
 								<b><?=strtoupper($profil['student_nom']) ?> <?=$profil['student_prenom'] ?></b><br>
 								<em><?=$profil['etude_envisage']." - ".$profil['etude_option'] ?></em><br>
@@ -200,7 +211,7 @@ echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];
 											Mode de paiement
 								</div>
 
-								<div id="intFicheinscription" class="w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-2001">
+								<div id="intFicheinscription" class="w-full text-slate-100 p-2 my-2 rounded-md transition delay-100 duration-2001 <?php if($isSuspended) echo 'opacity-50 pointer-events-none'; ?>">
 									
 									<i class="bi-file-text-fill"></i>
 											Fiche d'inscription 
@@ -222,6 +233,9 @@ echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];
 	$y = date('Y');
 	$aSem = $y." - ".($y+1);
 	$aSem_ = ($y-1)." - ".$y;
+
+	// Variable pour passer au JavaScript
+	$studentAuthorizationStatus = $isAuthorizedReinscription ? 'authorized' : 'not_authorized';
 ?>
 						</div>
 
@@ -262,7 +276,7 @@ echo "<b>[".$showUser['prenom']."]</b><br>".$profil['last_change_datetime'];
 						}
 						 ?>
 										</select>
-										<button id="submitSession" type="submit" class="my-2 px-5 py-2 bg-cyan-700 rounded-md">Enregistrer</button><br>
+										<button id="submitSession" type="submit" class="my-2 px-5 py-2 bg-slate-800 toolInactive rounded-md" disabled>Enregistrer</button><br>
 										<em id="sessionMessage" class="text-slate-500">Vérification...</em>
 					</form>
 
@@ -285,6 +299,8 @@ function checkSessionExists() {
 	// État de chargement
 	message.textContent = 'Vérification...';
 	message.className = 'text-slate-400';
+	submitBtn.className = 'my-2 px-5 py-2 bg-slate-800 toolInactive rounded-md';
+	submitBtn.disabled = true;
 	
 	$.ajax({
 		url: APP_BASE+'/inscription/app/check.session.php',
@@ -454,6 +470,14 @@ function updateSessionDisplay() {
 				var result = response;
 				if (typeof response === 'string') {
 					try { result = JSON.parse(response); } catch(e) { result = { success: true }; }
+				}
+
+				// Vérifier si le serveur a renvoyé une erreur
+				if (result.success === false) {
+					submitBtn.prop('disabled', false).text('Enregistrer');
+					$('#sessionMessage').text(result.message || 'Erreur lors de l\'enregistrement').attr('class', 'text-red-500');
+					Toast.error(result.message || 'Erreur lors de l\'enregistrement de la session');
+					return;
 				}
 				
 				// IMPORTANT: Mettre à jour la variable globale currentSessionId
@@ -868,6 +892,45 @@ function updateSessionDisplay() {
 	});
 </script>
 <?php require('../init/toast.php'); ?>
+
+<?php if (isset($profil) && isset($isAuthorizedReinscription) && !$isAuthorizedReinscription) { ?>
+<!-- MODAL BLOCAGE RÉINSCRIPTION -->
+<div id="modalBlockReinscription" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);">
+	<div style="background:linear-gradient(145deg,#1e293b,#0f172a);border:1px solid rgba(239,68,68,0.4);border-radius:1rem;padding:2.5rem 2rem;max-width:480px;width:90%;text-align:center;box-shadow:0 25px 50px rgba(0,0,0,0.5);">
+		<div style="width:70px;height:70px;margin:0 auto 1.25rem;border-radius:50%;background:rgba(239,68,68,0.15);display:flex;align-items:center;justify-content:center;border:2px solid rgba(239,68,68,0.3);">
+			<i class="bi bi-shield-lock-fill" style="font-size:2rem;color:#f87171;"></i>
+		</div>
+		<h2 style="color:#f87171;font-size:1.3rem;font-weight:700;margin-bottom:0.75rem;letter-spacing:-0.02em;">Réinscription non autorisée</h2>
+		<p style="color:#94a3b8;font-size:0.85rem;line-height:1.6;margin-bottom:0.5rem;">L'étudiant <strong style="color:#e2e8f0;"><?=strtoupper($profil['student_nom'])?> <?=$profil['student_prenom']?></strong> n'a pas encore été autorisé à faire la réinscription.</p>
+		<div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:0.5rem;padding:0.75rem;margin:1rem 0;">
+			<p style="color:#fca5a5;font-size:0.8rem;"><i class="bi bi-info-circle"></i> Veuillez contacter le <strong>service de caisse</strong> pour obtenir l'autorisation avant de poursuivre.</p>
+		</div>
+		<a href="<?=$app_base?>/inscription/inscription" style="display:inline-block;margin-top:1rem;padding:0.6rem 1.5rem;background:rgba(51,65,85,0.6);color:#cbd5e1;border:1px solid rgba(71,85,105,0.5);border-radius:0.5rem;text-decoration:none;font-size:0.8rem;font-weight:500;transition:all 0.2s;">
+			<i class="bi bi-arrow-left"></i> Retour
+		</a>
+	</div>
+</div>
+<?php } ?>
+
+<?php if (isset($profil) && isset($isDossierOk) && !$isDossierOk) { ?>
+<!-- MODAL BLOCAGE DOSSIER REGISTRAIRE -->
+<div id="modalBlockDossier" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:9998;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);">
+	<div style="background:linear-gradient(145deg,#1e293b,#0f172a);border:1px solid rgba(249,115,22,0.4);border-radius:1rem;padding:2.5rem 2rem;max-width:480px;width:90%;text-align:center;box-shadow:0 25px 50px rgba(0,0,0,0.5);">
+		<div style="width:70px;height:70px;margin:0 auto 1.25rem;border-radius:50%;background:rgba(249,115,22,0.15);display:flex;align-items:center;justify-content:center;border:2px solid rgba(249,115,22,0.3);">
+			<i class="bi bi-folder-x" style="font-size:2rem;color:#fb923c;"></i>
+		</div>
+		<h2 style="color:#fb923c;font-size:1.3rem;font-weight:700;margin-bottom:0.75rem;letter-spacing:-0.02em;">Dossier non validé</h2>
+		<p style="color:#94a3b8;font-size:0.85rem;line-height:1.6;margin-bottom:0.5rem;">Le dossier de l'étudiant <strong style="color:#e2e8f0;"><?=strtoupper($profil['student_nom'])?> <?=$profil['student_prenom']?></strong> n'a pas encore été validé par le registraire.</p>
+		<div style="background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.2);border-radius:0.5rem;padding:0.75rem;margin:1rem 0;">
+			<p style="color:#fdba74;font-size:0.8rem;"><i class="bi bi-info-circle"></i> Veuillez contacter le <strong>service du registraire</strong> pour la vérification du dossier avant de poursuivre.</p>
+		</div>
+		<a href="<?=$app_base?>/inscription/inscription" style="display:inline-block;margin-top:1rem;padding:0.6rem 1.5rem;background:rgba(51,65,85,0.6);color:#cbd5e1;border:1px solid rgba(71,85,105,0.5);border-radius:0.5rem;text-decoration:none;font-size:0.8rem;font-weight:500;transition:all 0.2s;">
+			<i class="bi bi-arrow-left"></i> Retour
+		</a>
+	</div>
+</div>
+<?php } ?>
+
 </div><!-- /h-screen wrapper -->
 </body>
 </html>

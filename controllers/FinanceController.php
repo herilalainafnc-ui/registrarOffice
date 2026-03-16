@@ -1,7 +1,7 @@
 <?php
 /**
  * FinanceController - Pages de gestion financière
- * Routes: /finance, /finance/save, /finance/insert
+ * Routes: /finance, /finance/save, /finance/insert, /finance/authorized-reinscription
  */
 class FinanceController extends BaseController {
 
@@ -15,5 +15,9 @@ class FinanceController extends BaseController {
 
     public function insert() {
         $this->renderSrc('finance/insert_finance.php');
+    }
+
+    public function authorizedReinscription() {
+        $this->renderSrc('finance/authorized_reinscription.php');
     }
 }

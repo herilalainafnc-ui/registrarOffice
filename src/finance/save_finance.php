@@ -1,5 +1,5 @@
 <?php
-require('../../data/backdb.php'); // connexion PDO stockée dans $dtb
+require(__DIR__ . '/../../data/backdb.php'); // connexion PDO stockée dans $dtb
 
 $filiere_sigle = $_GET['filiere'];
 $semester = $_GET['semester'];

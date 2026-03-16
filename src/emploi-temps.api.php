@@ -2,6 +2,9 @@
 // Connexion centralisée pour l'API
 require_once __DIR__ . '/../data/backdb.php';
 
+// Durée de vie de la session : 10 heures
+ini_set('session.gc_maxlifetime', 36000);
+ini_set('session.cookie_lifetime', 36000);
 session_start();
 
 header('Content-Type: application/json');

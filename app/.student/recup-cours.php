@@ -25,6 +25,9 @@ $ip_address = $_SERVER['REMOTE_ADDR'] ?? null;
 	$getCurrentNote->execute(array('note_id' => $idSupprCours));
 	$currentNote = $getCurrentNote->fetch();
 
+	// Récupérer l'id du cours depuis la note
+	$id_cours = $currentNote ? $currentNote['id_cours'] : null;
+
 	// Enregistrer dans l'historique des modifications de notes (restauration)
 	if ($currentNote) {
 		$insertHistory = $dtb->prepare('INSERT INTO t_notes_modification_history (
@@ -103,14 +106,16 @@ $ip_address = $_SERVER['REMOTE_ADDR'] ?? null;
 	$updatCoursFinance->execute();
 
 
-	$findCoutFromNote = $dtb->query("SELECT * FROM t_2023_cours WHERE id='".$id_cours."'");
+	$findCoutFromNote = $dtb->prepare("SELECT * FROM t_2023_cours WHERE id = :id_cours");
+	$findCoutFromNote->execute(['id_cours' => $id_cours]);
 	$showCFromNote = $findCoutFromNote->fetch();
 	
 		$vCout = $showCFromNote['cout'];
 		$vCout_lab = $showCFromNote['cout_lab'];
 
 
-	$findCoutFromFinance = $dtb->query("SELECT * FROM t_2024_etudiant_finace WHERE student_id='".$student_id."'");
+	$findCoutFromFinance = $dtb->prepare("SELECT * FROM t_2024_etudiant_finace WHERE student_id = :student_id");
+	$findCoutFromFinance->execute(['student_id' => $student_id]);
 	$showCFromFinance = $findCoutFromFinance->fetch();
 	
 		$fCout = $showCFromFinance['cout_totalCours'];

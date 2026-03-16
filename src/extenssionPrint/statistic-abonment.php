@@ -10,7 +10,7 @@ $showSessionOnSS = $findSessionOnSS->fetch();
 $session_id = $showSessionOnSS['session_id'];
 
 // Compter le nombre d'étudiants abonnés pour la session (inscrits et abonnés)
-$countAbonnesQ = $dtb->query('SELECT COUNT(*) AS total_abonnes FROM t_2024_inscription_session ins INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id WHERE std.abonment = 1 AND ins.session_id = "'.$session_id.'" AND (std.graduated IS NULL OR std.graduated != 1) AND (std.suspended IS NULL OR std.suspended != 1) AND (std.retrait_universite IS NULL OR std.retrait_universite = 0)');
+$countAbonnesQ = $dtb->query('SELECT COUNT(*) AS total_abonnes FROM t_2024_inscription_session ins INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id WHERE std.abonment = 1 AND ins.session_id = "'.$session_id.'" AND (std.suspended IS NULL OR std.suspended != 1) AND (std.retrait_universite IS NULL OR std.retrait_universite = 0)');
 $countAbonnesR = $countAbonnesQ->fetch();
 $totalAbonnesAnnee = intval($countAbonnesR['total_abonnes']);
  ?>
@@ -60,7 +60,7 @@ $thorizontal = 0;
             SUM(CASE WHEN (std.abonment = 0 OR std.abonment IS NULL) AND std.sex = 0 THEN 1 ELSE 0 END) AS NonAbonnee_F
         FROM t_2024_inscription_session ins
         INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id
-        WHERE ins.etude_mention = "'.$filiere_sigle.'" AND ins.session_id = "'.$session_id.'" AND (std.graduated IS NULL OR std.graduated != 1) AND (std.suspended IS NULL OR std.suspended != 1) AND (std.retrait_universite IS NULL OR std.retrait_universite = 0)');		$row = $result->fetch();
+        WHERE ins.etude_mention = "'.$filiere_sigle.'" AND ins.session_id = "'.$session_id.'" AND (std.suspended IS NULL OR std.suspended != 1) AND (std.retrait_universite IS NULL OR std.retrait_universite = 0)');		$row = $result->fetch();
 
 		// Normaliser
 		$row['Abonnee_H'] = isset($row['Abonnee_H']) ? intval($row['Abonnee_H']) : 0;

@@ -531,7 +531,7 @@ while ($showR = $findRegion->fetch()) {
 				</div>
 				
 				<div class="field-group">
-					<label class="field-label">Pays d'origine</label>
+					<label class="field-label">Adresse d'origine</label>
 					<p class="showContact field-value"><?=$profil['pays_origine']?></p>
 					<input class="editContact field-input hidden" type="text" name="pays_origine" value="<?=$profil['pays_origine']?>">
 				</div>
@@ -1094,7 +1094,7 @@ $y = $y - 1;
 		});
 		
 		$('#editPers').click(function(){
-			if (rg_user < 3) {
+			if (rg_user < 3 || rg_user == 6) {
 
 			$(this).css({'display':'none'});
 			$('.annulPers').removeClass('hidden').css({'display':'block'});
@@ -1120,7 +1120,7 @@ $y = $y - 1;
 
 
 		$('#editContact').click(function(){
-			if (rg_user < 3) {
+			if (rg_user < 3 || rg_user == 6) {
 			$(this).css({'display':'none'});
 			$('.annulContact').removeClass('hidden').css({'display':'block'});
 			$('.editContact').removeClass('hidden').css({'display':'block'});
@@ -1144,7 +1144,7 @@ $y = $y - 1;
 
 
 		$('#editEtd').click(function(){
-			if (rg_user < 3) {
+			if (rg_user < 3 || rg_user == 6) {
 			$(this).css({'display':'none'});
 			$('.annulEtd').removeClass('hidden').css({'display':'block'});
 			$('.editEtd').removeClass('hidden').css({'display':'block'});
@@ -1168,7 +1168,7 @@ $y = $y - 1;
 
 
 		$('#editParent').click(function(){
-			if (rg_user < 3) {
+			if (rg_user < 3 || rg_user == 6) {
 			$(this).css({'display':'none'});
 			$('.annulParent').removeClass('hidden').css({'display':'block'});
 			$('.editParent').removeClass('hidden').css({'display':'block'});
@@ -1192,7 +1192,7 @@ $y = $y - 1;
 
 
 		$('#editSpons').click(function(){
-			if (rg_user < 3) {
+			if (rg_user < 3 || rg_user == 6) {
 			$(this).css({'display':'none'});
 			$('.annulSpons').removeClass('hidden').css({'display':'block'});
 			$('.editSpons').removeClass('hidden').css({'display':'block'});
@@ -1216,7 +1216,7 @@ $y = $y - 1;
 
 
 		$('#editAutr').click(function(){
-			if (rg_user < 3) {
+			if (rg_user < 3 || rg_user == 6) {
 			$(this).css({'display':'none'});
 			$('.annulAutr').removeClass('hidden').css({'display':'block'});
 			$('.editAutr').removeClass('hidden').css({'display':'block'});

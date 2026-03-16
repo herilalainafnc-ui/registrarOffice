@@ -84,6 +84,7 @@ $router->get('/my-account', 'AdminController@myAccount');
 $router->any('/finance', 'FinanceController@index');
 $router->any('/finance/save', 'FinanceController@save');
 $router->any('/finance/insert', 'FinanceController@insert');
+$router->any('/finance/authorized-reinscription', 'FinanceController@authorizedReinscription');
 
 // ========================================================================
 // INSCRIPTION
@@ -124,6 +125,8 @@ $router->any('/api/services/matricule', 'ApiController@matriculeLive');
 $router->any('/api/services/parcours', 'ApiController@parcoursLive');
 $router->any('/api/services/parcours/add-cours', 'ApiController@parcoursAddCours');
 $router->any('/api/data', 'ApiController@data');
+$router->any('/api/update-authorization', 'ApiController@updateAuthorization');
+$router->any('/api/update-dossier', 'ApiController@updateDossier');
 
 // ========================================================================
 // REDIRECTIONS DE COMPATIBILITÉ (anciens chemins → nouveaux)

@@ -354,11 +354,12 @@ if ($showCat['category'] == 0){
  				
  			</tbody>
 <?php
+$frais_graduation = ($stdA['graduated'] == 1) ? $showFin['cout_frais_graduation'] : 0;
 $Montant = $showFin['cout_fraix_generaux'] + 
 							$showFin['cout_logement'] +
 							$showFin['cout_fondDepot_dortoir'] +
 							$showFin['cout_abonment'] +
-							$showFin['cout_frais_graduation'] +
+							$frais_graduation +
 							$tCout +
 							$somm_lab;
 $pay_inscription = $showFin['cout_fraix_generaux'] + $showFin['cout_fondDepot_dortoir'];
@@ -417,18 +418,18 @@ $modeP = $showPayement['mode_payement'];
 					<tr>
 						<td>100 %</td>
 						<td class="text-right"><?=number_format($Montant_sans_fraix_Generaux, 0, '', ' ') ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="13 mars 2026"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="31 mars 2026"></td>
 					</tr>
 				<?php }elseif ($modeP == 'B') {  ?>
 					<tr>
 						<td>50 %</td>
 						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *50) /100, 0, '', ' ') ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="13 mars 2026"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="30 avril 2026"></td>
 					</tr>
 					<tr>
 						<td>50 %</td>
 						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *50) /100, 0, '', ' ') ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="24 avril 2026"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="10 juillet 2026"></td>
 					</tr>
 				<?php }elseif ($modeP == 'C') {  ?>
 					<tr>
@@ -461,29 +462,32 @@ $modeP = $showPayement['mode_payement'];
 					<tr>
 						<td>25 %</td>
 						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *25) /100, 0, '', ' ') ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="24 avril 2026"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="31 mars 2026"></td>
 					</tr>
 					<tr>
 						<td>25 %</td>
 						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *25) /100, 0, '', ' ') ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="29 mai 2026"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="30 avril 2026"></td>
 					</tr>
 					<tr>
 						<td>25 %</td>
 						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *25) /100, 0, '', ' ') ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="26 juin 2026"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="10 juin 2026"></td>
 					</tr>
 					<tr>
 						<td>25 %</td>
 						<td class="text-right"><?=number_format(($Montant_sans_fraix_Generaux *25) /100, 0, '', ' ') ?> ar</td>
-						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="31 juillet 2026"></td>
+						<td><input type="text" class="h-4 p-0 border-0 text-xs w-full" value="10 juillet 2026"></td>
 					</tr>
 				<?php } ?>
 			</tbody>
 	</table>
 </div>
 
-<b class="text-[10px]">Total Général (frais divers + frais de scolarité ) : <?=number_format($showFin['cout_fraix_generaux']+$showFin['cout_costume']+$showFin['cout_voyage']+$Montant_sans_fraix_Generaux, 0, '', ' ')?> ar</b>
+<div style="background-color: #1e293b; color: #fff; padding: 6px 10px; border-radius: 4px; margin-top: 6px;">
+	<div style="font-size: 11px; font-weight: bold;">Total Général (frais divers + frais de scolarité )</div>
+	<div style="font-size: 18px; font-weight: bold;"><?=number_format($showFin['cout_fraix_generaux']+$showFin['cout_costume']+$showFin['cout_voyage']+$Montant_sans_fraix_Generaux, 0, '', ' ')?> ar</div>
+</div>
 </div>
 
 </div>

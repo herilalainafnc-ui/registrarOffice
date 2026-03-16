@@ -321,12 +321,13 @@ if ($showCat['category'] == 0){
 			<tr>
 				<td class="text-right text-bold">Total = </td>
 				<td class="bg-blue-300 p-1 text-right"><a id="montant" data-value="<?=
+$frais_graduation = ($graduated == 1) ? $showFin['cout_frais_graduation'] : 0;
 $Montant = $showFin['cout_fraix_generaux'] + 
 							$showFin['cout_logement'] +
 							$showFin['cout_fondDepot_dortoir'] +
 							$showFin['cout_abonment'] +
 							/*$showFin['cout_costume'] +*/
-							$showFin['cout_frais_graduation'] +
+							$frais_graduation +
 							/*$showFin['cout_voyage'] +*/
 							$tCout +
 							$somm_lab

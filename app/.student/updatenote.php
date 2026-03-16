@@ -11,6 +11,21 @@
 
 	$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 
+	// Vérification d'autorisation : seuls les niveaux <= 3 (superadmin, admin, registrar) peuvent modifier les notes
+	if (session_status() === PHP_SESSION_NONE) { ini_set('session.gc_maxlifetime', 36000); ini_set('session.cookie_lifetime', 36000); session_start(); }
+	$currentUserLevel = isset($_SESSION['user_level']) ? (int)$_SESSION['user_level'] : 99;
+	if ($currentUserLevel > 3) {
+		if ($isAjax) {
+			header('Content-Type: application/json');
+			echo json_encode(['success' => false, 'message' => 'Accès refusé. Vous n\'avez pas la permission de modifier les notes.']);
+			exit;
+		} else {
+			$id = $_GET['id'] ?? 0;
+			header('location:' . $app_base . '/student?id='.$id.'&page=transcriptSS&error=access_denied');
+			exit;
+		}
+	}
+
 	$id = $_GET['id'];
 	$as = $_GET['as'];
 	$nbr = $_GET['nbr'];
