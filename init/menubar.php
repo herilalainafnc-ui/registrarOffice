@@ -327,6 +327,15 @@
 				<span class="menu-title">Top Student</span>
 			</a>
 		</div>
+
+		<div class="menu-item <?php if(isRoute('/session-rankings')) { echo "active"; } ?>">
+			<a href="<?=$app_base?>/session-rankings">
+				<div class="menu-icon-wrapper">
+					<i class="bi bi-bar-chart-line-fill menu-icon"></i>
+				</div>
+				<span class="menu-title">Classement session</span>
+			</a>
+		</div>
 		
 		<!-- Professeurs Section -->
 		<div class="menu-section-header">

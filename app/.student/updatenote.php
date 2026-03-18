@@ -30,15 +30,44 @@
 	$as = $_GET['as'];
 	$nbr = $_GET['nbr'];
 	$note_id = $_GET['note_id'];
-	 
 
-	if ($_POST['nb_crd'.$nbr] == "ok" OR $_POST['nb_crd'.$nbr] == "Ok" OR  $_POST['nb_crd'.$nbr] == "OK") {
-		$note = -2;	
-	}else{
-		$note = str_replace(',', '.', $_POST['nb_crd'.$nbr]);
-		// Arrondir à 2 décimales si la note est numérique
-		if (is_numeric($note)) {
-			$note = round(floatval($note), 2);
+	$rawNote = isset($_POST['nb_crd'.$nbr]) ? trim((string)$_POST['nb_crd'.$nbr]) : '';
+
+	// Récupérer les informations actuelles de la note
+	$getCurrentNote = $dtb->prepare('SELECT * FROM t_2023_notes WHERE id = :note_id');
+	$getCurrentNote->execute(array('note_id' => $note_id));
+	$currentNote = $getCurrentNote->fetch();
+
+	$isValidationCourse = false;
+	if ($currentNote) {
+		$isValidationCourse = (
+			(int)($currentNote['cours_category'] ?? 0) === 5
+			|| stripos((string)($currentNote['Sigle'] ?? ''), 'RELP 291') !== false
+			|| stripos((string)($currentNote['title_cours'] ?? ''), 'formation spirituelle') !== false
+		);
+	}
+
+	if ($isValidationCourse) {
+		$upper = strtoupper($rawNote);
+		if ($upper === 'V' || $upper === 'OK') {
+			$note = -2;
+		} elseif ($upper === 'E') {
+			$note = 5;
+		} else {
+			$note = str_replace(',', '.', $rawNote);
+			if (is_numeric($note)) {
+				$note = round(floatval($note), 2);
+			}
+		}
+	} else {
+		if ($rawNote == "ok" OR $rawNote == "Ok" OR $rawNote == "OK") {
+			$note = -2;
+		} else {
+			$note = str_replace(',', '.', $rawNote);
+			// Arrondir à 2 décimales si la note est numérique
+			if (is_numeric($note)) {
+				$note = round(floatval($note), 2);
+			}
 		}
 	}
 
@@ -58,7 +87,11 @@
 	if ($note != -2 && !is_numeric($note)) {
 		if ($isAjax) {
 			header('Content-Type: application/json');
-			echo json_encode(['success' => false, 'message' => 'La note doit être un nombre valide.']);
+			if ($isValidationCourse) {
+				echo json_encode(['success' => false, 'message' => 'Pour ce cours, utilisez V (validé) ou E (échec).']);
+			} else {
+				echo json_encode(['success' => false, 'message' => 'La note doit être un nombre valide.']);
+			}
 			exit;
 		} else {
 			header('location:' . $app_base . '/student?id='.$id.'&page=transcriptSS&error=note_invalid#semestre'.$as);
@@ -69,11 +102,6 @@
 	$last_change_user_id = $_GET['user_id'];
 	$date = date('Y-m-d H:i:s');
 	$ip_address = $_SERVER['REMOTE_ADDR'] ?? null;
-
-	// Récupérer les informations actuelles de la note pour l'historique
-	$getCurrentNote = $dtb->prepare('SELECT * FROM t_2023_notes WHERE id = :note_id');
-	$getCurrentNote->execute(array('note_id' => $note_id));
-	$currentNote = $getCurrentNote->fetch();
 
 	// Enregistrer dans l'historique des modifications de notes
 	if ($currentNote && $currentNote['grade'] != $note) {

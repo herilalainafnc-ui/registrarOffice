@@ -2,6 +2,8 @@
 	require('../init/.forPrint/top.forPrint.php'); 
 	$level = isset($_GET['level']) ? $_GET['level'] : 'all';
 	$semester = isset($_GET['semester']) ? $_GET['semester'] : 'all';
+	$academic_year = isset($_GET['academic_year']) ? trim((string)$_GET['academic_year']) : 'all';
+	$filter_session_id = isset($_GET['session_id']) ? (int)$_GET['session_id'] : 0;
 	$student_id = $_GET['student_id'];
 	$yes = 1;
 	$printName = $student_id."-TRANSCRIPT_SESSION";
@@ -11,7 +13,7 @@
 ?>
 <div class="mb-12">
 	<center>
-		<b class="text-lg">Transcript par Session</b>
+		<b class="text-lg">Relevé semestriel des notes</b>
 	</center>
 	<div class="flex text-[10px] px-1 py-0.5" style="border: 1px solid #8e9bb2;">
 		<div class="w-10/12 flex">
@@ -86,6 +88,16 @@
 		$sqlWhere .= " AND s.session_semester = '".$semester."'";
 	}
 
+	// Filtre par année académique de session
+	if ($academic_year !== 'all' && $academic_year !== '') {
+		$sqlWhere .= " AND s.session_year = '".$academic_year."'";
+	}
+	
+	// Filtre par session spécifique
+	if ($filter_session_id > 0) {
+		$sqlWhere .= " AND n.session_id = '".$filter_session_id."'";
+	}
+
 	// Récupérer toutes les sessions distinctes où l'étudiant a des notes
 	$searchAllSessions = $dtb->query("SELECT DISTINCT n.session_id, s.session_name, s.session_semester, s.session_year 
 		FROM t_2023_notes n 
@@ -130,7 +142,7 @@
 						<th style="width: 40px">Cat.</th>
 						<th style="width: 35px">Note</th>
 						<th style="width: 40px">Crd*N</th>
-						<th style="width: 20px">É</th>
+						<th style="width: 30px">État</th>
 					</tr>
 				</thead>	
 			<?php
@@ -153,7 +165,9 @@
 			
 			while($crs = $cours->fetch()){
 				$isIncomplete = ($crs['grade'] == 0);
-				$isPassFail = ($crs['cours_category'] == 5);
+				$isPassFail = ($crs['cours_category'] == 5)
+					|| stripos($crs['Sigle'] ?? '', 'RELP 291') !== false
+					|| stripos($crs['title_cours'] ?? '', 'formation spirituelle') !== false;
 				$notecredi = ($isIncomplete || $isPassFail) ? 0 : $crs['credit'] * $crs['grade'];
 				?>
 				<tbody>
@@ -162,7 +176,9 @@
 						<td><?=$crs['title_cours']?></td>
 						<td><?=$crs['credit']?></td>
 						<td><?php 
-							if ($crs['cours_category'] == 0){
+							if ($isPassFail){
+								echo "``";
+							}elseif ($crs['cours_category'] == 0){
 								echo "Général";
 							}elseif ($crs['cours_category'] == 1) {
 								echo "Majeur";
@@ -170,8 +186,6 @@
 								echo "Selective";
 							}elseif ($crs['cours_category'] == 3) {
 								echo "Additionnel";
-							}elseif ($crs['cours_category'] == 5) {
-								echo "``";
 							}else{
 								echo "-";
 							}
@@ -181,28 +195,28 @@
 						<td class="text-center"><?php 
 							if($isPassFail){
 								if ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
-									echo '<span style="color:#15803d;font-weight:bold;">V</span>';
+									echo '<span style="color:#15803d;font-weight:bold;">Validé</span>';
 									$coursValides++;
 									$creditsValides += $crs['credit'];
 								}elseif($crs['grade'] > 0){
-									echo '<span style="color:#b91c1c;font-weight:bold;">E</span>';
+									echo '<span style="color:#b91c1c;font-weight:bold;">Échec</span>';
 									$coursEchoues++;
 									$creditsEchoues += $crs['credit'];
 								}elseif($isIncomplete){
-									echo '<span style="background:#fef2f2;color:#b91c1c;font-weight:bold;padding:0 3px;border-radius:2px;font-size:8px;">Incomplet</span>';
+									echo '<span style="color:#d97706;font-weight:bold;">Incomplet</span>';
 									$coursIncomplete++;
 									$creditsIncomplete += $crs['credit'];
 								}
 							}elseif ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
-								echo '<span style="color:#15803d;font-weight:bold;">S</span>';
+								echo '<span style="color:#15803d;font-weight:bold;">Validé</span>';
 								$coursValides++;
 								$creditsValides += $crs['credit'];
 							}elseif($crs['grade'] < 10 and $crs['grade'] > 0){
-								echo '<span style="color:#b91c1c;font-weight:bold;">E</span>';
+								echo '<span style="color:#b91c1c;font-weight:bold;">Échec</span>';
 								$coursEchoues++;
 								$creditsEchoues += $crs['credit'];
 							}elseif ($isIncomplete){
-								echo '<span style="background:#fef2f2;color:#b91c1c;font-weight:bold;padding:0 3px;border-radius:2px;font-size:8px;">Incomplet</span>';
+								echo '<span style="color:#d97706;font-weight:bold;">Incomplet</span>';
 								$coursIncomplete++;
 								$creditsIncomplete += $crs['credit'];
 							}

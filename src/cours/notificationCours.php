@@ -9,7 +9,7 @@
 			<div class="p-2">
 				<div class="flex mb-3">
 				    	<div class="w-3/12 text-right pr-2 text-black">
-					      	<label for="yearRemiseNotes">Année</label>
+					      	<label for="yearRemiseNotes">AnnÃ©e</label>
 					    </div>
 					    <div class="w-9/12">
 					    	<select name="yearRemiseNotes" id="yearRemiseNotes" class="input w-full text-black">
@@ -47,12 +47,12 @@
 		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 		
 			<div class="p-2 text-black">
-				<b>Liste des étudiants dans ce cours.</b>
+				<b>Liste des Ã©tudiants dans ce cours.</b>
 			</div>
 			<div class="p-2">
 				<div class="flex mb-3">
 				    	<div class="w-3/12 text-right pr-2 text-black">
-					      	<label for="yearListStdInThisCours">Année</label>
+					      	<label for="yearListStdInThisCours">AnnÃ©e</label>
 					    </div>
 					    <div class="w-9/12">
 					    	<select name="yearListStdInThisCours" id="yearListStdInThisCours" class="input w-full text-black">
@@ -98,7 +98,7 @@
 				<p>Tentative de suppression d'un cours. Voulez-vous continuer?</p>
 				<div class="p-2">
 					<input type="checkbox" name="definitive" id="definitive">
-					<label for="definitive"> Effacer définitivement.</label>
+					<label for="definitive"> Effacer dÃ©finitivement.</label>
 				</div>
 				
 			</div>

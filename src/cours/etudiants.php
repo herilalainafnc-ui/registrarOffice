@@ -70,7 +70,7 @@ if($apotr){
 								<a href="#" class="btn nav-link" type="button" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="bi-three-dots-vertical"></span></a>
 								<ul class="dropdown-menu">
 							        <li>
-<a class="dropdown-item" href="actions/dell-listcours.incours?idSupprCours=<?=$idcours?>&id=<?=$id?>"><span class="bi-trash3-fill" style="color: red;"></span> Supprimer cet étudiant</a></li>
+	<a class="dropdown-item" href="<?=$app_base?>/app/.cours/dell-listcours.incours?idSupprCours=<?=$idcours?>&id=<?=$id?>"><span class="bi-trash3-fill" style="color: red;"></span> Supprimer cet étudiant</a></li>
 					          		</ul>
 							</div>
 						</td>

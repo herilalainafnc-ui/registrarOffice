@@ -76,6 +76,7 @@ $router->any('/news', 'AdminController@news');
 $router->get('/login-locations', 'AdminController@loginLocations');
 $router->get('/deans-list', 'AdminController@deansList');
 $router->get('/top-students', 'AdminController@topStudents');
+$router->get('/session-rankings', 'AdminController@sessionRankings');
 $router->get('/my-account', 'AdminController@myAccount');
 
 // ========================================================================
@@ -98,6 +99,17 @@ $router->any('/export', 'ExportController@index');
 $router->any('/export/pdf', 'ExportController@pdf');
 $router->any('/export/pdf-landscape', 'ExportController@pdfLandscape');
 $router->any('/export/xlsx', 'ExportController@xlsx');
+
+// Legacy export aliases (backward compatibility)
+$router->any('/data.topdf.php', 'ExportController@pdf');
+$router->any('/data.topdf', 'ExportController@pdf');
+$router->any('/src/data.topdf.php', 'ExportController@pdf');
+$router->any('/src/data.topdf', 'ExportController@pdf');
+
+$router->any('/data.topdf_paysage.php', 'ExportController@pdfLandscape');
+$router->any('/data.topdf_paysage', 'ExportController@pdfLandscape');
+$router->any('/src/data.topdf_paysage.php', 'ExportController@pdfLandscape');
+$router->any('/src/data.topdf_paysage', 'ExportController@pdfLandscape');
 $router->any('/export/gen-pdf', 'ExportController@genPdf');
 $router->get('/sheet', 'ExportController@sheet');
 

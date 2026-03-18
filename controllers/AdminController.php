@@ -29,6 +29,10 @@ class AdminController extends BaseController {
         $this->renderSrc('meilleurs-etudiants.php');
     }
 
+    public function sessionRankings() {
+        $this->renderSrc('session-rankings.php');
+    }
+
     public function myAccount() {
         $this->renderSrc('my.account.php');
     }

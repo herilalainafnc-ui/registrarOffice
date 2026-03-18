@@ -16,9 +16,12 @@
 	$cumulChapel = 0;
 	$cumulGen = 0;
 	$cumulMaj = 0;
+	$cumulGenCount = 0;
+	$cumulMajCount = 0;
 	
 	/**/
 	$cumulFinale = 0;
+	$cumulFinaleCount = 0;
 
 	// Récupérer toutes les sessions distinctes où l'étudiant a des notes
 	$searchAllSessions = $dtb->query("SELECT DISTINCT n.session_id, s.session_name, s.session_semester, s.session_year 
@@ -93,9 +96,15 @@ $tcredit = 0;
 $tcreditGPA = 0;
 $tnote = 0;
 $tnotecredit = 0;
+$moyenGenSem = null;
+$moyenMajSem = null;
+$moyenFinale = null;
 					$note_id = 0;				
 					while($crs=$cours->fetch()){
 						$note_id = $crs['id'];
+						$isValidationCourse = ($crs['cours_category'] == 5) 
+							|| stripos($crs['Sigle'] ?? '', 'RELP 291') !== false
+							|| stripos($crs['title_cours'] ?? '', 'formation spirituelle') !== false;
 						if (!empty($crs)) {
 							?>
 							<tbody class="<?=$bg_four_color?>">
@@ -113,17 +122,17 @@ if ($crs['cours_category'] == 0){
 	echo "Selective";
 }elseif ($crs['cours_category'] == 3) {
 	echo "Additionnel";
-}elseif ($crs['cours_category'] == 5) {
+}elseif ($isValidationCourse) {
 	echo "``";
 }else{
 	echo "-";
 }
 						 ?></td>
-					<td class="<?=$bg_six_color?> text-slate-800 px-0"><?php if ($crs['cours_category'] == 5): ?><span class="px-2"><?php echo ($crs['grade'] == -2 || $crs['grade'] >= 10) ? '<span style="color:#15803d;font-weight:bold;">V</span>' : '<span style="color:#b91c1c;font-weight:bold;">E</span>'; ?></span><?php elseif ($rg_level <= 3): ?><input class="insimple text-sm bg-transparent px-2 note-input" type="text" name="nb_crd<?=$sessionCount.$nbr;?>" value="<?=$crs['grade']?>" data-action="<?=$app_base?>/app/.student/updatenote?id=<?=$id;?>&nbr=<?=$sessionCount.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$sessionCount?>&user_id=<?=$rg_id?>" data-nbr="<?=$sessionCount.$nbr;?>"><?php elseif ($rg_level <= 6): ?><span class="px-2"><?= $crs['grade'] == -2 ? 'OK' : $crs['grade'] ?></span><?php else: ?><em class="px-2">masqué</em><?php endif; ?></td>
-					<td><?php if($crs['cours_category'] == 5){ $notecredi = 0; echo '--'; }else{ echo $notecredi = $crs['credit'] * $crs['grade']; } ?></td>
+					<td class="<?=$bg_six_color?> text-slate-800 px-0"><?php if ($isValidationCourse): ?><span class="px-2"><?php echo ($crs['grade'] == -2 || $crs['grade'] >= 10) ? '<span style="color:#15803d;font-weight:bold;">V</span>' : '<span style="color:#b91c1c;font-weight:bold;">E</span>'; ?></span><?php elseif ($rg_level <= 3): ?><input class="insimple text-sm bg-transparent px-2 note-input" type="text" name="nb_crd<?=$sessionCount.$nbr;?>" value="<?=$crs['grade']?>" data-action="<?=$app_base?>/app/.student/updatenote?id=<?=$id;?>&nbr=<?=$sessionCount.$nbr;?>&note_id=<?=$note_id;?>&as=<?=$sessionCount?>&user_id=<?=$rg_id?>" data-nbr="<?=$sessionCount.$nbr;?>"><?php elseif ($rg_level <= 6): ?><span class="px-2"><?= $crs['grade'] == -2 ? 'OK' : $crs['grade'] ?></span><?php else: ?><em class="px-2">masqué</em><?php endif; ?></td>
+					<td><?php if($isValidationCourse){ $notecredi = 0; echo '--'; }else{ echo $notecredi = $crs['credit'] * $crs['grade']; } ?></td>
 					
 					<td class="<?php 
-if ($crs['cours_category'] == 5) {
+if ($isValidationCourse) {
 	if ($crs['grade'] == -2 OR $crs['grade'] >= 10) { echo "bg-green-500"; } elseif ($crs['grade'] > 0) { echo "bg-red-500"; } else { echo "bg-none"; }
 }elseif ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 	echo "bg-green-500";
@@ -134,7 +143,7 @@ if ($crs['cours_category'] == 5) {
 }
 
 					 ?> text-center" title="<?php 
-if ($crs['cours_category'] == 5) {
+if ($isValidationCourse) {
 	echo ($crs['grade'] == -2 || $crs['grade'] >= 10) ? 'Validé' : 'Echec';
 }elseif ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 	echo "Succès";
@@ -145,7 +154,7 @@ if ($crs['cours_category'] == 5) {
 }
 
 							 ?>"><?php 
-if ($crs['cours_category'] == 5) {
+if ($isValidationCourse) {
 	echo ($crs['grade'] == -2 || $crs['grade'] >= 10) ? 'V' : 'E';
 }elseif ($crs['grade'] == -2 OR $crs['grade'] >= 10) {
 	echo "S";
@@ -193,7 +202,7 @@ if ($crs['cours_category'] == 5) {
 
 $credit = 0;
 $notes = 0;
-$isPassFail = ($crs['cours_category'] == 5);
+$isPassFail = $isValidationCourse;
 $tcredit+= $credit + $crs['credit'];
 if (!$isPassFail) {
 	$tcreditGPA += $crs['credit'];
@@ -284,12 +293,12 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 				</tr> -->
 				<tr>
 					<th colspan="4" class="text-right">Moyenne Majeure</th>
-					<th class="px-2"><?php if($nbrMaj != 0){echo $moyenMajSem = round(($tTMaj/$nbrMaj),2);}else{echo 0;$moyenMajSem=0;}?></th>
+					<th class="px-2"><?php if($nbrMaj != 0){echo $moyenMajSem = round(($tTMaj/$nbrMaj),2);}else{echo "--";$moyenMajSem=null;}?></th>
 				</tr>
 				<!--  -->
 				<tr>
 					<th colspan="4" class="text-right">Moyenne Générale</th>
-					<th class="px-2 bg-cyan-700"><?php if($nbrFinale != 0){echo $moyenFinale = round(($tnotecredit/$tcreditGPA),2);}else{echo 0;$moyenFinale =0;}?></th>
+					<th class="px-2 bg-cyan-700"><?php if($tcreditGPA > 0){$moyenFinale = round(($tnotecredit/$tcreditGPA),2);$moyenGenSem = $moyenFinale;echo $moyenFinale;}else{echo "--";$moyenFinale = null;$moyenGenSem = null;}?></th>
 				</tr>
 			</tfoot>
 							
@@ -301,11 +310,20 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 			$cumulChapel += $chapel + $grade_chapel_part;
 		}
 		
-		$cumulGen += $gen + $moyenGenSem;
-		$cumulMaj += $maj + $moyenMajSem;
+		if ($moyenGenSem !== null) {
+			$cumulGen += $gen + $moyenGenSem;
+			$cumulGenCount++;
+		}
+		if ($moyenMajSem !== null) {
+			$cumulMaj += $maj + $moyenMajSem;
+			$cumulMajCount++;
+		}
 		
 		/**/
-		$cumulFinale += $finale + $moyenFinale;
+		if ($moyenFinale !== null) {
+			$cumulFinale += $finale + $moyenFinale;
+			$cumulFinaleCount++;
+		}
 				}
 		?>
 </div>
@@ -336,17 +354,17 @@ if (($crs['cours_category'] == 1) OR ($crs['cours_category'] == "Majeur") OR ($c
 		<thead class="bg-slate-900">
 			<tr>
 				<th class="p-1 w-8/12 text-right">Moyenne Générale Cumulative</th>
-				<th class="py-1 px-2 w-2/12"><?php if($sessionCount > 0){echo round($cumulGen/$sessionCount, 2);}else{echo 0;}?></th>
+				<th class="py-1 px-2 w-2/12"><?php if($cumulGenCount > 0){echo round($cumulGen/$cumulGenCount, 2);}else{echo "--";}?></th>
 			</tr>
 			<tr>
 				<th class="p-1 w-8/12 text-right">Moyenne Majeure Cumulative</th>
-				<th class="py-1 px-2 w-2/12"><?php if($sessionCount > 0){echo round($cumulMaj/$sessionCount, 2);}else{echo 0;}?></th>
+				<th class="py-1 px-2 w-2/12"><?php if($cumulMajCount > 0){echo round($cumulMaj/$cumulMajCount, 2);}else{echo "--";}?></th>
 			</tr>
 			
 			<!--  -->
 			<tr>
 				<th class="p-1 w-8/12 text-right bg-cyan-700">Moyenne Cumulative</th>
-				<th class="py-1 px-2 w-2/12 bg-cyan-700  text-white"><?php if($sessionCount > 0){echo round($cumulFinale/$sessionCount, 2);}else{echo 0;}?></th>
+				<th class="py-1 px-2 w-2/12 bg-cyan-700  text-white"><?php if($cumulFinaleCount > 0){echo round($cumulFinale/$cumulFinaleCount, 2);}else{echo "--";}?></th>
 			</tr>
 		</thead>
 	</table>

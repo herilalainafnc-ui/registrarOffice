@@ -374,7 +374,7 @@ while($tch = $teach->fetch()){
 			var data = $(this).serialize();
 			
 			$.post(url,data,function(response){
-				alert('Op�ration bien effectu�.');
+				alert('Opération bien effectué.');
 				$('#bigNotifCours').css({'display':'none'});
 			});
 		});

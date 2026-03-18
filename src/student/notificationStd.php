@@ -181,24 +181,23 @@ if (date('m')>7) {
 
 		<div class="w-[500px] <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
 			<div class="p-2 text-black">
-				<b>Afficher le Transcript par Session de</b>
+				<b>Afficher le transcript par session de :</b>
 			</div>
 			<div class="p-2 text-black flex">
 				
 				<div class="w-6/12">
-					<label>Niveau</label>
-					<select name="level" id="levelTranscriptSS">
-						<option value="all">Tout</option>
+					<label>Année académique</label>
+					<select name="academic_year" id="academicYearTranscriptSS">
+						<option value="all">Toutes les années</option>
 						<?php
-						for ($a=1; $a <= $level; $a++) {
+						$searchTranscriptSSYears = $dtb->query("SELECT DISTINCT s.session_year
+							FROM t_2023_notes n
+							INNER JOIN t_2023_session s ON n.session_id = s.session_id
+							WHERE n.student_id = '".$student_id."' AND n.ajout = '1'
+							ORDER BY s.session_year DESC");
+						while($yearRow = $searchTranscriptSSYears->fetch()) {
 						?>
-						<option value="<?=$a?>"><?php 
-						if($a<=3) {
-							echo "NIVEAU Licence ".$a;
-						}else{
-							echo "NIVEAU Master ".($a-3);
-						}
-						?></option>
+						<option value="<?=htmlspecialchars($yearRow['session_year'])?>"><?=htmlspecialchars($yearRow['session_year'])?></option>
 						<?php
 						}
 						?>
@@ -206,13 +205,13 @@ if (date('m')>7) {
 				</div>
 
 				<div class="w-6/12">
-					<label>Session</label>	
+					<label>Semestre</label>	
 					<select name="semester" id="semesterTranscriptSS">
-						<option value="all">Toutes les sessions</option>
-						<option value="1">Session 1</option>
-						<option value="2">Session 2</option>
-						<option value="3">Session 3</option>
-						<option value="4">Session 4</option>
+						<option value="all">Tous les semestres</option>
+						<option value="1">Premier semestre</option>
+						<option value="3">Semestre d'été</option>
+						<option value="2">Deuxième semestre</option>
+						<option value="4">Semestre d'hiver</option>
 					</select>
 				</div>
 
@@ -220,7 +219,7 @@ if (date('m')>7) {
 			<div class="p-3">
 				<center>
 				<a href="#" id="cancelnotifTranscriptSS" class="<?=$bg_five_color?> p-2 rounded-md">Annuler</a>
-				<a href="<?=$app_base?>/src/data.topdf?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=TranscriptSS&level=all&semester=all" id="showTranscriptSS" target="_blank" class="bg-cyan-800 p-2 rounded-md text-white mx-1">Afficher</a>
+				<a href="<?=$app_base?>/src/data.topdf?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=TranscriptSS&level=all&semester=all&academic_year=all" id="showTranscriptSS" target="_blank" class="bg-cyan-800 p-2 rounded-md text-white mx-1">Afficher</a>
 				</center>	
 			</div>
 		</div>
@@ -331,16 +330,16 @@ if (date('m')>7) {
 			$('#showTranscript').attr('href','<?=$app_base?>/src/data.topdf?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=Transcript&level='+level+'&semester='+semester);
 		});
 
-		$('#levelTranscriptSS').on('change',function(){
-			level = $(this).val();
+		$('#academicYearTranscriptSS').on('change',function(){
+			academicYear = $(this).val();
 			semester = $('#semesterTranscriptSS').val();
-			$('#showTranscriptSS').attr('href','<?=$app_base?>/src/data.topdf?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=TranscriptSS&level='+level+'&semester='+semester);
+			$('#showTranscriptSS').attr('href','<?=$app_base?>/src/data.topdf?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=TranscriptSS&level=all&semester='+semester+'&academic_year='+encodeURIComponent(academicYear));
 		});
 
 		$('#semesterTranscriptSS').on('change',function(){
 			semester = $(this).val();
-			level = $('#levelTranscriptSS').val();
-			$('#showTranscriptSS').attr('href','<?=$app_base?>/src/data.topdf?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=TranscriptSS&level='+level+'&semester='+semester);
+			academicYear = $('#academicYearTranscriptSS').val();
+			$('#showTranscriptSS').attr('href','<?=$app_base?>/src/data.topdf?student_id=<?=$student_id?>&std_niveau=<?=$level?>&ptype=TranscriptSS&level=all&semester='+semester+'&academic_year='+encodeURIComponent(academicYear));
 		});
 
 		$('#semesterTranscript').on('change',function(){

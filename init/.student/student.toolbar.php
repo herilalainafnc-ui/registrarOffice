@@ -100,31 +100,31 @@
 	
 
 	<!-- Check list -->
-	<a target="_blank" href="./data.topdf.php?ptype=Checklist&id=<?=$id?>&student_id=<?=$student_id?>&student_nom=<?=$student_nom?>&student_prenom=<?=$student_prenom?>&etude_envisage=<?=$etude_envisage?>&etude_option=<?=$etude_option?>&student_tel=<?=$student_tel?>&image_student=<?=$image_student?>&lookup_code=<?=$lookup_code?>&status=<?=$status?>&date_entry=<?=$date_entry?>" class="std-toolbar-btn">
+	<a target="_blank" href="<?=$app_base?>/src/data.topdf?ptype=Checklist&id=<?=$id?>&student_id=<?=$student_id?>&student_nom=<?=$student_nom?>&student_prenom=<?=$student_prenom?>&etude_envisage=<?=$etude_envisage?>&etude_option=<?=$etude_option?>&student_tel=<?=$student_tel?>&image_student=<?=$image_student?>&lookup_code=<?=$lookup_code?>&status=<?=$status?>&date_entry=<?=$date_entry?>" class="std-toolbar-btn">
 		<i class="bi-check-square-fill text-amber-400"></i>
 		<span>Check list</span>
 	</a>
 
 	<!-- Badge -->
-	<a target="_blank" href="./data.topdf.php?ptype=Badge&id=<?=$id?>&student_id=<?=$student_id?>&student_nom=<?=$student_nom?>&student_prenom=<?=$student_prenom?>&etude_envisage=<?=$etude_envisage?>&etude_option=<?=$etude_option?>&student_tel=<?=$student_tel?>&image_student=<?=$image_student?>&lookup_code=<?=$lookup_code?>&status=<?=$status?>&abonment=<?=$abonment?>&date_entry=<?=$date_entry?>" class="std-toolbar-btn">
+	<a target="_blank" href="<?=$app_base?>/src/data.topdf?ptype=Badge&id=<?=$id?>&student_id=<?=$student_id?>&student_nom=<?=$student_nom?>&student_prenom=<?=$student_prenom?>&etude_envisage=<?=$etude_envisage?>&etude_option=<?=$etude_option?>&student_tel=<?=$student_tel?>&image_student=<?=$image_student?>&lookup_code=<?=$lookup_code?>&status=<?=$status?>&abonment=<?=$abonment?>&date_entry=<?=$date_entry?>" class="std-toolbar-btn">
 		<i class="bi-person-badge-fill text-slate-400"></i>
 		<span>Badge</span>
 	</a>
 
 	<!-- Carte d'abonnement -->
-	<a target="_blank" href="./data.topdf.php?ptype=Abonnement Caf&id=<?=$id?>&student_id=<?=$student_id?>&student_nom=<?=$student_nom?>&student_prenom=<?=$student_prenom?>&etude_envisage=<?=$etude_envisage?>&etude_option=<?=$etude_option?>&student_tel=<?=$student_tel?>&image_student=<?=$image_student?>&lookup_code=<?=$lookup_code?>&status=<?=$status?>&date_entry=<?=$date_entry?>" class="std-toolbar-btn <?php if ($status == "Externe" OR $status == "externe" OR $status == "" OR $abonment == "0"){ echo "toolInactive";} ?>">
+	<a target="_blank" href="<?=$app_base?>/src/data.topdf?ptype=Abonnement Caf&id=<?=$id?>&student_id=<?=$student_id?>&student_nom=<?=$student_nom?>&student_prenom=<?=$student_prenom?>&etude_envisage=<?=$etude_envisage?>&etude_option=<?=$etude_option?>&student_tel=<?=$student_tel?>&image_student=<?=$image_student?>&lookup_code=<?=$lookup_code?>&status=<?=$status?>&date_entry=<?=$date_entry?>" class="std-toolbar-btn <?php if ($status == "Externe" OR $status == "externe" OR $status == "" OR $abonment == "0"){ echo "toolInactive";} ?>">
 		<i class="bi-credit-card-fill text-purple-400"></i>
 		<span>Carte CAF</span>
 	</a>
 
 	<!-- Certificat scolarité -->
-	<a target="_blank" href="./data.topdf.php?ptype=Certificat de scolarité&id=<?=$id?>&student_id=<?=$student_id?>&student_nom=<?=$student_nom?>&student_prenom=<?=$student_prenom?>&etude_envisage=<?=$etude_envisage?>&etude_option=<?=$etude_option?>&student_tel=<?=$student_tel?>&image_student=<?=$image_student?>&lookup_code=<?=$lookup_code?>&status=<?=$status?>&date_entry=<?=$date_entry?>" class="std-toolbar-btn">
+	<a target="_blank" href="<?=$app_base?>/src/data.topdf?ptype=Certificat de scolarité&id=<?=$id?>&student_id=<?=$student_id?>&student_nom=<?=$student_nom?>&student_prenom=<?=$student_prenom?>&etude_envisage=<?=$etude_envisage?>&etude_option=<?=$etude_option?>&student_tel=<?=$student_tel?>&image_student=<?=$image_student?>&lookup_code=<?=$lookup_code?>&status=<?=$status?>&date_entry=<?=$date_entry?>" class="std-toolbar-btn">
 		<i class="bi-file-earmark-text-fill text-slate-400"></i>
 		<span>Certificat</span>
 	</a>
 
 	<!-- Worked Points -->
-	<a target="_blank" href="./data.topdf.php?ptype=Worked_point&id=<?=$id?>&student_id=<?=$student_id?>&student_nom=<?=$student_nom?>&student_prenom=<?=$student_prenom?>&etude_envisage=<?=$etude_envisage?>&level=<?=$level?>&student_tel=<?=$student_tel?>&image_student=<?=$image_student?>" class="std-toolbar-btn">
+	<a target="_blank" href="<?=$app_base?>/src/data.topdf?ptype=Worked_point&id=<?=$id?>&student_id=<?=$student_id?>&student_nom=<?=$student_nom?>&student_prenom=<?=$student_prenom?>&etude_envisage=<?=$etude_envisage?>&level=<?=$level?>&student_tel=<?=$student_tel?>&image_student=<?=$image_student?>" class="std-toolbar-btn">
 		<i class="bi-person-lines-fill text-slate-400"></i>
 		<span>Worked</span>
 	</a>

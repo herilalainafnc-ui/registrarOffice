@@ -22,18 +22,49 @@
 	$warnings = [];
 
 	$update = $dtb->prepare("UPDATE t_2023_notes SET grade = :grade WHERE id = :idcours");
+	$getNoteMeta = $dtb->prepare("SELECT cours_category, Sigle, title_cours FROM t_2023_notes WHERE id = :idcours LIMIT 1");
 
 	foreach ($notes as $note) {
 		$idcours = (int)($note['idcours'] ?? 0);
-		$grade = str_replace(',', '.', $note['grade'] ?? '');
+		$rawGrade = trim((string)($note['grade'] ?? ''));
+		$grade = str_replace(',', '.', $rawGrade);
 		$studentId = $note['student_id'] ?? '';
 
-		// Validation: note doit être numérique
-		if ($grade === '' || !is_numeric($grade)) {
-			continue; // Ignorer les notes vides
+		$getNoteMeta->execute([':idcours' => $idcours]);
+		$meta = $getNoteMeta->fetch(PDO::FETCH_ASSOC);
+		$isValidationCourse = false;
+		if ($meta) {
+			$isValidationCourse = (
+				(int)($meta['cours_category'] ?? 0) === 5
+				|| stripos((string)($meta['Sigle'] ?? ''), 'RELP 291') !== false
+				|| stripos((string)($meta['title_cours'] ?? ''), 'formation spirituelle') !== false
+			);
 		}
 
-		$gradeNum = round(floatval($grade), 2);
+		if ($isValidationCourse) {
+			$upper = strtoupper($rawGrade);
+			if ($upper === 'V' || $upper === 'OK') {
+				$gradeNum = -2;
+			} elseif ($upper === 'E') {
+				$gradeNum = 5;
+			} elseif ($grade !== '' && is_numeric($grade)) {
+				$gradeNum = round(floatval($grade), 2);
+			} else {
+				$errors[] = [
+					'student_id' => $studentId,
+					'grade' => $rawGrade,
+					'message' => "Valeur '$rawGrade' invalide pour $studentId. Utilisez V ou E."
+				];
+				continue;
+			}
+		} else {
+			// Validation: note doit être numérique
+			if ($grade === '' || !is_numeric($grade)) {
+				continue; // Ignorer les notes vides
+			}
+
+			$gradeNum = round(floatval($grade), 2);
+		}
 
 		// Validation: note ne doit pas dépasser 20
 		if ($gradeNum > 20) {

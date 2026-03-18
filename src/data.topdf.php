@@ -2,7 +2,7 @@
 require('../data/session.php');
 require('../data/backdb.php');
 require('../init/head.noTem.php');
-$ptype = $_GET['ptype'];
+$ptype = $_GET['ptype'] ?? $_POST['ptype'] ?? '';
 $h = (date('H')+1);
 $date = 'h_'.date($h.'-i-s').' date_'.date('d-m-Y');
 ?>
@@ -144,6 +144,10 @@ $date = 'h_'.date($h.'-i-s').' date_'.date('d-m-Y');
             $quality = 3;
         }elseif($ptype == "RemiseNotes"){
             require ('./extenssionPrint/remiseNotes.php');
+            $scale = 3;
+            $quality = 3;
+        }elseif($ptype == "TranscriptSSBulk"){
+            require ('./extenssionPrint/transcriptSS.bulk.php');
             $scale = 3;
             $quality = 3;
         }
