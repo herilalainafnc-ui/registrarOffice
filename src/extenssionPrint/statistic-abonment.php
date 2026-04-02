@@ -9,8 +9,17 @@ $findSessionOnSS = $dtb->query('SELECT * FROM t_2023_session WHERE session_name 
 $showSessionOnSS = $findSessionOnSS->fetch();
 $session_id = $showSessionOnSS['session_id'];
 
-// Compter le nombre d'étudiants abonnés pour la session (inscrits et abonnés)
-$countAbonnesQ = $dtb->query('SELECT COUNT(*) AS total_abonnes FROM t_2024_inscription_session ins INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id WHERE std.abonment = 1 AND ins.session_id = "'.$session_id.'" AND (std.suspended IS NULL OR std.suspended != 1) AND (std.retrait_universite IS NULL OR std.retrait_universite = 0)');
+$globalStatTotalQ = $dtb->query('SELECT COUNT(DISTINCT ins.student_id) AS total
+ FROM t_2024_inscription_session ins
+ INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id
+ WHERE ins.session_id = "'.$session_id.'"
+	 AND ins.etude_mention IN (SELECT filiere_sigle FROM filiere WHERE filiere_sigle != "CPRE" AND filiere_sigle != "EDUC")
+	 AND (std.suspended IS NULL OR std.suspended != 1)
+	 AND (std.retrait_universite IS NULL OR std.retrait_universite = 0)');
+$globalStatTotal = intval(($globalStatTotalQ->fetch())['total'] ?? 0);
+
+// Compter le nombre d'etudiants abonnes uniques pour la session
+$countAbonnesQ = $dtb->query('SELECT COUNT(DISTINCT ins.student_id) AS total_abonnes FROM t_2024_inscription_session ins INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id WHERE std.abonment = 1 AND ins.session_id = "'.$session_id.'" AND (std.suspended IS NULL OR std.suspended != 1) AND (std.retrait_universite IS NULL OR std.retrait_universite = 0)');
 $countAbonnesR = $countAbonnesQ->fetch();
 $totalAbonnesAnnee = intval($countAbonnesR['total_abonnes']);
  ?>
@@ -53,11 +62,11 @@ $thorizontal = 0;
 		$mention = $mt['filiere_description'];
 	
 
-        $result = $dtb->query('SELECT
-            SUM(CASE WHEN std.abonment = 1 AND std.sex = 1 THEN 1 ELSE 0 END) AS Abonnee_H,
-            SUM(CASE WHEN std.abonment = 1 AND std.sex = 0 THEN 1 ELSE 0 END) AS Abonnee_F,
-            SUM(CASE WHEN (std.abonment = 0 OR std.abonment IS NULL) AND std.sex = 1 THEN 1 ELSE 0 END) AS NonAbonnee_H,
-            SUM(CASE WHEN (std.abonment = 0 OR std.abonment IS NULL) AND std.sex = 0 THEN 1 ELSE 0 END) AS NonAbonnee_F
+		$result = $dtb->query('SELECT
+			COUNT(DISTINCT CASE WHEN std.abonment = 1 AND std.sex = 1 THEN ins.student_id END) AS Abonnee_H,
+			COUNT(DISTINCT CASE WHEN std.abonment = 1 AND std.sex = 0 THEN ins.student_id END) AS Abonnee_F,
+			COUNT(DISTINCT CASE WHEN (std.abonment = 0 OR std.abonment IS NULL) AND std.sex = 1 THEN ins.student_id END) AS NonAbonnee_H,
+			COUNT(DISTINCT CASE WHEN (std.abonment = 0 OR std.abonment IS NULL) AND std.sex = 0 THEN ins.student_id END) AS NonAbonnee_F
         FROM t_2024_inscription_session ins
         INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id
         WHERE ins.etude_mention = "'.$filiere_sigle.'" AND ins.session_id = "'.$session_id.'" AND (std.suspended IS NULL OR std.suspended != 1) AND (std.retrait_universite IS NULL OR std.retrait_universite = 0)');		$row = $result->fetch();
@@ -99,7 +108,7 @@ $thorizontal = 0;
 				<th>Total</th>
 				<th colspan="2"><?=$abonnee_H+$abonnee_F?></th>
 				<th colspan="2"><?=$nonAbonnee_H+$nonAbonnee_F?></th>
-				<th><?=$thorizontal?></th>
+				<th><?=$globalStatTotal?></th>
 			</tr>
 		</thead>
 	</table>

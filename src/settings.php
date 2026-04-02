@@ -19,13 +19,13 @@
 	
 				<div class="back flex-1 overflow-y-auto">
 					<div class="w-full grid gap-4 xl:grid-cols-4 sm:grid-cols-1 p-4">
-						<a href="<?=$app_base?>/accounts/create" <?php if($rg_user['level'] <= 3) { echo "";}else{ echo "class='toolInactive'";}?>>
+						<a href="<?=$app_base?>/accounts/create" <?php if($rg_user['level'] <= 1) { echo "";}else{ echo "class='toolInactive'";}?>>
 							<div class='m-0 p-3 <?=$bg_one_color?> hover:bg-slate-700 rounded-md border-2 border-slate-800 hover:border-cyan-500 transition-all text-white h-[160px]'>
 							<b class="text-lg"><i class="bi-person-fill"></i>&nbsp;&nbsp; Utilisateur</b><br><br>
 							<p class="text-slate-500">Consulter la liste des utilisateurs. Créer un nouveau utilisateur.</p>
 							</div>
 						</a>
-						<a href="<?=$app_base?>/finance" <?php if($rg_user['level'] <= 3) { echo "";}else{ echo "class='toolInactive'";}?>>
+						<a href="<?=$app_base?>/finance" <?php if($rg_user['level'] <= 1) { echo "";}else{ echo "class='toolInactive'";}?>>
 							<div class='m-0 p-3 <?=$bg_one_color?> hover:bg-slate-700 rounded-md border-2 border-slate-800 hover:border-cyan-500 transition-all text-white h-[160px]'>
 							<b class="text-lg"><i class="bi-currency-exchange"></i>&nbsp;&nbsp; Finance</b><br><br>
 							<p class="text-slate-500">Voir, Modifier les détails financiaires des étudiants.</p>
@@ -35,6 +35,12 @@
 							<div class='m-0 p-3 <?=$bg_one_color?> hover:bg-slate-700 rounded-md border-2 border-slate-800 hover:border-cyan-500 transition-all text-white h-[160px]'>
 							<b class="text-lg"><i class="bi-geo-alt-fill"></i>&nbsp;&nbsp; Localisations GPS</b><br><br>
 							<p class="text-slate-500">Voir les coordonnées GPS des connexions utilisateurs sur une carte.</p>
+							</div>
+						</a>
+						<a href="<?=$app_base?>/sessions" <?php if($rg_user['level'] <= 1) { echo "";}else{ echo "class='toolInactive'";}?>>
+							<div class='m-0 p-3 <?=$bg_one_color?> hover:bg-slate-700 rounded-md border-2 border-slate-800 hover:border-cyan-500 transition-all text-white h-[160px]'>
+							<b class="text-lg"><i class="bi-calendar2-week-fill"></i>&nbsp;&nbsp; Session</b><br><br>
+							<p class="text-slate-500">Gérer les sessions académiques (début et fin de semestre).</p>
 							</div>
 						</a>
 						<?php if($rg_user['level'] == 1 || $rg_user['level'] == 3 || $rg_user['level'] == 4) { ?>

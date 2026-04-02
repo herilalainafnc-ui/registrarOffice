@@ -1,4 +1,7 @@
 <div class="my-1 px-2 mx-0.5 sm:w-4/12 lg:w-4/12 xl:w-3/12 bg-slate-300 overflow-auto" style="height:calc(100vh - 160px);">
+						<?php
+						$canDeleteCourse = isset($rg_user['level']) && in_array((int)$rg_user['level'], [1, 3], true);
+						?>
 						
 						<div class="flex my-2 relative">
 							<div class="w-full text-left">
@@ -66,6 +69,16 @@ if(isset($_GET['page']) and $_GET['page'] == "notes") {
 												Intergration de notes
 									</div>
 								</a>
+
+									<a href="?id=<?=$id;?>&page=promotion-notes">
+										<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
+	if(isset($_GET['page']) and $_GET['page'] == "promotion-notes") {
+		echo "bg-cyan-700 text-white";
+	} ?>">
+											<i class="bi-journal-check"></i>
+													Notes Work/Chapelle
+										</div>
+									</a>
 								
 								<a href="?id=<?=$id;?>&page=etudiants">
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
@@ -85,13 +98,15 @@ if(isset($_GET['page']) and $_GET['page'] == "etudiants") {
 									</div>
 								</a>
 
+								<?php if ($canDeleteCourse): ?>
 								<a href="#" id="cours-suppr">
 									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md">
-										
+									
 										<i class="bi-trash3"></i>
 												Supprimer
 									</div>
 								</a>
+								<?php endif; ?>
 
 							</div>
 						</div>

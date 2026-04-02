@@ -4,6 +4,25 @@
 	$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
 	$app_base = substr($_ar, strlen($_dr)) ?: '';
 
+	if (session_status() === PHP_SESSION_NONE) {
+		session_start();
+	}
+
+	$currentUserLevel = isset($_SESSION['user_level']) ? (int)$_SESSION['user_level'] : 99;
+	// Seuls superadmin, admin et registraire peuvent modifier/ajouter des notes
+	if ($currentUserLevel > 3) {
+		http_response_code(403);
+		$isAjaxAuth = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+		if ($isAjaxAuth) {
+			header('Content-Type: application/json');
+			echo json_encode(['success' => false, 'message' => 'Accès refusé. Vous n\'avez pas la permission de modifier les notes.']);
+			exit;
+		}
+		$idDenied = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+		header('location:' . $app_base . '/course?id=' . $idDenied . '&page=notes&error=access_denied');
+		exit;
+	}
+
 	require ('../../data/backdb.php');
 	
 	$id = $_GET['id'];

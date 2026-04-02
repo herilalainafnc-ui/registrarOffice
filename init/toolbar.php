@@ -81,7 +81,7 @@ if (!isset($rg_user['level']) || $rg_user['level'] > 3) { return; }
 		align-items: center;
 		justify-content: center;
 		gap: 6px;
-		padding: 10px 8px;
+		padding: 10px 0px;
 		text-decoration: none;
 		color: #8eb8d4;
 		transition: all 0.15s ease;
@@ -90,6 +90,8 @@ if (!isset($rg_user['level']) || $rg_user['level'] > 3) { return; }
 		border: none;
 		background: transparent;
 		min-height: 68px;
+		min-width: 10px;
+		text-align: center;
 	}
 	
 	.tool-btn:hover {
@@ -108,6 +110,7 @@ if (!isset($rg_user['level']) || $rg_user['level'] > 3) { return; }
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		flex: 0 0 36px;
 		border-radius: 6px;
 		background: #0d1f3c;
 		transition: all 0.15s ease;
@@ -125,13 +128,19 @@ if (!isset($rg_user['level']) || $rg_user['level'] > 3) { return; }
 	
 	/* Tool Label */
 	.tool-label {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 24px;
+		width: 68px;
+		margin: 0 auto;
 		font-size: 10px;
 		font-weight: 500;
 		text-align: center;
 		line-height: 1.2;
 		letter-spacing: 0.01em;
 		max-width: 100%;
-		word-wrap: break-word;
+		word-break: break-word;
 	}
 	
 	/* Inactive Tools */
@@ -218,8 +227,8 @@ if (!isset($rg_user['level']) || $rg_user['level'] > 3) { return; }
 		
 		.tool-btn {
 			min-height: 50px;
-			padding: 4px 6px;
-			min-width: 50px;
+			padding: 4px 5px;
+			min-width: 54px;
 		}
 		
 		.tool-icon {
@@ -231,6 +240,8 @@ if (!isset($rg_user['level']) || $rg_user['level'] > 3) { return; }
 		.tool-label {
 			font-size: 7px;
 			line-height: 1.1;
+			min-height: 16px;
+			width: 52px;
 		}
 	}
 	
@@ -239,20 +250,20 @@ if (!isset($rg_user['level']) || $rg_user['level'] > 3) { return; }
 			flex-wrap: nowrap !important;
 			overflow-x: auto !important;
 			padding: 6px 4px;
-			gap: 2px;
+			gap: 0;
 			justify-content: flex-start;
 		}
 		
 		.toolbar-section {
 			width: auto !important;
 			flex-shrink: 0;
-			padding: 0 2px;
+			padding: 0 1px;
 		}
 		
 		.tool-btn {
 			min-height: 50px;
 			min-width: 52px;
-			padding: 4px 6px;
+			padding: 4px 5px;
 			gap: 3px;
 		}
 		
@@ -264,7 +275,9 @@ if (!isset($rg_user['level']) || $rg_user['level'] > 3) { return; }
 		
 		.tool-label {
 			font-size: 7px;
-			white-space: nowrap;
+			white-space: normal;
+			min-height: 16px;
+			width: 50px;
 		}
 	}
 	
@@ -274,7 +287,7 @@ if (!isset($rg_user['level']) || $rg_user['level'] > 3) { return; }
 		}
 		
 		.toolbar-section {
-			padding: 0 1px;
+			padding: 0;
 		}
 		
 		.tool-btn {
@@ -359,6 +372,13 @@ if (!isset($rg_user['level']) || $rg_user['level'] > 3) { return; }
 				<i class="bi bi-bar-chart-line-fill"></i>
 			</div>
 			<span class="tool-label">Statistique</span>
+		</a>
+
+		<a href="#" id="exportPresence" class="tool-btn tool-document text-xs flex-1 <?php if($rg_user['level'] <=3) { echo "";}else{ echo "toolInactive";}?>">
+			<div class="tool-icon">
+				<i class="bi bi-person-check-fill"></i>
+			</div>
+			<span class="tool-label">Fiche de<br>presence</span>
 		</a>
 
 		<a href="#" id="exportExcel" class="tool-btn tool-excel text-xs flex-1 <?php 

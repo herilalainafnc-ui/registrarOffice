@@ -77,6 +77,7 @@ $router->get('/login-locations', 'AdminController@loginLocations');
 $router->get('/deans-list', 'AdminController@deansList');
 $router->get('/top-students', 'AdminController@topStudents');
 $router->get('/session-rankings', 'AdminController@sessionRankings');
+$router->any('/sessions', 'AdminController@sessions');
 $router->get('/my-account', 'AdminController@myAccount');
 
 // ========================================================================

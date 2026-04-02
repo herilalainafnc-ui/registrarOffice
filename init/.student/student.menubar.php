@@ -138,7 +138,7 @@ if($profil['annee_etude'] == 0) {
 						</div>
 						<hr>
 						<div class="w-full py-2 text-sm">
-								<b><?=strtoupper($profil['student_nom']) ?> <?=$profil['student_prenom'] ?></b><br>
+								<b><?=strtoupper($profil['student_nom']) ?> <br> <?=$profil['student_prenom'] ?></b><br>
 								<em><?=$profil['etude_envisage']." - ".$profil['etude_option'] ?></em><br>
 								<b>Année <?=$profil['annee_scolaire']?></b><br>
 								<a href="?id=<?=$id;?>&page=histInfos" class="text-[11px] text-green-600 hover:text-green-400" style="line-height: 12px;">

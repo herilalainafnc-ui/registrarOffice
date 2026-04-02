@@ -28,8 +28,22 @@
 
 
 <!-- TAILWIND CSS -->
-	<script src="https://cdn.tailwindcss.com"></script>
-	<script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+	<script>
+	(() => {
+		const originalWarn = console.warn;
+		console.warn = function (...args) {
+			const msg = String(args[0] || "");
+			if (
+				msg.includes("cdn.tailwindcss.com should not be used in production") ||
+				msg.includes("@tailwindcss/line-clamp")
+			) {
+				return;
+			}
+			return originalWarn.apply(console, args);
+		};
+	})();
+	</script>
+	<script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
 
 	<!-- <link rel="stylesheet" href="./dist/tailwind.css"> -->
 <!-- ------------ -->

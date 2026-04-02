@@ -1,5 +1,25 @@
 <div class="mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);" id="notesCoursContainer">
 <?php 
+$ctxUser = function_exists('currentUser') ? currentUser() : null;
+$sessionUserLevel = (int)($ctxUser['level'] ?? ($_SESSION['user_level'] ?? ($_SESSION['level'] ?? 99)));
+$normalizedPrivilege = strtolower(trim((string)($ctxUser['privilege'] ?? ($privilege ?? ''))));
+$canRemoveStudentFromCourse = false;
+if (function_exists('isRegistrar') && function_exists('isChefMention')) {
+	$canRemoveStudentFromCourse = isRegistrar() || isChefMention();
+} else {
+	$canRemoveStudentFromCourse = (
+		$normalizedPrivilege == "registrar"
+		|| $normalizedPrivilege == "administrator"
+		|| $normalizedPrivilege == "superadmin"
+		|| $normalizedPrivilege == "chef_mention"
+		|| $normalizedPrivilege == "chef mention"
+		|| strpos($normalizedPrivilege, 'chef') !== false
+		|| in_array($sessionUserLevel, [1, 2, 3, 6], true)
+		|| $sessionUserLevel === 6
+		|| (isset($rg_user['level']) && (int)$rg_user['level'] === 6)
+	);
+}
+
 $year = date('Y')+1;
 $isValidationCourse = (
 	(int)($profil['category'] ?? 0) === 5
@@ -121,12 +141,14 @@ for ($i=0; $i < 4 ; $i++) {
 ?>
 					</td>
 					<td>
+						<?php if ($canRemoveStudentFromCourse): ?>
 						<div class="nav-item dropstart" style="list-style: none">
 							<a href="#" class="btn nav-link" type="button" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="bi-three-dots-vertical"></span></a>
 							<ul class="dropdown-menu">
-								<li><a class="dropdown-item" href="app/.cours/dell-listcours.incours?idSupprCours=<?=$idcours?>&id=<?=$id?>"><span class="bi-trash3-fill" style="color: red;"></span> Supprimer cet étudiant</a></li>
+								<li><a class="dropdown-item" href="app/.cours/dell-listcours.incours?idSupprCours=<?=$idcours?>&id=<?=$id?>&rg_id=<?=$rg_id?>"><span class="bi-trash3-fill" style="color: red;"></span> Supprimer cet étudiant</a></li>
 							</ul>
 						</div>
+						<?php endif; ?>
 					</td>
 				</tr>
 <?php

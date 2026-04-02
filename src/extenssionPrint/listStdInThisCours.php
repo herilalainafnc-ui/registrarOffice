@@ -86,6 +86,7 @@ if ($showCours['category'] == 0){
  $sigleCours = $showCours['Sigle'];
  $findStdInCours = $dtb->prepare('SELECT * FROM t_2023_notes WHERE Sigle = :sigle AND annee_scolaire = :annee_scolaire AND remove = 0 ORDER BY student_id');
  $findStdInCours->execute([
+	
  	'sigle' => $sigleCours,
  	'annee_scolaire' => $yearForCours
  ]);

@@ -131,8 +131,11 @@
 				      	<div class="flex mb-3">
 				      		<div class="w-3/12 text-right pr-2"></div>
 				      		<div class="w-9/12">
-				      			<input id="master" type="checkbox" name="master">
-				      			<label for="master">Avec MASTER</label>	
+				      			<select id="niveau_scope" name="niveau_scope" class="input w-full">
+				      				<option value="all" selected>Tous niveaux (Licence + Master)</option>
+				      				<option value="licence">Licence seulement (sans Master)</option>
+				      			</select>
+				      			<small class="text-slate-500">Appliqué uniquement si Niveau = Tout.</small>
 				      		</div>
 				      	</div>
 
@@ -188,6 +191,146 @@ if (date('m')>7) {
 			</form>
 		</div>
 
+	</div>
+
+<!-- FOR PRESENCE SHEET -->
+	<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifPresence" style="backdrop-filter: blur(3px);">
+		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl text-xs">
+			<div class="p-2 text-black">
+				<b>Exporter la fiche de présence.</b>
+			</div>
+			<form method="post" action="<?=$app_base?>/src/data.topdf?ptype=listeStd" target="_blank">
+				<input type="hidden" name="exportation" value="general">
+				<input type="hidden" name="presence_sheet" value="1">
+				<div class="p-2">
+					<b class="toolInactive">Type de présence.</b>
+					<div class="flex mb-3">
+						<div class="w-3/12 text-right pr-2">
+							<label for="presence_type">Type</label>
+						</div>
+						<div class="w-9/12">
+							<select id="presence_type" name="presence_type" class="input w-full">
+								<option value="classe" selected>Présence de classe</option>
+								<option value="chapelle_lundi">Exercice de chapelle (lundis)</option>
+								<option value="semaine_priere">Semaine de prière (lundi à jeudi)</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="flex mb-3">
+						<div class="w-3/12 text-right pr-2">
+							<label for="chapelle_dates">Lundis</label>
+						</div>
+						<div class="w-9/12">
+							<input
+								id="chapelle_dates"
+								type="text"
+								name="chapelle_dates"
+								class="input w-full"
+								value="13 avril, 20 avril, 27 avril, 11 mai, 1 juin, 8 juin, 15 juin, 22 juin, 29 juin, 6 juillet"
+							>
+							<small class="text-slate-500">Utilisé pour le type chapelle (séparer par virgules).</small>
+						</div>
+					</div>
+
+					<hr>
+
+					<b class="toolInactive">Listes.</b>
+					<div class="flex mb-3">
+						<div class="w-3/12 text-right pr-2">
+							<label for="presence_types">Mention</label>
+						</div>
+						<div class="w-9/12">
+							<select id="presence_types" name="types" class="input w-full">
+								<option value="TOUT">Tout</option>
+								<?php
+								$voirPresence = $dtb->query("SELECT * FROM filiere");
+								while ($affichePresence = $voirPresence->fetch()) {
+								?>
+									<option value="<?=$affichePresence['filiere_sigle'];?>"><?=$affichePresence['filiere_description'];?></option>
+								<?php
+								}
+								?>
+							</select>
+						</div>
+					</div>
+
+					<div class="flex mb-3">
+						<div class="w-3/12 text-right pr-2">
+							<label for="presence_anneescolaire">Année</label>
+						</div>
+						<div class="w-9/12">
+							<select id="presence_anneescolaire" name="anneescolaire" class="input w-full">
+								<?php
+								$yPresence = date('Y');
+								for ($iPresence=0; $iPresence <= 3; $iPresence++) {
+									if (date('m')>7) {
+										$anneePresence = $yPresence." - ".($yPresence+1);
+									} else {
+										$anneePresence = ($yPresence-1)." - ".$yPresence;
+									}
+								?>
+									<option value="<?=$anneePresence?>"><?=$anneePresence?></option>
+								<?php
+									$yPresence = $yPresence - 1;
+								}
+								?>
+							</select>
+						</div>
+					</div>
+
+					<hr>
+
+					<b class="toolInactive">Niveau/Semestre.</b>
+					<div class="flex mb-3">
+						<div class="w-3/12 text-right pr-2">
+							<label for="presence_annee">Niveau : </label>
+						</div>
+						<div class="w-9/12">
+							<select id="presence_annee" name="annee_etude" class="input w-full">
+								<option value="tout">Tout</option>
+								<option value="1">Licence 1</option>
+								<option value="2">Licence 2</option>
+								<option value="3">Licence 3</option>
+								<option value="4">Master 1</option>
+								<option value="5">Master 2</option>
+								<option value="10">Classe spéciale</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="flex mb-3">
+						<div class="w-3/12 text-right pr-2"></div>
+						<div class="w-9/12">
+							<select id="presence_niveau_scope" name="niveau_scope" class="input w-full">
+								<option value="all" selected>Tous niveaux (Licence + Master)</option>
+								<option value="licence">Licence seulement (sans Master)</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="flex mb-3">
+						<div class="w-3/12 text-right pr-2">
+							<label for="presence_semestre">Semestre : </label>
+						</div>
+						<div class="w-9/12">
+							<select id="presence_semestre" name="semestre" class="input w-full">
+								<option <?php if (date('m')>7) { echo "selected"; } ?> value="1">Premier semestre</option>
+								<option value="3">Semestre d'été</option>
+								<option <?php if (date('m')<=7) { echo "selected"; } ?> value="2">Deuxième semestre</option>
+								<option value="4">Semestre d'hiver</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="p-3">
+					<center>
+						<a href="#" id="cancelnotifPresence" class="bg-slate-400 p-2 rounded-md">Annuler</a>
+						<input type="submit" class="bg-cyan-800 p-2 rounded-md text-white mx-1" value="Afficher">
+					</center>
+				</div>
+			</form>
+		</div>
 	</div>
 
 <!-- FOR LIST COURS -->
@@ -1465,6 +1608,10 @@ if (date('m')>7) {
 		$('#exportStatistic').click(function(){
 			$('#notifStatistic').css({'display':'block'});
 		});
+
+		$('#exportPresence').click(function(){
+			$('#notifPresence').css({'display':'block'});
+		});
 		$('#yearStatistic').on('change',function(){
 			
 			if($(this).val()!='') {
@@ -1479,6 +1626,10 @@ if (date('m')>7) {
 		});
 		$('#cancelnotifStatistic').click(function(){
 			$('#notifStatistic').css({'display':'none'});
+		});
+
+		$('#cancelnotifPresence').click(function(){
+			$('#notifPresence').css({'display':'none'});
 		});
 
 		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	

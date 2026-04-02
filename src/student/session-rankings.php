@@ -5,10 +5,20 @@
  * Cliquer sur un étudiant redirige vers son transcriptSS.
  */
 
-// ── 1. Sessions disponibles ──────────────────────────────────────────────────
-$allSessionsQ = $dtb->query(
-    "SELECT * FROM t_2023_session ORDER BY session_year DESC, session_semester ASC"
+// ── 1. Sessions disponibles (historique + en cours, sans futur) ─────────────
+$currentYear = (int)date('Y');
+$currentMonth = (int)date('m');
+$currentSessionStartYear = ($currentMonth >= 7) ? $currentYear : ($currentYear - 1);
+
+$allSessionsQ = $dtb->prepare(
+    "SELECT *
+     FROM t_2023_session
+     WHERE CAST(TRIM(SUBSTRING_INDEX(session_year, '-', 1)) AS UNSIGNED) <= :current_start_year
+     ORDER BY
+         CAST(TRIM(SUBSTRING_INDEX(session_year, '-', 1)) AS UNSIGNED) DESC,
+         session_semester ASC"
 );
+$allSessionsQ->execute(['current_start_year' => $currentSessionStartYear]);
 $sessions = [];
 while ($s = $allSessionsQ->fetch()) {
     $sessions[] = $s;

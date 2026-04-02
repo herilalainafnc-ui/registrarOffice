@@ -3,6 +3,15 @@ $yearNow = date('Y');
 
 $yearScoolNow = $_POST['yearStatistic'];
 
+$globalStatTotalQ = $dtb->query('SELECT COUNT(DISTINCT ins.student_id) AS total
+ FROM t_2024_inscription_session ins
+ INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id
+ WHERE ins.session_id = "'.$session_id.'"
+	 AND ins.etude_mention IN (SELECT filiere_sigle FROM filiere WHERE filiere_sigle != "CPRE" AND filiere_sigle != "EDUC")
+	 AND (std.suspended IS NULL OR std.suspended != 1)
+	 AND (std.retrait_universite IS NULL OR std.retrait_universite = 0)');
+$globalStatTotal = intval(($globalStatTotalQ->fetch())['total'] ?? 0);
+
  ?>
 <div class="" style="page-break-inside: avoid;">
 
@@ -63,18 +72,19 @@ $thorizontal = 0;
 		$mention = $mt['filiere_description'];
 
 $result = $dtb->query('SELECT *,
-           SUM(CASE WHEN ins.niveau_std = 0 AND std.sex = 1 THEN 1 ELSE 0 END) AS RM_H,
-           SUM(CASE WHEN ins.niveau_std = 0 AND std.sex = 0 THEN 1 ELSE 0 END) AS RM_F,
-           SUM(CASE WHEN ins.niveau_std = 1 AND std.sex = 1 THEN 1 ELSE 0 END) AS Licence1_H,
-           SUM(CASE WHEN ins.niveau_std = 1 AND std.sex = 0 THEN 1 ELSE 0 END) AS Licence1_F,
-           SUM(CASE WHEN ins.niveau_std = 2 AND std.sex = 1 THEN 1 ELSE 0 END) AS Licence2_H,
-           SUM(CASE WHEN ins.niveau_std = 2 AND std.sex = 0 THEN 1 ELSE 0 END) AS Licence2_F,
-           SUM(CASE WHEN ins.niveau_std = 3 AND std.sex = 1 THEN 1 ELSE 0 END) AS Licence3_H,
-           SUM(CASE WHEN ins.niveau_std = 3 AND std.sex = 0 THEN 1 ELSE 0 END) AS Licence3_F,
-           SUM(CASE WHEN ins.niveau_std = 4 AND std.sex = 1 THEN 1 ELSE 0 END) AS Master1_H,
-           SUM(CASE WHEN ins.niveau_std = 4 AND std.sex = 0 THEN 1 ELSE 0 END) AS Master1_F,
-           SUM(CASE WHEN ins.niveau_std = 5 AND std.sex = 1 THEN 1 ELSE 0 END) AS Master2_H,
-           SUM(CASE WHEN ins.niveau_std = 5 AND std.sex = 0 THEN 1 ELSE 0 END) AS Master2_F
+		   COUNT(DISTINCT CASE WHEN ins.niveau_std = 0 AND std.sex = 1 THEN ins.student_id END) AS RM_H,
+		   COUNT(DISTINCT CASE WHEN ins.niveau_std = 0 AND std.sex = 0 THEN ins.student_id END) AS RM_F,
+		   COUNT(DISTINCT CASE WHEN ins.niveau_std = 1 AND std.sex = 1 THEN ins.student_id END) AS Licence1_H,
+		   COUNT(DISTINCT CASE WHEN ins.niveau_std = 1 AND std.sex = 0 THEN ins.student_id END) AS Licence1_F,
+		   COUNT(DISTINCT CASE WHEN ins.niveau_std = 2 AND std.sex = 1 THEN ins.student_id END) AS Licence2_H,
+		   COUNT(DISTINCT CASE WHEN ins.niveau_std = 2 AND std.sex = 0 THEN ins.student_id END) AS Licence2_F,
+		   COUNT(DISTINCT CASE WHEN ins.niveau_std = 3 AND std.sex = 1 THEN ins.student_id END) AS Licence3_H,
+		   COUNT(DISTINCT CASE WHEN ins.niveau_std = 3 AND std.sex = 0 THEN ins.student_id END) AS Licence3_F,
+		   COUNT(DISTINCT CASE WHEN ins.niveau_std = 4 AND std.sex = 1 THEN ins.student_id END) AS Master1_H,
+		   COUNT(DISTINCT CASE WHEN ins.niveau_std = 4 AND std.sex = 0 THEN ins.student_id END) AS Master1_F,
+		   COUNT(DISTINCT CASE WHEN ins.niveau_std = 5 AND std.sex = 1 THEN ins.student_id END) AS Master2_H,
+		   COUNT(DISTINCT CASE WHEN ins.niveau_std = 5 AND std.sex = 0 THEN ins.student_id END) AS Master2_F,
+		   COUNT(DISTINCT ins.student_id) AS MentionTotal
 
     FROM t_2024_inscription_session ins
     INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id
@@ -125,7 +135,7 @@ $master1_H += $row['Master1_H'];
 $master1_F += $row['Master1_F'];
 $master2_H += $row['Master2_H'];
 $master2_F += $row['Master2_F'];
-$thorizontal += intval($sommeHoriz);
+$thorizontal += intval($row['MentionTotal']);
    
 	}
         ?>
@@ -155,7 +165,7 @@ $thorizontal += intval($sommeHoriz);
 				<th colspan="2"><?=$licence3_H+$licence3_F?></th>
 				<th colspan="2"><?=$master1_H+$master1_F?></th>
 				<th colspan="2"><?=$master2_H+$master2_F?></th>
-				<th><?=$thorizontal?></th>
+				<th><?=$globalStatTotal?></th>
 			</tr>
 		</thead>
 	</table>

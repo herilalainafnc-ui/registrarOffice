@@ -15,34 +15,69 @@
 
 ?>
 <center>
-	<b class="">Liste des <?php if (!empty($_POST['new_student'])) { echo "nouveaux";}?> étudiants <?php 
-	if($exportation == "internat"){
-	
-		echo "internes";
-	
-	}elseif($exportation == "abnment"){
-	
-		echo "abonnée";	
-	
-	}elseif($exportation == "adventiste"){
-	
-		echo "Adventistes";	
-	
-	}elseif($exportation == "non_adventiste"){
-	
-		echo "Non-Adventistes";	
-	
-	}
+	<?php
+	$isPresenceSheet = !empty($_POST['presence_sheet']);
+	$presenceType = $_POST['presence_type'] ?? 'classe';
+	$presenceTypeLabel = 'Presence par classe';
+	$presenceColumns = ['Presence', 'Observation'];
+	$presenceColumnWidth = '90px';
+	$defaultChapelleDates = [
+		'13 avril',
+		'20 avril',
+		'27 avril',
+		'11 mai',
+		'1 juin',
+		'8 juin',
+		'15 juin',
+		'22 juin',
+		'29 juin',
+		'6 juillet'
+	];
 
-echo " <br><em class='text-xs'>".$session_name."  ".$session_year."</em>";
-
-	if (!empty($_POST['cours'])) {
-		echo " avec ces cours";
-		if (!empty($_POST['notes'])) {
-			echo ' et les notes';
+	if ($presenceType === 'chapelle_lundi') {
+		$presenceTypeLabel = 'Exercice de chapelle (lundis)';
+		$chapelleDatesInput = trim((string)($_POST['chapelle_dates'] ?? ''));
+		if ($chapelleDatesInput !== '') {
+			$chapelleDates = preg_split('/\s*,\s*/', $chapelleDatesInput);
+			$chapelleDates = array_values(array_filter($chapelleDates, static function ($v) {
+				return $v !== '';
+			}));
+			$presenceColumns = !empty($chapelleDates) ? $chapelleDates : $defaultChapelleDates;
+		} else {
+			$presenceColumns = $defaultChapelleDates;
 		}
+		if (count($presenceColumns) >= 8) {
+			$presenceColumnWidth = '58px';
+		}
+	} elseif ($presenceType === 'semaine_priere') {
+		$presenceTypeLabel = 'Semaine de priere (lundi a jeudi)';
+		$presenceColumns = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi'];
 	}
-	 ?></b>
+	?>
+	<b class="">
+	<?php if ($isPresenceSheet) { ?>
+		<?= $presenceTypeLabel ?>
+	<?php } else { ?>
+		Liste des <?php if (!empty($_POST['new_student'])) { echo "nouveaux";}?> étudiants <?php 
+		if($exportation == "internat"){
+			echo "internes";
+		}elseif($exportation == "abnment"){
+			echo "abonnée";	
+		}elseif($exportation == "adventiste"){
+			echo "Adventistes";	
+		}elseif($exportation == "non_adventiste"){
+			echo "Non-Adventistes";	
+		}
+		if (!empty($_POST['cours'])) {
+			echo " avec ces cours";
+			if (!empty($_POST['notes'])) {
+				echo ' et les notes';
+			}
+		}
+		?>
+	<?php } ?>
+	<?= " <br><em class='text-xs'>".$session_name."  ".$session_year."</em>"; ?>
+	</b>
 </center>
 
 <?php
@@ -96,15 +131,21 @@ if(empty($_POST['cours'])){
 				<td style="width: 100px;" class="border-r px-1">Religion</td>
 					<?php 
 				}else{
- 				 ?>
- 				<td class="border-r px-1">Adresse Email</td>
- 				 <?php 
+					if ($isPresenceSheet) {
+						foreach ($presenceColumns as $presenceCol) {
+							echo '<td style="width: '.$presenceColumnWidth.';" class="border-r px-1">'.htmlspecialchars($presenceCol).'</td>';
+						}
+					} else {
+				 ?>
+				<td style="width: 180px;" class="border-r px-1">Adresse Email</td>
+				 <?php 
+					}
 				}
 				
-				if(!empty($_POST['signature'])){
+				if(!$isPresenceSheet && !empty($_POST['signature'])){
 					echo '<td style="width: 100px;" class="border-r px-1">Signature</td>';
 				}
-				if(!empty($_POST['remarque'])){
+				if(!$isPresenceSheet && !empty($_POST['remarque'])){
 					echo '<td style="width: 120px;" class="border-r px-1">Remarque</td>';
 				}
 				?>
@@ -117,13 +158,12 @@ if(empty($_POST['cours'])){
 		$anneescolaire = $_POST['anneescolaire'];
 		
 		// Construction de la requête de base
-		// Exclure les étudiants: diplômés (graduated=1), suspendus (suspended=1), retirés (retrait_universite=2 ou 3)
+		// Aligner avec Statistique: exclure seulement suspendus et retraits universite.
 		$sql = "SELECT ins.*, std.annee_etude as real_niveau, std.graduated 
 				FROM t_2024_inscription_session ins 
 				INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id 
 				WHERE ins.session_id = '".$session_id."' 
 				AND ins.etude_mention = '".$etude_mention."'
-				AND (std.graduated IS NULL OR std.graduated != 1)
 				AND (std.suspended IS NULL OR std.suspended != 1)
 				AND (std.retrait_universite IS NULL OR std.retrait_universite = 0)";
 		
@@ -144,14 +184,14 @@ if(empty($_POST['cours'])){
 		}
 		
 		// Filtre par niveau (utilise le vrai niveau de tbl_2024_etudiant)
-		if ($_POST['annee_etude'] != "tout") {
-			$niveau_filtre = $_POST['annee_etude'];
+		$annee_etude_post = $_POST['annee_etude'] ?? 'tout';
+		$niveau_scope = $_POST['niveau_scope'] ?? 'all';
+
+		if ($annee_etude_post != "tout") {
+			$niveau_filtre = $annee_etude_post;
 			$sql .= " AND std.annee_etude = '".$niveau_filtre."'";
-		} else {
-			// Si pas de filtre niveau et pas "avec MASTER", limiter à Licence (niveau < 4)
-			if (empty($_POST['master'])) {
-				$sql .= " AND std.annee_etude < 4";
-			}
+		} elseif ($niveau_scope === 'licence') {
+			$sql .= " AND std.annee_etude < 4";
 		}
 		
 		// Éviter les doublons
@@ -190,7 +230,7 @@ if(empty($_POST['cours'])){
  			
  			<tr class="<?php if(!empty($_POST['cours'])){ echo"bg-slate-400"; } ?>" style="page-break-inside: avoid;">
 
- 				<td style="width: 35px;" class="border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><b><?=$n?></b></td>
+				<td style="width: 35px;" class="border-x <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><b><?=$n?></b></td>
  				
  				<td style="width: 75px;" class="border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><b><?=$student_id?></b></td>
  				
@@ -226,23 +266,28 @@ if(empty($_POST['cours'])){
 				
 				<td style="width: 100px;" class="border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?=$showStd['religion']?></td>
 					<?php 
-					if(!empty($_POST['signature'])){
+					if(!$isPresenceSheet && !empty($_POST['signature'])){
 						echo '<td style="width: 100px;" class="border-r"></td>';
 					}
-					if(!empty($_POST['remarque'])){
+					if(!$isPresenceSheet && !empty($_POST['remarque'])){
 						echo '<td style="width: 120px;" class="border-r"></td>';
 					}
 				}else{
- 				 ?>
- 				
- 				<td class="border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?=$student_email?></td>
+					if ($isPresenceSheet) {
+						foreach ($presenceColumns as $presenceCol) {
+							echo '<td style="width: '.$presenceColumnWidth.';" class="border-r"></td>';
+						}
+					} else {
+				 ?>
+				<td style="width: 180px;" class="border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?=$student_email?></td>
 
- 				 <?php 
-					if(!empty($_POST['signature'])){
-						echo '<td style="width: 100px;" class="border-l"></td>';
+				 <?php 
 					}
-					if(!empty($_POST['remarque'])){
-						echo '<td style="width: 120px;" class="border-l"></td>';
+					if(!$isPresenceSheet && !empty($_POST['signature'])){
+						echo '<td style="width: 100px;" class="border-r"></td>';
+					}
+					if(!$isPresenceSheet && !empty($_POST['remarque'])){
+						echo '<td style="width: 120px;" class="border-r"></td>';
 					}
 				}
 				?>

@@ -9,6 +9,15 @@ $findSessionOnSS = $dtb->query('SELECT * FROM t_2023_session WHERE session_name 
 $showSessionOnSS = $findSessionOnSS->fetch();
 $session_id = $showSessionOnSS['session_id'];
 
+$globalStatTotalQ = $dtb->query('SELECT COUNT(DISTINCT ins.student_id) AS total
+ FROM t_2024_inscription_session ins
+ INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id
+ WHERE ins.session_id = "'.$session_id.'"
+	 AND ins.etude_mention IN (SELECT filiere_sigle FROM filiere WHERE filiere_sigle != "CPRE" AND filiere_sigle != "EDUC")
+	 AND (std.suspended IS NULL OR std.suspended != 1)
+	 AND (std.retrait_universite IS NULL OR std.retrait_universite = 0)');
+$globalStatTotal = intval(($globalStatTotalQ->fetch())['total'] ?? 0);
+
  ?>
 <div class="" style="page-break-inside: avoid;">
 
@@ -69,18 +78,19 @@ $session_id = $showSessionOnSS['session_id'];
 		$mention = $mt['filiere_description'];
 
 $result = $dtb->query('SELECT *,
-		SUM(CASE WHEN ins.niveau_std = 0 AND ins.new_student = 1 THEN 1 ELSE 0 END) AS RM_N,
-		SUM(CASE WHEN ins.niveau_std = 0 AND ins.new_student = 0 THEN 1 ELSE 0 END) AS RM_A,
-		SUM(CASE WHEN ins.niveau_std = 1 AND ins.new_student = 1 THEN 1 ELSE 0 END) AS Licence1_N,
-		SUM(CASE WHEN ins.niveau_std = 1 AND ins.new_student = 0 THEN 1 ELSE 0 END) AS Licence1_A,
-		SUM(CASE WHEN ins.niveau_std = 2 AND ins.new_student = 1 THEN 1 ELSE 0 END) AS Licence2_N,
-		SUM(CASE WHEN ins.niveau_std = 2 AND ins.new_student = 0 THEN 1 ELSE 0 END) AS Licence2_A,
-		SUM(CASE WHEN ins.niveau_std = 3 AND ins.new_student = 1 THEN 1 ELSE 0 END) AS Licence3_N,
-		SUM(CASE WHEN ins.niveau_std = 3 AND ins.new_student = 0 THEN 1 ELSE 0 END) AS Licence3_A,
-		SUM(CASE WHEN ins.niveau_std = 4 AND ins.new_student = 1 THEN 1 ELSE 0 END) AS Master1_N,
-		SUM(CASE WHEN ins.niveau_std = 4 AND ins.new_student = 0 THEN 1 ELSE 0 END) AS Master1_A,
-		SUM(CASE WHEN ins.niveau_std = 5 AND ins.new_student = 1 THEN 1 ELSE 0 END) AS Master2_N,
-		SUM(CASE WHEN ins.niveau_std = 5 AND ins.new_student = 0 THEN 1 ELSE 0 END) AS Master2_A
+		COUNT(DISTINCT CASE WHEN ins.niveau_std = 0 AND ins.new_student = 1 THEN ins.student_id END) AS RM_N,
+		COUNT(DISTINCT CASE WHEN ins.niveau_std = 0 AND (ins.new_student IS NULL OR ins.new_student <> 1) THEN ins.student_id END) AS RM_A,
+		COUNT(DISTINCT CASE WHEN ins.niveau_std = 1 AND ins.new_student = 1 THEN ins.student_id END) AS Licence1_N,
+		COUNT(DISTINCT CASE WHEN ins.niveau_std = 1 AND (ins.new_student IS NULL OR ins.new_student <> 1) THEN ins.student_id END) AS Licence1_A,
+		COUNT(DISTINCT CASE WHEN ins.niveau_std = 2 AND ins.new_student = 1 THEN ins.student_id END) AS Licence2_N,
+		COUNT(DISTINCT CASE WHEN ins.niveau_std = 2 AND (ins.new_student IS NULL OR ins.new_student <> 1) THEN ins.student_id END) AS Licence2_A,
+		COUNT(DISTINCT CASE WHEN ins.niveau_std = 3 AND ins.new_student = 1 THEN ins.student_id END) AS Licence3_N,
+		COUNT(DISTINCT CASE WHEN ins.niveau_std = 3 AND (ins.new_student IS NULL OR ins.new_student <> 1) THEN ins.student_id END) AS Licence3_A,
+		COUNT(DISTINCT CASE WHEN ins.niveau_std = 4 AND ins.new_student = 1 THEN ins.student_id END) AS Master1_N,
+		COUNT(DISTINCT CASE WHEN ins.niveau_std = 4 AND (ins.new_student IS NULL OR ins.new_student <> 1) THEN ins.student_id END) AS Master1_A,
+		COUNT(DISTINCT CASE WHEN ins.niveau_std = 5 AND ins.new_student = 1 THEN ins.student_id END) AS Master2_N,
+		COUNT(DISTINCT CASE WHEN ins.niveau_std = 5 AND (ins.new_student IS NULL OR ins.new_student <> 1) THEN ins.student_id END) AS Master2_A,
+		COUNT(DISTINCT ins.student_id) AS MentionTotal
 
  FROM t_2024_inscription_session ins
  INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id
@@ -164,7 +174,7 @@ $thorizontal_A += intval($sommeHoriz_A);
 				<th colspan="2"><?=$licence3_N+$licence3_A?></th>
 				<th colspan="2"><?=$master1_N+$master1_A?></th>
 				<th colspan="2"><?=$master2_N+$master2_A?></th>
-				<th colspan="2"><?=$thorizontal_N+$thorizontal_A?></th>
+				<th colspan="2"><?=$globalStatTotal?></th>
 			</tr>
 		</thead>
 	</table>

@@ -5,8 +5,24 @@ require('../init/head.noTem.php');
 $ptype = $_GET['ptype'] ?? $_POST['ptype'] ?? '';
 $h = (date('H')+1);
 $date = 'h_'.date($h.'-i-s').' date_'.date('d-m-Y');
+$pdfOrientation = 'portrait';
+$pdfFormat = 'a4';
+$sheetWidth = '800px';
+$printMinHeight = '1020px';
+
+if (
+    $ptype === 'listeStd'
+    && !empty($_POST['presence_sheet'])
+    && in_array(($_POST['presence_type'] ?? ''), ['semaine_priere', 'chapelle_lundi'], true)
+) {
+    $pdfOrientation = 'landscape';
+    // Force a real A4 landscape canvas area for html2pdf rendering.
+    $pdfFormat = array(11.69, 8.27);
+    $sheetWidth = '1120px';
+    $printMinHeight = '760px';
+}
 ?>
-<title>Exportation (portrait)</title>
+<title>Exportation (<?=$pdfOrientation?>)</title>
 
 <body class="h-screen" style="background-color:#63748b;">
 
@@ -42,11 +58,11 @@ $date = 'h_'.date($h.'-i-s').' date_'.date('d-m-Y');
     </div>
     <div style="overflow: auto; width: 100%; height: calc(100% - 43px);">
 
-        <div style="border: 1px solid #475460; box-shadow: 0px 0px 20px #475469; padding: 35px;background: white; width: 800px;margin: auto; margin-top: 20px; margin-bottom: 20px;">
+        <div style="border: 1px solid #475460; box-shadow: 0px 0px 20px #475469; padding: 35px;background: white; width: <?=$sheetWidth?>;margin: auto; margin-top: 20px; margin-bottom: 20px;">
             
 <!-- ::::::::::::::::::::::::::::: CONTENTS PRINT ::::::::::::::::::::::::::::::::: -->            
 
-    <div id="printThisContent" style="min-height: 1020px; width: 100%; position: relative;">
+    <div id="printThisContent" style="min-height: <?=$printMinHeight?>; width: 100%; position: relative;">
         
     <?php
         
@@ -187,7 +203,7 @@ $date = 'h_'.date($h.'-i-s').' date_'.date('d-m-Y');
             filename:   <?= json_encode((($printName ?? 'export').'-image_'.$date.'.pdf')) ?>,
             image:      { type: 'jpeg', quality: qlt },
             html2canvas:{ scale: scl, logging: true, useCORS: true },
-            jsPDF:      { unit: 'in', format: 'a4', orientation: 'portrait' }
+            jsPDF:      { unit: 'in', format: <?= json_encode($pdfFormat) ?>, orientation: <?= json_encode($pdfOrientation) ?> }
         };
 
          // New Promise-based usage:

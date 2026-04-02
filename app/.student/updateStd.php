@@ -12,13 +12,13 @@ if ($isAjax) {
 	ini_set('display_errors', 0);
 }
 
-// Vérification d'autorisation : niveaux <= 2 (superadmin, admin) ou niveau 6 (chef de mention)
+// Vérification d'autorisation : seuls superadmin (1) et registraire (3)
 if (session_status() === PHP_SESSION_NONE) { ini_set('session.gc_maxlifetime', 36000); ini_set('session.cookie_lifetime', 36000); session_start(); }
 $currentUserLevel = isset($_SESSION['user_level']) ? (int)$_SESSION['user_level'] : 99;
-if ($currentUserLevel > 2 && $currentUserLevel != 6) {
+if (!in_array($currentUserLevel, [1, 3], true)) {
 	if ($isAjax) {
 		http_response_code(403);
-		echo 'Accès refusé. Vous n\'avez pas la permission de modifier les informations de l\'\u00e9tudiant.';
+		echo 'Accès refusé. Seuls le superadmin et le registraire peuvent modifier les informations de l\'étudiant.';
 		exit;
 	} else {
 		$id = $_GET['id'] ?? 0;
@@ -98,24 +98,38 @@ $etude_envisage_sign = $showInfiliere['filiere_sigle'] ?? '';
 	
 	$last_change_datetime = date('Y-m-d');
 
-	$semesterForInformation = $_POST['semesterForInformation'] ?? '';
-	$annee_scolaireForInformation = $_POST['annee_scolaireForInformation'] ?? '';
-
-
 	$verificationOldStatus = $dtb->prepare('SELECT * FROM tbl_2024_etudiant WHERE student_id = :student_id');
 	$verificationOldStatus->execute(['student_id' => $student_id]);
  	$oldStatusConfirmed = $verificationOldStatus->fetch();
  	$oldStatus = $oldStatusConfirmed['status'] ?? '';
 
  	
-/*========================================== UPDATE STUDENT ON SESSION ==========================*/	
+/*========================================== UPDATE STUDENT ON SESSION ==========================*/
 
-$findSessionOnSS = $dtb->prepare('SELECT * FROM t_2023_session WHERE session_name = :session_name AND session_year = :session_year');
-$findSessionOnSS->execute(['session_name' => $semesterForInformation, 'session_year' => $annee_scolaireForInformation]);
+$findLatestStudentSession = $dtb->prepare(
+	'SELECT ins.session_id, COALESCE(sess.session_semester, ins.nbr_semester) AS session_semester
+	 FROM t_2024_inscription_session ins
+	 LEFT JOIN t_2023_session sess ON sess.session_id = ins.session_id
+	 WHERE ins.student_id = :student_id
+	 ORDER BY COALESCE(sess.date_entry, ins.date_entry, "0000-00-00") DESC, ins.id DESC
+	 LIMIT 1'
+);
+$findLatestStudentSession->execute(['student_id' => $student_id]);
+$latestSessionRow = $findLatestStudentSession->fetch(PDO::FETCH_ASSOC);
 
-$showSessionOnSS = $findSessionOnSS->fetch();
-$session_id_for_modification = $showSessionOnSS['session_id'] ?? 0;
-$nbr_semester = $showSessionOnSS['session_semester'] ?? '';
+$session_id_for_modification = (int)($latestSessionRow['session_id'] ?? 0);
+$nbr_semester = $latestSessionRow['session_semester'] ?? '';
+
+if ($session_id_for_modification <= 0) {
+	$message = 'Aucune inscription session existante pour cet étudiant. Mise à jour refusée pour éviter une création automatique.';
+	if ($isAjax) {
+		http_response_code(422);
+		echo $message;
+		exit;
+	}
+	header('location:' . $app_base . '/student?id='.$id.'&page=information&error=no_student_session');
+	exit;
+}
 
 $verification = $dtb->prepare('SELECT * FROM t_2024_inscription_session WHERE student_id = :student_id AND session_id = :session_id');
 $verification->execute(['student_id' => $student_id, 'session_id' => $session_id_for_modification]);
@@ -149,7 +163,7 @@ if (!empty($answering)) {
 	$updateSession->bindParam(':status',$status,PDO::PARAM_STR);
 	$updateSession->bindParam(':new_student',$new_student,PDO::PARAM_INT);
 	$updateSession->bindParam(':graduated',$graduated,PDO::PARAM_INT);
-	$updateSession->bindParam(':nbr_semester',$semesterForInformation,PDO::PARAM_STR);
+	$updateSession->bindParam(':nbr_semester',$nbr_semester,PDO::PARAM_STR);
 	$updateSession->bindParam(':adresse_actuel_std',$student_adresse,PDO::PARAM_STR);
 	$updateSession->bindParam(':parcours_std',$etude_option,PDO::PARAM_STR);
 	$updateSession->bindParam(':niveau_std',$annee_etude,PDO::PARAM_STR);
@@ -168,72 +182,14 @@ if (!empty($answering)) {
 	$updateSession->execute();
 
 }else{
-	$insertSession = $dtb->prepare('INSERT INTO t_2024_inscription_session (
-		student_id,
-		etude_mention,
-		status,
-		new_student,
-		graduated,
-		session_id,
-		nbr_semester,
-		adresse_actuel_std,
-		parcours_std,
-		niveau_std,
-		sponsor_name,
-		sponsor_lastName,
-		sponsor_contact,
-		sponsor_address,
-		etat_civil_std,
-		conjoint_name,
-		nb_enfant,
-		abonment_std,
-		annee_scolaire,
-		date_entry
-	) VALUES (
-		:student_id,
-		:etude_mention,
-		:status,
-		:new_student,
-		:graduated,
-		:session_id,
-		:nbr_semester,
-		:adresse_actuel_std,
-		:parcours_std,
-		:niveau_std,
-		:sponsor_name,
-		:sponsor_lastName,
-		:sponsor_contact,
-		:sponsor_address,
-		:etat_civil_std,
-		:conjoint_name,
-		:nb_enfant,
-		:abonment_std,
-		:annee_scolaire,
-		:date_entry
-	)');
-	$insertSession->execute(array(
-		'student_id' => $student_id,
-		'etude_mention' => $etude_envisage_sign,
-		'status' => $status,
-		'new_student' => $new_student,
-		'graduated' => $graduated,
-		'session_id' => $session_id_for_modification,
-		'nbr_semester' => $semesterForInformation,
-		'adresse_actuel_std' => $student_adresse,
-		'parcours_std' => $etude_option,
-		'niveau_std' => $annee_etude,
-		'sponsor_name' => $sponsor_nom,
-		'sponsor_lastName' => $sponsor_prenom,
-		'sponsor_contact' => $sponsor_tel,
-		'sponsor_address' => $sponsor_adresse,
-		'etat_civil_std' => $situationf,
-		'conjoint_name' => $nom_conjoint,
-		'nb_enfant' => $nb_enfant,
-		'abonment_std' => $abonment,
-		'annee_scolaire' => $annee_scolaire,
-		'date_entry' => $last_change_datetime
-
-	));
+	$message = 'Incohérence détectée: aucune inscription trouvée pour la session récente de cet étudiant. Aucune création automatique n\'a été faite.';
+	if ($isAjax) {
+		http_response_code(422);
+		echo $message;
+		exit;
+	}
+	header('location:' . $app_base . '/student?id='.$id.'&page=information&error=student_not_in_session');
+	exit;
 }
 
 /*========================================== UPDATE STUDENT =====================================*/

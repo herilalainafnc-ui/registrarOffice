@@ -24,7 +24,7 @@
 	if ($showStudent['annee_etude'] < 3 AND $showStudent['annee_scolaire'] != $annee_scolaire) {
 
 		$annee_etude = $showStudent['annee_etude'] + 1;
-		$new_student = 0;
+		$new_student = 0; 
 	
 	}elseif($showStudent['annee_scolaire'] == $annee_scolaire){
 		

@@ -1000,6 +1000,8 @@ $y = $y - 1;
 	}
 
 	// ===== SAVING OVERLAY =====
+	let savingOverlayActivateTimer = null;
+
 	function showSavingOverlay() {
 		let overlay = document.querySelector('.saving-overlay');
 		if (!overlay) {
@@ -1008,10 +1010,24 @@ $y = $y - 1;
 			overlay.innerHTML = '<div class="saving-spinner"></div>';
 			document.body.appendChild(overlay);
 		}
-		setTimeout(() => overlay.classList.add('active'), 10);
+
+		if (savingOverlayActivateTimer) {
+			clearTimeout(savingOverlayActivateTimer);
+			savingOverlayActivateTimer = null;
+		}
+
+		savingOverlayActivateTimer = setTimeout(function() {
+			overlay.classList.add('active');
+			savingOverlayActivateTimer = null;
+		}, 10);
 	}
 
 	function hideSavingOverlay() {
+		if (savingOverlayActivateTimer) {
+			clearTimeout(savingOverlayActivateTimer);
+			savingOverlayActivateTimer = null;
+		}
+
 		const overlay = document.querySelector('.saving-overlay');
 		if (overlay) {
 			overlay.classList.remove('active');
@@ -1035,18 +1051,19 @@ $y = $y - 1;
 	$(document).ready(function(){
 
 		var rg_user = <?=$rg_user['level'];?>;
+		function canModifyStudentInfo() {
+			var level = parseInt(rg_user, 10);
+			return level === 1 || level === 3;
+		}
+
+		if (!canModifyStudentInfo()) {
+			$('#editPers, #editContact, #editEtd, #editParent, #editSpons, #editAutr').addClass('hidden');
+		}
 		
 
-		$('.submitRedirect').click(function(){
-			$('#sessionForInformation').attr('class','absolute w-full h-screen top-0 left-0 z-40');
-		});
-		$('#cancelsessionForInformation').click(function(){
-			$('#sessionForInformation').attr('class','absolute w-full h-screen top-0 left-0 z-40 hidden');
-		});
-		
-		$('#submit').click(function() {
-
-			$('#sessionForInformation').attr('class','absolute w-full h-screen top-0 left-0 z-40 hidden');
+		$(document).on('click', '.submitRedirect', function(e){
+			e.preventDefault();
+			$('.form-no-refrech').trigger('submit');
 		});
 		
 		$('.form-no-refrech').on('submit',function (e) {
@@ -1070,14 +1087,13 @@ $y = $y - 1;
 					'X-Requested-With': 'XMLHttpRequest'
 				},
 				success: function(response){
-					hideSavingOverlay();
 					showToast('success', 'Modification réussie', 'Les informations de l\'étudiant ont été mises à jour avec succès.');
 
 					// Reset UI state
-					$('.submitPers, .submitContact, .submitEtd, .submitParent, .submitSpons, .submitAutr').addClass('hidden');
-					$('.annulPers, .annulContact, .annulEtd, .annulParent, .annulSpons, .annulAutr').addClass('hidden');
+					$('.submitPers, .submitContact, .submitEtd, .submitParent, .submitSpons, .submitAutr').addClass('hidden').css({'display':''});
+					$('.annulPers, .annulContact, .annulEtd, .annulParent, .annulSpons, .annulAutr').addClass('hidden').css({'display':''});
 					$('#editPers, #editContact, #editEtd, #editParent, #editSpons, #editAutr').css({'display':'block'});
-					$('.editPers, .editContact, .editEtd, .editParent, .editSpons, .editAutr').addClass('hidden');
+					$('.editPers, .editContact, .editEtd, .editParent, .editSpons, .editAutr').addClass('hidden').css({'display':''});
 					$('.showPers, .showContact, .showEtd, .showParent, .showSpons, .showAutr').css({'display':'block'});
 
 					// Refresh section to show updated data
@@ -1086,15 +1102,21 @@ $y = $y - 1;
 					}, 500);
 				},
 				error: function(xhr, status, error){
-					hideSavingOverlay();
-					showToast('error', 'Erreur de modification', 'Une erreur est survenue lors de la mise à jour. Veuillez réessayer.');
+					var serverMessage = (xhr && xhr.responseText) ? xhr.responseText.trim() : '';
+					var message = serverMessage !== ''
+						? serverMessage
+						: 'Une erreur est survenue lors de la mise à jour. Veuillez réessayer.';
+					showToast('error', 'Erreur de modification', message);
 					console.error('Update error:', error);
+				},
+				complete: function() {
+					hideSavingOverlay();
 				}
 			});
 		});
 		
-		$('#editPers').click(function(){
-			if (rg_user < 3 || rg_user == 6) {
+		$(document).on('click', '#editPers', function(){
+			if (canModifyStudentInfo()) {
 
 			$(this).css({'display':'none'});
 			$('.annulPers').removeClass('hidden').css({'display':'block'});
@@ -1106,21 +1128,21 @@ $y = $y - 1;
 				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
 			}
 		});
-		$('.annulPers').click(function(){
-			$(this).addClass('hidden');
+		$(document).on('click', '.annulPers', function(){
+			$(this).addClass('hidden').css({'display':''});
 			$('#editPers').css({'display':'block'});
-			$('.editPers').addClass('hidden');
+			$('.editPers').addClass('hidden').css({'display':''});
 			$('.showPers').css({'display':'block'});
-			$('.submitPers').addClass('hidden');
+			$('.submitPers').addClass('hidden').css({'display':''});
 		});
 
-		$('.editPers').click(function(){
+		$(document).on('click', '.editPers', function(){
 			$('.submitPers').removeClass('hidden').css({'display':'block'});
 		});
 
 
-		$('#editContact').click(function(){
-			if (rg_user < 3 || rg_user == 6) {
+		$(document).on('click', '#editContact', function(){
+			if (canModifyStudentInfo()) {
 			$(this).css({'display':'none'});
 			$('.annulContact').removeClass('hidden').css({'display':'block'});
 			$('.editContact').removeClass('hidden').css({'display':'block'});
@@ -1130,21 +1152,21 @@ $y = $y - 1;
 				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
 			}
 		});
-		$('.annulContact').click(function(){
-			$(this).addClass('hidden');
+		$(document).on('click', '.annulContact', function(){
+			$(this).addClass('hidden').css({'display':''});
 			$('#editContact').css({'display':'block'});
-			$('.editContact').addClass('hidden');
+			$('.editContact').addClass('hidden').css({'display':''});
 			$('.showContact').css({'display':'block'});
-			$('.submitContact').addClass('hidden');
+			$('.submitContact').addClass('hidden').css({'display':''});
 		});
 
-		$('.editContact').click(function(){
+		$(document).on('click', '.editContact', function(){
 			$('.submitContact').removeClass('hidden').css({'display':'block'});
 		});
 
 
-		$('#editEtd').click(function(){
-			if (rg_user < 3 || rg_user == 6) {
+		$(document).on('click', '#editEtd', function(){
+			if (canModifyStudentInfo()) {
 			$(this).css({'display':'none'});
 			$('.annulEtd').removeClass('hidden').css({'display':'block'});
 			$('.editEtd').removeClass('hidden').css({'display':'block'});
@@ -1154,21 +1176,21 @@ $y = $y - 1;
 				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
 			}
 		});
-		$('.annulEtd').click(function(){
-			$(this).addClass('hidden');
+		$(document).on('click', '.annulEtd', function(){
+			$(this).addClass('hidden').css({'display':''});
 			$('#editEtd').css({'display':'block'});
-			$('.editEtd').addClass('hidden');
+			$('.editEtd').addClass('hidden').css({'display':''});
 			$('.showEtd').css({'display':'block'});
-			$('.submitEtd').addClass('hidden');
+			$('.submitEtd').addClass('hidden').css({'display':''});
 		});
 
-		$('.editEtd').click(function(){
+		$(document).on('click', '.editEtd', function(){
 			$('.submitEtd').removeClass('hidden').css({'display':'block'});
 		});
 
 
-		$('#editParent').click(function(){
-			if (rg_user < 3 || rg_user == 6) {
+		$(document).on('click', '#editParent', function(){
+			if (canModifyStudentInfo()) {
 			$(this).css({'display':'none'});
 			$('.annulParent').removeClass('hidden').css({'display':'block'});
 			$('.editParent').removeClass('hidden').css({'display':'block'});
@@ -1178,21 +1200,21 @@ $y = $y - 1;
 				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
 			}
 		});
-		$('.annulParent').click(function(){
-			$(this).addClass('hidden');
+		$(document).on('click', '.annulParent', function(){
+			$(this).addClass('hidden').css({'display':''});
 			$('#editParent').css({'display':'block'});
-			$('.editParent').addClass('hidden');
+			$('.editParent').addClass('hidden').css({'display':''});
 			$('.showParent').css({'display':'block'});
-			$('.submitParent').addClass('hidden');
+			$('.submitParent').addClass('hidden').css({'display':''});
 		});
 
-		$('.editParent').click(function(){
+		$(document).on('click', '.editParent', function(){
 			$('.submitParent').removeClass('hidden').css({'display':'block'});
 		});
 
 
-		$('#editSpons').click(function(){
-			if (rg_user < 3 || rg_user == 6) {
+		$(document).on('click', '#editSpons', function(){
+			if (canModifyStudentInfo()) {
 			$(this).css({'display':'none'});
 			$('.annulSpons').removeClass('hidden').css({'display':'block'});
 			$('.editSpons').removeClass('hidden').css({'display':'block'});
@@ -1202,21 +1224,21 @@ $y = $y - 1;
 				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
 			}
 		});
-		$('.annulSpons').click(function(){
-			$(this).addClass('hidden');
+		$(document).on('click', '.annulSpons', function(){
+			$(this).addClass('hidden').css({'display':''});
 			$('#editSpons').css({'display':'block'});
-			$('.editSpons').addClass('hidden');
+			$('.editSpons').addClass('hidden').css({'display':''});
 			$('.showSpons').css({'display':'block'});
-			$('.submitSpons').addClass('hidden');
+			$('.submitSpons').addClass('hidden').css({'display':''});
 		});
 
-		$('.editSpons').click(function(){
+		$(document).on('click', '.editSpons', function(){
 			$('.submitSpons').removeClass('hidden').css({'display':'block'});
 		});
 
 
-		$('#editAutr').click(function(){
-			if (rg_user < 3 || rg_user == 6) {
+		$(document).on('click', '#editAutr', function(){
+			if (canModifyStudentInfo()) {
 			$(this).css({'display':'none'});
 			$('.annulAutr').removeClass('hidden').css({'display':'block'});
 			$('.editAutr').removeClass('hidden').css({'display':'block'});
@@ -1226,15 +1248,15 @@ $y = $y - 1;
 				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
 			}
 		});
-		$('.annulAutr').click(function(){
-			$(this).addClass('hidden');
+		$(document).on('click', '.annulAutr', function(){
+			$(this).addClass('hidden').css({'display':''});
 			$('#editAutr').css({'display':'block'});
-			$('.editAutr').addClass('hidden');
+			$('.editAutr').addClass('hidden').css({'display':''});
 			$('.showAutr').css({'display':'block'});
-			$('.submitAutr').addClass('hidden');
+			$('.submitAutr').addClass('hidden').css({'display':''});
 		});
 
-		$('.editAutr').click(function(){
+		$(document).on('click', '.editAutr', function(){
 			$('.submitAutr').removeClass('hidden').css({'display':'block'});
 		});
 	});

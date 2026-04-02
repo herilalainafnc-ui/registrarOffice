@@ -4,10 +4,21 @@
 	$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
 	$app_base = substr($_ar, strlen($_dr)) ?: '';
 
+	if (session_status() === PHP_SESSION_NONE) {
+		session_start();
+	}
+
+	$currentUserLevel = isset($_SESSION['user_level']) ? (int)$_SESSION['user_level'] : 99;
+	if (!in_array($currentUserLevel, [1, 3], true)) {
+		http_response_code(403);
+		header('location:' . $app_base . '/courses?error=access_denied');
+		exit;
+	}
+
 	require '../../data/backdb.php';
 
-	$id = $_GET['id'];
-	$last_change_user_id = $_GET['rg_id'];
+	$id = (int)($_GET['id'] ?? 0);
+	$last_change_user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : (int)($_GET['rg_id'] ?? 0);
 	$remove = 1;
 	$last_change_datetime = date('Y-m-d');
 

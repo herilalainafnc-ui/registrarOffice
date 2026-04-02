@@ -87,66 +87,6 @@
 	}
 ?>
 
-<?php 
-	/*::::::::::::::::::::::: SESSION GENERATE ::::::::::::::::::::::*/
-
-		$aSs = date('Y');
-		$constaSs = $aSs." - ".($aSs+1);
-		$selected = 0;
-
-		$findSession = $dtb->query('SELECT * FROM t_2023_session WHERE session_year = "'.$constaSs.'"');
-		$showSession = $findSession->fetch();
-		
-		if(empty($showSession)){
-
-			for ($x=1; $x <= 4; $x++) { 
-
-				if ($x == 1) {
-					$session_code = "PREM".$aSs.($aSs+1);
-					$session_name = "Premier semestre";
-					$session_semester = 1;
-				}elseif ($x == 2) {
-					$session_code = "ETE".$aSs.($aSs+1);
-					$session_name = "Semestre d'été";
-					$session_semester = 3;
-				}elseif ($x == 3) {
-					$session_code = "DEUX".$aSs.($aSs+1);
-					$session_name = "Deuxième semestre";
-					$session_semester = 2;
-				}elseif ($x == 4) {
-					$session_code = "HIVER".$aSs.($aSs+1);
-					$session_name = "Semestre d'hiver";
-					$session_semester = 4;
-				}
-				
-				$session_year = $constaSs;
-				$date_entry = date('Y-m-d');
-
-				$insertSession = $dtb->prepare('INSERT INTO t_2023_session (
-					session_code,
-					session_name,
-					session_year,
-					session_semester,
-					selected,
-					date_entry
-				) VALUES (
-					:session_code,
-					:session_name,
-					:session_year,
-					:session_semester,
-					:selected,
-					:date_entry
-				)');$insertSession->execute(array(
-					'session_code' => $session_code,
-					'session_name' => $session_name,
-					'session_year' => $session_year,
-					'session_semester' => $session_semester,
-					'selected' => $selected,
-					'date_entry' => $date_entry
-				));	
-			}
-		}
- ?>
 <div id="coursListContainer" class="mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">	
 <?php
 	

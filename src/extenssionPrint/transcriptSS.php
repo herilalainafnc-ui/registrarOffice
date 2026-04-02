@@ -322,39 +322,39 @@
 ?>
 
 <!-- RÉCAPITULATIF GÉNÉRAL -->
-<div class='p-1 mb-2 rounded-md text-[9px]' style="border: 1px solid #334155; background: #f1f5f9;">
-	<b class="text-[10px]">RÉCAPITULATIF GÉNÉRAL</b>
-	<table class="mb-1 w-full" style="page-break-inside: avoid;">
+<div class='p-0.5 mb-1 rounded-md text-[8px]' style="border: 1px solid #334155; background: #f1f5f9; line-height: 1.2;">
+	<b class="text-[9px]">RÉCAPITULATIF GÉNÉRAL</b>
+	<table class="mb-0.5 w-full" style="page-break-inside: avoid;">
 		<tbody>
 			<tr>
-				<td class="text-xs p-1 w-6/12">Nombre total de sessions</td>
-				<td class="text-xs px-2 w-6/12 font-bold"><?=$sessionCount?></td>
+				<td class="text-[8px] py-[2px] px-1 w-6/12">Nombre total de sessions</td>
+				<td class="text-[8px] py-[2px] px-1 w-6/12 font-bold"><?=$sessionCount?></td>
 			</tr>
 			<tr>
-				<td class="text-xs p-1 w-6/12">Nombre total de cours</td>
-				<td class="text-xs px-2 w-6/12 font-bold"><?=$totalCours?></td>
+				<td class="text-[8px] py-[2px] px-1 w-6/12">Nombre total de cours</td>
+				<td class="text-[8px] py-[2px] px-1 w-6/12 font-bold"><?=$totalCours?></td>
 			</tr>
 			<tr>
-				<td class="text-xs p-1 w-6/12 text-green-700">Cours validés (Succès)</td>
-				<td class="text-xs px-2 w-6/12 font-bold text-green-700"><?=$totalCoursValides?> cours (<?=$totalCreditsValides?> crédits)</td>
+				<td class="text-[8px] py-[2px] px-1 w-6/12 text-green-700">Cours validés (Succès)</td>
+				<td class="text-[8px] py-[2px] px-1 w-6/12 font-bold text-green-700"><?=$totalCoursValides?> cours (<?=$totalCreditsValides?> crédits)</td>
 			</tr>
 			<tr>
-				<td class="text-xs p-1 w-6/12 text-red-700">Cours échoués (Échec)</td>
-				<td class="text-xs px-2 w-6/12 font-bold text-red-700"><?=$totalCoursEchoues?> cours (<?=$totalCreditsEchoues?> crédits)</td>
+				<td class="text-[8px] py-[2px] px-1 w-6/12 text-red-700">Cours échoués (Échec)</td>
+				<td class="text-[8px] py-[2px] px-1 w-6/12 font-bold text-red-700"><?=$totalCoursEchoues?> cours (<?=$totalCreditsEchoues?> crédits)</td>
 			</tr>
 			<?php if($totalCoursIncomplete > 0){ ?>
 			<tr>
-				<td class="text-xs p-1 w-6/12" style="color:#b45309;">Cours incomplets (Note non remise)</td>
-				<td class="text-xs px-2 w-6/12 font-bold" style="color:#b45309;"><?=$totalCoursIncomplete?> cours (<?=$totalCreditsIncomplete?> crédits)</td>
+				<td class="text-[8px] py-[2px] px-1 w-6/12" style="color:#b45309;">Cours incomplets (Note non remise)</td>
+				<td class="text-[8px] py-[2px] px-1 w-6/12 font-bold" style="color:#b45309;"><?=$totalCoursIncomplete?> cours (<?=$totalCreditsIncomplete?> crédits)</td>
 			</tr>
 			<?php } ?>
 			<tr>
-				<td class="text-xs p-1 w-6/12">Total des crédits</td>
-				<td class="text-xs px-2 w-6/12 font-bold"><?=$cumulCredit?> crédits</td>
+				<td class="text-[8px] py-[2px] px-1 w-6/12">Total des crédits</td>
+				<td class="text-[8px] py-[2px] px-1 w-6/12 font-bold"><?=$cumulCredit?> crédits</td>
 			</tr>
 			<tr>
-				<td class="text-xs p-1 w-6/12">Taux de réussite</td>
-				<td class="text-xs px-2 w-6/12 font-bold <?=($tauxReussite >= 50) ? 'text-green-700' : 'text-red-700'?>"><?=$tauxReussite?>%</td>
+				<td class="text-[8px] py-[2px] px-1 w-6/12">Taux de réussite</td>
+				<td class="text-[8px] py-[2px] px-1 w-6/12 font-bold <?=($tauxReussite >= 50) ? 'text-green-700' : 'text-red-700'?>"><?=$tauxReussite?>%</td>
 			</tr>
 		</tbody>
 	</table>

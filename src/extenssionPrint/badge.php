@@ -45,7 +45,8 @@ if(strlen($image_student)> 7){
 <center>
 	<a style="font-size: 35px; color: white;"><?=strtoupper($student_nom)?><br><?=$student_prenom?></a>
 	<b style="font-size: 22px; color: white; position: absolute; transform: rotate(-90deg);text-align: left; left:570px; bottom: 515px; width: 100px;">
-		<?php if ($abonment == 1) { echo $status.' & Abonné';}else{ echo $status;} ?>	
+		<?php if ($abonment == 1) { echo $status.' & Abonné';}else{ echo $status;} ?> 
+		<br>
 	</b>
 	
 	<b style="font-size: 70px; color: white; position: absolute; transform: rotate(-90deg);top: 290px; left:15px;"><?=$student_id?></b>

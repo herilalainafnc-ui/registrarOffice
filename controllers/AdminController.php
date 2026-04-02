@@ -33,6 +33,10 @@ class AdminController extends BaseController {
         $this->renderSrc('session-rankings.php');
     }
 
+    public function sessions() {
+        $this->renderSrc('sessions.php');
+    }
+
     public function myAccount() {
         $this->renderSrc('my.account.php');
     }
