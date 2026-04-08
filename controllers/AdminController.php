@@ -5,19 +5,32 @@
  */
 class AdminController extends BaseController {
 
+    public function __construct() {
+        $this->requireAuthenticated('/login');
+    }
+
     public function settings() {
+        $this->requireLevelAccess(3);
         $this->renderSrc('settings.php');
     }
 
+    public function bulkEmail() {
+        $this->requireLevelAccess(3);
+        $this->renderSrc('bulk-email.php');
+    }
+
     public function createAccount() {
+        $this->requireLevelAccess(1);
         $this->renderSrc('creat.account.php');
     }
 
     public function news() {
+        $this->requireLevelAccess(3);
         $this->renderSrc('admin.actus.php');
     }
 
     public function loginLocations() {
+        $this->requireLevelAccess(3);
         $this->renderSrc('login-locations.php');
     }
 
@@ -34,6 +47,7 @@ class AdminController extends BaseController {
     }
 
     public function sessions() {
+        $this->requireLevelAccess(1);
         $this->renderSrc('sessions.php');
     }
 

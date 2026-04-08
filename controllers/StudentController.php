@@ -5,6 +5,10 @@
  */
 class StudentController extends BaseController {
 
+    public function __construct() {
+        $this->requireAuthenticated('/login');
+    }
+
     public function show() {
         $this->renderSrc('student.php');
     }
@@ -38,10 +42,12 @@ class StudentController extends BaseController {
     }
 
     public function create() {
+        $this->requireLevelAccess(3);
         $this->renderSrc('creat.student.php');
     }
 
     public function debug() {
+        $this->requireLevelAccess(1);
         $this->renderSrc('debug.student.php');
     }
 }

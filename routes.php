@@ -71,6 +71,7 @@ $router->get('/cours', 'AdminController@course');
 // ADMINISTRATION
 // ========================================================================
 $router->get('/settings', 'AdminController@settings');
+$router->any('/settings/bulk-email', 'AdminController@bulkEmail');
 $router->any('/accounts/create', 'AdminController@createAccount');
 $router->any('/news', 'AdminController@news');
 $router->get('/login-locations', 'AdminController@loginLocations');

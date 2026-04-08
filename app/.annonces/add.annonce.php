@@ -13,10 +13,37 @@ require('../../data/backdb.php');
 require('../../data/middleware.php');
 initMiddleware($dtb);
 
+function is_ajax_request(): bool {
+    return (
+        (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower((string) $_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') ||
+        (isset($_SERVER['HTTP_ACCEPT']) && stripos((string) $_SERVER['HTTP_ACCEPT'], 'application/json') !== false)
+    );
+}
+
+function respond_add(bool $success, string $message, int $statusCode = 200, ?array $annonce = null): void {
+    global $app_base;
+    if (is_ajax_request()) {
+        http_response_code($statusCode);
+        header('Content-Type: application/json; charset=utf-8');
+        $payload = ['success' => $success, 'message' => $message];
+        if ($annonce !== null) {
+            $payload['annonce'] = $annonce;
+        }
+        echo json_encode($payload);
+        exit;
+    }
+
+    if ($success) {
+        header('location:' . $app_base . '/news?success=1&msg=' . urlencode($message));
+    } else {
+        header('location:' . $app_base . '/news?error=' . urlencode($message));
+    }
+    exit;
+}
+
 // SÉCURITÉ: Vérifier les privilèges
 if (!isRegistrar()) {
-    http_response_code(403);
-    die('Accès refusé: privilèges insuffisants');
+    respond_add(false, 'Accès refusé: privilèges insuffisants', 403);
 }
 
 // SÉCURITÉ: Vérifier le token CSRF
@@ -40,8 +67,7 @@ try {
 
     // Validation
     if (empty($title) || empty($content)) {
-        header('location:' . $app_base . '/news?error=' . urlencode('Le titre et le contenu sont obligatoires.'));
-        exit;
+        respond_add(false, 'Le titre et le contenu sont obligatoires.', 422);
     }
 
     // Validate category
@@ -58,8 +84,7 @@ try {
         $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
         
         if (!in_array($mimeType, $allowedMimes)) {
-            header('location:' . $app_base . '/news?error=' . urlencode('Format d\'image non autorisé. Formats acceptés: JPG, PNG, GIF, WEBP.'));
-            exit;
+            respond_add(false, 'Format d\'image non autorisé. Formats acceptés: JPG, PNG, GIF, WEBP.', 422);
         }
 
         // Generate unique filename
@@ -100,17 +125,18 @@ try {
         $isPinned, $isActive, $author, $publishDate, $expireDate
     ]);
 
+    $newId = (int) $dtb->lastInsertId();
+
     Middleware::logSecurityEvent('annonce_created', [
-        'annonce_id' => $dtb->lastInsertId(),
+        'annonce_id' => $newId,
         'title' => $title,
         'by_user' => $_SESSION['user_id'] ?? null
     ]);
 
-    header('location:' . $app_base . '/news?success=1&msg=' . urlencode('Annonce publiée avec succès.'));
-    exit;
+    $created = DB::find('t_annonces', $newId);
+    respond_add(true, 'Annonce publiée avec succès.', 200, $created ?: null);
 
 } catch (Exception $e) {
     error_log('Erreur création annonce: ' . $e->getMessage());
-    header('location:' . $app_base . '/news?error=' . urlencode('Erreur lors de la création de l\'annonce.'));
-    exit;
+    respond_add(false, 'Erreur lors de la création de l\'annonce.', 500);
 }

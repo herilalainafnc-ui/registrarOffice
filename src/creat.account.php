@@ -460,98 +460,6 @@
 			margin-bottom: 0.5rem;
 		}
 
-		/* Toast Notifications */
-		.toast-container {
-			position: fixed;
-			top: 1rem;
-			right: 1rem;
-			z-index: 9999;
-			display: flex;
-			flex-direction: column;
-			gap: 0.75rem;
-			pointer-events: none;
-		}
-
-		.toast {
-			display: flex;
-			align-items: flex-start;
-			gap: 0.75rem;
-			padding: 1rem;
-			background: linear-gradient(145deg, #1e293b, #0f172a);
-			border: 1px solid rgba(51, 65, 85, 0.5);
-			border-radius: 0.5rem;
-			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-			min-width: 320px;
-			max-width: 420px;
-			pointer-events: auto;
-			animation: toastSlideIn 0.3s ease;
-			position: relative;
-		}
-
-		@keyframes toastSlideIn {
-			from { opacity: 0; transform: translateX(100%); }
-			to { opacity: 1; transform: translateX(0); }
-		}
-
-		@keyframes toastSlideOut {
-			from { opacity: 1; transform: translateX(0); }
-			to { opacity: 0; transform: translateX(100%); }
-		}
-
-		.toast.removing {
-			animation: toastSlideOut 0.3s ease forwards;
-		}
-
-		.toast-icon {
-			flex-shrink: 0;
-			width: 1.5rem;
-			height: 1.5rem;
-			border-radius: 9999px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-
-		.toast-success .toast-icon { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
-		.toast-error .toast-icon { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-		.toast-warning .toast-icon { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-		.toast-info .toast-icon { background: rgba(14, 165, 233, 0.2); color: #0ea5e9; }
-
-		.toast-content { flex: 1; }
-		.toast-title { font-size: 0.875rem; font-weight: 600; color: #f1f5f9; margin-bottom: 0.25rem; }
-		.toast-message { font-size: 0.8125rem; color: #94a3b8; }
-
-		.toast-close {
-			flex-shrink: 0;
-			background: none;
-			border: none;
-			color: #64748b;
-			cursor: pointer;
-			padding: 0.25rem;
-			transition: color 0.2s ease;
-		}
-
-		.toast-close:hover { color: #f1f5f9; }
-
-		.toast-progress {
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			height: 3px;
-			border-radius: 0 0 0.5rem 0.5rem;
-			animation: toastProgress 5s linear forwards;
-		}
-
-		.toast-success .toast-progress { background: #22c55e; }
-		.toast-error .toast-progress { background: #ef4444; }
-		.toast-warning .toast-progress { background: #f59e0b; }
-		.toast-info .toast-progress { background: #0ea5e9; }
-
-		@keyframes toastProgress {
-			from { width: 100%; }
-			to { width: 0%; }
-		}
-
 		/* Separator */
 		.shad-separator {
 			height: 1px;
@@ -645,9 +553,6 @@
 		<!-- TOP BAR --><?php require('../init/topbar.php');?>
 		<!-- NOTIFICATION MANAGER --><?php require('../src/main/notificationGeneral.php');?>
 		<!-- NOTIFICATION MANAGER --><?php require('../src/main/bigNotif.php');?>
-
-		<!-- Toast Container -->
-		<div class="toast-container" id="toastContainer"></div>
 
 		<div class="w-full flex flex-col lg:flex-row">
 			
@@ -1025,39 +930,17 @@
 <script>
 $(document).ready(function() {
 	
-	// Toast Function
-	window.showToast = function(type, title, message, duration = 5000) {
-		const icons = {
-			success: 'bi-check-circle-fill',
-			error: 'bi-x-circle-fill',
-			warning: 'bi-exclamation-triangle-fill',
-			info: 'bi-info-circle-fill'
-		};
-		
-		const toast = $(`
-			<div class="toast toast-${type}">
-				<div class="toast-icon"><i class="${icons[type]}"></i></div>
-				<div class="toast-content">
-					<div class="toast-title">${title}</div>
-					<div class="toast-message">${message}</div>
-				</div>
-				<button class="toast-close"><i class="bi-x"></i></button>
-				<div class="toast-progress"></div>
-			</div>
-		`);
-		
-		$('#toastContainer').append(toast);
-		const timeout = setTimeout(() => removeToast(toast), duration);
-		toast.find('.toast-close').on('click', function() {
-			clearTimeout(timeout);
-			removeToast(toast);
-		});
+	// Global Toast bridge (keeps existing call sites unchanged)
+	window.showToast = function(type, title, message) {
+		const text = [title, message].filter(Boolean).join(' - ');
+		if (window.Toast && typeof window.Toast[type] === 'function') {
+			window.Toast[type](text);
+			return;
+		}
+		if (window.Toast && typeof window.Toast.info === 'function') {
+			window.Toast.info(text);
+		}
 	};
-	
-	function removeToast(toast) {
-		toast.addClass('removing');
-		setTimeout(() => toast.remove(), 300);
-	}
 	
 	// Dialog Management
 	$('#addUserBtn').on('click', function() { $('#addUserDialog').addClass('active'); });

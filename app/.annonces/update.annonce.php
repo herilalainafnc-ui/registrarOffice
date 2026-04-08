@@ -13,10 +13,37 @@ require('../../data/backdb.php');
 require('../../data/middleware.php');
 initMiddleware($dtb);
 
+function is_ajax_request(): bool {
+    return (
+        (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower((string) $_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') ||
+        (isset($_SERVER['HTTP_ACCEPT']) && stripos((string) $_SERVER['HTTP_ACCEPT'], 'application/json') !== false)
+    );
+}
+
+function respond_update(bool $success, string $message, int $statusCode = 200, ?array $annonce = null): void {
+    global $app_base;
+    if (is_ajax_request()) {
+        http_response_code($statusCode);
+        header('Content-Type: application/json; charset=utf-8');
+        $payload = ['success' => $success, 'message' => $message];
+        if ($annonce !== null) {
+            $payload['annonce'] = $annonce;
+        }
+        echo json_encode($payload);
+        exit;
+    }
+
+    if ($success) {
+        header('location:' . $app_base . '/news?success=1&msg=' . urlencode($message));
+    } else {
+        header('location:' . $app_base . '/news?error=' . urlencode($message));
+    }
+    exit;
+}
+
 // SÉCURITÉ
 if (!isRegistrar()) {
-    http_response_code(403);
-    die('Accès refusé');
+    respond_update(false, 'Accès refusé', 403);
 }
 
 require_csrf();
@@ -35,8 +62,7 @@ try {
     $oldImage   = $_POST['oldImage'] ?? '';
 
     if (!$id || empty($title) || empty($content)) {
-        header('location:' . $app_base . '/news?error=' . urlencode('Données invalides.'));
-        exit;
+        respond_update(false, 'Données invalides.', 422);
     }
 
     // Validate category
@@ -48,8 +74,7 @@ try {
     // Check annonce exists
     $existing = DB::find('t_annonces', $id);
     if (!$existing) {
-        header('location:' . $app_base . '/news?error=' . urlencode('Annonce introuvable.'));
-        exit;
+        respond_update(false, 'Annonce introuvable.', 404);
     }
 
     // Image upload
@@ -60,8 +85,7 @@ try {
         $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
         
         if (!in_array($mimeType, $allowedMimes)) {
-            header('location:' . $app_base . '/news?error=' . urlencode('Format d\'image non autorisé.'));
-            exit;
+            respond_update(false, 'Format d\'image non autorisé.', 422);
         }
 
         $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
@@ -112,11 +136,10 @@ try {
         'by_user' => $_SESSION['user_id'] ?? null
     ]);
 
-    header('location:' . $app_base . '/news?success=1&msg=' . urlencode('Annonce mise à jour avec succès.'));
-    exit;
+    $updated = DB::find('t_annonces', $id);
+    respond_update(true, 'Annonce mise à jour avec succès.', 200, $updated ?: null);
 
 } catch (Exception $e) {
     error_log('Erreur mise à jour annonce: ' . $e->getMessage());
-    header('location:' . $app_base . '/news?error=' . urlencode('Erreur lors de la mise à jour.'));
-    exit;
+    respond_update(false, 'Erreur lors de la mise à jour.', 500);
 }

@@ -5,6 +5,10 @@
  */
 class DashboardController extends BaseController {
 
+    public function __construct() {
+        $this->requireAuthenticated('/login');
+    }
+
     public function index() {
         $this->renderSrc('accueil.php');
     }

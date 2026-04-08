@@ -51,6 +51,12 @@
 							</div>
 						</a>
 						<?php } ?>
+						<a href="<?=$app_base?>/settings/bulk-email" <?php if($rg_user['level'] > 3) { echo "class='toolInactive'";}?>>
+							<div class='m-0 p-3 <?=$bg_one_color?> hover:bg-slate-700 rounded-md border-2 border-slate-800 hover:border-cyan-500 transition-all text-white h-[160px]'>
+							<b class="text-lg"><i class="bi-envelope-paper-fill"></i>&nbsp;&nbsp; Email en masse</b><br><br>
+							<p class="text-slate-500">Acceder a la page dediee pour envoyer des emails en masse.</p>
+							</div>
+						</a>
 					</div>
 				</div>
 				

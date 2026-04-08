@@ -651,7 +651,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 	</div>
 
 	<!-- SECTION 6: Settings -->	
-	<div class="toolbar-section flex-shrink-0 flex px-1">
+	<!-- <div class="toolbar-section flex-shrink-0 flex px-1">
 		
 		<a href="<?=$app_base?>/settings" class="tool-btn tool-settings text-xs flex-1">
 			<div class="tool-icon">
@@ -660,7 +660,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 			<span class="tool-label">Paramètres</span>
 		</a>
 
-	</div>
+	</div> -->
 	
 </div>
 

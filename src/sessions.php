@@ -607,12 +607,6 @@ foreach ($sessions as $sessionRow) {
                     </div>
                 </div>
 
-                <?php if ($flashMessage !== ''): ?>
-                    <div class="mb-4 p-3 rounded-md border <?=$flashClasses?>">
-                        <?=htmlspecialchars($flashMessage)?>
-                    </div>
-                <?php endif; ?>
-
                 <div class="sh-card p-5 text-white mb-4">
                     <h2 class="sh-title text-sm font-semibold mb-3">Ajouter une session</h2>
                     <form id="createSessionForm" method="post" class="overflow-x-auto">

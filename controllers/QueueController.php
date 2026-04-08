@@ -5,10 +5,15 @@
  */
 class QueueController extends BaseController {
 
+    public function __construct() {
+        $this->requireAuthenticated('/login');
+    }
+
     /**
      * Écran Agent - Gestion de la file d'attente
      */
     public function index() {
+        $this->requireLevelAccess(1);
         $this->renderSrc('queue/queue.agent.php');
     }
 
@@ -23,6 +28,7 @@ class QueueController extends BaseController {
      * API AJAX - Endpoints pour la gestion des tickets
      */
     public function api() {
+        $this->requireLevelAccess(1);
         $this->renderSrc('queue/queue.api.php');
     }
 }

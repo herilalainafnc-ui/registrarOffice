@@ -195,34 +195,6 @@
 		}
 		.photo-upload-placeholder i { font-size: 2.5rem; margin-bottom: 0.5rem; }
 
-		/* Toast Notifications */
-		.toast-container { position: fixed; top: 1rem; right: 1rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.75rem; pointer-events: none; }
-		.toast {
-			display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem;
-			background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid rgba(51, 65, 85, 0.5);
-			border-radius: 0.5rem; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-			min-width: 320px; max-width: 420px; pointer-events: auto; animation: toastSlideIn 0.3s ease; position: relative;
-		}
-		@keyframes toastSlideIn { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
-		@keyframes toastSlideOut { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(100%); } }
-		.toast.removing { animation: toastSlideOut 0.3s ease forwards; }
-		.toast-icon { flex-shrink: 0; width: 1.5rem; height: 1.5rem; border-radius: 9999px; display: flex; align-items: center; justify-content: center; }
-		.toast-success .toast-icon { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
-		.toast-error .toast-icon { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-		.toast-warning .toast-icon { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-		.toast-info .toast-icon { background: rgba(14, 165, 233, 0.2); color: #0ea5e9; }
-		.toast-content { flex: 1; }
-		.toast-title { font-size: 0.875rem; font-weight: 600; color: #f1f5f9; margin-bottom: 0.25rem; }
-		.toast-message { font-size: 0.8125rem; color: #94a3b8; }
-		.toast-close { flex-shrink: 0; background: none; border: none; color: #64748b; cursor: pointer; padding: 0.25rem; transition: color 0.2s ease; }
-		.toast-close:hover { color: #f1f5f9; }
-		.toast-progress { position: absolute; bottom: 0; left: 0; height: 3px; border-radius: 0 0 0.5rem 0.5rem; animation: toastProgress 5s linear forwards; }
-		.toast-success .toast-progress { background: #22c55e; }
-		.toast-error .toast-progress { background: #ef4444; }
-		.toast-warning .toast-progress { background: #f59e0b; }
-		.toast-info .toast-progress { background: #0ea5e9; }
-		@keyframes toastProgress { from { width: 100%; } to { width: 0%; } }
-
 		/* Separator */
 		.shad-separator { height: 1px; background: linear-gradient(to right, transparent, rgba(51, 65, 85, 0.5), transparent); margin: 1rem 0; }
 
@@ -350,9 +322,6 @@
 		[data-theme="light"] .filter-pill:hover { background: rgba(203, 213, 225, 0.8); color: #0f172a; }
 		[data-theme="light"] .filter-pill.active { background: rgba(14, 165, 233, 0.15); color: #0284c7; border-color: rgba(14, 165, 233, 0.3); }
 
-		[data-theme="light"] .toast { background: linear-gradient(145deg, #f8fafc, #e2e8f0); border-color: #cbd5e1; }
-		[data-theme="light"] .toast-title { color: #0f172a; }
-		[data-theme="light"] .toast-message { color: #64748b; }
 		[data-theme="light"] .confirm-dialog .confirm-title { color: #0f172a; }
 		[data-theme="light"] .confirm-dialog .confirm-message { color: #64748b; }
 	</style>
@@ -362,9 +331,6 @@
 		
 		<!-- TOP BAR --><?php require('../init/topbar.php');?>
 		<!-- NOTIFICATION MANAGER --><?php require('../src/main/notificationGeneral.php');?>
-
-		<!-- Toast Container -->
-		<div class="toast-container" id="toastContainer"></div>
 
 		<div class="w-full flex flex-col lg:flex-row">
 			
@@ -472,7 +438,7 @@
 							</div>
 						</div>
 
-						<div class="shad-card-content" style="padding: 0;">
+						<div class="shad-card-content" id="annoncesContent" style="padding: 0;">
 							<?php if (!$tableExists): ?>
 								<div class="text-center py-12">
 									<i class="bi-database-x text-4xl text-slate-500 mb-3 block"></i>
@@ -480,7 +446,7 @@
 									<p class="text-slate-500 text-sm">Exécutez le fichier <code class="text-cyan-400">data/sql_annonces.sql</code> pour créer la table.</p>
 								</div>
 							<?php elseif (empty($annonces)): ?>
-								<div class="text-center py-12">
+								<div class="text-center py-12" id="emptyAnnonceState">
 									<i class="bi-megaphone text-4xl text-slate-500 mb-3 block"></i>
 									<p class="text-slate-400 mb-2">Aucune annonce pour le moment.</p>
 									<p class="text-slate-500 text-sm">Cliquez sur « Nouvelle Annonce » pour en créer une.</p>
@@ -759,27 +725,180 @@ $(document).ready(function() {
 	// ============================================================
 	// Toast
 	// ============================================================
-	window.showToast = function(type, title, message, duration = 5000) {
-		const icons = {
-			success: 'bi-check-circle-fill', error: 'bi-x-circle-fill',
-			warning: 'bi-exclamation-triangle-fill', info: 'bi-info-circle-fill'
-		};
-		const toast = $(`
-			<div class="toast toast-${type}">
-				<div class="toast-icon"><i class="${icons[type]}"></i></div>
-				<div class="toast-content">
-					<div class="toast-title">${title}</div>
-					<div class="toast-message">${message}</div>
-				</div>
-				<button class="toast-close"><i class="bi-x"></i></button>
-				<div class="toast-progress"></div>
-			</div>
-		`);
-		$('#toastContainer').append(toast);
-		const timeout = setTimeout(() => removeToast(toast), duration);
-		toast.find('.toast-close').on('click', function() { clearTimeout(timeout); removeToast(toast); });
+	window.showToast = function(type, title, message) {
+		const text = [title, message].filter(Boolean).join(' - ');
+		const toastApi = (typeof Toast !== 'undefined' && Toast)
+			? Toast
+			: ((typeof window !== 'undefined' && window.Toast) ? window.Toast : null);
+		if (toastApi && typeof toastApi[type] === 'function') {
+			toastApi[type](text);
+			return;
+		}
+		if (toastApi && typeof toastApi.info === 'function') {
+			toastApi.info(text);
+		}
 	};
-	function removeToast(toast) { toast.addClass('removing'); setTimeout(() => toast.remove(), 300); }
+
+	const categoriesMap = <?= json_encode($categories, JSON_UNESCAPED_UNICODE) ?>;
+
+	function escapeHtml(value) {
+		return String(value ?? '')
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&#039;');
+	}
+
+	function formatDateFr(isoDate) {
+		if (!isoDate) return '—';
+		const parts = String(isoDate).split('-');
+		if (parts.length !== 3) return '—';
+		return parts[2] + '/' + parts[1] + '/' + parts[0];
+	}
+
+	function isExpiredAnnonce(annonce) {
+		if (!annonce || !annonce.expire_date) return false;
+		const today = new Date();
+		const now = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+		const exp = new Date(annonce.expire_date + 'T00:00:00');
+		return exp < now;
+	}
+
+	function statusClass(annonce) {
+		if (Number(annonce.is_active) !== 1) return 'inactive';
+		return isExpiredAnnonce(annonce) ? 'expired' : 'active';
+	}
+
+	function statusTitle(annonce) {
+		if (Number(annonce.is_active) !== 1) return 'Inactive';
+		return isExpiredAnnonce(annonce) ? 'Expirée' : 'Active';
+	}
+
+	function annonceSearchText(annonce) {
+		return [
+			annonce.title || '',
+			annonce.excerpt || '',
+			annonce.author || '',
+			annonce.category || ''
+		].join(' ').toLowerCase();
+	}
+
+	function ensureAnnonceList() {
+		let $list = $('#annoncesTable');
+		if ($list.length) return $list;
+
+		const $empty = $('#emptyAnnonceState');
+		if ($empty.length) $empty.remove();
+
+		$list = $('<ul class="annonce-list" id="annoncesTable"></ul>');
+		$('#annoncesContent').append($list);
+		return $list;
+	}
+
+	function getCurrentFilter() {
+		const $active = $('.filter-pill.active');
+		return $active.length ? String($active.data('filter')) : 'all';
+	}
+
+	function applyActiveFilters() {
+		const search = String($('#searchAnnonces').val() || '').toLowerCase();
+		const filter = getCurrentFilter();
+
+		$('#annoncesTable .annonce-item').each(function() {
+			const $row = $(this);
+			const text = String($row.data('search') || '');
+			const category = String($row.data('category') || '');
+			const matchesSearch = text.includes(search);
+			const matchesFilter = (filter === 'all') || (category === filter);
+			$row.toggle(matchesSearch && matchesFilter);
+		});
+	}
+
+	function renderAnnonceRow(annonce) {
+		const cat = categoriesMap[annonce.category] || categoriesMap.info;
+		const pinnedIcon = Number(annonce.is_pinned) === 1 ? '<i class="bi-pin-angle-fill pin-dot" title="Épinglée"></i>' : '';
+		const pinBtnIcon = Number(annonce.is_pinned) === 1 ? 'bi-pin-angle-fill text-yellow-400' : 'bi-pin-angle';
+		const pinBtnTitle = Number(annonce.is_pinned) === 1 ? 'Désépingler' : 'Épingler';
+		const activeBtnIcon = Number(annonce.is_active) === 1 ? 'bi-eye-fill text-green-400' : 'bi-eye-slash text-slate-500';
+		const activeBtnTitle = Number(annonce.is_active) === 1 ? 'Masquer' : 'Activer';
+		const expireText = annonce.expire_date
+			? ' <span class="' + (isExpiredAnnonce(annonce) ? 'text-red-400' : '') + '">→ ' + formatDateFr(annonce.expire_date) + '</span>'
+			: '';
+		const excerpt = annonce.excerpt || '';
+		const shortExcerpt = excerpt.length > 60 ? excerpt.slice(0, 60) + '…' : excerpt;
+
+		return `
+			<li class="annonce-item"
+				data-id="${Number(annonce.id)}"
+				data-category="${escapeHtml(annonce.category || 'info')}"
+				data-search="${escapeHtml(annonceSearchText(annonce))}">
+
+				<div class="annonce-status" title="${statusTitle(annonce)}">
+					<span class="status-dot ${statusClass(annonce)}"></span>
+				</div>
+
+				<div class="annonce-main">
+					<div class="annonce-title-row">
+						${pinnedIcon}
+						<span class="annonce-title">${escapeHtml(annonce.title || '')}</span>
+						<span class="shad-badge ${escapeHtml(cat.class)}" style="flex-shrink:0;">
+							<i class="${escapeHtml(cat.icon)} mr-1"></i>${escapeHtml(cat.label)}
+						</span>
+					</div>
+					<div class="annonce-meta">
+						<span class="annonce-meta-item"><i class="bi-person"></i> ${escapeHtml(annonce.author || '—')}</span>
+						<span class="annonce-meta-item"><i class="bi-calendar3"></i> ${formatDateFr(annonce.publish_date)}${expireText}</span>
+						${shortExcerpt ? '<span class="annonce-meta-item" style="color:#94a3b8;">— ' + escapeHtml(shortExcerpt) + '</span>' : ''}
+					</div>
+				</div>
+
+				<div class="annonce-actions">
+					<button class="shad-btn shad-btn-ghost shad-btn-icon editAnnonceBtn" data-id="${Number(annonce.id)}" title="Modifier">
+						<i class="bi-pencil"></i>
+					</button>
+					<button class="shad-btn shad-btn-ghost shad-btn-icon togglePinBtn" data-id="${Number(annonce.id)}" data-pinned="${Number(annonce.is_pinned)}" title="${pinBtnTitle}">
+						<i class="${pinBtnIcon}"></i>
+					</button>
+					<button class="shad-btn shad-btn-ghost shad-btn-icon toggleActiveBtn" data-id="${Number(annonce.id)}" data-active="${Number(annonce.is_active)}" title="${activeBtnTitle}">
+						<i class="${activeBtnIcon}"></i>
+					</button>
+					<button class="shad-btn shad-btn-ghost shad-btn-icon deleteAnnonceBtn" data-id="${Number(annonce.id)}" data-title="${escapeHtml(annonce.title || '')}" title="Supprimer">
+						<i class="bi-trash text-red-400"></i>
+					</button>
+				</div>
+			</li>
+		`;
+	}
+
+	function upsertAnnonceRow(annonce, prepend = false) {
+		const $list = ensureAnnonceList();
+		const rowHtml = renderAnnonceRow(annonce);
+		const $existing = $list.find('.annonce-item[data-id="' + Number(annonce.id) + '"]');
+		if ($existing.length) {
+			$existing.replaceWith(rowHtml);
+		} else if (prepend) {
+			$list.prepend(rowHtml);
+		} else {
+			$list.append(rowHtml);
+		}
+		applyActiveFilters();
+	}
+
+	function removeAnnonceRow(id) {
+		const $row = $('#annoncesTable .annonce-item[data-id="' + Number(id) + '"]');
+		$row.remove();
+		if (!$('#annoncesTable .annonce-item').length) {
+			$('#annoncesTable').remove();
+			$('#annoncesContent').append(
+				'<div class="text-center py-12" id="emptyAnnonceState">' +
+				'<i class="bi-megaphone text-4xl text-slate-500 mb-3 block"></i>' +
+				'<p class="text-slate-400 mb-2">Aucune annonce pour le moment.</p>' +
+				'<p class="text-slate-500 text-sm">Cliquez sur « Nouvelle Annonce » pour en créer une.</p>' +
+				'</div>'
+			);
+		}
+	}
 
 	// ============================================================
 	// Dialog Management
@@ -792,13 +911,7 @@ $(document).ready(function() {
 	// ============================================================
 	// Search
 	// ============================================================
-	$('#searchAnnonces').on('input', function() {
-		const search = $(this).val().toLowerCase();
-		$('#annoncesTable .annonce-item').each(function() {
-			const text = $(this).data('search') || '';
-			$(this).toggle(text.includes(search));
-		});
-	});
+	$('#searchAnnonces').on('input', applyActiveFilters);
 
 	// ============================================================
 	// Filter Pills
@@ -806,14 +919,7 @@ $(document).ready(function() {
 	$('.filter-pill').on('click', function() {
 		$('.filter-pill').removeClass('active');
 		$(this).addClass('active');
-		const filter = $(this).data('filter');
-		$('#annoncesTable .annonce-item').each(function() {
-			if (filter === 'all') {
-				$(this).show();
-			} else {
-				$(this).toggle($(this).data('category') === filter);
-			}
-		});
+		applyActiveFilters();
 	});
 
 	// ============================================================
@@ -844,7 +950,7 @@ $(document).ready(function() {
 	// ============================================================
 	// Edit Annonce — load data via AJAX
 	// ============================================================
-	$('.editAnnonceBtn').on('click', function() {
+	$(document).on('click', '.editAnnonceBtn', function() {
 		const id = $(this).data('id');
 		
 		// Fetch data
@@ -884,7 +990,7 @@ $(document).ready(function() {
 	// ============================================================
 	// Toggle Pin
 	// ============================================================
-	$('.togglePinBtn').on('click', function() {
+	$(document).on('click', '.togglePinBtn', function() {
 		const btn = $(this);
 		const id = btn.data('id');
 		const currentlyPinned = btn.data('pinned');
@@ -897,7 +1003,19 @@ $(document).ready(function() {
 		}, function(data) {
 			if (data.success) {
 				showToast('success', 'Succès', data.message);
-				setTimeout(() => location.reload(), 800);
+				btn.data('pinned', currentlyPinned ? 0 : 1);
+				const $icon = btn.find('i');
+				if (currentlyPinned) {
+					$icon.attr('class', 'bi-pin-angle');
+					btn.attr('title', 'Épingler');
+					btn.closest('.annonce-item').find('.pin-dot').remove();
+				} else {
+					$icon.attr('class', 'bi-pin-angle-fill text-yellow-400');
+					btn.attr('title', 'Désépingler');
+					if (!btn.closest('.annonce-item').find('.pin-dot').length) {
+						btn.closest('.annonce-item').find('.annonce-title-row').prepend('<i class="bi-pin-angle-fill pin-dot" title="Épinglée"></i>');
+					}
+				}
 			} else {
 				showToast('error', 'Erreur', data.message || 'Erreur');
 			}
@@ -909,7 +1027,7 @@ $(document).ready(function() {
 	// ============================================================
 	// Toggle Active
 	// ============================================================
-	$('.toggleActiveBtn').on('click', function() {
+	$(document).on('click', '.toggleActiveBtn', function() {
 		const btn = $(this);
 		const id = btn.data('id');
 		const currentlyActive = btn.data('active');
@@ -922,7 +1040,14 @@ $(document).ready(function() {
 		}, function(data) {
 			if (data.success) {
 				showToast('success', 'Succès', data.message);
-				setTimeout(() => location.reload(), 800);
+				const newActive = currentlyActive ? 0 : 1;
+				btn.data('active', newActive);
+				btn.attr('title', newActive ? 'Masquer' : 'Activer');
+				btn.find('i').attr('class', newActive ? 'bi-eye-fill text-green-400' : 'bi-eye-slash text-slate-500');
+				const $row = btn.closest('.annonce-item');
+				const $dot = $row.find('.status-dot');
+				$dot.removeClass('active inactive expired').addClass(newActive ? 'active' : 'inactive');
+				$row.find('.annonce-status').attr('title', newActive ? 'Active' : 'Inactive');
 			} else {
 				showToast('error', 'Erreur', data.message || 'Erreur');
 			}
@@ -934,7 +1059,7 @@ $(document).ready(function() {
 	// ============================================================
 	// Delete Annonce
 	// ============================================================
-	$('.deleteAnnonceBtn').on('click', function() {
+	$(document).on('click', '.deleteAnnonceBtn', function() {
 		const id = $(this).data('id');
 		const title = $(this).data('title');
 		$('#deleteId').val(id);
@@ -945,9 +1070,93 @@ $(document).ready(function() {
 	// ============================================================
 	// Form Submissions
 	// ============================================================
-	$('#formAddAnnonce').on('submit', function() { showToast('info', 'Publication...', 'Création de l\'annonce en cours.'); });
-	$('#formEditAnnonce').on('submit', function() { showToast('info', 'Enregistrement...', 'Mise à jour en cours.'); });
-	$('#formDeleteAnnonce').on('submit', function() { showToast('info', 'Suppression...', 'Suppression en cours.'); });
+	$('#formAddAnnonce').on('submit', function(e) {
+		e.preventDefault();
+		showToast('info', 'Publication...', 'Création de l\'annonce en cours.');
+		const form = this;
+		const formData = new FormData(form);
+
+		$.ajax({
+			url: $(form).attr('action'),
+			type: 'POST',
+			data: formData,
+			processData: false,
+			contentType: false,
+			headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+			dataType: 'json'
+		}).done(function(data) {
+			if (!data || !data.success) {
+				showToast('error', 'Erreur', (data && data.message) ? data.message : 'Erreur lors de la création.');
+				return;
+			}
+			if (data.annonce) {
+				upsertAnnonceRow(data.annonce, true);
+			}
+			showToast('success', 'Création réussie', data.message || 'Annonce publiée avec succès.');
+			form.reset();
+			$('#imageAddPreview').hide().attr('src', '');
+			$('#imageAddPlaceholder').show();
+			$('#addAnnonceDialog').removeClass('active');
+		}).fail(function(xhr) {
+			const msg = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'Erreur serveur.';
+			showToast('error', 'Erreur', msg);
+		});
+	});
+
+	$('#formEditAnnonce').on('submit', function(e) {
+		e.preventDefault();
+		showToast('info', 'Enregistrement...', 'Mise à jour en cours.');
+		const form = this;
+		const formData = new FormData(form);
+
+		$.ajax({
+			url: $(form).attr('action'),
+			type: 'POST',
+			data: formData,
+			processData: false,
+			contentType: false,
+			headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+			dataType: 'json'
+		}).done(function(data) {
+			if (!data || !data.success) {
+				showToast('error', 'Erreur', (data && data.message) ? data.message : 'Erreur lors de la modification.');
+				return;
+			}
+			if (data.annonce) {
+				upsertAnnonceRow(data.annonce, false);
+			}
+			showToast('success', 'Modification réussie', data.message || 'Annonce mise à jour avec succès.');
+			$('#editAnnonceDialog').removeClass('active');
+		}).fail(function(xhr) {
+			const msg = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'Erreur serveur.';
+			showToast('error', 'Erreur', msg);
+		});
+	});
+
+	$('#formDeleteAnnonce').on('submit', function(e) {
+		e.preventDefault();
+		showToast('info', 'Suppression...', 'Suppression en cours.');
+		const form = this;
+
+		$.ajax({
+			url: $(form).attr('action'),
+			type: 'POST',
+			data: $(form).serialize(),
+			headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+			dataType: 'json'
+		}).done(function(data) {
+			if (!data || !data.success) {
+				showToast('error', 'Erreur', (data && data.message) ? data.message : 'Erreur lors de la suppression.');
+				return;
+			}
+			removeAnnonceRow(data.id || $('#deleteId').val());
+			showToast('success', 'Suppression réussie', data.message || 'Annonce supprimée.');
+			$('#deleteAnnonceDialog').removeClass('active');
+		}).fail(function(xhr) {
+			const msg = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'Erreur serveur.';
+			showToast('error', 'Erreur', msg);
+		});
+	});
 
 	// ============================================================
 	// URL Params for Toast
