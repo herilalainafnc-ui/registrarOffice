@@ -20,6 +20,32 @@ if (!defined('GOOGLE_CLIENT_ID')) {
     define('GOOGLE_CLIENT_ID', '550229299869-on5vquosgbipt9d5g3afpuuj50a9t2i1.apps.googleusercontent.com');
 }
 
+// IMAP externe (boite dediee) - valeurs par defaut, surchargeables via config.local.php
+if (!defined('MAILBOX_IMAP_ENABLED')) {
+    define('MAILBOX_IMAP_ENABLED', true);
+}
+if (!defined('MAILBOX_IMAP_HOST')) {
+    define('MAILBOX_IMAP_HOST', 'imap.gmail.com');
+}
+if (!defined('MAILBOX_IMAP_PORT')) {
+    define('MAILBOX_IMAP_PORT', 993);
+}
+if (!defined('MAILBOX_IMAP_ENCRYPTION')) {
+    define('MAILBOX_IMAP_ENCRYPTION', 'ssl');
+}
+if (!defined('MAILBOX_IMAP_USERNAME')) {
+    define('MAILBOX_IMAP_USERNAME', 'no-reply@zurcher.edu.mg');
+}
+if (!defined('MAILBOX_IMAP_PASSWORD')) {
+    define('MAILBOX_IMAP_PASSWORD', 'nkoo ghyw efjo mpkl');
+}
+if (!defined('MAILBOX_IMAP_INBOX_FOLDER')) {
+    define('MAILBOX_IMAP_INBOX_FOLDER', 'INBOX');
+}
+if (!defined('MAILBOX_IMAP_SENT_FOLDER')) {
+    define('MAILBOX_IMAP_SENT_FOLDER', '[Gmail]/Sent Mail');
+}
+
 // Charger la configuration locale si elle existe (pour le développement)
 if (file_exists(__DIR__ . '/config.local.php')) {
     require_once __DIR__ . '/config.local.php';

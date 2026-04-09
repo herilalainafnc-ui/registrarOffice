@@ -1,22 +1,31 @@
 <?php
 
-	$yearFinance = $_POST['yearFinance'];
-	$semestreFinance = $_POST['semestreFinance'];
-	$types = $_POST['types'];
-	$level = $_POST['level'];
+	$yearFinance = trim((string)($_POST['yearFinance'] ?? ''));
+	$semestreFinance = trim((string)($_POST['semestreFinance'] ?? ''));
+	$types = trim((string)($_POST['types'] ?? 'TOUT'));
+	$level = trim((string)($_POST['level'] ?? 'TOUT'));
 
-	$printName = "FINANCE_ETUDIANT".$yearFinance."_Sem".$semestreFinance;
+	$printName = "FINANCE_ETUDIANT" . $yearFinance . "_Sem" . $semestreFinance;
 
+	$verifySession = $dtb->prepare('SELECT * FROM t_2023_session WHERE session_semester = :semester AND session_year = :year LIMIT 1');
+	$verifySession->execute([
+		'semester' => $semestreFinance,
+		'year' => $yearFinance,
+	]);
+	$showSession = $verifySession->fetch(PDO::FETCH_ASSOC);
 
-	$verifySession = $dtb->query('SELECT * FROM t_2023_session WHERE session_semester ="'.$semestreFinance.'" AND session_year="'.$yearFinance.'"');
-	$showSession = $verifySession->fetch();
-
-	$session_id = $showSession['session_id'];
+	$session_id = (int)($showSession['session_id'] ?? 0);
 	
  ?>
 
 <div class="">
-	<b>État financier de l'étudiant inscrit en année <?=$yearFinance?> - <?=$showSession['session_name']?></b>
+	<b>État financier de l'étudiant inscrit en année <?=$yearFinance?> - <?=($showSession['session_name'] ?? 'Session introuvable')?></b>
+	<?php if ($session_id <= 0): ?>
+		<p class="text-red-600 text-xs mt-2">Session introuvable pour l'annee/semestre selectionnes.</p>
+		<?php require('../init/.forPrint/foot.forPrint.php'); ?>
+		<?php return; ?>
+	<?php endif; ?>
+
 	<table class="simpleTbl tbl text-[8px]">
 		<thead class="text-center">
 			<tr>
@@ -52,128 +61,134 @@
 			</tr>
 		</thead>
 		<tbody>
-<?php 
+<?php
+	$studentSql = 'SELECT DISTINCT
+			ins.student_id,
+			ins.etude_mention,
+			ins.niveau_std,
+			std.student_nom,
+			std.student_prenom,
+			std.abonment,
+			std.sponsor_nom
+		FROM t_2024_inscription_session ins
+		INNER JOIN tbl_2024_etudiant std ON ins.student_id = std.student_id
+		WHERE ins.session_id = :session_id
+		  AND ins.etude_mention IN (SELECT filiere_sigle FROM filiere WHERE filiere_sigle != "CPRE" AND filiere_sigle != "EDUC")
+		  AND (std.suspended IS NULL OR std.suspended != 1)
+		  AND (std.retrait_universite IS NULL OR std.retrait_universite = 0)';
 
-if ($types == 'TOUT') {
-	if ($level == 'TOUT') {
-		//$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id = "'.$session_id.'" ORDER BY student_id');
-		$findFinance = $dtb->query('
-    SELECT f.*
-    FROM t_2024_etudiant_finace f
-    INNER JOIN (
-        SELECT student_id, session_id, MAX(id) AS id_ref
-        FROM t_2024_etudiant_finace
-        WHERE session_id = "'.$session_id.'"
-        GROUP BY student_id, session_id) x ON f.id = x.id_ref ORDER BY f.student_id');
-	}else{
-		//$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id ="'.$session_id.'" AND level = "'.$level.'" ORDER BY student_id');
-		$findFinance = $dtb->query('
-    SELECT f.*
-    FROM t_2024_etudiant_finace f
-    INNER JOIN (
-        SELECT student_id, session_id, MAX(id) AS id_ref
-        FROM t_2024_etudiant_finace
-        WHERE session_id = "'.$session_id.'"
-		AND level = "'.$level.'"
-        GROUP BY student_id, session_id) x ON f.id = x.id_ref ORDER BY f.student_id');	
+	$studentParams = ['session_id' => $session_id];
+
+	if ($types !== 'TOUT' && $types !== '') {
+		$studentSql .= ' AND ins.etude_mention = :mention';
+		$studentParams['mention'] = $types;
 	}
-}else{
-	if ($level == 'TOUT') {
-		//$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id ="'.$session_id.'" AND mention = "'.$types.'" ORDER BY student_id');
-		$findFinance = $dtb->query('
-    SELECT f.*
-    FROM t_2024_etudiant_finace f
-    INNER JOIN (
-        SELECT student_id, session_id, MAX(id) AS id_ref
-        FROM t_2024_etudiant_finace
-        WHERE  session_id ="'.$session_id.'" 
-		AND mention = "'.$types.'"
-        GROUP BY student_id, session_id) x ON f.id = x.id_ref ORDER BY f.student_id');
-	}else{
-		//$findFinance = $dtb->query('SELECT * FROM t_2024_etudiant_finace WHERE session_id ="'.$session_id.'" AND mention = "'.$types.'"  AND level = "'.$level.'" ORDER BY student_id');
-		$findFinance = $dtb->query('
-    SELECT f.*
-    FROM t_2024_etudiant_finace f
-    INNER JOIN (
-        SELECT student_id, session_id, MAX(id) AS id_ref
-        FROM t_2024_etudiant_finace
-        WHERE  session_id ="'.$session_id.'" 
-		AND mention = "'.$types.'"  
-		AND level = "'.$level.'"
-        GROUP BY student_id, session_id) x ON f.id = x.id_ref ORDER BY f.student_id');
+
+	if ($level !== 'TOUT' && $level !== '') {
+		$studentSql .= ' AND ins.niveau_std = :level';
+		$studentParams['level'] = (int)$level;
 	}
-}
+
+	$studentSql .= ' ORDER BY ins.student_id';
+
+	$findStudents = $dtb->prepare($studentSql);
+	$findStudents->execute($studentParams);
+
+	$findFinanceByStudent = $dtb->prepare('SELECT * FROM t_2024_etudiant_finace WHERE session_id = :session_id AND student_id = :student_id ORDER BY id DESC LIMIT 1');
+
+	$findCours = $dtb->prepare('SELECT * FROM t_2023_notes WHERE student_id = :student_id AND session_id = :session_id AND remove != 1');
+	$findSource = $dtb->prepare('SELECT * FROM t_2023_cours WHERE id = :id');
+
 	$nbrF = 1;
 	$gttl = 0;
-	while ($showF = $findFinance->fetch()) {
-	$student_id = $showF['student_id'];
-	
-	$findStd = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE student_id = "'.$student_id.'"');
-	$showStd = $findStd->fetch();
 
-	$findCours = $dtb->query('SELECT * FROM t_2023_notes WHERE student_id ="'.$student_id.'" AND session_id = "'.$session_id.'" AND remove != 1');
+	while ($showStd = $findStudents->fetch(PDO::FETCH_ASSOC)) {
+		$student_id = (string)$showStd['student_id'];
+
+		$findFinanceByStudent->execute([
+			'session_id' => $session_id,
+			'student_id' => $student_id,
+		]);
+		$showF = $findFinanceByStudent->fetch(PDO::FETCH_ASSOC) ?: [];
+
+		$findCours->execute([
+			'student_id' => $student_id,
+			'session_id' => $session_id,
+		]);
 
 		$nb_crd = 0;
 		$ttl_cout = 0;
 		$ttl_lab = 0;
 		$n_lab = 0;
-		while ($showCrs = $findCours->fetch()) {
-			$idCours = $showCrs['id_cours'];
-		
-			$findSource = $dtb->query('SELECT * FROM t_2023_cours WHERE id = "'.$idCours.'"');
-			$showSrc = $findSource->fetch();
-			
-			$nb_crd += $showCrs['credit'];
-			$ttl_cout =+ $ttl_cout + $showSrc['cout'];
 
-			if (!empty($showSrc['cout_lab']) AND $showSrc['cout_lab'] != 0) {							
-				$n_lab++;
-				
-				if ($n_lab <= 2) {
-					$ttl_lab += $showSrc['cout_lab'];
-				}
-
+		while ($showCrs = $findCours->fetch(PDO::FETCH_ASSOC)) {
+			$idCours = (int)($showCrs['id_cours'] ?? 0);
+			if ($idCours <= 0) {
+				continue;
 			}
-		}	
+
+			$findSource->execute(['id' => $idCours]);
+			$showSrc = $findSource->fetch(PDO::FETCH_ASSOC) ?: [];
+
+			$nb_crd += (int)($showCrs['credit'] ?? 0);
+			$ttl_cout += (float)($showSrc['cout'] ?? 0);
+
+			$coutLab = (float)($showSrc['cout_lab'] ?? 0);
+			if ($coutLab != 0) {
+				$n_lab++;
+				if ($n_lab <= 2) {
+					$ttl_lab += $coutLab;
+				}
+			}
+		}
+
+		$coutFraixGeneraux = (float)($showF['cout_fraix_generaux'] ?? 0);
+		$coutLogement = (float)($showF['cout_logement'] ?? 0);
+		$coutFondDepot = (float)($showF['cout_fondDepot_dortoir'] ?? 0);
+		$coutAbonment = (float)($showF['cout_abonment'] ?? 0);
+		$coutVoyage = (float)($showF['cout_voyage'] ?? 0);
+		$coutGraduation = (float)($showF['cout_frais_graduation'] ?? 0);
+		$ttl = $coutFraixGeneraux + $ttl_cout + $ttl_lab + $coutLogement + $coutFondDepot + $coutAbonment + $coutVoyage + $coutGraduation;
 
  ?>
 			<tr style="<?php if ($ttl_cout == 0) { echo "background-color: #e87c68"; }?>">
 				<td><?=$nbrF?></td>
 				<td><?=$student_id?></td>
 				<td><?=$showStd['student_nom']." ".$showStd['student_prenom']?></td>
-				<td><?=$showF['mention']?></td>
-				<td><?=$showF['cout_fraix_generaux']?></td>
+				<td><?=($showF['mention'] ?? $showStd['etude_mention'])?></td>
+				<td><?=$coutFraixGeneraux?></td>
 				<td><?=$nb_crd?></td>
 				<td><?=$ttl_cout?></td>
 				<td><?=$ttl_lab?></td>
-				<td><?=$showF['status']?></td>
-				<td><?=$showF['cout_logement']?></td>
-				<td><?=$showF['cout_fondDepot_dortoir']?></td>
+				<td><?=($showF['status'] ?? '')?></td>
+				<td><?=$coutLogement?></td>
+				<td><?=$coutFondDepot?></td>
 				<td><?php if($showStd['abonment']==1){ echo "Abonné";}?></td>
-				<td><?=$showF['cout_abonment']?></td>
-				<td><?=$showF['cout_voyage']?></td>
+				<td><?=$coutAbonment?></td>
+				<td><?=$coutVoyage?></td>
 				<?php if ($semestreFinance != 1) { ?>
-				<td><?=$showF['cout_frais_graduation']?></td>
+				<td><?=$coutGraduation?></td>
 				<?php } ?>
-				<td><?=$ttl = $showF['cout_fraix_generaux']+$ttl_cout+$ttl_lab+$showF['cout_logement']+$showF['cout_fondDepot_dortoir']+$showF['cout_abonment']+$showF['cout_voyage']+$showF['cout_frais_graduation']?></td>
-				<td><?=$showF['mode_payement']?></td>
+				<td><?=$ttl?></td>
+				<td><?=($showF['mode_payement'] ?? '')?></td>
 				<td><?php
-if ($showF['mode_payement']== 'A') {
+			$modePayement = (string)($showF['mode_payement'] ?? '');
+if ($modePayement == 'A') {
 	echo ' <em class="text-[5px]">100%</em>';
-}elseif ($showF['mode_payement']== 'B') {
+}elseif ($modePayement == 'B') {
 	echo ' <em class="text-[5px]">50%,50%</em>';
-}elseif ($showF['mode_payement']== 'C') {
+}elseif ($modePayement == 'C') {
 	echo ' <em class="text-[5px]">75%,25%</em>';
-}elseif ($showF['mode_payement']== 'D') {
+}elseif ($modePayement == 'D') {
 	echo ' <em class="text-[5px]">40%,30%,30%</em>';
-}elseif ($showF['mode_payement']== 'E') {
+}elseif ($modePayement == 'E') {
 	echo ' <em class="text-[5px]">25%,25%,25%,25%</em>';
 }			
 			?>	</td>
 				<td><?=$showStd['sponsor_nom']?></td>
 			</tr>
 <?php
-	$gttl =+ $gttl + $ttl;
+	$gttl += $ttl;
 	$nbrF++;
 	}
  ?>

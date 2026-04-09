@@ -51,7 +51,7 @@ class BaseController {
         }
 
         if (!$allowed) {
-            $defaultMessage = "Vous n'avez pas les privileges necessaires pour acceder a cette ressource.";
+            $defaultMessage = "Vous n'avez pas les privileges necessaires pour acceder à cette ressource.";
             $this->forbidden($message ?: $defaultMessage);
         }
     }

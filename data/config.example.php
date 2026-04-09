@@ -24,3 +24,16 @@ define('DB_DSN', 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=' . 
 
 // Google OAuth Client ID (pour connexion étudiants @zurcher.edu.mg)
 define('GOOGLE_CLIENT_ID', '550229299869-on5vquosgbipt9d5g3afpuuj50a9t2i1.apps.googleusercontent.com');
+
+// ============================================================================
+// BOITE EXTERNE IMAP (GMAIL)
+// ============================================================================
+// Activer la connexion IMAP pour lire INBOX et Sent avec un compte dedie.
+define('MAILBOX_IMAP_ENABLED', false);
+define('MAILBOX_IMAP_HOST', 'imap.gmail.com');
+define('MAILBOX_IMAP_PORT', 993);
+define('MAILBOX_IMAP_ENCRYPTION', 'ssl'); // ssl | tls | none
+define('MAILBOX_IMAP_USERNAME', 'no-reply@zurcher.edu.mg');
+define('MAILBOX_IMAP_PASSWORD', 'APP_PASSWORD_ICI');
+define('MAILBOX_IMAP_INBOX_FOLDER', 'INBOX');
+define('MAILBOX_IMAP_SENT_FOLDER', '[Gmail]/Sent Mail');
