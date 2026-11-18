@@ -4,6 +4,8 @@ Infinit Registrar est l’application de gestion des services de scolarité de
 l’Université Adventiste Zurcher. Elle regroupe les espaces du registrariat,
 des enseignants, des étudiants et des autres services de l’université.
 
+**Créateur : Jimmy Lovasoa Ramahoherilalaina**
+
 L’application principale est écrite en PHP et s’appuie sur MySQL. Une version
 de bureau facultative utilise Electron pour lancer la même application PHP dans
 une fenêtre native.
