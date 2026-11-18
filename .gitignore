@@ -51,6 +51,7 @@
 /data/ETUDIANT.import.xlsx
 /data/account_code_unmatched.tsv
 /data/account_code_corrections_template.tsv
+/data/modeles/canevas-mesupres.xlsx
 
 # ---- Exports et archives volumineux ----
 # Un export de base ou une archive de photos depasse la limite de 100 Mo par
