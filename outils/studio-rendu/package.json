@@ -1,0 +1,15 @@
+{
+  "name": "uaz-studio-rendu",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Studio UAZ : service de rendu des visuels (Chromium sans interface, Playwright), a l'ecoute de 127.0.0.1 seulement.",
+  "type": "module",
+  "main": "serveur.js",
+  "scripts": {
+    "start": "node serveur.js"
+  },
+  "dependencies": {
+    "playwright-core": "1.49.1"
+  },
+  "license": "UNLICENSED"
+}

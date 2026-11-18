@@ -1,0 +1,51 @@
+<div class="w-full grid gap-2 grid-cols-2">
+<?php require_once(__DIR__ . '/../../data/etudiants.annee.php'); // inscrits de l'annee
+ 
+	$yearTicket = $_POST['yearTicket'];
+	$types = $_POST['types'];
+	$level = $_POST['level'];
+
+	$printName = "TICKET_EMAIL_ETUDIANT";
+	if ($types == "TOUT") {
+		$student = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE '.etudiantsDeLAnnee($dtb, $yearTicket, true).' AND annee_etude = 1 ORDER BY student_id');
+	}else{
+		$student = $dtb->query('SELECT * FROM tbl_2024_etudiant WHERE '.etudiantsDeLAnnee($dtb, $yearTicket, true).' AND annee_etude = 1 AND etude_envisage='.$dtb->quote($types).' ORDER BY student_id');
+	}
+	
+
+	while ($afficher = $student->fetch()){
+?>
+	
+	<div class="w-full border-1 border-black" style="page-break-inside: avoid;">
+		
+		<div class="px-2 h-[76.5px]">
+			<b> <?=$afficher['student_id']?></b><br>
+			<b class="text-sm"> <?=strtoupper($afficher['student_nom'])." ".$afficher['student_prenom']?></b><br>
+			<p class="text-xs"><?=$afficher['etude_envisage']." - ".$afficher['etude_option']?></p>
+		</div>
+
+		<hr class="m-0">
+		
+		<div class="text-center text-sm">
+			Votre accès à l'adresse Email Zurcher			
+		</div>
+
+		<hr class="m-0">
+		
+		<div class="px-2 bg-slate-100 text-center text-sm h-[42px]">	
+			<label></label><b> <?=$afficher['student_email']?></b><br>
+			<label>Password : </label><b> <?=$afficher['password']?></b>
+		</div>
+
+		<hr class="m-0">
+
+		<div class="px-2 text-sm text-bold">
+			<em>Veuillez garder ce ticket car le contenu est sensible!</em>
+		</div>
+
+	</div>
+
+<?php 
+	}
+?>	
+</div>

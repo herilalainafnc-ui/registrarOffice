@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<!-- Rien d'autre que les fichiers du Studio : ni police, ni image, ni script d'ailleurs. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'">
+<title>Studio UAZ — rendu</title>
+<!--
+	La page que le service de rendu (outils/studio-rendu/) ouvre dans Chromium
+	pour exporter un visuel : la meme charte et le meme moteur que l'apercu de
+	l'editeur (src/studio.php). Le service lui passe le preset, le format, les
+	donnees et les images par StudioPage.rendre(), puis photographie le visuel
+	(PNG, JPG) ou l'imprime (PDF) apres StudioPage.imprimer() : une page par
+	visuel et, pour l'imprimeur, le fond perdu et les traits de coupe.
+-->
+<link rel="stylesheet" href="charte.css">
+<style>
+	html, body { margin: 0; padding: 0; background: #FFFFFF; }
+	#visuel { display: inline-block; vertical-align: top; }
+</style>
+<script src="vendor/qrcode-generator.js"></script>
+<script src="studio-schema.js"></script>
+<script src="studio-rendu.js"></script>
+</head>
+<body>
+<div id="visuel"></div>
+<script>
+	const MM = 96 / 25.4;   // px par millimetre (CSS : 96 px par pouce)
+
+	/* Les traits de coupe d'une planche : dans la marge, alignes sur le format fini
+	   (a « bord » du bord de la feuille), 5 mm de long, arretes 1 mm avant le fond perdu. */
+	function traits(planche, l, h, bord) {
+		const epais = 0.25 * 96 / 72;   // 0,25 pt
+		const debut = 1 * MM, long = 5 * MM;
+		const trait = (x, y, w, hh) => {
+			const t = document.createElement('div');
+			t.style.cssText = 'position:absolute;background:#000000;left:' + x + 'px;top:' + y + 'px;width:' + w + 'px;height:' + hh + 'px';
+			planche.appendChild(t);
+		};
+		[bord, l - bord].forEach((x) => {
+			trait(x - epais / 2, debut, epais, long);
+			trait(x - epais / 2, h - debut - long, epais, long);
+		});
+		[bord, h - bord].forEach((y) => {
+			trait(debut, y - epais / 2, long, epais);
+			trait(l - debut - long, y - epais / 2, long, epais);
+		});
+	}
+
+	window.StudioPage = {
+		/* d : { preset, format, donnees, images, fondPerdu, titre } ; renvoie le rapport, ok = exportable. */
+		async rendre(d) {
+			if (d.titre) { document.title = String(d.titre); }   // le titre du PDF
+			const schema = await (await fetch('presets/preset.schema.json')).json();
+			const v = StudioSchema.valider(d.preset, schema);
+			if (!v.ok) { return { ok: false, erreurs: v.erreurs, manquants: [], debordements: [], avertissements: [] }; }
+			const r = await StudioRendu.rendre(document.getElementById('visuel'), {
+				preset: d.preset, format: d.format, donnees: d.donnees, images: d.images, base: '', apercu: false, fondPerdu: d.fondPerdu || 0, miseEnPage: d.miseEnPage || {}, blocs: d.blocs || [],
+			});
+			return {
+				ok: r.manquants.length === 0 && r.debordements.length === 0,
+				erreurs: [], manquants: r.manquants, debordements: r.debordements, avertissements: r.avertissements,
+				pages: r.pages, largeur: r.racine.offsetWidth, hauteur: r.racine.offsetHeight,
+			};
+		},
+		/* Avant page.pdf() : une page de PDF par visuel ; avec « traits », chaque visuel
+		   (deja rendu avec son fond perdu) au centre d'une feuille dont le format fini
+		   commence a 10 mm du bord. Renvoie la taille de la page, en px. */
+		imprimer(o) {
+			const visuels = Array.from(document.querySelectorAll('#visuel .uaz-visuel'));
+			const bord = o.traits ? 10 * MM : 0;
+			const marge = o.traits ? bord - (o.fondPerdu || 0) : 0;
+			const l = visuels[0].offsetWidth + 2 * marge, h = visuels[0].offsetHeight + 2 * marge;
+			visuels.forEach((v) => {
+				const page = document.createElement('div');
+				page.className = 'planche';
+				page.style.cssText = 'position:relative;overflow:hidden;box-sizing:border-box;background:#FFFFFF;padding:' + marge + 'px';
+				v.replaceWith(page);
+				page.appendChild(v);
+				if (o.traits) { traits(page, l, h, bord); }
+			});
+			this.impression = { traits: !!o.traits, l, h };
+			return this.taillePage(l, h);
+		},
+		/* Chrome cale la page du PDF sur sa propre grille (au plus 1 px de plus ou de
+		   moins) : sans rien faire, un filet blanc borderait le bas ou la droite. Le
+		   moteur (outils/studio-rendu/moteur.js) lit la taille obtenue et la redonne ici :
+		   la page prend cette taille et le visuel, mis a l'echelle (0,1 % au plus), la
+		   couvre entiere. Pour l'imprimeur, la marge blanche de la feuille absorbe l'ecart
+		   et les traits de coupe restent sur le format fini. */
+		taillePage(L, H) {
+			const { traits: avecTraits, l, h } = this.impression;
+			const k = Math.max(L / l, H / h);
+			const pages = Array.from(document.querySelectorAll('#visuel .planche'));
+			pages.forEach((page) => {
+				page.style.width = L + 'px';
+				page.style.height = H + 'px';
+				const v = page.querySelector('.uaz-visuel');
+				if (!avecTraits) { v.style.transformOrigin = '0 0'; v.style.transform = 'scale(' + k + ')'; }
+			});
+			let style = document.getElementById('studioPage');
+			if (!style) { style = document.createElement('style'); style.id = 'studioPage'; document.head.appendChild(style); }
+			style.textContent = '@page { size: ' + L + 'px ' + H + 'px; margin: 0 }'
+				+ ' html, body { margin: 0; background: #FFFFFF }'
+				+ ' #visuel { display: block }'
+				+ ' .uaz-document { display: block }'
+				+ ' .uaz-document > :not(:last-child) { break-after: page }';
+			/* le visuel couvre-t-il toute sa page ? (le moteur refuse sinon) */
+			const couvre = avecTraits || pages.every((page) => {
+				const a = page.querySelector('.uaz-visuel').getBoundingClientRect(), b = page.getBoundingClientRect();
+				return a.left <= b.left + 0.01 && a.top <= b.top + 0.01 && a.right >= b.right - 0.01 && a.bottom >= b.bottom - 0.01;
+			});
+			return { largeur: L, hauteur: H, pages: pages.length, couvre };
+		},
+	};
+</script>
+</body>
+</html>

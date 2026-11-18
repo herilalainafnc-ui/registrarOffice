@@ -1,0 +1,635 @@
+/* =============================================================================
+   Autorisation de réinscription — /finance/authorized-reinscription
+
+   Préfixe « rsn- ».
+
+   Palette de l'application (init/head.php) : bleu nuit, accent cyan. Toutes
+   les couleurs passent par des variables redéfinies sous [data-theme="light"],
+   déjà vérifiées au contraste sur la page des mentions : titres 12,9:1 à
+   18,1:1, textes sourds 4,9:1 à 5,4:1, accents 5,9:1 à 6,9:1.
+
+   CHAMPS : POURQUOI DES !important
+   init/head.php impose en mode clair
+     [data-theme="light"] input:not([type="checkbox"])… { background:#fff !important }
+   et ne déclare rien en mode sombre : le navigateur y peignait alors le champ
+   de recherche selon le thème du SYSTÈME, d'où le champ blanc sur la page
+   sombre de la capture. Les deux thèmes sont donc déclarés ici avec la même
+   arme, et color-scheme suit le thème.
+   ========================================================================== */
+
+.rsn-page {
+	--rsn-fond-carte:   rgba(13, 31, 60, .72);
+	--rsn-bord:         rgb(var(--c-line-strong) / .9);
+	--rsn-bord-fort:    rgb(var(--c-line-strong) / .9);
+	--rsn-champ:        rgba(10, 22, 40, .78);
+	--rsn-champ-bord:   rgb(var(--c-line-strong) / .6);
+	--rsn-ligne-survol: rgba(61, 106, 138, .16);
+	--rsn-entete:       rgba(10, 22, 40, .96);
+
+	--rsn-titre:  #e8f1f8;
+	--rsn-texte:  #cbd9e6;
+	--rsn-doux:   #8eb8d4;
+	--rsn-faible: #6b9abb;
+
+	--rsn-accent:      rgb(var(--c-accent));
+	--rsn-accent-fond: rgb(var(--c-accent) / .14);
+	--rsn-accent-bord: rgb(var(--c-accent) / .36);
+
+	--rsn-ok:          #34d399;
+	--rsn-ok-fond:     rgba(16, 185, 129, .14);
+	--rsn-ok-bord:     rgba(16, 185, 129, .34);
+
+	--rsn-alerte:      #fb923c;
+	--rsn-alerte-fond: rgba(249, 115, 22, .12);
+	--rsn-alerte-bord: rgba(249, 115, 22, .34);
+
+	--rsn-danger:      #fca5a5;
+	--rsn-danger-fond: rgba(239, 68, 68, .12);
+	--rsn-danger-bord: rgba(239, 68, 68, .38);
+
+	--rsn-voile: rgba(4, 10, 20, .62);
+	--rsn-ombre: 0 18px 50px rgba(0, 0, 0, .45);
+	--rsn-scheme: dark;
+
+	color: var(--rsn-texte);
+	padding: 1.1rem 1rem 2rem;
+}
+
+[data-theme="light"] .rsn-page {
+	--rsn-fond-carte:   rgb(var(--c-surface));
+	--rsn-bord:         rgb(var(--c-line));
+	--rsn-bord-fort:    rgb(var(--c-line-strong));
+	--rsn-champ:        rgb(var(--c-surface));
+	--rsn-champ-bord:   rgb(var(--c-line-strong));
+	--rsn-ligne-survol: rgb(var(--c-surface));
+	--rsn-entete:       rgb(var(--c-surface));
+
+	--rsn-titre:  rgb(var(--c-text));
+	--rsn-texte:  rgb(var(--c-text));
+	--rsn-doux:   rgb(var(--c-text-3));
+	--rsn-faible: #456f8c;
+
+	--rsn-accent:      rgb(var(--c-accent-strong));
+	--rsn-accent-fond: rgb(var(--c-accent-strong) / .08);
+	--rsn-accent-bord: rgb(var(--c-accent) / .3);
+
+	--rsn-ok:          #047857;
+	--rsn-ok-fond:     rgba(4, 120, 87, .08);
+	--rsn-ok-bord:     rgba(4, 120, 87, .28);
+
+	--rsn-alerte:      #b45309;
+	--rsn-alerte-fond: #fef6e7;
+	--rsn-alerte-bord: #f0c977;
+
+	--rsn-danger:      #b91c1c;
+	--rsn-danger-fond: #fef2f2;
+	--rsn-danger-bord: #fca5a5;
+
+	--rsn-voile: rgba(10, 22, 40, .45);
+	--rsn-ombre: 0 18px 50px rgba(10, 22, 40, .18);
+	--rsn-scheme: light;
+}
+
+/* ---------- En-tête ---------- */
+
+.rsn-entete {
+	display: flex;
+	align-items: flex-start;
+	gap: .9rem;
+	flex-wrap: wrap;
+	padding-bottom: .9rem;
+	margin-bottom: 1rem;
+	border-bottom: 1px solid var(--rsn-bord);
+}
+
+.rsn-entete__icone {
+	width: 2.6rem;
+	height: 2.6rem;
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: .55rem;
+	background: var(--rsn-accent-fond);
+	border: 1px solid var(--rsn-accent-bord);
+	color: var(--rsn-accent);
+	font-size: 1.15rem;
+}
+
+.rsn-page .rsn-titre {
+	font-size: 1.35rem;
+	font-weight: 700;
+	letter-spacing: -.02em;
+	color: var(--rsn-titre);
+	margin: 0;
+}
+
+.rsn-page .rsn-sous {
+	font-size: .8rem;
+	color: var(--rsn-doux);
+	margin: .15rem 0 0;
+	max-width: 62ch;
+	line-height: 1.5;
+}
+
+/* Rôles de l'utilisateur : ce qu'il peut cocher, dit une fois pour toutes. */
+.rsn-roles {
+	margin-left: auto;
+	display: flex;
+	gap: .35rem;
+	flex-wrap: wrap;
+	align-self: center;
+}
+
+.rsn-role {
+	font-size: .68rem;
+	padding: .2rem .55rem;
+	border-radius: 9999px;
+	border: 1px solid var(--rsn-bord);
+	color: var(--rsn-doux);
+	white-space: nowrap;
+}
+.rsn-role--oui { color: var(--rsn-ok); border-color: var(--rsn-ok-bord); background: var(--rsn-ok-fond); }
+
+/* ---------- Bandeau d'annulation ---------- */
+
+.rsn-annulation {
+	display: flex;
+	align-items: center;
+	gap: .7rem;
+	flex-wrap: wrap;
+	padding: .7rem .9rem;
+	margin-bottom: 1rem;
+	font-size: .78rem;
+	line-height: 1.5;
+	color: var(--rsn-texte);
+	background: var(--rsn-alerte-fond);
+	border: 1px solid var(--rsn-alerte-bord);
+	border-radius: .6rem;
+}
+.rsn-annulation i { color: var(--rsn-alerte); }
+.rsn-annulation b { color: var(--rsn-titre); }
+.rsn-annulation .rsn-btn { margin-left: auto; }
+
+/* ---------- Filtres-compteurs ---------- */
+
+/* Les quatre états s'excluent et totalisent l'effectif : un même composant
+   sert à la fois de tableau de bord et de filtre. Moins de surface, et le
+   chiffre qu'on lit est exactement le filtre qu'on applique. */
+.rsn-etats {
+	display: grid;
+	gap: .6rem;
+	grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+	margin-bottom: 1rem;
+}
+
+.rsn-etat {
+	text-align: left;
+	cursor: pointer;
+	padding: .7rem .85rem;
+	border-radius: .6rem;
+	background: var(--rsn-fond-carte);
+	border: 1px solid var(--rsn-bord);
+	color: var(--rsn-texte);
+	transition: border-color .15s ease, background-color .15s ease;
+	min-height: 4.2rem;
+}
+.rsn-etat:hover { border-color: var(--rsn-bord-fort); }
+.rsn-etat[aria-pressed="true"] {
+	border-color: var(--rsn-accent);
+	background: var(--rsn-accent-fond);
+	box-shadow: inset 0 0 0 1px var(--rsn-accent);
+}
+
+.rsn-etat__chiffre {
+	display: block;
+	font-size: 1.35rem;
+	font-weight: 700;
+	line-height: 1.1;
+	color: var(--rsn-titre);
+	font-variant-numeric: tabular-nums;
+}
+
+.rsn-etat__libelle {
+	display: flex;
+	align-items: center;
+	gap: .35rem;
+	font-size: .72rem;
+	color: var(--rsn-doux);
+	margin-top: .2rem;
+}
+
+/* Pastille d'état : forme ET couleur, jamais la couleur seule. */
+.rsn-point {
+	width: .55rem;
+	height: .55rem;
+	border-radius: 9999px;
+	flex: 0 0 auto;
+	background: var(--rsn-faible);
+}
+.rsn-point--prets    { background: var(--rsn-ok); }
+.rsn-point--caisse   { background: var(--rsn-alerte); border-radius: .1rem; }
+.rsn-point--dossier  { background: var(--rsn-accent); transform: rotate(45deg); border-radius: .1rem; }
+.rsn-point--aucun    { background: transparent; border: 2px solid var(--rsn-faible); }
+
+/* ---------- Barre d'outils ---------- */
+
+.rsn-outils {
+	display: flex;
+	align-items: flex-end;
+	gap: .6rem;
+	flex-wrap: wrap;
+	margin-bottom: .75rem;
+}
+
+.rsn-champ { display: flex; flex-direction: column; gap: .2rem; }
+.rsn-champ--recherche { flex: 1 1 16rem; min-width: 14rem; }
+
+.rsn-champ label {
+	font-size: .68rem;
+	color: var(--rsn-doux);
+}
+
+.rsn-recherche { position: relative; }
+.rsn-recherche i {
+	position: absolute;
+	left: .65rem;
+	top: 50%;
+	transform: translateY(-50%);
+	color: var(--rsn-faible);
+	pointer-events: none;
+	font-size: .85rem;
+}
+
+.rsn-page input.rsn-input,
+.rsn-page select.rsn-input {
+	width: 100%;
+	min-height: 2.5rem;
+	padding: .5rem .7rem;
+	font-size: 16px; /* sous 16 px, iOS zoome au focus */
+	font-family: inherit;
+	background-color: var(--rsn-champ) !important;
+	color: var(--rsn-texte) !important;
+	border: 1px solid var(--rsn-champ-bord) !important;
+	border-radius: .45rem;
+	color-scheme: var(--rsn-scheme);
+	transition: border-color .15s ease, box-shadow .15s ease;
+}
+.rsn-page .rsn-recherche input.rsn-input { padding-left: 2rem; }
+
+@media (min-width: 640px) {
+	.rsn-page input.rsn-input,
+	.rsn-page select.rsn-input { font-size: .82rem; }
+}
+
+.rsn-page input.rsn-input::placeholder { color: var(--rsn-faible) !important; opacity: 1; }
+
+.rsn-page input.rsn-input:focus,
+.rsn-page select.rsn-input:focus {
+	outline: none;
+	border-color: var(--rsn-accent) !important;
+	box-shadow: 0 0 0 3px var(--rsn-accent-fond);
+}
+
+/* Le remplissage automatique de Chrome impose son propre fond clair. */
+.rsn-page input.rsn-input:-webkit-autofill {
+	-webkit-text-fill-color: var(--rsn-texte);
+	-webkit-box-shadow: 0 0 0 40rem var(--rsn-champ) inset;
+}
+
+.rsn-compte {
+	font-size: .72rem;
+	color: var(--rsn-doux);
+	align-self: center;
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Boutons ---------- */
+
+.rsn-page .rsn-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: .4rem;
+	min-height: 2.5rem;
+	padding: .45rem .9rem;
+	font-size: .8rem;
+	font-weight: 600;
+	font-family: inherit;
+	border-radius: .45rem;
+	cursor: pointer;
+	background: var(--rsn-champ);
+	color: var(--rsn-texte);
+	border: 1px solid var(--rsn-champ-bord);
+	transition: border-color .15s ease, background-color .15s ease, color .15s ease;
+	white-space: nowrap;
+}
+.rsn-page .rsn-btn:hover { border-color: var(--rsn-accent); color: var(--rsn-accent); }
+.rsn-page .rsn-btn:focus-visible { outline: 2px solid var(--rsn-accent); outline-offset: 2px; }
+.rsn-page .rsn-btn:disabled { opacity: .45; cursor: not-allowed; }
+.rsn-page .rsn-btn:disabled:hover { border-color: var(--rsn-champ-bord); color: var(--rsn-texte); }
+
+/* Action destructrice : couleur de danger, et placée à l'écart des filtres
+   (margin-left:auto) pour qu'on ne la déclenche pas en visant autre chose. */
+.rsn-page .rsn-btn--danger {
+	margin-left: auto;
+	background: var(--rsn-danger-fond);
+	color: var(--rsn-danger);
+	border-color: var(--rsn-danger-bord);
+}
+.rsn-page .rsn-btn--danger:hover { color: var(--rsn-danger); border-color: var(--rsn-danger); }
+
+.rsn-page .rsn-btn--plein-danger {
+	background: #b91c1c;
+	color: #ffffff;
+	border-color: #b91c1c;
+}
+.rsn-page .rsn-btn--plein-danger:hover { background: #991b1b; color: #ffffff; border-color: #991b1b; }
+
+/* ---------- Tableau ---------- */
+
+/* Le cadre défile lui-même : c'est ce qui permet à l'en-tête de rester
+   collant. Un ancêtre en overflow:auto casserait position:sticky. */
+.rsn-cadre {
+	border: 1px solid var(--rsn-bord);
+	border-radius: .6rem;
+	overflow: auto;
+	max-height: calc(100dvh - 22rem);
+	min-height: 16rem;
+	background: var(--rsn-fond-carte);
+}
+@supports not (height: 100dvh) {
+	.rsn-cadre { max-height: calc(100vh - 22rem); }
+}
+
+.rsn-table {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0;
+	font-size: .8rem;
+	min-width: 52rem;
+}
+
+.rsn-table thead th {
+	position: sticky;
+	top: 0;
+	z-index: 2;
+	background: var(--rsn-entete);
+	color: var(--rsn-doux);
+	font-size: .68rem;
+	font-weight: 600;
+	letter-spacing: .05em;
+	text-transform: uppercase;
+	text-align: left;
+	padding: .6rem .75rem;
+	border-bottom: 1px solid var(--rsn-bord);
+	white-space: nowrap;
+}
+.rsn-table thead th.rsn-centre { text-align: center; }
+
+.rsn-table tbody td {
+	padding: .55rem .75rem;
+	border-bottom: 1px solid var(--rsn-bord);
+	color: var(--rsn-texte);
+	vertical-align: middle;
+}
+.rsn-table tbody tr:last-child td { border-bottom: 0; }
+.rsn-table tbody tr:hover td { background: var(--rsn-ligne-survol); }
+.rsn-table td.rsn-centre { text-align: center; }
+
+.rsn-nom { color: var(--rsn-titre); font-weight: 600; }
+.rsn-matricule {
+	display: block;
+	font-size: .7rem;
+	color: var(--rsn-faible);
+	font-variant-numeric: tabular-nums;
+}
+.rsn-filiere { display: block; }
+.rsn-niveau { display: block; font-size: .7rem; color: var(--rsn-faible); }
+
+/* Qui a coché, et quand : sous l'interrupteur, pas dans une infobulle. */
+.rsn-trace {
+	display: block;
+	font-size: .66rem;
+	color: var(--rsn-faible);
+	margin-top: .2rem;
+	line-height: 1.3;
+	min-height: .9rem;
+}
+
+/* ---------- Interrupteurs ---------- */
+
+/* Case à cocher native, dessinée en interrupteur. role="switch" la fait
+   annoncer « activé / désactivé » ; l'état reste porté par checked, donc le
+   clavier (Espace) et les formulaires fonctionnent sans code particulier. */
+.rsn-bascule {
+	display: inline-flex;
+	align-items: center;
+	gap: .45rem;
+	cursor: pointer;
+	/* zone cliquable élargie autour de l'interrupteur */
+	padding: .35rem .25rem;
+	min-height: 2.2rem;
+}
+
+.rsn-bascule input {
+	appearance: none;
+	-webkit-appearance: none;
+	position: relative;
+	width: 2.3rem;
+	height: 1.3rem;
+	flex: 0 0 auto;
+	margin: 0;
+	border-radius: 9999px;
+	background: var(--rsn-champ);
+	/* --rsn-faible et non --rsn-bord-fort : le contour d'un composant doit
+	   atteindre 3:1 sur son fond. --rsn-bord-fort n'y parvenait pas
+	   (2,84:1 en sombre, 2,11:1 en clair) et un interrupteur sur « Non » se
+	   confondait avec la cellule. --rsn-faible : 5,45:1 et 5,38:1. */
+	border: 1px solid var(--rsn-faible);
+	cursor: pointer;
+	transition: background-color .18s ease, border-color .18s ease;
+}
+.rsn-bascule input::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: .15rem;
+	width: .9rem;
+	height: .9rem;
+	border-radius: 9999px;
+	background: var(--rsn-doux);
+	transform: translateY(-50%);
+	transition: transform .18s ease, background-color .18s ease;
+}
+.rsn-bascule input:checked { background: var(--rsn-ok-fond); border-color: var(--rsn-ok); }
+.rsn-bascule input:checked::after { background: var(--rsn-ok); transform: translate(1rem, -50%); }
+.rsn-bascule input:focus-visible { outline: 2px solid var(--rsn-accent); outline-offset: 2px; }
+.rsn-bascule input:disabled { opacity: .5; cursor: wait; }
+
+.rsn-bascule__texte {
+	font-size: .72rem;
+	font-weight: 600;
+	min-width: 2rem;
+	color: var(--rsn-faible);
+}
+.rsn-bascule input:checked + .rsn-bascule__texte { color: var(--rsn-ok); }
+
+/* Lecture seule (colonne d'un autre rôle) : état lisible, sans interrupteur. */
+.rsn-etiquette {
+	display: inline-flex;
+	align-items: center;
+	gap: .3rem;
+	font-size: .72rem;
+	font-weight: 600;
+	padding: .15rem .5rem;
+	border-radius: 9999px;
+	border: 1px solid var(--rsn-bord);
+	color: var(--rsn-faible);
+}
+.rsn-etiquette--oui { color: var(--rsn-ok); border-color: var(--rsn-ok-bord); background: var(--rsn-ok-fond); }
+
+/* Ligne tout juste modifiée : un éclair bref, qui dit où l'effet a porté. */
+@keyframes rsn-eclair {
+	from { background: var(--rsn-accent-fond); }
+	to   { background: transparent; }
+}
+.rsn-ligne--modifiee td { animation: rsn-eclair 1.2s ease-out; }
+
+.rsn-vide {
+	padding: 2.5rem 1rem;
+	text-align: center;
+	color: var(--rsn-doux);
+	font-size: .82rem;
+}
+.rsn-vide i { display: block; font-size: 1.6rem; margin-bottom: .4rem; color: var(--rsn-faible); }
+
+/* Suite de la liste : les lignes arrivent par tranches de 100 (le script les
+   dessine au défilement) ; le bouton sert au clavier et en secours. */
+.rsn-suite {
+	display: flex;
+	justify-content: center;
+	padding: .9rem 1rem 1.1rem;
+	border-top: 1px solid var(--rsn-bord);
+}
+.rsn-suite[hidden] { display: none; }
+
+/* ---------- Fenêtre de confirmation ---------- */
+
+.rsn-voile {
+	position: fixed;
+	inset: 0;
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1rem;
+	background: var(--rsn-voile);
+	backdrop-filter: blur(3px);
+}
+
+.rsn-dialogue {
+	width: min(34rem, 100%);
+	max-height: calc(100dvh - 2rem);
+	overflow: auto;
+	background: var(--rsn-fond-carte);
+	border: 1px solid var(--rsn-danger-bord);
+	border-radius: .8rem;
+	box-shadow: var(--rsn-ombre);
+	padding: 1.2rem 1.25rem 1.1rem;
+	color: var(--rsn-texte);
+}
+/* Fond opaque : une fenêtre de confirmation ne doit pas laisser le tableau
+   transparaître derrière le texte qu'on est en train de lire. */
+.rsn-dialogue { background-color: rgb(var(--c-surface-2)); }
+[data-theme="light"] .rsn-dialogue { background-color: rgb(var(--c-surface)); }
+
+.rsn-dialogue h2 {
+	display: flex;
+	align-items: center;
+	gap: .5rem;
+	font-size: 1.05rem;
+	font-weight: 700;
+	color: var(--rsn-titre);
+	margin: 0 0 .5rem;
+}
+.rsn-dialogue h2 i { color: var(--rsn-danger); }
+
+.rsn-dialogue p { font-size: .82rem; line-height: 1.55; margin: 0 0 .7rem; }
+
+.rsn-choix {
+	display: grid;
+	gap: .4rem;
+	margin: .5rem 0 .8rem;
+}
+
+.rsn-option {
+	display: flex;
+	align-items: center;
+	gap: .6rem;
+	padding: .55rem .7rem;
+	border-radius: .45rem;
+	border: 1px solid var(--rsn-bord);
+	cursor: pointer;
+	font-size: .82rem;
+}
+.rsn-option:hover { border-color: var(--rsn-bord-fort); }
+.rsn-option input { width: 1.05rem; height: 1.05rem; accent-color: #dc2626; flex: 0 0 auto; }
+.rsn-option__nombre {
+	margin-left: auto;
+	font-weight: 700;
+	color: var(--rsn-titre);
+	font-variant-numeric: tabular-nums;
+}
+.rsn-option--ferme { opacity: .55; cursor: not-allowed; }
+
+.rsn-portee {
+	font-size: .78rem;
+	padding: .6rem .75rem;
+	border-radius: .45rem;
+	background: var(--rsn-danger-fond);
+	border: 1px solid var(--rsn-danger-bord);
+	margin-bottom: .8rem;
+	line-height: 1.5;
+}
+.rsn-portee b { color: var(--rsn-titre); }
+
+.rsn-confirmation label {
+	display: block;
+	font-size: .74rem;
+	color: var(--rsn-doux);
+	margin-bottom: .25rem;
+}
+.rsn-confirmation code {
+	font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+	color: var(--rsn-danger);
+	font-weight: 700;
+}
+
+.rsn-dialogue__actions {
+	display: flex;
+	gap: .5rem;
+	justify-content: flex-end;
+	flex-wrap: wrap;
+	margin-top: 1rem;
+}
+
+/* Masqué à l'écran, lu par les lecteurs d'écran. La classe utilitaire n'est
+   pas définie globalement dans ce projet — seulement sous .mc, dans
+   my-account.css — d'où cette déclaration locale. */
+.rsn-page .sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.rsn-page *, .rsn-voile * { transition: none !important; animation: none !important; }
+}

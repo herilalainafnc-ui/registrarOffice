@@ -1,0 +1,11 @@
+# ============================================================================
+# data/ : configuration, connexions BDD, migrations et scripts de maintenance.
+# Rien ici ne doit etre atteignable par le navigateur.
+# ============================================================================
+# Les require/include PHP ne passent pas par Apache : ils continuent de
+# fonctionner normalement. Seul l'acces HTTP direct est refuse.
+#
+# Sans cette regle, les fichiers statiques du dossier (.sql, .csv, .tsv,
+# .xlsx, .txt) etaient servis en clair, sans authentification.
+
+Require all denied

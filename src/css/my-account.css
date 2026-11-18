@@ -1,0 +1,424 @@
+/* =============================================================================
+   Mon compte
+
+   Idiome reprix des reglages de compte de Meta, demande explicitement : des
+   RANGEES plutot que des formulaires. Chaque rangee montre un libelle, la
+   valeur actuelle, et un bouton « Modifier » ; le formulaire s'ouvre sur place,
+   sous la rangee, et rien d'autre ne bouge.
+
+   Ce n'est pas une preference esthetique. L'ancienne page affichait six champs
+   en lecture seule et un formulaire de mot de passe a trois colonnes : on ne
+   pouvait rien changer, et rien n'indiquait ce qui etait modifiable. La rangee
+   dit les deux a la fois — voici la valeur, voici comment la changer — et
+   n'ouvre qu'un champ a la fois, ce qui evite d'ouvrir un formulaire de dix
+   champs pour corriger une lettre.
+
+   Les couleurs sortent du systeme de l'administration (palette ardoise, accent
+   cyan) : une page qui inventerait sa propre identite jurerait avec les vingt
+   autres.
+   ========================================================================== */
+
+.mc {
+    --mc-fond:      rgb(var(--c-canvas));
+    --mc-surface:   rgb(var(--c-canvas));
+    --mc-surface-2: rgb(var(--c-surface));
+    --mc-filet:     rgb(var(--c-line-strong) / .16);
+    --mc-texte:     rgb(var(--c-text));
+    --mc-doux:      rgb(var(--c-text-2));
+    --mc-accent:    rgb(var(--c-accent));
+    --mc-accent-fonce: rgb(var(--c-accent-strong));
+    --mc-danger:    #f87171;
+    --mc-succes:    #34d399;
+
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 4px 40px;
+    color: var(--mc-texte);
+}
+
+/* Masque a l'oeil, lu par les lecteurs d'ecran, et TOUJOURS focalisable.
+   Tailwind fournit « sr-only », mais il arrive ici par le CDN de mise au point :
+   dependre de lui pour l'accessibilite du bouton de photo serait le perdre le
+   jour ou la feuille est compilee autrement. On le declare donc soi-meme.
+
+   Pas de « display: none » : un input fichier ainsi masque n'est plus
+   declenchable par son label sur certains navigateurs. */
+.mc .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* --- Entete : avatar et identite ------------------------------------------ */
+.mc-tete {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 26px 24px;
+    margin-bottom: 18px;
+    background: var(--mc-surface);
+    border: 1px solid var(--mc-filet);
+    border-radius: 16px;
+}
+
+.mc-avatar {
+    position: relative;
+    flex-shrink: 0;
+    width: 92px;
+    height: 92px;
+}
+.mc-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--mc-surface-2);
+    border: 2px solid var(--mc-filet);
+}
+/* Initiales quand aucune photo n'a ete deposee : un cercle vide ne dit pas
+   qu'on peut en mettre une. */
+.mc-avatar__initiales {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgb(var(--c-accent-strong)), rgb(var(--c-accent-strong)));
+    color: #fff;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: .02em;
+    border: 2px solid var(--mc-filet);
+}
+
+/* Le declencheur est un LABEL relie a l'input fichier : le clavier l'atteint,
+   et il n'y a pas de bouton fantome a synchroniser. */
+.mc-avatar__bouton {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    display: grid;
+    place-items: center;
+    /* 36px : au-dessous, la cible devient difficile a viser au doigt. */
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--mc-surface-2);
+    border: 2px solid var(--mc-surface);
+    color: var(--mc-texte);
+    cursor: pointer;
+    transition: background .15s ease, transform .15s ease;
+}
+.mc-avatar__bouton:hover { background: var(--mc-accent-fonce); transform: scale(1.06); }
+.mc-avatar__bouton:focus-within,
+.mc-avatar input:focus-visible + .mc-avatar__bouton { outline: 2px solid var(--mc-accent); outline-offset: 2px; }
+.mc-avatar__bouton i { font-size: 15px; }
+
+/* Voile d'attente pendant l'envoi : la photo met une seconde a partir, et sans
+   retour on clique deux fois. */
+.mc-avatar.est-occupe::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: rgb(var(--c-canvas) / .6);
+    backdrop-filter: blur(1px);
+}
+
+.mc-tete__nom { margin: 0; font-size: 21px; font-weight: 700; line-height: 1.25; }
+.mc-tete__sous { margin: 4px 0 0; font-size: 13.5px; color: var(--mc-doux); }
+.mc-tete__etiquettes { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+
+.mc-etiquette {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgb(var(--c-accent) / .12);
+    border: 1px solid rgb(var(--c-accent) / .28);
+    color: rgb(var(--c-accent-text));
+    font-size: 11.5px;
+    font-weight: 600;
+}
+.mc-etiquette--neutre {
+    background: rgb(var(--c-text-3) / .12);
+    border-color: var(--mc-filet);
+    color: var(--mc-doux);
+}
+
+/* --- Sections ------------------------------------------------------------- */
+.mc-section {
+    margin-bottom: 18px;
+    background: var(--mc-surface);
+    border: 1px solid var(--mc-filet);
+    border-radius: 16px;
+    overflow: hidden;
+}
+.mc-section__tete { padding: 18px 24px 4px; }
+.mc-section__tete h2 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .01em;
+}
+.mc-section__tete p { margin: 5px 0 0; font-size: 12.5px; color: var(--mc-doux); line-height: 1.55; }
+
+/* --- La rangee, brique de la page ---------------------------------------- */
+.mc-rangee { border-top: 1px solid var(--mc-filet); }
+.mc-rangee:first-of-type { border-top: none; }
+
+.mc-rangee__resume {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    padding: 15px 24px;
+    background: none;
+    border: 0;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background .15s ease;
+}
+.mc-rangee__resume:hover { background: rgb(var(--c-text-3) / .06); }
+.mc-rangee__resume:focus-visible {
+    outline: 2px solid var(--mc-accent);
+    outline-offset: -2px;
+}
+
+.mc-rangee__texte { flex: 1; min-width: 0; }
+.mc-rangee__libelle { display: block; font-size: 13px; color: var(--mc-doux); }
+.mc-rangee__valeur {
+    display: block;
+    margin-top: 3px;
+    font-size: 14.5px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+.mc-rangee__valeur--vide { color: var(--mc-doux); font-weight: 400; font-style: italic; }
+
+.mc-rangee__action {
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--mc-accent);
+}
+.mc-rangee__chevron { flex-shrink: 0; color: var(--mc-doux); transition: transform .2s ease; }
+.mc-rangee.est-ouverte .mc-rangee__chevron { transform: rotate(180deg); }
+
+/* Rangee verrouillee : pas un bouton, donc pas cliquable, et le cadenas le dit
+   sans dependre de la couleur. */
+.mc-rangee__resume--verrouille { cursor: default; }
+.mc-rangee__resume--verrouille:hover { background: none; }
+
+/* --- Volet d'edition -----------------------------------------------------
+   grid-template-rows 0fr -> 1fr : la seule facon d'animer vers une hauteur
+   automatique sans la mesurer en JavaScript. */
+.mc-rangee__volet {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .24s ease;
+}
+.mc-rangee.est-ouverte .mc-rangee__volet { grid-template-rows: 1fr; }
+.mc-rangee__volet > div { overflow: hidden; }
+.mc-rangee__contenu { padding: 4px 24px 20px; }
+
+@media (prefers-reduced-motion: reduce) {
+    .mc-rangee__volet { transition: none; }
+    .mc-rangee__chevron { transition: none; }
+    .mc-avatar__bouton { transition: none; }
+}
+
+/* --- Champs --------------------------------------------------------------- */
+.mc-champs { display: grid; gap: 14px; }
+@media (min-width: 620px) {
+    .mc-champs--deux { grid-template-columns: 1fr 1fr; }
+}
+
+.mc-champ label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--mc-doux);
+}
+
+/* !important : la feuille commune de l'administration porte des regles
+   « input { background: #fff !important } » pour le theme clair, qui
+   l'emportaient ici quelle que soit l'apparence reelle de la page. */
+.mc input[type="text"],
+.mc input[type="email"],
+.mc input[type="password"],
+.mc select {
+    width: 100%;
+    min-height: 44px;   /* cible tactile confortable */
+    padding: 11px 13px;
+    background-color: var(--mc-fond) !important;
+    border: 1px solid rgb(var(--c-line-strong) / .28) !important;
+    border-radius: 10px;
+    color: var(--mc-texte) !important;
+    font-family: inherit;
+    font-size: 14px;
+    color-scheme: dark;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+.mc input:focus,
+.mc select:focus {
+    outline: none;
+    border-color: var(--mc-accent) !important;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, .16);
+}
+.mc input::placeholder { color: rgb(var(--c-text-3)); }
+
+.mc-aide { margin: 6px 0 0; font-size: 11.5px; color: var(--mc-doux); line-height: 1.5; }
+
+/* Erreur de champ : bordure, libelle et texte — la couleur ne porte jamais
+   seule l'information. */
+.mc-champ--faux input,
+.mc-champ--faux select {
+    border-color: var(--mc-danger) !important;
+    box-shadow: 0 0 0 3px rgba(248, 113, 113, .15);
+}
+.mc-champ--faux label { color: var(--mc-danger); }
+.mc-erreur {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--mc-danger);
+}
+
+/* --- Mot de passe : oeil de revelation ----------------------------------- */
+.mc-secret { position: relative; }
+.mc-secret input { padding-right: 44px; }
+.mc-secret__oeil {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    color: var(--mc-doux);
+    cursor: pointer;
+}
+.mc-secret__oeil:hover { color: var(--mc-texte); background: rgb(var(--c-text-3) / .12); }
+.mc-secret__oeil:focus-visible { outline: 2px solid var(--mc-accent); outline-offset: 1px; }
+
+/* Jauge de robustesse : elle explique le refus « au moins 8 caracteres » avant
+   qu'il ne tombe. */
+.mc-force { margin-top: 10px; }
+.mc-force__piste {
+    height: 4px;
+    border-radius: 999px;
+    background: rgb(var(--c-text-3) / .2);
+    overflow: hidden;
+}
+.mc-force__jauge {
+    height: 100%;
+    width: 0;
+    border-radius: 999px;
+    background: var(--mc-danger);
+    transition: width .2s ease, background .2s ease;
+}
+.mc-force__mot { display: block; margin-top: 6px; font-size: 11.5px; color: var(--mc-doux); }
+
+/* --- Barre d'action du volet --------------------------------------------- */
+.mc-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+}
+.mc-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 40px;
+    padding: 9px 18px;
+    border: 0;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s ease, opacity .15s ease;
+}
+.mc-btn--plein { background: var(--mc-accent-fonce); color: #fff; }
+.mc-btn--plein:hover { background: rgb(var(--c-accent-strong)); }
+.mc-btn--vide {
+    background: none;
+    color: var(--mc-doux);
+    border: 1px solid rgb(var(--c-line-strong) / .28);
+}
+.mc-btn--vide:hover { color: var(--mc-texte); background: rgb(var(--c-text-3) / .1); }
+.mc-btn:focus-visible { outline: 2px solid var(--mc-accent); outline-offset: 2px; }
+.mc-btn[disabled] { opacity: .5; cursor: not-allowed; }
+
+/* --- Encart d'avertissement (changement de role) ------------------------- */
+.mc-encart {
+    display: flex;
+    gap: 11px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    border-radius: 10px;
+    background: rgba(245, 158, 11, .1);
+    border: 1px solid rgba(245, 158, 11, .3);
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: #fcd34d;
+}
+.mc-encart i { flex-shrink: 0; margin-top: 1px; }
+
+/* --- Petits ecrans -------------------------------------------------------- */
+@media (max-width: 560px) {
+    .mc-tete { flex-direction: column; text-align: center; gap: 14px; padding: 22px 18px; }
+    .mc-tete__etiquettes { justify-content: center; }
+    .mc-section__tete { padding: 16px 16px 4px; }
+    .mc-rangee__resume { padding: 14px 16px; gap: 12px; }
+    .mc-rangee__contenu { padding: 4px 16px 18px; }
+    /* Le libelle « Modifier » disparait, le chevron suffit : sur 320 px il
+       poussait la valeur sur trois lignes. */
+    .mc-rangee__action { display: none; }
+    .mc-actions { flex-direction: column-reverse; align-items: stretch; }
+}
+
+/* --- Theme clair ---------------------------------------------------------
+   L'administration a une bascule de theme : les jetons sont redefinis, la
+   structure ne bouge pas. */
+[data-theme="light"] .mc {
+    --mc-fond:      rgb(var(--c-surface));
+    --mc-surface:   rgb(var(--c-surface));
+    --mc-surface-2: rgb(var(--c-surface-2));
+    --mc-filet:     rgb(var(--c-line));
+    --mc-texte:     rgb(var(--c-text));
+    --mc-doux:      rgb(var(--c-text-3));
+    --mc-accent:    rgb(var(--c-accent-strong));
+    --mc-accent-fonce: rgb(var(--c-accent-strong));
+    --mc-danger:    #b91c1c;
+}
+[data-theme="light"] .mc-section,
+[data-theme="light"] .mc-tete { box-shadow: 0 1px 3px rgba(10, 22, 40, .06); }
+[data-theme="light"] .mc input[type="text"],
+[data-theme="light"] .mc input[type="email"],
+[data-theme="light"] .mc input[type="password"],
+[data-theme="light"] .mc select {
+    background-color: rgb(var(--c-surface)) !important;
+    border-color: rgb(var(--c-line-strong)) !important;
+    color: rgb(var(--c-text)) !important;
+    color-scheme: light;
+}
+[data-theme="light"] .mc-etiquette { background: rgba(3, 105, 161, .08); color: rgb(var(--c-accent-text)); border-color: rgb(var(--c-line-strong) / .25); }
+[data-theme="light"] .mc-encart { background: #fef6e7; border-color: #f0c977; color: #8a5a00; }

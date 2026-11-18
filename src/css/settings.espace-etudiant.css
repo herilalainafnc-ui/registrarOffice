@@ -1,0 +1,224 @@
+/* =============================================================================
+   Espace étudiant — /settings/espace-etudiant
+
+   Préfixe « ee- ». S'appuie sur settings.mentions.css, chargée avant : même
+   en-tête, mêmes notes, et surtout les mêmes variables de couleur (--mn-*),
+   redéfinies en thème clair. Aucune teinte n'est codée en dur ici.
+   ========================================================================== */
+
+.ee-section {
+	margin: 1.6rem 0 .7rem;
+	font-size: .8rem;
+	font-weight: 700;
+	letter-spacing: .06em;
+	text-transform: uppercase;
+	color: var(--mn-doux);
+}
+
+.ee-trace {
+	display: block;
+	margin-top: .25rem;
+	font-size: .72rem;
+	color: var(--mn-faible);
+}
+
+/* ---------- Rubriques ---------- */
+
+.ee-rubriques {
+	display: grid;
+	gap: .6rem;
+}
+
+.ee-rubrique {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	padding: .9rem 1rem;
+	border-radius: .7rem;
+	border: 1px solid var(--mn-carte-bord);
+	background: var(--mn-carte);
+	box-shadow: var(--mn-ombre);
+	cursor: pointer;
+}
+
+.ee-rubrique:hover { border-color: var(--mn-carte-survol); }
+
+.ee-rubrique__texte { flex: 1; min-width: 0; }
+.ee-rubrique__nom { display: block; font-weight: 600; color: var(--mn-titre); }
+.ee-rubrique__aide { display: block; margin-top: .15rem; font-size: .8rem; color: var(--mn-doux); }
+
+/* Interrupteur : une vraie case à cocher, stylée. Clavier et lecteur d'écran
+   la reconnaissent (role="switch"), le focus reste visible. */
+.ee-bascule {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	gap: .55rem;
+	flex: 0 0 auto;
+}
+
+.ee-bascule input {
+	position: absolute;
+	opacity: 0;
+	width: 2.75rem;
+	height: 1.5rem;
+	margin: 0;
+	cursor: pointer;
+}
+
+.ee-bascule__piste {
+	position: relative;
+	width: 2.75rem;
+	height: 1.5rem;
+	border-radius: 999px;
+	background: var(--mn-champ-bord);
+	transition: background .15s ease;
+}
+
+.ee-bascule__piste::after {
+	content: "";
+	position: absolute;
+	top: .2rem;
+	left: .2rem;
+	width: 1.1rem;
+	height: 1.1rem;
+	border-radius: 50%;
+	background: #fff;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+	transition: transform .15s ease;
+}
+
+.ee-bascule input:checked + .ee-bascule__piste { background: var(--mn-ok); }
+.ee-bascule input:checked + .ee-bascule__piste::after { transform: translateX(1.25rem); }
+.ee-bascule input:focus-visible + .ee-bascule__piste { outline: 2px solid var(--mn-accent); outline-offset: 2px; }
+.ee-bascule input:disabled + .ee-bascule__piste { opacity: .6; }
+
+.ee-bascule__etat {
+	min-width: 4.2rem;
+	font-size: .78rem;
+	font-weight: 600;
+	color: var(--mn-texte);
+}
+
+/* ---------- Années et sessions ---------- */
+
+.ee-annee {
+	margin-bottom: .7rem;
+	border-radius: .7rem;
+	border: 1px solid var(--mn-carte-bord);
+	background: var(--mn-carte);
+	box-shadow: var(--mn-ombre);
+	overflow: hidden;
+}
+
+.ee-annee__tete {
+	display: flex;
+	align-items: center;
+	gap: .6rem;
+	padding: .75rem 1rem;
+	cursor: pointer;
+	list-style: none;
+	color: var(--mn-titre);
+}
+
+.ee-annee__tete::-webkit-details-marker { display: none; }
+.ee-annee__tete:focus-visible { outline: 2px solid var(--mn-accent); outline-offset: -2px; }
+
+.ee-annee__fleche {
+	font-size: .8rem;
+	color: var(--mn-doux);
+	transition: transform .15s ease;
+}
+
+.ee-annee[open] .ee-annee__fleche { transform: rotate(90deg); }
+
+.ee-annee__nom { font-weight: 700; font-variant-numeric: tabular-nums; }
+.ee-annee__resume { margin-left: auto; font-size: .78rem; color: var(--mn-doux); }
+
+.ee-sessions { border-top: 1px solid var(--mn-carte-bord); }
+
+.ee-session {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	padding: .8rem 1rem;
+	border-left: 3px solid transparent;
+}
+
+.ee-session + .ee-session { border-top: 1px solid var(--mn-carte-bord); }
+
+.ee-session.est-publiee { border-left-color: var(--mn-ok); }
+.ee-session.est-masquee { border-left-color: var(--mn-alerte); }
+
+.ee-session__info { flex: 1; min-width: 0; }
+
+.ee-session__nom { font-weight: 600; color: var(--mn-titre); }
+
+.ee-session__id {
+	margin-left: .35rem;
+	font-size: .72rem;
+	font-weight: 400;
+	color: var(--mn-faible);
+}
+
+.ee-session__chiffres {
+	margin-top: .15rem;
+	font-size: .8rem;
+	color: var(--mn-texte);
+	font-variant-numeric: tabular-nums;
+}
+
+.ee-session__nn { color: var(--mn-alerte); }
+
+/* L'état est dit par un mot et une icône, pas seulement par la couleur. */
+.ee-etat {
+	display: inline-flex;
+	align-items: center;
+	gap: .35rem;
+	flex: 0 0 auto;
+	padding: .2rem .6rem;
+	border-radius: 999px;
+	font-size: .75rem;
+	font-weight: 600;
+}
+
+.est-publiee .ee-etat { color: var(--mn-ok); background: var(--mn-ok-fond); border: 1px solid var(--mn-ok-bord); }
+.est-masquee .ee-etat { color: var(--mn-alerte); background: var(--mn-alerte-fond); border: 1px solid var(--mn-alerte-bord); }
+
+.ee-btn {
+	flex: 0 0 auto;
+	min-width: 9.5rem;
+	min-height: 2.25rem;
+	padding: .4rem .9rem;
+	border-radius: .55rem;
+	font-size: .8rem;
+	font-weight: 600;
+	cursor: pointer;
+	border: 1px solid transparent;
+	transition: filter .15s ease;
+}
+
+.ee-btn:hover { filter: brightness(1.1); }
+.ee-btn:focus-visible { outline: 2px solid var(--mn-accent); outline-offset: 2px; }
+.ee-btn:disabled { opacity: .55; cursor: wait; }
+
+.ee-btn--publier {
+	color: #fff;
+	background: linear-gradient(135deg, rgb(var(--c-accent-strong)), rgb(var(--c-accent-strong)));
+}
+
+.ee-btn--masquer {
+	color: var(--mn-texte);
+	background: transparent;
+	border-color: var(--mn-champ-bord);
+}
+
+@media (max-width: 640px) {
+	.ee-session { flex-wrap: wrap; }
+	.ee-session__info { flex-basis: 100%; }
+	.ee-btn { flex: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.ee-bascule__piste, .ee-bascule__piste::after, .ee-annee__fleche { transition: none; }
+}

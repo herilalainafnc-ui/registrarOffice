@@ -1,0 +1,231 @@
+<?php require_once(__DIR__ . '/../../data/guard.ajax.php'); exigerConnexion(); ?>
+<?php /* Le menu du cours pilote le contenu (#zoneCours, src/js/zone-ajax.js) :
+         ses liens changent de page sans recharger. */ ?>
+<div class="fiche-panneau my-1 px-2 mx-0.5 sm:w-4/12 lg:w-4/12 xl:w-3/12 overflow-auto" style="height:calc(100vh - 160px);" data-zone-pilote>
+						<?php
+						$canDeleteCourse = isset($rg_user['level']) && in_array((int)$rg_user['level'], [1, 3], true);
+						?>
+						
+						<div class="flex my-2 relative">
+							<div class="w-full text-left">
+                                <p><b class="fiche-code text-2xl" data-cours="sigle"><?= htmlspecialchars($sigleAffiche ?? $sigle, ENT_QUOTES, 'UTF-8') ?></b></p>
+                                <em><b class="text-[17px]" data-cours="titre"><?=$title?></b></em>
+							</div>
+						</div>
+						<hr>
+						<div>
+							 <p><b class="text-lg" data-cours="mention"><?=$dep_desc?></b><br>Prof : <span data-cours="enseignant"><?php 
+$findTeach = $dtb->query('SELECT * FROM teacher WHERE uid = "'.$profil['id_teacher'].'"');
+$showTeach = $findTeach->fetch();
+if(!empty($showTeach)) {
+	echo strtoupper($showTeach['name'])." ".$showTeach['lastName'];
+}
+ ?></span></p>
+						</div>
+						<hr>
+						<div class="w-full py-2 text-sm">
+                            <div class="w-9/12 text-left">
+                                
+                                <p><span data-cours="niveau"><?php
+            if($profil['yearlevel'] <=3 ){
+				echo "Licence ".$profil['yearlevel'];
+			}elseif ($profil['yearlevel'] > 3){
+				echo "Master ".($profil['yearlevel'] - 3);
+			}	?></span> | <span data-cours="semestre">Semestre <?=$profil['semester']?></span></p>
+
+                                <p>Crédit : <b data-cours="credits"><?=$profil['nb_crd']?></b></p>
+								<p>Catégorie : <b data-cours="categorie"><?php
+if ($profil['category'] == 0){
+	echo "Général";
+}elseif ($profil['category'] == 1) {
+	echo "Majeur";
+}elseif ($profil['category'] == -1 OR $profil['category'] == 2) {
+	echo "Selective";
+}elseif ($profil['category'] == 3) {
+	echo "Additionnel";
+}elseif ($profil['category'] == 5) {
+	echo "``";
+}else{
+	echo "-";
+}
+						 ?></b></p>
+                            </div>
+						</div><hr>
+						<div class="w-full text-md" data-zone-actif="bg-cyan-700 text-white" data-zone-cle="id page">
+								<a href="?id=<?=$id;?>&page=information">
+									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
+if(isset($_GET['page']) and $_GET['page'] == "information") {
+	echo "bg-cyan-700 text-white";
+} ?>">
+										<i class="bi-info-square"></i>
+												Information
+									</div>
+								</a>
+		
+								<a href="?id=<?=$id;?>&page=notes">
+									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
+if(isset($_GET['page']) and $_GET['page'] == "notes") {
+	echo "bg-cyan-700 text-white";
+} ?>">
+										
+										<i class="bi-newspaper"></i>
+												Intergration de notes
+									</div>
+								</a>
+
+									<a href="?id=<?=$id;?>&page=promotion-notes">
+										<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
+	if(isset($_GET['page']) and $_GET['page'] == "promotion-notes") {
+		echo "bg-cyan-700 text-white";
+	} ?>">
+											<i class="bi-journal-check"></i>
+													Notes Work/Chapelle
+										</div>
+									</a>
+								
+								<a href="?id=<?=$id;?>&page=etudiants">
+									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md <?php 
+if(isset($_GET['page']) and $_GET['page'] == "etudiants") {
+	echo "bg-cyan-700 text-white";
+} ?>">
+										
+										<i class="bi-folder-plus"></i>
+												Etudiants
+									</div>
+								</a>
+								<hr>
+								<a href="#" class="toolInactive">
+									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md">
+										<i class="bi-archive-fill"></i>
+												Archive
+									</div>
+								</a>
+
+								<?php if ($canDeleteCourse): ?>
+								<a href="#" id="cours-suppr">
+									<div class="w-full hover:bg-cyan-500 hover:text-slate-100 p-2 my-1 rounded-md">
+									
+										<i class="bi-trash3"></i>
+												Supprimer
+									</div>
+								</a>
+								<?php endif; ?>
+
+							</div>
+						</div>
+
+
+							<!-- MODIF IMAGE -->
+
+						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifModifIMG" style="backdrop-filter: blur(30px);">
+<form method="post" action="<?=$app_base?>/app/.student/updtateImgStd.php?id=<?=$id?>&user_id=<?=$rg_id?>&student_id=<?=$student_id?>" enctype="multipart/form-data" class="form-no-refrech">
+							<div class="w-3/12 <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[12%] opacity-100 drop-shadow-2xl">
+								<div class="p-2">
+									<p>Modifier l'image</p>
+								</div>
+								<div class="p-2">
+									
+									<div class="rounded-md <?=$bg_six_color?> h-20 text-center relative active hover:<?=$bg_three_color?> hover:text-white">
+										<label for="image_student" class="text-lg mt-4"><i class="bi-image"></i></label>
+										<p id="imgNote">Choisir une image sur votre PC</p>
+										<input type="file" accept="image/*" name="image_student" id="image_student" class="w-full h-20 absolute z-40 top-0 left-0" style="opacity: 0;">
+										<canvas id="convertCanvas" style="display:none;"></canvas>
+									</div>
+									
+
+								</div>
+								<div class="flex p-2">
+									<a href="#" id="cancelModifIMG" class="px-2 <?=$bg_six_color?> rounded-md py-1 mx-1">Annuler</a>
+									<button type="submit" class="px-2 rounded-md py-1 text-white mx-1 btnInactive" id="btnModify">Modifier</button>
+								</div>
+							</div>
+</form>
+						</div>
+
+<!-- AFFICHE IMAGE -->
+
+						<div class="absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifAffichIMG" style="backdrop-filter: blur(30px);">
+
+							<div class="w-3/12 <?=$bg_eight_color?> border-2 border-slate-700 mx-auto my-[12%] opacity-100 drop-shadow-2xl">
+								
+								<div class="p-2">
+									<div class="w-full h-[400px]" style="background-image: url('<?=$app_base?>/app/photosetudiants/<?=encodeFilePath($profil['image_student'])?>');background-position: center; background-size: cover;background-repeat: no-repeat;">
+										
+									</div>
+
+								</div>
+								<div class="flex p-2">
+									<a href="#" id="cancelAffichIMG" class="px-2 <?=$bg_six_color?> rounded-md py-1 mx-1">Retour</a>
+								</div>
+							</div>
+
+						</div>
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#imgStd').click(function(){
+			$('#imgOpt').css({'display':'block'});
+		});
+		$('#listOpt1').click(function(){
+			$('#imgOpt').css({'display':'none'});
+			$('#notifAffichIMG').css({'display':'block'});
+		});
+		$('#listOpt2').click(function(){
+			$('#imgOpt').css({'display':'none'});
+			$('#notifModifIMG').css({'display':'block'});
+		});
+		$('#cancelModifIMG').click(function(){
+			$('#notifModifIMG').css({'display':'none'});
+		});
+		$('#cancelAffichIMG').click(function(){
+			$('#notifAffichIMG').css({'display':'none'});
+		});
+		$('#image_student').on('change',function(){
+			var fileInput = this;
+			var file = fileInput.files[0];
+			if(!file) return;
+
+			// Convertir toute image (HEIC, PNG, WEBP, etc.) en JPEG via Canvas
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				var img = new Image();
+				img.onload = function() {
+					var canvas = document.getElementById('convertCanvas');
+					var maxSize = 1200;
+					var w = img.width, h = img.height;
+					if (w > maxSize || h > maxSize) {
+						if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+						else { w = Math.round(w * maxSize / h); h = maxSize; }
+					}
+					canvas.width = w;
+					canvas.height = h;
+					var ctx = canvas.getContext('2d');
+					ctx.drawImage(img, 0, 0, w, h);
+					canvas.toBlob(function(blob) {
+						var baseName = file.name.replace(/\.[^.]+$/, '');
+						var convertedFile = new File([blob], baseName + '.jpg', { type: 'image/jpeg' });
+						var dataTransfer = new DataTransfer();
+						dataTransfer.items.add(convertedFile);
+						fileInput.files = dataTransfer.files;
+						$('#imgNote').text('Image prête (' + w + 'x' + h + ')');
+						$('#btnModify').attr('class','px-2 rounded-md py-1 text-white mx-1 bg-cyan-700');
+					}, 'image/jpeg', 0.9);
+				};
+				img.onerror = function() {
+					$('#imgNote').text('Format non supporté. Utilisez JPG ou PNG.');
+					$('#btnModify').attr('class','px-2 rounded-md py-1 text-white mx-1 btnInactive');
+					fileInput.value = '';
+				};
+				img.src = e.target.result;
+			};
+			reader.readAsDataURL(file);
+		});
+	});
+</script>

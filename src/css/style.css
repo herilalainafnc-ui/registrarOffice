@@ -1,0 +1,305 @@
+@font-face{font-family: 'caviar';src: url('fonts/CaviarDreams.ttf');}
+@font-face{font-family: 'caviarbold';src: url('fonts/CaviarDreams_Bold.ttf');}
+@font-face{font-family: 'corbel';src: url('fonts/corbel.ttf');}
+@font-face{font-family: 'louis';src: url('fonts/Louis George Cafe.ttf');}
+@font-face{font-family: 'melinda';src: url('fonts/melinda.ttf');}
+
+body::-webkit-scrollbar {
+  width: 5px;
+}
+*::-webkit-scrollbar {
+  width: 5px;
+}
+
+body::-webkit-scrollbar-track {
+  background: none;
+}
+
+*::-webkit-scrollbar-track {
+  background: none;
+}
+
+body::-webkit-scrollbar-thumb {
+  	background-color: none;
+}
+*::-webkit-scrollbar-thumb {
+	background-color: #cbd5e1;
+}
+
+.simpleTbl{
+	border-collapse: collapse;
+	font-size: 12px;
+	width: 100%;
+}
+.simpleTbl th, .simpleTbl td{
+	padding: 0px 3px 0px 3px;
+	border-right: 1px solid rgb(var(--c-line));
+	border-bottom: 1px solid rgb(var(--c-line));
+}
+
+.simpleTblLight{
+	border-collapse: collapse;
+	font-size: 12px;
+	width: 100%;
+}
+.simpleTblLight th, .simpleTblLight td{
+	padding: 0px 3px 0px 3px;
+	border: 1px solid rgb(var(--c-line));
+}
+
+.classicTbl{
+	border-collapse: collapse;
+	font-size: 12px;
+	width: 100%;
+}
+.classicTbl th, .classicTbl td{
+	padding: 3px;
+	border: 1px solid black;
+	text-align: center;
+}
+.center{
+	text-align: center;
+}
+.insimple{
+	border: none;
+	background-color: none;
+	height: 20px;
+	width: 100%;
+}
+.toolInactive{
+	color: rgb(var(--c-text-3));
+	pointer-events: none;
+}
+.btnInactive{
+		background: #7a93b2;
+		color: white;
+		pointer-events: none;
+	}
+input{
+	padding: 0px 10px 0px 10px;
+}
+select{
+	border-radius: 0px;
+}
+select option{
+	pading: 0px 5px 0px 5px;
+}
+.inscInput{
+	border: none;
+	background-color: #e0e0e0;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	border-radius: 2px;
+	color: black;
+}
+
+.flex{
+	display: flex;
+}
+/*TABLE IMPRESSION*/
+
+   .tbl{
+        font-size: 12px;
+        font-family: "arial",sans-serif;
+        border-collapse: collapse;
+        border-spacing: 0;
+        border: 1px solid #8e9bb2;
+        width: 100%;
+    }
+    .sigle {
+        background-color: #f8e6da;
+    }
+    .tbl thead th {
+        background-color: #def3fc;    
+        color: #0c1465;
+        padding: 2px 5px 2px 5px;
+    }
+    .tbl tbody tr:nth-child(even) {
+        background-color: #dcfede;
+    }
+
+    .tbl tbody td{ 
+        color: #0c1465;
+        padding: 2px 5px 2px 5px;
+
+    }
+    .tbl tfoot th, .tbl tfoot td{ 
+        color: #0c1465;
+        padding: 2px 5px 2px 5px;
+    }
+    .contenu{    
+        color: #0c1465;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+    .contenu th,.contenu td{
+        color: #0c1465;
+        text-align: center;
+    }
+    .contenu td{
+        height: 35px;  
+    }
+
+/* ==========================================================================
+   RESPONSIVE TABLE WRAPPER
+   ========================================================================== */
+.table-responsive-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile table adjustments */
+@media (max-width: 768px) {
+    .simpleTbl,
+    .simpleTblLight,
+    .classicTbl {
+        font-size: 11px;
+    }
+    
+    .simpleTbl th,
+    .simpleTbl td {
+        padding: 3px 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .simpleTbl,
+    .simpleTblLight {
+        font-size: 10px;
+    }
+    
+    .simpleTbl th,
+    .simpleTbl td {
+        padding: 2px 3px;
+    }
+}
+
+/* =====================================================================
+   GLOBAL NOTIFICATION HARMONIZATION (LIGHT/DARK)
+   Applies to legacy notif modals: #notif*, #bigNotif*
+   ===================================================================== */
+
+:root {
+    --notif-overlay: rgba(2, 8, 23, 0.62);
+    --notif-bg: linear-gradient(160deg, rgb(var(--c-canvas) / 0.97), rgb(var(--c-surface) / 0.95));
+    --notif-border: rgb(var(--c-line-strong) / 0.28);
+    --notif-text: rgb(var(--c-text));
+    --notif-muted: rgb(var(--c-text-2));
+    --notif-shadow: 0 24px 54px rgba(2, 6, 23, 0.52);
+    --notif-field-bg: rgb(var(--c-canvas) / 0.48);
+    --notif-field-border: rgb(var(--c-line-strong) / 0.35);
+    --notif-action-bg: rgb(var(--c-surface-2) / 0.82);
+    --notif-action-border: rgb(var(--c-line-strong) / 0.32);
+    --notif-action-text: rgb(var(--c-text));
+    --notif-primary-bg: linear-gradient(135deg, rgb(var(--c-accent-strong)), rgb(var(--c-accent-strong)));
+    --notif-primary-text: rgb(var(--c-accent-text));
+    --notif-danger-bg: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+[data-theme="light"] {
+    --notif-overlay: rgba(148, 163, 184, 0.28);
+    --notif-bg: linear-gradient(160deg, rgb(var(--c-surface) / 0.96), rgb(var(--c-surface-2) / 0.96));
+    --notif-border: rgb(var(--c-line-strong) / 0.48);
+    --notif-text: rgb(var(--c-text));
+    --notif-muted: rgb(var(--c-text-2));
+    --notif-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+    --notif-field-bg: rgb(var(--c-surface) / 0.86);
+    --notif-field-border: rgb(var(--c-line-strong) / 0.42);
+    --notif-action-bg: rgb(var(--c-surface-2) / 0.9);
+    --notif-action-border: rgb(var(--c-line-strong) / 0.6);
+    --notif-action-text: rgb(var(--c-text));
+    --notif-primary-bg: linear-gradient(135deg, rgb(var(--c-accent-strong)), rgb(var(--c-accent)));
+    --notif-primary-text: rgb(var(--c-accent-text));
+    --notif-danger-bg: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+/* Overlay shell */
+[id^="notif"] {
+    background: var(--notif-overlay) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+}
+
+/* Primary notification card (la carte peut etre enveloppee dans un <form>) */
+[id^="notif"] > div:first-child,
+[id^="notif"] > form > div:first-child {
+    background: var(--notif-bg) !important;
+    border: 1px solid var(--notif-border) !important;
+    color: var(--notif-text) !important;
+    border-radius: 14px !important;
+    box-shadow: var(--notif-shadow) !important;
+}
+
+/* Internal typography and separators */
+[id^="notif"] b,
+[id^="notif"] label,
+[id^="notif"] p,
+[id^="notif"] span,
+[id^="notif"] small,
+[id^="notif"] .text-black {
+    color: var(--notif-text) !important;
+}
+[id^="notif"] .toolInactive {
+    color: var(--notif-muted) !important;
+}
+[id^="notif"] hr {
+    border-color: var(--notif-border) !important;
+    opacity: 1;
+}
+
+/* Inputs */
+[id^="notif"] input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+[id^="notif"] select,
+[id^="notif"] textarea {
+    background: var(--notif-field-bg) !important;
+    border: 1px solid var(--notif-field-border) !important;
+    color: var(--notif-text) !important;
+    border-radius: 10px !important;
+}
+[id^="notif"] input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):focus,
+[id^="notif"] select:focus,
+[id^="notif"] textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2) !important;
+    border-color: rgb(var(--c-accent)) !important;
+}
+
+/* Generic actions */
+[id^="notif"] a,
+[id^="notif"] button,
+[id^="notif"] input[type="submit"] {
+    border: 1px solid var(--notif-action-border) !important;
+    border-radius: 10px !important;
+    background: var(--notif-action-bg) !important;
+    color: var(--notif-action-text) !important;
+    transition: transform 0.16s ease, filter 0.2s ease, box-shadow 0.2s ease;
+}
+[id^="notif"] a:hover,
+[id^="notif"] button:hover,
+[id^="notif"] input[type="submit"]:hover {
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+}
+
+/* Primary action buttons */
+[id^="notif"] .bg-cyan-800,
+[id^="notif"] .bg-cyan-700,
+[id^="notif"] .bg-green-700,
+[id^="notif"] .bg-blue-700 {
+    background: var(--notif-primary-bg) !important;
+    border-color: transparent !important;
+    color: var(--notif-primary-text) !important;
+}
+
+/* Destructive action buttons */
+[id^="notif"] .bg-red-600,
+[id^="notif"] .bg-red-700 {
+    background: var(--notif-danger-bg) !important;
+    border-color: transparent !important;
+    color: #fff !important;
+}
+[id^="notif"] .toolInactive,
+[id^="notif"] .btnInactive {
+    opacity: 0.7;
+}

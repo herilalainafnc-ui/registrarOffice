@@ -1,0 +1,106 @@
+/* =============================================================================
+   Plan du bureau — le dessin (prefixe « pb- »). Script : src/js/plan-bureau.js.
+
+   Un plan d'architecte lu comme une signaletique : murs pleins sur un calque
+   quadrille au metre, un seul fil orange pour le parcours, des numeros ronds
+   pour les etapes. Couleurs : jetons de src/css/tokens.css (pages de
+   l'application), avec repli sur le bleu nuit de l'ecran public, qui ne
+   charge pas tokens.css.
+   ========================================================================== */
+
+.pb-plan {
+	--pb-sol:         rgb(var(--c-surface, 26 31 60));
+	--pb-trame:       rgb(var(--c-line, 40 47 86) / .55);
+	--pb-mur:         rgb(var(--c-text, 236 238 246) / .86);
+	--pb-texte:       rgb(var(--c-text, 236 238 246));
+	--pb-texte-2:     rgb(var(--c-text-3, 136 144 181));
+	--pb-signal:      #FF8A2A;
+	--pb-signal-texte: #FFAB66;
+	--pb-voile:       rgb(255 138 42 / .13);
+	--pb-voile-fort:  rgb(255 138 42 / .28);
+	--pb-disque:      rgb(var(--c-text, 236 238 246));
+	--pb-sur-disque:  rgb(var(--c-canvas, 18 22 44));
+	display: block; width: 100%; height: auto;
+	font-family: var(--font-sans, 'Inter', system-ui, sans-serif);
+}
+[data-theme="light"] .pb-plan {
+	--pb-mur:         rgb(var(--c-text) / .9);
+	--pb-trame:       rgb(var(--c-line) / .8);
+	--pb-signal:      #E8700A;
+	--pb-signal-texte: #A94E05;
+	--pb-voile:       rgb(232 112 10 / .10);
+	--pb-voile-fort:  rgb(232 112 10 / .24);
+	--pb-disque:      rgb(var(--c-text));
+	--pb-sur-disque:  rgb(var(--c-surface));
+}
+
+.pb-sol { fill: var(--pb-sol); }
+.pb-trame { fill: none; stroke: var(--pb-trame); stroke-width: 1; }
+
+.pb-piece { fill: transparent; transition: fill .2s ease-out; }
+.pb-piece--etape { fill: var(--pb-voile); }
+.pb-plan.pb-focus .pb-piece--etape { fill: transparent; }
+.pb-plan.pb-focus .pb-piece--etape.pb-vise { fill: var(--pb-voile-fort); }
+
+.pb-mur { fill: none; stroke: var(--pb-mur); stroke-width: 4.5; stroke-linecap: square; }
+.pb-mur--ext { stroke-width: 9; }
+.pb-battant { fill: none; stroke: var(--pb-mur); stroke-width: 1.4; }
+.pb-debattement { fill: none; stroke: var(--pb-texte-2); stroke-width: 1; stroke-dasharray: 3 3; }
+.pb-perron { fill: var(--pb-sol); stroke: var(--pb-mur); stroke-width: 1.4; }
+.pb-libelle-entree {
+	font: 700 calc(15px * var(--pb-k, 1)) var(--font-sans, 'Inter', system-ui, sans-serif);
+	fill: var(--pb-signal-texte); text-anchor: middle; dominant-baseline: central; letter-spacing: .16em; text-transform: uppercase;
+}
+
+.pb-code { font: 500 calc(13px * var(--pb-k, 1)) var(--font-mono, 'JetBrains Mono', ui-monospace, monospace); fill: var(--pb-texte-2); text-anchor: middle; dominant-baseline: central; letter-spacing: .05em; }
+.pb-nom { font: 600 calc(11.5px * var(--pb-k, 1)) var(--font-sans, 'Inter', system-ui, sans-serif); fill: var(--pb-texte); text-anchor: middle; dominant-baseline: central; letter-spacing: .02em; }
+.pb-nom--seul { font-size: calc(12.5px * var(--pb-k, 1)); }
+
+.pb-trace { fill: none; stroke: var(--pb-signal); stroke-width: 5; stroke-linejoin: round; stroke-linecap: round; transition: opacity .2s ease-out; }
+.pb-trace--rompue { stroke-dasharray: 10 8; }
+.pb-flux { fill: none; stroke: var(--pb-sol); stroke-width: 1.6; stroke-dasharray: 1.5 13; stroke-linecap: round; animation: pb-flux 1.1s linear infinite; transition: opacity .2s ease-out; }
+@keyframes pb-flux { to { stroke-dashoffset: -14.5; } }
+.pb-chevron-fond { fill: var(--pb-signal); }
+.pb-chevron { fill: none; stroke: var(--pb-sur-disque); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.pb-chevrons > g { transition: opacity .2s ease-out; }
+.pb-plan .pb-hors { opacity: .14; }
+
+.pb-balise .pb-disque { fill: var(--pb-disque); stroke: var(--pb-signal); stroke-width: 4; transition: fill .2s ease-out; }
+.pb-balise text { font: 700 19px var(--font-sans, 'Inter', system-ui, sans-serif); fill: var(--pb-sur-disque); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+.pb-balise .pb-halo { fill: var(--pb-signal); opacity: 0; transform-box: fill-box; transform-origin: center; }
+.pb-balise.pb-atteinte .pb-halo { animation: pb-halo .9s ease-out; }
+@keyframes pb-halo { from { opacity: .45; transform: scale(1); } to { opacity: 0; transform: scale(2.3); } }
+.pb-balise[role="button"] { cursor: pointer; }
+.pb-balise[role="button"]:hover .pb-disque, .pb-balise--vise .pb-disque { fill: var(--pb-signal); }
+.pb-balise:focus { outline: none; }
+.pb-balise:focus-visible .pb-disque { stroke: var(--pb-texte); stroke-width: 5; }
+.pb-marcheur { fill: var(--pb-texte); stroke: var(--pb-sol); stroke-width: 3; }
+.pb-plan.pb-focus .pb-marcheur { opacity: 0; }
+
+/* La liste des etapes, a cote du plan */
+.pb-etapes { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.pb-etape {
+	display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; align-items: center; width: 100%;
+	padding: 8px 10px; border: 1px solid transparent; border-radius: 10px; background: transparent;
+	color: inherit; font: inherit; text-align: left; cursor: pointer; transition: background-color .15s, border-color .15s;
+}
+button.pb-etape:hover { background: rgb(255 255 255 / .05); border-color: rgb(255 255 255 / .1); }
+[data-theme="light"] button.pb-etape:hover { background: rgb(var(--c-text) / .04); border-color: rgb(var(--c-line)); }
+.pb-etape[aria-pressed="true"] { border-color: #FF8A2A; background: rgb(255 138 42 / .08); }
+.pb-etape:focus-visible { outline: 2px solid #FF8A2A; outline-offset: 2px; }
+.pb-etape--entree { cursor: default; }
+.pb-pastille {
+	width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+	background: rgb(var(--c-text, 236 238 246)); color: rgb(var(--c-canvas, 18 22 44));
+	box-shadow: inset 0 0 0 3px #FF8A2A; font: 700 16px/1 var(--font-sans, 'Inter', system-ui, sans-serif);
+}
+.pb-etape--entree .pb-pastille { background: transparent; color: #FFAB66; box-shadow: inset 0 0 0 2px #FF8A2A; font-size: 13px; }
+[data-theme="light"] .pb-etape--entree .pb-pastille { color: #A94E05; }
+.pb-etape-texte { min-width: 0; display: grid; }
+.pb-etape-titre { font-weight: 600; font-size: 15px; line-height: 1.25; }
+.pb-etape-detail { font-size: 13px; line-height: 1.35; opacity: .7; overflow-wrap: anywhere; }
+
+@media (prefers-reduced-motion: reduce) {
+	.pb-flux { animation: none; }
+	.pb-balise.pb-atteinte .pb-halo { animation: none; }
+}

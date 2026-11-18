@@ -1,0 +1,452 @@
+/* =============================================================================
+   Boite mail (/settings/bulk-email) : l'ergonomie de Gmail dans la charte de
+   l'application (src/css/tokens.css) : surfaces bleu nuit, accent bleu
+   Zurcher, or pour l'entree active et les non-lus, Inter, coins de 10 a 14 px.
+   La redaction s'ouvre en fenetre en bas a droite, comme dans Gmail.
+   Donnees : data/boite.gmail.php ; script : src/js/boite-gmail.js.
+   ========================================================================== */
+
+.bm-page .footer-bleu-nuit { flex: none; }
+
+.bm {
+	flex: 1; min-height: 0; display: grid; grid-template-columns: 236px minmax(0, 1fr); gap: 16px;
+	padding: 16px 16px 12px; font-family: var(--font-sans); color: rgb(var(--c-text));
+}
+
+/* --------------------------------------------------------------- dossiers */
+.bm-dossiers { display: flex; flex-direction: column; min-height: 0; overflow-y: auto; scrollbar-width: thin; }
+.bm-dossiers__tete h1 { margin: 2px 0 0; font-size: 24px; font-weight: 700; letter-spacing: -.01em; color: rgb(var(--c-text)); }
+.bm-dossiers__tete p { margin: 2px 0 0; font-size: 12.5px; color: rgb(var(--c-text-3)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.bm-nouveau {
+	display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 44px; margin: 16px 0 12px;
+	padding: 0 20px; border-radius: 999px; background: rgb(var(--c-accent)); color: rgb(var(--c-on-accent)) !important;
+	font-size: 14px; font-weight: 600; text-decoration: none !important; box-shadow: var(--shadow-1);
+	transition: background-color .15s, box-shadow .15s, transform .15s;
+}
+.bm-nouveau:hover { background: rgb(var(--c-accent-strong)); box-shadow: var(--shadow-2); }
+.bm-nouveau:active { transform: translateY(1px); }
+.bm-nouveau i { font-size: 16px; }
+
+.bm-dossiers__liste { display: flex; flex-direction: column; gap: 2px; }
+.bm-dossier {
+	position: relative; display: flex; align-items: center; gap: 12px; height: 38px; padding: 0 12px;
+	border-radius: var(--radius); color: rgb(var(--c-text-2)) !important; font-size: 14px; text-decoration: none !important;
+	transition: background-color .12s, color .12s;
+}
+.bm-dossier i { width: 18px; font-size: 16px; text-align: center; color: rgb(var(--c-text-3)); }
+.bm-dossier span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bm-dossier:hover { background: rgb(var(--c-surface-2)); color: rgb(var(--c-text)) !important; }
+/* L'entree active : le geste du menu de l'application, un filet d'or. */
+.bm-dossier.active { background: rgb(var(--c-surface)); color: rgb(var(--c-text)) !important; font-weight: 600; box-shadow: inset 0 0 0 1px rgb(var(--c-line)); }
+.bm-dossier.active::before { content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; border-radius: 0 3px 3px 0; background: rgb(var(--c-gold)); }
+.bm-dossier.active i { color: rgb(var(--c-gold-text)); }
+.gm-nav__compte { font-size: 12px; font-weight: 600; color: rgb(var(--c-text-3)); font-variant-numeric: tabular-nums; }
+.gm-nav__compte:empty { display: none; }
+.bm-dossier.gm-non-lus { color: rgb(var(--c-text)) !important; font-weight: 600; }
+.bm-dossier.gm-non-lus .gm-nav__compte {
+	min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
+	background: rgb(var(--c-gold)); color: rgb(var(--c-canvas));
+}
+.bm-dossiers__titre { margin: 18px 12px 6px; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: rgb(var(--c-text-3)); }
+
+/* --------------------------------------------------------------- panneau */
+.bm-principal {
+	position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden;
+	background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line)); border-radius: var(--radius-lg);
+}
+.bm-recherche {
+	display: flex; align-items: center; gap: 8px; height: 42px; margin: 12px 12px 6px; padding: 0 6px 0 14px; flex: none;
+	border-radius: 999px; background: rgb(var(--c-inset)); border: 1px solid rgb(var(--c-line));
+	transition: border-color .15s, box-shadow .15s;
+}
+.bm-recherche > i { color: rgb(var(--c-text-3)); font-size: 15px; }
+.bm-recherche:focus-within { border-color: rgb(var(--c-accent)); box-shadow: var(--ring); }
+.bm-recherche input {
+	flex: 1; min-width: 0; height: 40px; border: 0 !important; outline: 0; background: transparent !important; box-shadow: none !important;
+	color: rgb(var(--c-text)) !important; font: 14px var(--font-sans); padding: 0;
+}
+/* Un seul contour, celui de la pilule : on neutralise l'anneau global des champs
+   (modal.css, !important) et l'ombre de Tailwind Forms. */
+.bm-recherche input:focus, .bm-recherche input:focus-visible { outline: none !important; box-shadow: none !important; }
+.bm-recherche input::placeholder { color: rgb(var(--c-text-3)); }
+.bm-recherche input::-webkit-search-cancel-button { display: none; }
+
+.bm-icone {
+	display: inline-flex; align-items: center; justify-content: center; flex: none; width: 36px; height: 36px; padding: 0;
+	border: 0; border-radius: 50%; background: transparent; color: rgb(var(--c-text-2)); font-size: 16px; cursor: pointer;
+	transition: background-color .12s, color .12s;
+}
+.bm-icone:hover { background: rgb(var(--c-surface-2)); color: rgb(var(--c-text)); }
+.bm-icone:focus-visible, .bm-dossier:focus-visible, .bm-nouveau:focus-visible, .gm-ligne:focus-visible,
+.bm-pilule:focus-visible, .bm-bouton:focus-visible, .bm-mode__choix:focus-visible, .bm-pastille:focus-visible, .bm-lien:focus-visible {
+	outline: none; box-shadow: var(--ring);
+}
+.bm-icone[disabled] { opacity: .35; cursor: default; background: transparent; }
+
+.gm-outils { display: flex; align-items: center; gap: 2px; min-height: 44px; padding: 0 8px; border-bottom: 1px solid rgb(var(--c-line)); flex: none; }
+.gm-outils[hidden] { display: none !important; }
+.gm-outils__case { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; }
+.bm-selection { display: inline-flex; align-items: center; gap: 2px; padding-left: 4px; margin-left: 4px; border-left: 1px solid rgb(var(--c-line)); }
+.bm-selection[hidden] { display: none; }
+.gm-titre-boite { padding-left: 8px; font-size: 13px; color: rgb(var(--c-text-2)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gm-pagination { margin-left: auto; display: flex; align-items: center; gap: 0; font-size: 12.5px; color: rgb(var(--c-text-3)); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.gm-pagination span { padding: 0 8px; }
+.gm-case { width: 16px; height: 16px; margin: 0; accent-color: rgb(var(--c-accent)); cursor: pointer; }
+
+.gm-progres { position: absolute; top: 0; left: 0; right: 0; height: 2px; overflow: hidden; z-index: 5; pointer-events: none; }
+.gm-progres::before { content: ""; position: absolute; top: 0; bottom: 0; left: -40%; width: 40%; background: rgb(var(--c-accent)); animation: bm-progres 1.1s ease-in-out infinite; }
+.gm-progres[hidden] { display: none; }
+@keyframes bm-progres { to { left: 100%; } }
+
+/* ------------------------------------------------------------------ liste */
+.gm-liste { flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: thin; }
+.gm-liste[hidden] { display: none !important; }
+.gm-ligne {
+	position: relative; display: flex; align-items: center; min-height: 46px; padding: 0 12px 0 4px;
+	border-bottom: 1px solid rgb(var(--c-line)); color: rgb(var(--c-text-2)); font-size: 14px; cursor: pointer;
+	transition: background-color .1s;
+}
+.gm-ligne:hover { background: rgb(var(--c-surface-2)); }
+.gm-ligne.gm-coche { background: rgb(var(--c-accent) / .14); }
+.gm-ligne__case, .gm-ligne__etoile { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 44px; }
+.gm-ligne__etoile button { border: 0; background: transparent; padding: 5px; border-radius: 50%; color: rgb(var(--c-text-3)); font-size: 15px; line-height: 1; cursor: pointer; }
+.gm-ligne__etoile button:hover { background: rgb(var(--c-raised)); color: rgb(var(--c-gold-text)); }
+.gm-ligne__etoile .bi-star-fill { color: rgb(var(--c-gold)); }
+.gm-ligne__corps { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; padding: 10px 0; }
+.gm-ligne__haut { display: flex; align-items: center; min-width: 0; gap: 0; }
+.gm-ligne__de { position: relative; flex: 0 0 210px; padding: 0 24px 0 16px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.gm-ligne__texte { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.gm-ligne__objet { color: rgb(var(--c-text)); }
+.gm-ligne__extrait { color: rgb(var(--c-text-3)); }
+.gm-ligne__extrait.gm-attente::after { content: "…"; }
+.gm-ligne__date { flex: none; min-width: 72px; padding-left: 12px; text-align: right; font-size: 12.5px; color: rgb(var(--c-text-3)); white-space: nowrap; font-variant-numeric: tabular-nums; }
+/* Non lu : gras, et un point d'or (le signe des non-lus dans l'application). */
+.gm-ligne.gm-non-lu { color: rgb(var(--c-text)); }
+.gm-ligne.gm-non-lu .gm-ligne__de, .gm-ligne.gm-non-lu .gm-ligne__objet, .gm-ligne.gm-non-lu .gm-ligne__date { font-weight: 600; color: rgb(var(--c-text)); }
+.gm-ligne.gm-non-lu .gm-ligne__de::before { content: ""; position: absolute; left: 4px; top: 50%; width: 7px; height: 7px; margin-top: -3.5px; border-radius: 50%; background: rgb(var(--c-gold)); }
+.gm-ligne__actions { display: none; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); align-items: center; gap: 2px; padding-left: 8px; background: rgb(var(--c-surface-2)); }
+.gm-ligne.gm-coche .gm-ligne__actions { background: transparent; }
+.gm-ligne:hover .gm-ligne__actions, .gm-ligne:focus-within .gm-ligne__actions { display: inline-flex; }
+.gm-ligne:hover .gm-ligne__date, .gm-ligne:focus-within .gm-ligne__date { visibility: hidden; }
+.gm-ligne__pieces { display: flex; gap: 6px; margin: 6px 0 0 226px; overflow: hidden; }
+.gm-puce-piece {
+	display: inline-flex; align-items: center; gap: 6px; max-width: 220px; height: 26px; padding: 0 10px;
+	border: 1px solid rgb(var(--c-line-strong)); border-radius: 999px; background: rgb(var(--c-inset));
+	color: rgb(var(--c-text-2)); font-size: 12px; white-space: nowrap; overflow: hidden;
+}
+.gm-puce-piece span { overflow: hidden; text-overflow: ellipsis; }
+.gm-puce-piece i { color: rgb(var(--c-danger)); }
+
+/* Squelette pendant le premier chargement */
+.bm-squelette { display: flex; align-items: center; gap: 16px; height: 46px; padding: 0 16px 0 82px; border-bottom: 1px solid rgb(var(--c-line)); }
+.bm-squelette span { height: 10px; border-radius: 6px; background: rgb(var(--c-surface-2)); animation: bm-pulse 1.2s ease-in-out infinite; }
+.bm-squelette span:nth-child(1) { width: 140px; }
+.bm-squelette span:nth-child(2) { flex: 1; }
+.bm-squelette span:nth-child(3) { width: 48px; }
+@keyframes bm-pulse { 50% { opacity: .45; } }
+
+/* Etats vides et erreurs : le gabarit de la messagerie (anneau d'or). */
+.gm-vide { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 64px 24px; text-align: center; }
+.gm-vide__icone {
+	width: 72px; height: 72px; margin-bottom: 10px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+	background: rgb(var(--c-surface-2)); box-shadow: inset 0 0 0 1px rgb(var(--c-gold) / .55); color: rgb(var(--c-gold-text)); font-size: 28px;
+}
+.gm-vide h3 { margin: 0; font-size: 17px; font-weight: 700; color: rgb(var(--c-text)); }
+.gm-vide p { margin: 0; max-width: 380px; font-size: 13.5px; color: rgb(var(--c-text-2)); line-height: 1.55; }
+.gm-vide .bm-bouton { margin-top: 14px; }
+.gm-erreur { margin: 16px; padding: 12px 14px; border-radius: var(--radius); background: rgb(var(--c-danger) / .12); border: 1px solid rgb(var(--c-danger) / .35); color: rgb(var(--c-danger)); font-size: 13.5px; }
+
+/* ---------------------------------------------------------------- lecture */
+.gm-lecture { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.gm-lecture[hidden] { display: none !important; }
+.bm-retour {
+	display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px 0 10px; margin-right: 6px;
+	border: 1px solid rgb(var(--c-line-strong)); border-radius: 999px; background: transparent;
+	color: rgb(var(--c-text)); font: 600 13px var(--font-sans); cursor: pointer;
+}
+.bm-retour:hover { background: rgb(var(--c-surface-2)); }
+.gm-lecture__defile { flex: 1; min-height: 0; overflow-y: auto; padding: 4px 20px 28px; scrollbar-width: thin; }
+.gm-lecture__objet { display: flex; align-items: center; gap: 10px; margin: 14px 0 16px 56px; flex-wrap: wrap; }
+.gm-lecture__objet h2 { margin: 0; font-size: 20px; line-height: 28px; font-weight: 700; color: rgb(var(--c-text)); word-break: break-word; }
+.gm-etiquette { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: var(--radius-sm); background: rgb(var(--c-surface-2)); color: rgb(var(--c-text-2)); font-size: 11.5px; font-weight: 500; }
+.gm-entete { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; align-items: start; }
+.gm-entete__avatar { width: 40px; height: 40px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-weight: 600; font-size: 17px; }
+.gm-entete__qui { min-width: 0; padding-top: 1px; }
+.gm-entete__nom { font-weight: 600; font-size: 14px; color: rgb(var(--c-text)); }
+.gm-entete__email { font-size: 12.5px; color: rgb(var(--c-text-3)); margin-left: 6px; }
+.gm-entete__a { font-size: 12.5px; color: rgb(var(--c-text-3)); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gm-entete__droite { display: flex; align-items: center; gap: 2px; font-size: 12.5px; color: rgb(var(--c-text-3)); white-space: nowrap; }
+.gm-entete__droite time { padding-right: 6px; }
+/* Le message reste sur sa feuille blanche : les e-mails sont mis en page pour elle. */
+.bm-papier { margin: 14px 0 0 56px; padding: 18px 20px; border-radius: var(--radius); background: #fff; border: 1px solid rgb(var(--c-line)); }
+.gm-document { display: block; width: 100%; min-height: 60px; border: 0; background: #fff; }
+.gm-pieces { margin: 20px 0 0 56px; }
+.gm-pieces__titre { font-size: 13px; color: rgb(var(--c-text-2)); margin-bottom: 10px; }
+.gm-pieces__liste { display: flex; flex-wrap: wrap; gap: 10px; }
+.gm-carte-piece {
+	display: flex; align-items: center; gap: 10px; width: 240px; padding: 10px 12px; border-radius: var(--radius);
+	border: 1px solid rgb(var(--c-line-strong)); background: rgb(var(--c-inset)); color: rgb(var(--c-text)) !important;
+	text-decoration: none !important; transition: background-color .12s, border-color .12s;
+}
+.gm-carte-piece:hover { background: rgb(var(--c-surface-2)); border-color: rgb(var(--c-accent)); }
+.gm-carte-piece > i { font-size: 26px; color: rgb(var(--c-danger)); }
+.gm-carte-piece div { min-width: 0; }
+.gm-carte-piece b { display: block; font-weight: 500; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gm-carte-piece small { color: rgb(var(--c-text-3)); font-size: 12px; }
+.gm-carte-piece .bi-download { margin-left: auto; font-size: 15px; color: rgb(var(--c-text-3)); }
+.gm-repondre { display: flex; gap: 10px; margin: 22px 0 0 56px; flex-wrap: wrap; }
+.bm-pilule {
+	display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 18px 0 14px;
+	border: 1px solid rgb(var(--c-line-strong)); border-radius: 999px; background: transparent;
+	color: rgb(var(--c-text)); font: 600 13.5px var(--font-sans); cursor: pointer; transition: background-color .12s;
+}
+.bm-pilule:hover { background: rgb(var(--c-surface-2)); }
+.bm-pilule--principale { background: rgb(var(--c-accent)); border-color: rgb(var(--c-accent)); color: rgb(var(--c-on-accent)); }
+.bm-pilule--principale:hover { background: rgb(var(--c-accent-strong)); }
+
+/* --------------------------------------------------- boutons et annonces */
+.bm-bouton {
+	display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 38px; padding: 0 18px;
+	border: 1px solid rgb(var(--c-accent)); border-radius: 999px; background: rgb(var(--c-accent));
+	color: rgb(var(--c-on-accent)); font: 600 14px var(--font-sans); cursor: pointer; transition: background-color .12s;
+}
+.bm-bouton:hover { background: rgb(var(--c-accent-strong)); }
+.bm-bouton--discret { background: transparent; border-color: rgb(var(--c-line-strong)); color: rgb(var(--c-text)); }
+.bm-bouton--discret:hover { background: rgb(var(--c-surface-2)); }
+.bm-bouton--danger { background: rgb(var(--c-danger)); border-color: rgb(var(--c-danger)); color: #fff; }
+
+.gm-annonce {
+	position: fixed; left: 24px; bottom: 24px; z-index: 1055; display: flex; align-items: center; gap: 16px;
+	min-width: 260px; max-width: 520px; padding: 12px 18px; border-radius: var(--radius);
+	background: rgb(var(--c-raised)); border: 1px solid rgb(var(--c-line-strong)); color: rgb(var(--c-text));
+	font: 14px var(--font-sans); box-shadow: var(--shadow-2);
+	opacity: 0; transform: translateY(10px); transition: opacity .2s, transform .2s; pointer-events: none;
+}
+.gm-annonce.gm-visible { opacity: 1; transform: none; pointer-events: auto; }
+
+/* --------------------------------------------------- fenetre de redaction */
+.bm-redaction {
+	/* A gauche du bouton Messagerie (right 18px, 56px de large), comme ses fenetres de discussion. */
+	position: fixed; right: 92px; bottom: 0; z-index: 1040; display: flex; flex-direction: column;
+	width: 560px; height: min(640px, calc(100vh - 72px));
+	background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line-strong)); border-bottom: 0;
+	border-radius: var(--radius-lg) var(--radius-lg) 0 0; box-shadow: 0 -2px 30px -6px rgb(0 0 0 / .45), var(--shadow-2);
+	font-family: var(--font-sans); color: rgb(var(--c-text)); overflow: hidden;
+}
+.bm-redaction[style*="display: none"], .bm-redaction[style*="display:none"] { display: none !important; }
+.bm-redaction__tete {
+	display: flex; align-items: center; gap: 2px; height: 42px; padding: 0 6px 0 16px; flex: none; cursor: default;
+	background: rgb(var(--c-topbar)); color: #fff; border-bottom: 1px solid rgb(var(--c-gold));
+	font-size: 14px; font-weight: 600;
+}
+.bm-redaction__tete > span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bm-icone--tete { width: 32px; height: 32px; color: rgb(255 255 255 / .82); font-size: 14px; }
+.bm-icone--tete:hover { background: rgb(255 255 255 / .12); color: #fff; }
+.bm-redaction__corps { flex: 1; min-height: 0; overflow-y: auto; padding: 0 16px 8px; display: flex; flex-direction: column; scrollbar-width: thin; }
+.bm-redaction__pied {
+	display: flex; align-items: center; gap: 6px; padding: 10px 12px 10px 16px; flex: none;
+	border-top: 1px solid rgb(var(--c-line)); background: rgb(var(--c-surface));
+}
+/* Reduite : la barre de titre seule, en bas a droite. */
+.bm-redaction[data-etat="reduit"] { width: 320px; height: auto; }
+.bm-redaction[data-etat="reduit"] .bm-redaction__corps, .bm-redaction[data-etat="reduit"] .bm-redaction__pied { display: none; }
+.bm-redaction[data-etat="reduit"] .bm-redaction__tete { cursor: pointer; }
+/* Agrandie : au centre, sur un voile. */
+.bm-redaction[data-etat="agrandi"] {
+	right: auto; left: 50%; bottom: auto; top: 50%; transform: translate(-50%, -50%); z-index: 1046;
+	width: min(1040px, calc(100vw - 48px)); height: min(860px, calc(100vh - 64px));
+	border-bottom: 1px solid rgb(var(--c-line-strong)); border-radius: var(--radius-lg);
+}
+.bm-voile { position: fixed; inset: 0; z-index: 1045; background: rgb(var(--c-sunken) / .62); backdrop-filter: blur(2px); }
+.bm-voile[hidden] { display: none; }
+
+/* Choix : des personnes ou un groupe */
+.bm-mode { display: inline-flex; align-self: flex-start; gap: 2px; margin: 12px 0 6px; padding: 3px; border-radius: 999px; background: rgb(var(--c-inset)); border: 1px solid rgb(var(--c-line)); }
+.bm-mode__choix {
+	display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 14px; border: 0; border-radius: 999px;
+	background: transparent; color: rgb(var(--c-text-2)); font: 600 13px var(--font-sans); cursor: pointer; transition: background-color .12s, color .12s;
+}
+.bm-mode__choix:hover { color: rgb(var(--c-text)); }
+.bm-mode__choix[aria-selected="true"] { background: rgb(var(--c-accent)); color: rgb(var(--c-on-accent)); }
+
+.bm-champ { display: flex; align-items: center; gap: 10px; min-height: 44px; border-bottom: 1px solid rgb(var(--c-line)); flex: none; }
+.bm-champ__libelle { flex: none; min-width: 44px; font-size: 13px; color: rgb(var(--c-text-3)); }
+.bm-champ__valeur { position: relative; flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 0; }
+.bm-champ .gmail-input, .bm-champ__valeur .gmail-input {
+	flex: 1; min-width: 160px; height: 30px; border: 0 !important; outline: 0; padding: 0; background: transparent !important; box-shadow: none !important;
+	color: rgb(var(--c-text)) !important; font: 14px var(--font-sans);
+}
+.bm-champ .gmail-input::placeholder { color: rgb(var(--c-text-3)); }
+/* Champs A et Objet : pas de cadre au focus (comme Gmail), le trait du dessous passe a l'accent. */
+.bm-champ .gmail-input:focus, .bm-champ .gmail-input:focus-visible { outline: none !important; box-shadow: none !important; }
+.bm-champ:focus-within { border-bottom-color: rgb(var(--c-accent)); }
+.bm-puces { display: contents; }
+.bm-page .gmail-chip {
+	display: inline-flex; align-items: center; gap: 4px; max-width: 100%; height: 26px; padding: 0 4px 0 10px;
+	border-radius: 999px; background: rgb(var(--c-surface-2)); border: 1px solid rgb(var(--c-line-strong)); color: rgb(var(--c-text)); font-size: 12.5px;
+}
+.bm-page .gmail-chip > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bm-page .gmail-chip button { width: 18px; height: 18px; border: 0; border-radius: 50%; background: transparent; color: rgb(var(--c-text-3)) !important; cursor: pointer; font-size: 12px; line-height: 1; }
+.bm-page .gmail-chip button:hover { background: rgb(var(--c-raised)); color: rgb(var(--c-text)) !important; }
+.bm-page .gmail-results {
+	position: absolute; left: 0; right: 0; top: 100%; z-index: 5; max-height: 240px; overflow-y: auto;
+	background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line-strong)); border-radius: var(--radius); box-shadow: var(--shadow-2);
+}
+.bm-page .gmail-results button { display: block; width: 100%; padding: 8px 12px; text-align: left; border: 0; border-bottom: 1px solid rgb(var(--c-line)); background: transparent; cursor: pointer; }
+.bm-page .gmail-results button:last-child { border-bottom: 0; }
+.bm-page .gmail-results button:hover, .bm-page .gmail-results button:focus-visible { background: rgb(var(--c-surface-2)); outline: none; }
+.bm-page .gmail-results > div { color: rgb(var(--c-text-3)) !important; }
+.bm-page .gmail-result-name { color: rgb(var(--c-text)); font-size: 13.5px; }
+.bm-page .gmail-result-meta { color: rgb(var(--c-text-3)); font-size: 12px; }
+.bm-lien { flex: none; border: 0; background: transparent; padding: 4px 6px; border-radius: var(--radius-sm); color: rgb(var(--c-accent-text)); font: 500 12.5px var(--font-sans); cursor: pointer; }
+.bm-lien:hover { text-decoration: underline; }
+.bm-liste-adresses { padding: 8px 0 10px; border-bottom: 1px solid rgb(var(--c-line)); }
+.bm-liste-adresses[hidden] { display: none; }
+.bm-liste-adresses .bm-champ__libelle { display: block; margin-bottom: 6px; }
+.bm-liste-adresses textarea, .bm-select {
+	width: 100%; border: 1px solid rgb(var(--c-line-strong)) !important; border-radius: var(--radius) !important;
+	background: rgb(var(--c-inset)) !important; color: rgb(var(--c-text)) !important; font: 13.5px var(--font-sans);
+	padding: 8px 12px; box-shadow: none !important; outline: none;
+}
+.bm-liste-adresses textarea:focus, .bm-select:focus { border-color: rgb(var(--c-accent)) !important; box-shadow: var(--ring) !important; }
+.bm-select { height: 38px; padding: 0 12px; cursor: pointer; }
+.bm-select--court { width: auto; min-width: 180px; }
+.bm-groupe { padding: 6px 0 12px; border-bottom: 1px solid rgb(var(--c-line)); flex: none; }
+.bm-groupe[hidden] { display: none; }
+.bm-groupe > .bm-champ__libelle { display: block; margin: 6px 0; }
+/* Enseignant : l'expediteur, et qui verra les adresses de qui */
+.bm-de { font-size: 13.5px; color: rgb(var(--c-text-2)); }
+.bm-de b { font-weight: 600; color: rgb(var(--c-text)); }
+.bm-aide { margin: 6px 0 0; font-size: 12.5px; line-height: 1.5; color: rgb(var(--c-text-3)); }
+.bm-aide[hidden] { display: none; }
+.bm-redaction .gm-erreur { margin: 10px 0 0; }
+.bm-recherche[hidden] { display: none; }
+.bm-filtres { margin-top: 10px; display: grid; gap: 10px; }
+.bm-filtres__ligne { display: grid; grid-template-columns: 70px minmax(0, 1fr); align-items: start; gap: 8px; }
+.bm-filtres__ligne .bm-champ__libelle { padding-top: 6px; }
+.bm-pastilles { display: flex; flex-wrap: wrap; gap: 6px; }
+.bm-pastille {
+	height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid rgb(var(--c-line-strong)); background: transparent;
+	color: rgb(var(--c-text-2)); font: 500 12.5px var(--font-sans); cursor: pointer; transition: background-color .12s, border-color .12s, color .12s;
+}
+.bm-pastille:hover { border-color: rgb(var(--c-accent)); color: rgb(var(--c-text)); }
+.bm-pastille[aria-pressed="true"] { background: rgb(var(--c-accent)); border-color: rgb(var(--c-accent)); color: rgb(var(--c-on-accent)); }
+
+.bm-page .bm-editeur {
+	flex: 1 0 auto; min-height: 140px; padding: 12px 0; border: 0 !important; outline: 0; background: transparent !important; box-shadow: none !important;
+	color: rgb(var(--c-text)) !important; font: 14px/1.6 var(--font-sans); overflow-y: visible;
+}
+.bm-page .bm-editeur:empty::before { content: attr(data-placeholder); color: rgb(var(--c-text-3)); }
+.bm-page .bm-editeur.dragover { outline: 2px dashed rgb(var(--c-accent)) !important; outline-offset: 4px; border-radius: var(--radius); }
+.bm-page .bm-editeur blockquote { margin: 0 0 0 .8ex; padding-left: 1ex; border-left: 2px solid rgb(var(--c-line-strong)); color: rgb(var(--c-text-2)); }
+
+.bm-pieces-jointes { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 0 8px; }
+.bm-pieces-jointes:empty { display: none; }
+.bm-piece-jointe {
+	display: inline-flex; align-items: center; gap: 6px; max-width: 100%; height: 30px; padding: 0 4px 0 10px;
+	border-radius: var(--radius-sm); background: rgb(var(--c-inset)); border: 1px solid rgb(var(--c-line-strong)); font-size: 12.5px; color: rgb(var(--c-text));
+}
+.bm-piece-jointe span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bm-piece-jointe small { color: rgb(var(--c-text-3)); }
+.bm-piece-jointe button { width: 22px; height: 22px; border: 0; border-radius: 50%; background: transparent; color: rgb(var(--c-text-3)); cursor: pointer; }
+.bm-piece-jointe button:hover { background: rgb(var(--c-raised)); color: rgb(var(--c-text)); }
+
+.bm-apercu { margin: 4px 0 8px; font-size: 12.5px; }
+.bm-apercu summary { cursor: pointer; color: rgb(var(--c-accent-text)); font-weight: 500; padding: 4px 0; list-style: revert; }
+.bm-apercu .gmail-preview-list { margin-top: 6px; max-height: 150px; overflow-y: auto; display: grid; gap: 2px; padding: 6px; border-radius: var(--radius); background: rgb(var(--c-inset)); border: 1px solid rgb(var(--c-line)); }
+.bm-page .gmail-preview-item { padding: 3px 8px; color: rgb(var(--c-text-2)); font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bm-page .gmail-hint { color: rgb(var(--c-text-3)) !important; font-size: 12.5px; }
+
+.bm-envoi-etat { font-size: 12.5px; color: rgb(var(--c-text-2)); }
+.bm-page .gmail-send-progress { margin: 6px 0 8px; padding: 10px 12px; border-radius: var(--radius); background: rgb(var(--c-inset)); border: 1px solid rgb(var(--c-line)); }
+.bm-page .gmail-send-progress.hidden { display: none; }
+.bm-page .gmail-send-progress-head { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; color: rgb(var(--c-text-2)); font-weight: 600; }
+.bm-barre-envoi { height: 6px; margin: 8px 0; border-radius: 999px; background: rgb(var(--c-line)); overflow: hidden; }
+.bm-barre-envoi span { display: block; height: 100%; width: 0; background: rgb(var(--c-accent)); border-radius: inherit; transition: width .3s; }
+.bm-page .gmail-send-progress-list { max-height: 110px; overflow-y: auto; display: grid; gap: 2px; }
+.bm-page .gmail-send-progress-item { display: flex; justify-content: space-between; gap: 8px; padding: 2px 4px; font-size: 12px; color: rgb(var(--c-text-2)); }
+.bm-page .gmail-send-progress-item span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bm-page .gmail-send-progress-ok { color: rgb(var(--c-success)); font-weight: 600; white-space: nowrap; }
+.bm-page .gmail-send-progress-fail { color: rgb(var(--c-danger)); font-weight: 600; white-space: nowrap; }
+.bm-page .gmail-status { display: none; margin: 12px 0 0; padding: 10px 12px; border-radius: var(--radius); font-size: 13px; }
+.bm-page .gmail-status.success { display: block; background: rgb(var(--c-success) / .12); border: 1px solid rgb(var(--c-success) / .35); color: rgb(var(--c-success)); }
+.bm-page .gmail-status.error { display: block; background: rgb(var(--c-danger) / .12); border: 1px solid rgb(var(--c-danger) / .35); color: rgb(var(--c-danger)); }
+
+.bm-page #sendBtn {
+	display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 22px; margin: 0;
+	border: 0; border-radius: 999px; background: rgb(var(--c-accent)); color: rgb(var(--c-on-accent));
+	font: 600 14px var(--font-sans); cursor: pointer; box-shadow: var(--shadow-1); transition: background-color .12s;
+}
+.bm-page #sendBtn:hover { background: rgb(var(--c-accent-strong)); }
+.bm-page #sendBtn[disabled] { opacity: .55; cursor: default; }
+.bm-portee { margin-left: 6px; font-size: 12.5px; color: rgb(var(--c-text-3)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bm-portee b { color: rgb(var(--c-text)); font-weight: 600; }
+.bm-icone--droite { margin-left: auto; }
+.bm-cache { position: absolute !important; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+label.bm-icone { margin: 0; }
+
+.bm-page .inline-image-wrap { position: relative; display: inline-block; margin: 10px auto; max-width: 100%; border: 1px solid transparent; border-radius: var(--radius); vertical-align: top; }
+.bm-page .inline-image-wrap.is-selected { border-color: rgb(var(--c-accent)); box-shadow: var(--ring); }
+.bm-page .inline-image-wrap img { display: block; max-width: 100%; height: auto; border-radius: 8px; user-select: none; -webkit-user-drag: none; }
+.bm-page .inline-image-remove { position: absolute; top: -10px; right: -10px; width: 22px; height: 22px; border: 0; border-radius: 50%; background: rgb(var(--c-danger)); color: #fff; font-size: 12px; line-height: 1; cursor: pointer; display: none; }
+.bm-page .inline-image-wrap.is-selected .inline-image-remove { display: inline-flex; align-items: center; justify-content: center; }
+.bm-page .inline-image-handle { position: absolute; width: 12px; height: 12px; right: -5px; bottom: -5px; border-radius: 50%; border: 2px solid #fff; background: rgb(var(--c-accent)); cursor: nwse-resize; display: none; }
+.bm-page .inline-image-wrap.is-selected .inline-image-handle { display: block; }
+.bm-page .gmail-modal { display: none !important; }
+
+/* ----------------------------------------------------- dialogue de confirmation */
+.bm-dialogue { position: fixed; inset: 0; z-index: 1060; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgb(var(--c-sunken) / .66); backdrop-filter: blur(2px); }
+.bm-dialogue[hidden] { display: none; }
+.bm-dialogue__carte {
+	width: min(460px, 100%); padding: 22px 24px 18px; border-radius: var(--radius-lg);
+	background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line-strong)); box-shadow: var(--shadow-2); font-family: var(--font-sans);
+}
+.bm-dialogue h2 { margin: 0 0 8px; font-size: 17px; font-weight: 700; color: rgb(var(--c-text)); }
+.bm-dialogue p { margin: 0; font-size: 14px; line-height: 1.55; color: rgb(var(--c-text-2)); }
+.bm-dialogue p b { color: rgb(var(--c-text)); }
+.bm-dialogue__actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+@media (prefers-reduced-motion: reduce) {
+	.gm-progres::before { animation: none; left: 0; width: 100%; opacity: .5; }
+	.bm-squelette span { animation: none; }
+	.gm-annonce, .bm-barre-envoi span { transition: none; }
+}
+
+/* --------------------------------------------------------------- petits ecrans */
+@media (max-width: 1023px) {
+	.bm { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 10px; padding: 10px; }
+	.bm-dossiers { flex-direction: row; align-items: center; overflow-x: auto; overflow-y: hidden; gap: 8px; padding-bottom: 2px; }
+	.bm-dossiers__tete, .bm-dossiers__titre { display: none; }
+	.bm-dossiers__liste { flex-direction: row; gap: 6px; }
+	.bm-dossier { height: 34px; padding: 0 12px; border: 1px solid rgb(var(--c-line)); border-radius: 999px; white-space: nowrap; flex: none; }
+	.bm-dossier span { overflow: visible; }
+	.bm-dossier.active { box-shadow: none; border-color: rgb(var(--c-gold)); }
+	.bm-dossier.active::before { display: none; }
+	/* Nouveau message : le bouton flottant, comme dans l'application mobile de Gmail. */
+	.bm-nouveau { position: fixed; right: 16px; bottom: 20px; z-index: 50; margin: 0; height: 52px; box-shadow: var(--shadow-2); }
+	.gm-ligne__de { flex-basis: 150px; padding-right: 12px; }
+	.gm-ligne__pieces { margin-left: 166px; }
+	.gm-lecture__objet, .bm-papier, .gm-pieces, .gm-repondre { margin-left: 0; }
+	.gm-entete { grid-template-columns: 48px minmax(0, 1fr) auto; }
+}
+@media (max-width: 700px) {
+	.bm-redaction, .bm-redaction[data-etat="agrandi"] {
+		inset: 0; left: 0; top: 0; right: 0; bottom: 0; transform: none; width: 100%; height: 100%; border-radius: 0; border: 0; z-index: 1046;
+	}
+	.bm-redaction[data-etat="reduit"] { inset: auto 0 0 0; width: 100%; height: auto; }
+	.bm-redaction [data-redaction="agrandir"] { display: none; }
+	.bm-filtres__ligne { grid-template-columns: minmax(0, 1fr); }
+	/* Au-dessus du bouton Messagerie et du bouton Nouveau message. */
+	.gm-annonce { left: 12px; right: 12px; bottom: 148px; max-width: none; }
+}
+@media (max-width: 560px) {
+	.gm-ligne__haut { flex-wrap: wrap; }
+	.gm-ligne__de { flex: 1 1 0; min-width: 0; }
+	.gm-ligne__date { min-width: 0; }
+	.gm-ligne__texte { flex-basis: 100%; order: 3; padding-left: 16px; }
+	.gm-ligne__pieces { display: none; }
+	.gm-ligne__case { display: none; }
+	.gm-outils__case { display: none; }
+	.bm-papier { padding: 12px; }
+}

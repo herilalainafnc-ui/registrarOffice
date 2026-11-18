@@ -1,0 +1,1115 @@
+/* =============================================================================
+   Vitrine — theme clair
+   =============================================================================
+   Charge apres pages.css et vitrine.css : il retourne la vitrine en clair et
+   remplace le cyan/violet par la palette du logo de l'universite.
+
+   Palette relevee sur file/UAZ Official.png :
+     #183060  bleu marine   — couleur dominante du logo
+     #907848  or            — seconde couleur du logo
+   Les variantes ci-dessous en derivent, eclaircies ou assombries.
+   ========================================================================== */
+
+:root {
+    --uaz-marine:        #183060;
+    --uaz-marine-clair:  #2a4a86;
+    --uaz-marine-pale:   #eef2f9;
+    --uaz-or:            #907848;
+    --uaz-or-clair:      #c9a961;
+    --uaz-or-pale:       #f7f2e6;
+
+    --uaz-encre:         #16233d;   /* texte principal */
+    --uaz-encre-douce:   #55627a;   /* texte secondaire */
+    --uaz-fond:          #ffffff;
+    --uaz-fond-alt:      #f6f7fb;
+    --uaz-filet:         #e2e6ef;
+}
+
+/* -------------------------------------------------------------------------
+   Reprise des variables de pages.css
+
+   pages.css definit tout son cyan dans trois variables (--primary-*), plus le
+   texte, les fonds et les bordures. Les redefinir sur le corps de page les
+   remplace partout d un coup — liens, icones, bordures au survol, puces,
+   listes, boutons — au lieu de rattraper chaque composant l un apres l autre.
+   C est la raison pour laquelle du cyan reapparaissait a chaque page que
+   j ouvrais : je traitais les symptomes.
+   ------------------------------------------------------------------------- */
+
+body.vitrine-unique,
+body.vitrine-claire {
+    --primary-color:  #183060;
+    --primary-dark:   #12244a;
+    --primary-light:  #2a4a86;
+    --accent-color:   #907848;
+
+    --text-color:     #16233d;
+    --text-muted:     #55627a;
+
+    --bg-dark:        #ffffff;
+    --bg-darker:      #f6f7fb;
+    --bg-card:        #ffffff;
+    --bg-card-hover:  #f6f7fb;
+    --border-color:   #e2e6ef;
+
+    --shadow-lg: 0 20px 60px -30px rgba(24, 48, 96, .45);
+    --shadow-md: 0 10px 30px -18px rgba(24, 48, 96, .35);
+}
+
+/* -------------------------------------------------------------------------
+   Fond general et texte
+   ------------------------------------------------------------------------- */
+
+body.vitrine-unique,
+body.vitrine-claire {
+    background: var(--uaz-fond);
+    color: var(--uaz-encre);
+}
+
+/* Le fond blanc est porte par la section entiere, non par chacun de ses
+   blocs : peint sur le bloc, il recouvrait les silhouettes posees au fond
+   de la section, qui ne paraissaient plus que dans les rares interstices.
+   Le rendu est le meme — c est le meme blanc — mais le decor passe dessous. */
+:is(.vitrine-unique,.vitrine-claire) .vitrine-section { background: var(--uaz-fond); }
+:is(.vitrine-unique,.vitrine-claire) .section { background: transparent; }
+:is(.vitrine-unique,.vitrine-claire) .section-alt     { background: var(--uaz-fond-alt); }
+
+:is(.vitrine-unique,.vitrine-claire) .section-title,
+:is(.vitrine-unique,.vitrine-claire) .card-title,
+:is(.vitrine-unique,.vitrine-claire) .timeline-title,
+:is(.vitrine-unique,.vitrine-claire) .hero-title,
+:is(.vitrine-unique,.vitrine-claire) h1, :is(.vitrine-unique,.vitrine-claire) h2,
+:is(.vitrine-unique,.vitrine-claire) h3, :is(.vitrine-unique,.vitrine-claire) h4 { color: var(--uaz-marine); }
+
+:is(.vitrine-unique,.vitrine-claire) .section-subtitle,
+:is(.vitrine-unique,.vitrine-claire) .card-text,
+:is(.vitrine-unique,.vitrine-claire) .timeline-text,
+:is(.vitrine-unique,.vitrine-claire) .hero-subtitle,
+:is(.vitrine-unique,.vitrine-claire) p { color: var(--uaz-encre-douce); }
+
+:is(.vitrine-unique,.vitrine-claire) .section-label,
+:is(.vitrine-unique,.vitrine-claire) .timeline-step { color: var(--uaz-or); }
+
+/* -------------------------------------------------------------------------
+   Barre de navigation
+   ------------------------------------------------------------------------- */
+
+:is(.vitrine-unique,.vitrine-claire) .navbar {
+    background: rgba(255, 255, 255, .92);
+    border-bottom: 1px solid var(--uaz-filet);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+:is(.vitrine-unique,.vitrine-claire) .navbar .brand-name { color: var(--uaz-marine); }
+:is(.vitrine-unique,.vitrine-claire) .navbar .nav-link   { color: var(--uaz-encre-douce); }
+:is(.vitrine-unique,.vitrine-claire) .navbar .nav-link:hover { color: var(--uaz-marine); }
+:is(.vitrine-unique,.vitrine-claire) .navbar .nav-link.active {
+    color: var(--uaz-marine);
+    border-bottom-color: var(--uaz-or);
+}
+:is(.vitrine-unique,.vitrine-claire) .navbar .login-btn {
+    background: var(--uaz-marine);
+    color: #fff;
+}
+:is(.vitrine-unique,.vitrine-claire) .navbar .login-btn:hover { background: var(--uaz-marine-clair); }
+
+/* -------------------------------------------------------------------------
+   Cartes, encadres et filets
+   ------------------------------------------------------------------------- */
+
+:is(.vitrine-unique,.vitrine-claire) .feature-card,
+:is(.vitrine-unique,.vitrine-claire) .timeline-content,
+:is(.vitrine-unique,.vitrine-claire) .form-container,
+:is(.vitrine-unique,.vitrine-claire) .contact-info-list {
+    background: var(--uaz-fond);
+    border: 1px solid var(--uaz-filet);
+    box-shadow: 0 1px 2px rgba(24, 48, 96, .04), 0 10px 26px -18px rgba(24, 48, 96, .3);
+}
+:is(.vitrine-unique,.vitrine-claire) .card-icon {
+    background: var(--uaz-marine-pale);
+    color: var(--uaz-marine);
+}
+:is(.vitrine-unique,.vitrine-claire) .timeline-dot { background: var(--uaz-or); }
+
+/* -------------------------------------------------------------------------
+   Formulaires
+   ------------------------------------------------------------------------- */
+
+:is(.vitrine-unique,.vitrine-claire) .form-input,
+:is(.vitrine-unique,.vitrine-claire) .form-select,
+:is(.vitrine-unique,.vitrine-claire) .form-textarea {
+    background: var(--uaz-fond);
+    border: 1px solid var(--uaz-filet);
+    color: var(--uaz-encre);
+}
+:is(.vitrine-unique,.vitrine-claire) .form-input:focus,
+:is(.vitrine-unique,.vitrine-claire) .form-select:focus,
+:is(.vitrine-unique,.vitrine-claire) .form-textarea:focus {
+    border-color: var(--uaz-marine-clair);
+    box-shadow: 0 0 0 3px rgba(42, 74, 134, .15);
+    outline: none;
+}
+:is(.vitrine-unique,.vitrine-claire) .form-label { color: var(--uaz-marine); }
+:is(.vitrine-unique,.vitrine-claire) .submit-btn {
+    background: var(--uaz-marine);
+    color: #fff;
+}
+:is(.vitrine-unique,.vitrine-claire) .submit-btn:hover { background: var(--uaz-marine-clair); }
+
+/* -------------------------------------------------------------------------
+   Section d'accueil : la video occupe le fond, le texte reste lisible
+   ------------------------------------------------------------------------- */
+
+.vitrine-fond {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+}
+/* Les deux plans vivent dans ce calque ; c est lui que la parallaxe
+   deplace, et non chaque video : leur propre transformation sert deja a les
+   centrer. */
+.vitrine-fond__plans {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+}
+
+.vitrine-fond__video {
+    position: absolute;
+    top: 50%; left: 50%;
+    /* La marge de debordement sert au deplacement parallaxe, mais elle
+       agrandit la video d autant : a 120 %, un fichier de 1600 px etait
+       affiche sur 1920 et paraissait flou. A 112 %, l agrandissement tombe
+       de 2,0x a 1,12x. */
+    min-width: 100%; min-height: 112%;
+    width: auto; height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    will-change: transform;
+}
+/* Voile : sans lui, un texte clair sur une vue aerienne devient illisible des
+   que l'image s'eclaircit. Le degrade preserve le ciel en haut. */
+.vitrine-fond__voile {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(180deg, rgba(24,48,96,.55) 0%, rgba(24,48,96,.72) 55%, rgba(24,48,96,.88) 100%);
+}
+
+.vitrine-accueil { color: #fff; }
+:is(.vitrine-unique,.vitrine-claire) .vitrine-accueil .vitrine-titre { color: #fff; }
+:is(.vitrine-unique,.vitrine-claire) .vitrine-accueil .vitrine-chapo { color: rgba(255,255,255,.86); }
+/* Le rendez-vous de rentree, sous le chapeau : l'appel a retenir, la date en or.
+   Meme niveau de selecteur que le chapeau : une regle des paragraphes de la
+   vitrine le passait sinon en gris ardoise, illisible sur la photo. */
+.vitrine-chapo:has(+ .vitrine-rdv) { margin-bottom: 1rem; }
+:is(.vitrine-unique,.vitrine-claire) .vitrine-accueil .vitrine-rdv {
+    margin: 0 auto 2.2rem;
+    max-width: 40rem;
+    font-size: clamp(1.05rem, 2vw, 1.3rem);
+    font-weight: 600;
+    line-height: 1.5;
+    color: #fff;
+}
+:is(.vitrine-unique,.vitrine-claire) .vitrine-accueil .vitrine-rdv strong {
+    color: var(--uaz-or-clair);
+    font-weight: 700;
+    white-space: nowrap;
+}
+/* Place reservee en bas pour l'invite « Defilez pour decouvrir » (position
+   absolue, pres de 6rem avec la fleche) : un texte plus long la faisait
+   chevaucher les boutons sur telephone. */
+.vitrine-accueil { padding-bottom: calc(clamp(1.5rem, 4vh, 3rem) + 5.5rem); }
+/* Centree par « left: 50% », l'invite n'a que la moitie de la largeur : sur
+   telephone, son libelle passait sur deux lignes alignees a gauche. */
+.vitrine-invite__texte { white-space: nowrap; }
+.vitrine-eyebrow { color: var(--uaz-or-clair) !important; }
+/* Le hero est une photo sombre : l'invite s'y lit en blanc translucide, et
+   currentColor emporte le cercle de la fleche avec le libelle. */
+.vitrine-invite  { color: rgba(255,255,255,.72); }
+.vitrine-invite:hover,
+.vitrine-invite:focus-visible { color: #fff; }
+
+.vitrine-btn {
+    border-color: rgba(255,255,255,.5);
+    color: #fff;
+}
+.vitrine-btn:hover { background: rgba(255,255,255,.14); }
+.vitrine-btn--plein {
+    background: var(--uaz-or);
+    border-color: var(--uaz-or);
+    color: #16233d;
+}
+.vitrine-btn--plein:hover {
+    background: var(--uaz-or-clair);
+    border-color: var(--uaz-or-clair);
+}
+
+/* Les formes qui suivaient le curseur n'ont plus lieu d'etre sur une video. */
+.vitrine-accueil .formes-uaz { display: none !important; }
+
+/* -------------------------------------------------------------------------
+   Galeries horizontales et section campus, en clair
+   ------------------------------------------------------------------------- */
+
+.galerie-horizontale { background: var(--uaz-fond-alt); }
+.galerie-horizontale__titre { color: var(--uaz-marine); }
+.galerie-carte {
+    background: var(--uaz-fond);
+    border: 1px solid var(--uaz-filet);
+    box-shadow: 0 1px 2px rgba(24,48,96,.04), 0 10px 26px -18px rgba(24,48,96,.3);
+}
+.galerie-carte h3 { color: var(--uaz-marine); }
+.galerie-carte p  { color: var(--uaz-encre-douce); }
+.galerie-carte__num { color: var(--uaz-or); }
+
+:is(.vitrine-unique,.vitrine-claire) .section-horizontale { background: var(--uaz-marine); color: #fff; }
+:is(.vitrine-unique,.vitrine-claire) .section-horizontale__intro h2 { color: #fff; }
+:is(.vitrine-unique,.vitrine-claire) .section-horizontale__intro p,
+:is(.vitrine-unique,.vitrine-claire) .section-horizontale__vue figcaption { color: rgba(255,255,255,.78); }
+:is(.vitrine-unique,.vitrine-claire) .section-horizontale__vue figcaption strong { color: #fff; }
+:is(.vitrine-unique,.vitrine-claire) .section-horizontale__indice { color: var(--uaz-or-clair); }
+
+/* -------------------------------------------------------------------------
+   Chargement, progression, curseur
+   ------------------------------------------------------------------------- */
+
+.chargement { background: var(--uaz-marine); }
+.chargement__texte { color: rgba(255,255,255,.7); }
+.vitrine-progression span { background: linear-gradient(90deg, var(--uaz-marine), var(--uaz-or)); }
+.curseur-uaz { background: var(--uaz-or); }
+
+/* -------------------------------------------------------------------------
+   Pied de page
+   ------------------------------------------------------------------------- */
+
+:is(.vitrine-unique,.vitrine-claire) .footer {
+    background: var(--uaz-marine);
+    color: rgba(255,255,255,.8);
+}
+:is(.vitrine-unique,.vitrine-claire) .footer a,
+:is(.vitrine-unique,.vitrine-claire) .footer-links a { color: rgba(255,255,255,.8); }
+:is(.vitrine-unique,.vitrine-claire) .footer a:hover  { color: var(--uaz-or-clair); }
+:is(.vitrine-unique,.vitrine-claire) .footer-title    { color: #fff; }
+
+/* -------------------------------------------------------------------------
+   Cartes de formation
+
+   Elles portent leurs propres classes, distinctes des cartes generiques :
+   sans ces regles, elles restaient sombres au milieu d'une page claire.
+   ------------------------------------------------------------------------- */
+
+:is(.vitrine-unique,.vitrine-claire) .program-card {
+    background: var(--uaz-fond);
+    border: 1px solid var(--uaz-filet);
+    box-shadow: 0 1px 2px rgba(24,48,96,.04), 0 10px 26px -18px rgba(24,48,96,.3);
+}
+:is(.vitrine-unique,.vitrine-claire) .program-card:hover {
+    border-color: var(--uaz-or);
+    box-shadow: 0 2px 4px rgba(24,48,96,.06), 0 18px 40px -22px rgba(24,48,96,.45);
+}
+:is(.vitrine-unique,.vitrine-claire) .program-title    { color: var(--uaz-marine); }
+:is(.vitrine-unique,.vitrine-claire) .program-duration { color: var(--uaz-or); }
+:is(.vitrine-unique,.vitrine-claire) .program-text     { color: var(--uaz-encre-douce); }
+:is(.vitrine-unique,.vitrine-claire) .program-badge {
+    background: var(--uaz-marine);
+    color: #fff;
+}
+:is(.vitrine-unique,.vitrine-claire) .program-image-container { background: var(--uaz-marine-pale); }
+
+/* -------------------------------------------------------------------------
+   En-tetes de rubrique (.hero)
+
+   Le degrade d origine finit sur « rgba(14,165,233,.1) » : une couleur
+   translucide, donc composee sur ce qui se trouve dessous. Sur le fond sombre
+   d avant elle passait inapercue ; sur un fond blanc elle laisse voir le
+   blanc et produit ce lavis diagonal du marine vers le gris clair, qui rendait
+   le chapo illisible. On repose donc l en-tete au lieu de le corriger.
+   ------------------------------------------------------------------------- */
+
+:is(.vitrine-unique,.vitrine-claire) .hero {
+    background: var(--uaz-fond-alt);
+    border-bottom: 1px solid var(--uaz-filet);
+}
+
+/* Trame de points marine, tres discrete : elle donne de la matiere a la
+   surface sans entrer en concurrence avec le titre. */
+:is(.vitrine-unique,.vitrine-claire) .hero::before {
+    background-image: radial-gradient(circle, rgba(24,48,96,.08) 1px, transparent 1px);
+    background-size: 26px 26px;
+    opacity: 1;
+}
+
+:is(.vitrine-unique,.vitrine-claire) .hero-badge {
+    background: var(--uaz-fond);
+    border: 1px solid var(--uaz-filet);
+    color: var(--uaz-marine);
+    box-shadow: 0 1px 2px rgba(24,48,96,.05);
+}
+
+/* Le titre etait un degrade applique au texte via -webkit-text-fill-color :
+   transparent. Tant que cette propriete vaut « transparent », aucune regle
+   de couleur ne peut l atteindre — il faut la remettre a currentColor. */
+:is(.vitrine-unique,.vitrine-claire) .hero-title {
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    color: var(--uaz-marine);
+    letter-spacing: -.015em;
+}
+
+:is(.vitrine-unique,.vitrine-claire) .hero-subtitle {
+    color: var(--uaz-encre-douce);
+}
+
+/* -------------------------------------------------------------------------
+   Bandeau de chiffres
+
+   Il chevauche volontairement le bas de l en-tete. En cyan vif sur la
+   jonction blanc/sombre, ce chevauchement soulignait la rupture au lieu de
+   la relier. En marine plein, il devient le point d appui de la composition
+   et rappelle le pied de page.
+   ------------------------------------------------------------------------- */
+
+:is(.vitrine-unique,.vitrine-claire) .stats-section {
+    background: var(--uaz-marine);
+    box-shadow: 0 18px 44px -26px rgba(24,48,96,.6);
+    gap: 0;
+}
+/* Les filets separent les colonnes, pas les elements a la suite : la
+   grille passe a deux colonnes sous 1024 px, et un simple « + » aurait
+   laisse un trait pendant au debut de la seconde ligne. */
+:is(.vitrine-unique,.vitrine-claire) .stats-section { row-gap: 2rem; }
+:is(.vitrine-unique,.vitrine-claire) .stat-box:not(:nth-child(4n+1)) {
+    border-left: 1px solid rgba(255,255,255,.14);
+}
+@media (max-width: 1024px) {
+    :is(.vitrine-unique,.vitrine-claire) .stat-box { border-left: 0; }
+    :is(.vitrine-unique,.vitrine-claire) .stat-box:not(:nth-child(2n+1)) {
+        border-left: 1px solid rgba(255,255,255,.14);
+    }
+}
+@media (max-width: 768px) {
+    :is(.vitrine-unique,.vitrine-claire) .stat-box { border-left: 0; }
+}
+:is(.vitrine-unique,.vitrine-claire) .stat-value { color: #fff; }
+:is(.vitrine-unique,.vitrine-claire) .stat-label { color: var(--uaz-or-clair); }
+
+/* -------------------------------------------------------------------------
+   Soulignement de la rubrique courante
+
+   Le trait est un ::after dont la largeur passe de 0 a 100 % ; ma regle
+   precedente visait border-bottom-color, qui n existe pas ici.
+   ------------------------------------------------------------------------- */
+
+:is(.vitrine-unique,.vitrine-claire) .navbar .nav-link::after { background: var(--uaz-or); }
+:is(.vitrine-unique,.vitrine-claire) .navbar .login-btn { box-shadow: 0 6px 18px -8px rgba(24,48,96,.7); }
+
+/* -------------------------------------------------------------------------
+   Curseur et rideau de page
+   ------------------------------------------------------------------------- */
+
+/* Un disque plein masque ce qu il survole. Un anneau laisse voir le texte
+   dessous, ce qui compte davantage sur un fond clair. */
+.curseur-uaz {
+    background: transparent;
+    border: 1.5px solid var(--uaz-marine);
+    mix-blend-mode: normal;
+}
+
+.rideau-page__bande:nth-child(1) { background: var(--uaz-marine); }
+.rideau-page__bande:nth-child(2) { background: var(--uaz-or); }
+.rideau-page__bande:nth-child(3) { background: var(--uaz-marine-clair); }
+
+/* La barre change de fond une fois la page defilee ; cette variante etait
+   ecrite en dur et repassait au sombre. */
+:is(.vitrine-unique,.vitrine-claire) .navbar.scrolled {
+    background: rgba(255, 255, 255, .96);
+    box-shadow: 0 1px 0 var(--uaz-filet), 0 8px 24px -20px rgba(24, 48, 96, .5);
+}
+
+/* -------------------------------------------------------------------------
+   Proportion de l en-tete
+
+   « min-height: 60vh » reservait plus de la moitie de l ecran a trois lignes
+   de texte : le vide sous le chapo etait plus haut que le contenu lui-meme.
+   On borne la hauteur par le rembourrage, qui suit la taille de l ecran sans
+   creer de vide.
+
+   Reserve aux pages autonomes : la page unique a deja ses propres valeurs,
+   plus serrees, parce que cinq en-tetes s y suivent.
+   ------------------------------------------------------------------------- */
+
+.vitrine-claire .hero {
+    min-height: 0;
+    padding: clamp(8rem, 16vh, 11rem) 60px clamp(3.5rem, 7vh, 5.5rem);
+}
+
+/* Filet dore sous le titre : le meme signe que sous le sigle du rideau, et
+   la seconde couleur du logo. Il separe le titre du chapo sans ajouter de
+   texte. */
+:is(.vitrine-unique,.vitrine-claire) .hero-title::after {
+    content: '';
+    display: block;
+    width: 64px;
+    height: 3px;
+    margin: 1.35rem auto 0;
+    border-radius: 2px;
+    background: var(--uaz-or);
+}
+
+@media (max-width: 768px) {
+    .vitrine-claire .hero { padding-left: 20px; padding-right: 20px; }
+}
+
+/* -------------------------------------------------------------------------
+   Vignettes de programme absentes
+
+   Quatre des dix illustrations sont hebergees sur zurcher.edu.mg et
+   repondent 404 : la carte affichait le texte de remplacement et l icone de
+   lien casse du navigateur, et l etiquette venait chevaucher le titre parce
+   que le conteneur perdait sa hauteur. On reserve donc la place et on donne
+   au manque une apparence tenue, plutot que de laisser paraitre la panne.
+
+   Le remede de fond reste de rapatrier ces images dans file/ ; celui-ci evite
+   qu une coupure du site principal defigure la vitrine.
+   ------------------------------------------------------------------------- */
+
+:is(.vitrine-unique,.vitrine-claire) .program-image-container {
+    min-height: 200px;
+    background: var(--uaz-marine-pale);
+}
+:is(.vitrine-unique,.vitrine-claire) .program-image-container::before {
+    content: 'UAZ';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 2rem;
+    letter-spacing: .08em;
+    color: rgba(24, 48, 96, .16);
+}
+:is(.vitrine-unique,.vitrine-claire) .program-image { position: relative; }
+
+/* Posee par le script sur une image remplacee : le survol ne doit pas
+   agrandir un visuel de repli. */
+.image-absente { transform: none !important; }
+
+/* -------------------------------------------------------------------------
+   Dernieres traces de cyan
+
+   Ces valeurs-ci ne passent pas par les variables : elles sont ecrites en
+   dur dans pages.css, avec la couleur d origine. Redefinir les variables ne
+   pouvait donc pas les atteindre.
+   ------------------------------------------------------------------------- */
+
+/* Pastilles d icone : coordonnees, cartes de rubrique, reseaux sociaux. */
+:is(.vitrine-unique,.vitrine-claire) .contact-icon,
+:is(.vitrine-unique,.vitrine-claire) .card-icon {
+    background: linear-gradient(135deg, rgba(24,48,96,.10), rgba(24,48,96,.05));
+}
+:is(.vitrine-unique,.vitrine-claire) .contact-icon svg,
+:is(.vitrine-unique,.vitrine-claire) .card-icon svg { color: var(--uaz-marine); }
+
+/* Les liens sociaux paraissent dans deux contextes : la carte claire des
+   coordonnees et le pied de page marine. Le fond pale convient au premier,
+   la reprise en blanc au second. */
+:is(.vitrine-unique,.vitrine-claire) .social-link {
+    background: rgba(24,48,96,.08);
+    color: var(--uaz-marine);
+}
+:is(.vitrine-unique,.vitrine-claire) .social-link:hover {
+    background: var(--uaz-marine);
+    color: #fff;
+}
+
+:is(.vitrine-unique,.vitrine-claire) .footer .social-link {
+    background: rgba(255,255,255,.10);
+    color: rgba(255,255,255,.85);
+}
+:is(.vitrine-unique,.vitrine-claire) .footer .social-link:hover {
+    background: var(--uaz-or);
+    color: var(--uaz-marine);
+}
+
+/* Halos des boutons et anneau de focus. */
+:is(.vitrine-unique,.vitrine-claire) .login-btn:hover,
+:is(.vitrine-unique,.vitrine-claire) .submit-btn:hover {
+    box-shadow: 0 8px 24px -10px rgba(24,48,96,.55);
+}
+:is(.vitrine-unique,.vitrine-claire) .form-input:focus,
+:is(.vitrine-unique,.vitrine-claire) .form-select:focus,
+:is(.vitrine-unique,.vitrine-claire) .form-textarea:focus {
+    box-shadow: 0 0 0 3px rgba(24,48,96,.14);
+}
+
+/* -------------------------------------------------------------------------
+   Curseur personnalise : retire
+
+   Aucune feuille ne posait « cursor: none » : l anneau se dessinait donc en
+   plus du pointeur du systeme, et se retrouvait fige au milieu du texte sur
+   chaque capture d ecran. Le masquer aurait prive le visiteur de la main qui
+   signale un lien — un mauvais echange sur un site d universite. Les deux
+   elements sont retires du balisage ; cette regle couvre les pages qui en
+   garderaient un.
+   ------------------------------------------------------------------------- */
+
+.curseur-uaz { display: none !important; }
+
+/* -------------------------------------------------------------------------
+   Carte des coordonnees
+
+   Ce bloc n avait qu une disposition en colonne : ni fond, ni bordure, ni
+   rembourrage. En lui donnant l apparence d une carte — pour qu il reponde a
+   celle du formulaire, en face — j ai revele l absence de rembourrage, que
+   rien ne signalait tant qu aucune bordure ne passait la.
+
+   Meme valeur que .form-container, sans quoi les deux colonnes ne
+   s aligneraient pas.
+   ------------------------------------------------------------------------- */
+
+:is(.vitrine-unique,.vitrine-claire) .contact-info-list { padding: 40px; }
+
+@media (max-width: 768px) {
+    :is(.vitrine-unique,.vitrine-claire) .contact-info-list { padding: 24px; }
+}
+
+/* L en-tete cumulait sa marge basse et l ecart de la colonne : 90 px
+   separaient le chapo du premier element, contre 60 px entre les elements
+   suivants. Le style en ligne qui portait une part de cette marge est retire
+   du balisage, et la marge restante ramenee a l ecart de la colonne : le
+   rythme devient regulier de haut en bas. */
+.section-header--gauche {
+    text-align: left;
+    margin-bottom: 30px;
+}
+.section-header--gauche .section-subtitle { margin: 0; }
+
+/* -------------------------------------------------------------------------
+   Symetrie des deux colonnes de contact
+
+   La grille donne bien deux colonnes egales de 570 px, mais le formulaire
+   n en occupait que 376 : ses marges laterales automatiques, heritees de
+   l usage centre qu il a sur la page des admissions, le font se reduire au
+   contenu au lieu de s etendre. Resultat, deux cartes de largeurs
+   differentes et une gouttiere inegale entre elles.
+
+   On ne retire pas le centrage ailleurs : la regle ne vaut que dans cette
+   grille.
+   ------------------------------------------------------------------------- */
+
+:is(.vitrine-unique,.vitrine-claire) .contact-grid > .form-container {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+}
+
+/* -------------------------------------------------------------------------
+   Enchainement des deux plans du hero
+
+   Les deux videos se superposent ; seule la visible porte est-visible. Le
+   fondu dure une seconde, assez pour que la bascule ne se remarque pas.
+   ------------------------------------------------------------------------- */
+
+.vitrine-fond__video {
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+.vitrine-fond__video.est-visible { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+    .vitrine-fond__video { transition: none; }
+}
+
+/* -------------------------------------------------------------------------
+   Bouton de pause de l arriere-plan
+
+   Une image qui bouge sans qu on puisse l arreter gene la lecture, et c est
+   un critere d accessibilite a part entiere : toute animation de plus de
+   cinq secondes doit pouvoir etre interrompue. Le bouton fait 44 px, taille
+   minimale d une cible tactile, et garde un anneau de focus visible.
+   ------------------------------------------------------------------------- */
+
+.vitrine-pause {
+    position: absolute;
+    left: clamp(1.25rem, 4vw, 3rem);
+    bottom: clamp(1.5rem, 4vh, 3rem);
+    z-index: 2;
+
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, .35);
+    border-radius: 8px;
+    background: rgba(22, 35, 61, .45);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    color: #fff;
+    cursor: pointer;
+    transition: background .18s ease, border-color .18s ease, color .18s ease;
+}
+.vitrine-pause[hidden] { display: none; }
+
+.vitrine-pause svg { width: 20px; height: 20px; }
+
+/* Une seule des deux icones parait a la fois ; l etat vit sur le bouton. */
+.vitrine-pause .vitrine-pause__lecture { display: none; }
+.vitrine-pause.est-en-pause .vitrine-pause__pause   { display: none; }
+.vitrine-pause.est-en-pause .vitrine-pause__lecture { display: block; }
+
+.vitrine-pause:hover {
+    background: var(--uaz-or);
+    border-color: var(--uaz-or);
+    color: var(--uaz-encre);
+}
+.vitrine-pause:focus-visible {
+    outline: 2px solid var(--uaz-or-clair);
+    outline-offset: 3px;
+}
+
+
+/* -------------------------------------------------------------------------
+   Titre du hero : frappe au clavier
+
+   Le titre se compose lettre a lettre, s efface, et laisse la formule
+   suivante. Dans chaque devise, un mot porte le sens : il passe a une
+   police a empattements en italique et prend l or du logo, pour qu on le
+   distingue sans avoir a le lire deux fois.
+
+   La hauteur est reservee d avance : sans cela le chapo et les boutons
+   remonteraient a chaque fois que le titre se vide.
+   ------------------------------------------------------------------------- */
+
+.vitrine-titre__ecran {
+    display: block;
+    min-height: 2.85em;          /* trois lignes a 0,95 d interlignage */
+}
+
+/* vitrine.css pose « .vitrine-titre span { display: block } » — le nom de
+   l universite y tenait sur trois lignes ecrites a la main. Avec une frappe
+   au clavier, chaque fragment se retrouvait sur sa propre ligne, curseur
+   compris : c est ce qui l envoyait a la ligne suivante, et non un manque de
+   place. Le texte redevient donc du texte courant, qui se replie tout seul. */
+.vitrine-titre__texte { display: inline; }
+.vitrine-titre__texte span { display: inline; }
+
+/* Le mot mis en avant. La graisse redescend a 500 : une italique a
+   empattements en 800 deviendrait pateuse a cette taille. */
+.vitrine-titre__emphase {
+    font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+    font-style: italic;
+    font-weight: 500;
+    color: var(--uaz-or-clair);
+    /* L italique penche vers la droite et vient toucher la lettre suivante. */
+    padding-right: .06em;
+}
+
+/* Le curseur suit la derniere lettre frappee. Il garde sa place meme quand
+   il est invisible, pour que le texte ne tressaute pas au clignotement.
+
+   La marge negative annule sa largeur dans le calcul de la ligne : sans elle,
+   il suffisait que le texte remplisse la ligne pour que le curseur bascule
+   seul a la suivante, loin de la lettre qu il est cense suivre. Il deborde
+   donc legerement, ce qui ne se voit pas. */
+.vitrine-titre__texte .vitrine-titre__curseur {
+    display: inline-block;
+    width: .06em;
+    height: .8em;
+    margin-left: .06em;
+    margin-right: -.12em;
+    vertical-align: -.06em;
+    background: var(--uaz-or-clair);
+    animation: titre-clignote 1.05s steps(1) infinite;
+}
+@keyframes titre-clignote {
+    0%, 50%   { opacity: 1; }
+    50.01%, 100% { opacity: 0; }
+}
+
+/* Les formules longues ne tiennent pas au corps du nom de l universite. */
+.vitrine-titre.est-longue { font-size: clamp(1.8rem, 5.6vw, 3.9rem); }
+
+/* Le nom reste dans le document pour les lecteurs d ecran et les moteurs de
+   recherche, sans occuper de place a l affichage. */
+.vitrine-hors-ecran {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Sans animation : le nom reste ecrit, et rien ne clignote. */
+@media (prefers-reduced-motion: reduce) {
+    .vitrine-titre__curseur { display: none; }
+}
+
+/* -------------------------------------------------------------------------
+   Cible du bouton « Se pre-inscrire »
+
+   La barre de navigation est fixe : sans cette reserve, l en-tete du
+   formulaire arriverait dessous et le visiteur croirait avoir atterri au
+   milieu de la page. La regle vaut aussi pour la page autonome, ou rien ne
+   prevoyait ce decalage.
+   ------------------------------------------------------------------------- */
+
+#pre-inscription { scroll-margin-top: 6rem; }
+
+/* -------------------------------------------------------------------------
+   Legendes posees sur les photos
+
+   Le cartouche de la galerie est sombre et donne le blanc a son texte. Ma
+   regle de theme sur les titres — h3 et h4 en marine — le reprenait au
+   passage, et « Bibliotheque » s ecrivait en bleu sur une photo sombre. Les
+   titres poses sur une surface foncee reprennent donc le blanc.
+   ------------------------------------------------------------------------- */
+
+:is(.vitrine-unique,.vitrine-claire) .gallery-overlay,
+:is(.vitrine-unique,.vitrine-claire) .gallery-overlay .gallery-title { color: #fff; }
+
+/* Le cartouche ne paraissait qu au survol : sur un ecran tactile, ou le
+   survol n existe pas, les legendes restaient hors de portee. */
+@media (hover: none), (pointer: coarse) {
+    .gallery-overlay { opacity: 1; transform: none; }
+}
+
+/* -------------------------------------------------------------------------
+   Silhouettes de fond
+
+   Des anciens etudiants disperses le long de la page, un par section,
+   alternativement a gauche et a droite. Chacun repose sur un disque de
+   couleur et deborde par le haut, comme sur l affiche des mentions.
+
+   Ils sont decoratifs : ils accompagnent la lecture sans rien lui apporter.
+   D ou leur place au fond, leur retrait de l arbre d accessibilite, et leur
+   disparition des que la place manque.
+   ------------------------------------------------------------------------- */
+
+/* Le calque de decoupe couvre la section entiere. C est lui qui empeche la
+   silhouette et son disque de deborder la fenetre : poses en negatif sur le
+   bord, ils faisaient defiler la page de soixante-douze pixels vers la
+   droite. On ne peut pas rogner la section elle-meme — le defilement epingle
+   du campus s y trouve, et une decoupe le briserait. */
+.figure-cote {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* La silhouette se place a une hauteur choisie dans sa section, non a son
+   pied : ces sections font plusieurs milliers de pixels, et ancree en bas
+   elle n aurait paru qu une fois la rubrique terminee. */
+.figure-cote__sujet {
+    position: absolute;
+    top: var(--haut, 20%);
+    width: var(--taille, 19rem);
+    /* Une silhouette a pleine force volerait la vedette au texte : elle
+       doit se sentir sans se regarder. Depuis qu elle parait derriere les
+       blocs et non plus dans leurs interstices, elle descend encore. */
+    opacity: .72;
+}
+.figure-cote--gauche .figure-cote__sujet { left: clamp(-3rem, -1.5vw, -.5rem); }
+.figure-cote--droite .figure-cote__sujet { right: clamp(-3rem, -1.5vw, -.5rem); }
+
+.figure-cote img { will-change: transform; }
+
+.figure-cote__disque {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 118%;
+    aspect-ratio: 1;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: var(--teinte, var(--uaz-marine));
+    opacity: .16;
+}
+
+.figure-cote img {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: auto;
+    /* Le detourage s arrete au milieu de la toge : sans degrade, le bas
+       formerait un trait net qui trahirait la decoupe. */
+    -webkit-mask-image: linear-gradient(180deg, #000 68%, transparent 98%);
+            mask-image: linear-gradient(180deg, #000 68%, transparent 98%);
+}
+
+/* Le contenu passe devant. Sans cela une silhouette large recouvrirait le
+   texte de sa section.
+
+   La silhouette est exclue de la regle : elle est elle-meme enfant direct de
+   la galerie, et « position: relative » lui reprenait son positionnement
+   absolu — elle s etalait alors sur toute la largeur et debordait la page. */
+.vitrine-section > .section,
+.vitrine-section > .hero,
+.galerie-horizontale > *:not(.figure-cote) { position: relative; z-index: 1; }
+
+/* Sur fond marine, le disque doit s eclaircir pour se voir, et la
+   silhouette s effacer davantage pour ne pas ecraser les cartes. */
+.galerie-horizontale .figure-cote__sujet { opacity: .7; }
+.galerie-horizontale .figure-cote__disque { opacity: .3; }
+
+/* -------------------------------------------------------------------------
+   Ecrans etroits
+
+   Sous 1200 px la silhouette empiete sur le texte au lieu de l accompagner.
+   Elle disparait : c est un ornement, sa perte ne coute rien.
+   ------------------------------------------------------------------------- */
+
+@media (max-width: 1200px) {
+    .figure-cote { display: none; }
+}
+
+/* La parallaxe des silhouettes est volontairement maintenue meme lorsque le
+   visiteur demande moins d animation : c est la seule exception de la page,
+   et elle est assumee. Rien ne doit donc figer leur transformation ici. */
+
+/* -------------------------------------------------------------------------
+   Quand le visiteur demande moins d animation
+
+   Les deux galeries horizontales sont menees par GSAP au defilement. Sans
+   lui, elles retombaient sur « overflow-x: auto » : le contenu restait
+   atteignable, mais une barre de defilement apparaissait au milieu de la
+   page et l ensemble avait l air casse plutot que sobre.
+
+   Elles deviennent donc une grille : tout est visible d un coup, rien ne
+   defile de cote, et la page se lit comme une page ordinaire. C est ce que
+   demande la preference — moins de mouvement, pas moins de contenu.
+   ------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .galerie-horizontale__piste,
+    .section-horizontale__piste {
+        flex-wrap: wrap;
+        justify-content: center;
+        overflow-x: visible;
+        scroll-snap-type: none;
+    }
+
+    .galerie-carte { width: min(24rem, 100%); }
+
+    .section-horizontale__intro,
+    .section-horizontale__vue { width: min(30rem, 100%); max-width: 100%; }
+
+    /* La section epinglee n a plus a reserver la hauteur d un defilement
+       qui n aura pas lieu. */
+    .section-horizontale { min-height: 0; }
+
+    /* Le titre de la galerie revient au-dessus de la grille, centre comme
+       elle, au lieu de s aligner sur une piste qui ne glisse plus. */
+    .galerie-horizontale__titre { text-align: center; }
+}
+
+/* -------------------------------------------------------------------------
+   Definitions des chiffres
+
+   Chaque case de statistique est un bouton qui decouvre, au survol, au
+   clavier ou au toucher, ce que le mot recouvre. « Mention », « parcours »,
+   « domaine » ne parlent pas d eux-memes a qui arrive de l exterieur.
+   ------------------------------------------------------------------------- */
+
+.stats-section .stat-box {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .4rem;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: help;
+    padding: .5rem .25rem;
+    border-radius: 12px;
+    transition: background .18s ease;
+}
+.stats-section .stat-box:hover,
+.stats-section .stat-box:focus-visible { background: rgba(255,255,255,.06); }
+.stats-section .stat-box:focus-visible { outline: 2px solid var(--uaz-or-clair); outline-offset: 2px; }
+
+/* La pastille « i » signale qu il y a une explication a decouvrir. */
+.stat-info {
+    display: inline-grid;
+    place-items: center;
+    width: 15px; height: 15px;
+    margin-left: .4rem;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.45);
+    font-size: 10px;
+    font-style: italic;
+    font-weight: 700;
+    line-height: 1;
+    vertical-align: middle;
+    color: var(--uaz-or-clair);
+}
+
+/* La bulle. Cachee au repos, elle parait au survol de la case ou quand la
+   case recoit le focus.
+
+   Elle s'ouvre vers le bas, pas vers le haut. Cette rangee de chiffres suit
+   directement le hero : quand la case est proche du haut de l'ecran — ce
+   qui est le cas courant ici, pas un cas limite — une bulle ouverte vers le
+   haut sort du haut de la fenetre. Le texte se retrouve hors champ et seul
+   le bas de la bulle, vide, reste visible : exactement le rectangle blanc
+   sans texte que montrait la capture d'ecran. Vers le bas, la page continue
+   toujours assez loin pour que la bulle tienne, quelle que soit la position
+   de defilement. Comme elle est en position absolue, ouvrir vers le bas ne
+   pousse rien d'autre. */
+.stat-def {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    width: min(17rem, 76vw);
+    transform: translate(-50%, -6px);
+    padding: .8rem 1rem;
+    border-radius: 12px;
+    background: #fff;
+    color: var(--uaz-encre);
+    font-size: .82rem;
+    line-height: 1.5;
+    text-align: left;
+    box-shadow: 0 12px 34px -12px rgba(12,18,32,.55);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .18s ease, transform .18s ease, visibility .18s;
+    z-index: 5;
+}
+/* La fleche au-dessus de la bulle. */
+.stat-def::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 7px solid transparent;
+    border-bottom-color: #fff;
+}
+.stat-box:hover .stat-def,
+.stat-box:focus-visible .stat-def,
+.stat-box:focus-within .stat-def {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+}
+
+/* Les cases des bords rapprochent leur bulle du centre, faute de quoi elle
+   deborderait la fenetre. */
+.stat-box:first-child .stat-def  { left: 0;   transform: translate(0, -6px); }
+.stat-box:first-child:hover .stat-def,
+.stat-box:first-child:focus-within .stat-def { transform: translate(0, 0); }
+.stat-box:last-child .stat-def   { left: auto; right: 0; transform: translate(0, -6px); }
+.stat-box:last-child:hover .stat-def,
+.stat-box:last-child:focus-within .stat-def { transform: translate(0, 0); }
+
+@media (prefers-reduced-motion: reduce) {
+    .stat-def { transition: opacity .18s ease, visibility .18s; }
+}
+
+/* -------------------------------------------------------------------------
+   Menu des petits ecrans — declinaison claire
+   Les regles de base (pages.css) sont taillees pour le fond sombre : sur la
+   vitrine claire, le panneau et le bouton doivent suivre la meme palette que
+   la barre, sans quoi on obtient un bloc gris fonce sous une barre blanche.
+   ------------------------------------------------------------------------- */
+:is(.vitrine-unique,.vitrine-claire) .navbar .nav-burger {
+    border-color: var(--uaz-filet);
+}
+:is(.vitrine-unique,.vitrine-claire) .navbar .nav-burger:hover {
+    background: var(--uaz-marine-pale);
+}
+:is(.vitrine-unique,.vitrine-claire) .navbar .nav-burger__trait {
+    color: var(--uaz-marine);
+}
+
+:is(.vitrine-unique,.vitrine-claire) .nav-panneau {
+    background: rgba(255, 255, 255, .97);
+    border-bottom: 1px solid var(--uaz-filet);
+    box-shadow: 0 18px 40px -22px rgba(24, 48, 96, .45);
+}
+
+:is(.vitrine-unique,.vitrine-claire) .nav-panneau__lien {
+    color: var(--uaz-encre-douce);
+}
+:is(.vitrine-unique,.vitrine-claire) .nav-panneau__lien:hover {
+    color: var(--uaz-marine);
+    background: var(--uaz-marine-pale);
+}
+/* Rubrique courante : meme repere doré que le soulignement de la barre. */
+:is(.vitrine-unique,.vitrine-claire) .nav-panneau__lien.active {
+    color: var(--uaz-marine);
+    border-left-color: var(--uaz-or);
+}
+
+:is(.vitrine-unique,.vitrine-claire) .nav-voile {
+    background: rgba(24, 48, 96, .28);
+}
+
+/* ---------------------------------------------------------------------------
+   Listes deroulantes (demande du 13/10/2026, comme dans l'application) :
+   dans Chrome et Edge (135 et plus), la liste ouverte aux couleurs du site
+   au lieu du menu du systeme ; une fleche du site, retournee liste ouverte.
+   Ailleurs, la liste native reste.
+   ------------------------------------------------------------------------- */
+@supports (appearance: base-select) {
+    :is(.vitrine-unique,.vitrine-claire) select:not([multiple]):not([size]),
+    :is(.vitrine-unique,.vitrine-claire) select:not([multiple]):not([size])::picker(select) { appearance: base-select; }
+    :is(.vitrine-unique,.vitrine-claire) select.form-select:not([multiple]):not([size]) {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        white-space: nowrap;
+        overflow: hidden;
+        background-image: none;
+    }
+    :is(.vitrine-unique,.vitrine-claire) select:not([multiple]):not([size])::picker-icon {
+        content: "";
+        width: 12px;
+        height: 12px;
+        margin-inline-start: 10px;
+        background-color: var(--uaz-encre-douce);
+        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' d='m3.5 6 4.5 4.5L12.5 6'/%3E%3C/svg%3E") center / contain no-repeat;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' d='m3.5 6 4.5 4.5L12.5 6'/%3E%3C/svg%3E") center / contain no-repeat;
+        transition: rotate .2s ease;
+    }
+    :is(.vitrine-unique,.vitrine-claire) select:not([multiple]):not([size]):open::picker-icon { rotate: 180deg; }
+    :is(.vitrine-unique,.vitrine-claire) select:not([multiple]):not([size])::picker(select) {
+        margin-block: 6px;
+        padding: 5px;
+        max-block-size: min(60vh, 26rem);
+        border: 1px solid var(--uaz-filet);
+        border-radius: 12px;
+        background: var(--uaz-fond);
+        color: var(--uaz-encre);
+        box-shadow: 0 18px 40px -12px rgba(22, 35, 61, .28);
+    }
+    :is(.vitrine-unique,.vitrine-claire) select:not([multiple]):not([size]) option {
+        padding: 10px 14px;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--uaz-encre);
+        font: 500 14px/1.35 "Inter", sans-serif;
+        white-space: normal;
+    }
+    :is(.vitrine-unique,.vitrine-claire) select:not([multiple]):not([size]) option:hover,
+    :is(.vitrine-unique,.vitrine-claire) select:not([multiple]):not([size]) option:focus-visible { background: var(--uaz-marine-pale); outline: none; }
+    :is(.vitrine-unique,.vitrine-claire) select:not([multiple]):not([size]) option:checked { color: var(--uaz-marine-clair); font-weight: 650; }
+    :is(.vitrine-unique,.vitrine-claire) select:not([multiple]):not([size]) option::checkmark { color: var(--uaz-or); }
+    :is(.vitrine-unique,.vitrine-claire) select:not([multiple]):not([size]) option:disabled { color: var(--uaz-encre-douce); }
+    @media (prefers-reduced-motion: reduce) {
+        :is(.vitrine-unique,.vitrine-claire) select:not([multiple]):not([size])::picker-icon { transition: none; }
+    }
+}

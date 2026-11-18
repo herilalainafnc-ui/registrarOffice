@@ -1,0 +1,460 @@
+/* ==========================================================================
+   UTILISATEURS — src/creat.account.php (/accounts/create)
+   --------------------------------------------------------------------------
+   Tout vient des jetons (src/css/tokens.css) : les themes clair et sombre
+   suivent sans regle a part. L ancienne feuille, dans la page, forcait le
+   texte des champs en blanc (!important) : en theme clair, les champs des
+   fenetres paraissaient vides. Pas de flou (backdrop-filter) : il rendait le
+   defilement du tableau couteux.
+   ========================================================================== */
+
+/* Deux teintes de role absentes des jetons, reglees pour chaque theme. */
+:root {
+	--cpt-rose:     244 114 182;
+	--cpt-sarcelle:  45 212 191;
+}
+[data-theme="light"] {
+	--cpt-rose:     190  24  93;
+	--cpt-sarcelle:  15 118 110;
+}
+
+.cpt-page {
+	width: 100%;
+	padding: 20px 16px 28px;
+	color: rgb(var(--c-text));
+	font-size: 14px;
+}
+@media (min-width: 1024px) {
+	.cpt-page { padding: 24px max(28px, calc((100% - 1560px) / 2)) 32px; }
+}
+
+/* --------------------------------------------------------------- en-tete */
+
+.cpt-tete {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 14px 24px;
+	margin-bottom: 18px;
+}
+.cpt-tete h1 {
+	margin: 0;
+	font-size: 22px;
+	font-weight: 700;
+	letter-spacing: -.015em;
+	color: rgb(var(--c-text));
+}
+.cpt-tete p { margin: 4px 0 0; font-size: 13px; color: rgb(var(--c-text-2)); }
+
+/* ---------------------------------------------------------------- chiffres */
+
+.cpt-stats {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px;
+	margin-bottom: 16px;
+}
+@media (min-width: 900px) {
+	.cpt-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.cpt-stat {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 14px 16px;
+	border-radius: var(--radius-lg);
+	background: rgb(var(--c-surface));
+	border: 1px solid rgb(var(--c-line));
+}
+.cpt-stat__icone {
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	border-radius: 10px;
+	font-size: 18px;
+	color: rgb(var(--ton));
+	background: rgb(var(--ton) / .14);
+}
+.cpt-stat__chiffre {
+	display: block;
+	font-size: 22px;
+	font-weight: 700;
+	line-height: 1.1;
+	font-variant-numeric: tabular-nums;
+	color: rgb(var(--c-text));
+}
+.cpt-stat__libelle { display: block; margin-top: 2px; font-size: 12px; color: rgb(var(--c-text-3)); }
+.cpt-ton--accent  { --ton: var(--c-accent); }
+.cpt-ton--succes  { --ton: var(--c-success); }
+.cpt-ton--or      { --ton: var(--c-gold); }
+.cpt-ton--danger  { --ton: var(--c-danger); }
+
+/* ------------------------------------------------------------ recherche */
+
+.cpt-outils {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px 16px;
+	margin-bottom: 12px;
+}
+.cpt-recherche { position: relative; flex: 0 1 420px; min-width: min(100%, 260px); }
+.cpt-recherche .bi {
+	position: absolute;
+	left: 12px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: rgb(var(--c-text-3));
+	pointer-events: none;
+}
+.cpt-recherche input { padding-left: 36px; }
+.cpt-compte { font-size: 12.5px; color: rgb(var(--c-text-3)); font-variant-numeric: tabular-nums; }
+
+/* ------------------------------------------------------------ champs */
+
+.cpt-champ {
+	display: block;
+	width: 100%;
+	height: 40px;
+	padding: 0 12px;
+	border-radius: 9px;
+	border: 1px solid rgb(var(--c-line-strong));
+	background-color: rgb(var(--c-inset));
+	color: rgb(var(--c-text));
+	font-size: 14px;
+	transition: border-color .15s ease, box-shadow .15s ease;
+}
+select.cpt-champ { padding-right: 36px; }
+.cpt-champ::placeholder { color: rgb(var(--c-text-3)); opacity: 1; }
+.cpt-champ:focus {
+	outline: none;
+	border-color: rgb(var(--c-accent));
+	box-shadow: var(--ring);
+}
+/* L autoremplissage du navigateur garde les couleurs du theme. */
+.cpt-champ:-webkit-autofill,
+.cpt-champ:-webkit-autofill:hover,
+.cpt-champ:-webkit-autofill:focus {
+	-webkit-text-fill-color: rgb(var(--c-text));
+	-webkit-box-shadow: 0 0 0 1000px rgb(var(--c-inset)) inset;
+	caret-color: rgb(var(--c-text));
+	transition: background-color 9999s ease-in-out 0s;
+}
+.cpt-champ.est-invalide { border-color: rgb(var(--c-danger)); }
+.cpt-champ.est-valide   { border-color: rgb(var(--c-success)); }
+
+.cpt-libelle {
+	display: block;
+	margin-bottom: 6px;
+	font-size: 12.5px;
+	font-weight: 600;
+	color: rgb(var(--c-text-2));
+}
+.cpt-libelle .cpt-requis { color: rgb(var(--c-danger)); }
+.cpt-aide { margin: 6px 0 0; font-size: 12px; color: rgb(var(--c-text-3)); }
+.cpt-aide--ok     { color: rgb(var(--c-success)); }
+.cpt-aide--alerte { color: rgb(var(--c-warning)); }
+.cpt-aide--erreur { color: rgb(var(--c-danger)); }
+
+/* --------------------------------------------------------------- boutons */
+
+.cpt-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	min-height: 40px;
+	padding: 0 16px;
+	border-radius: 9px;
+	border: 1px solid transparent;
+	font-size: 13.5px;
+	font-weight: 600;
+	white-space: nowrap;
+	cursor: pointer;
+	transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+.cpt-btn:focus-visible { outline: 2px solid rgb(var(--c-accent)); outline-offset: 2px; }
+.cpt-btn--primaire { background: rgb(var(--c-accent-strong)); color: rgb(var(--c-on-accent)); }
+.cpt-btn--primaire:hover { background: rgb(var(--c-accent)); }
+.cpt-btn--second {
+	background: rgb(var(--c-raised));
+	border-color: rgb(var(--c-line-strong));
+	color: rgb(var(--c-text));
+}
+.cpt-btn--second:hover { border-color: rgb(var(--c-text-3)); }
+.cpt-btn:disabled { opacity: .5; cursor: not-allowed; }
+.cpt-btn--icone {
+	min-height: 34px;
+	width: 34px;
+	padding: 0;
+	background: transparent;
+	color: rgb(var(--c-text-3));
+}
+.cpt-btn--icone:hover { color: rgb(var(--c-accent-text)); background: rgb(var(--c-accent) / .12); }
+
+/* --------------------------------------------------------------- tableau */
+
+/* Le cadre defile lui-meme : l en-tete reste colle. */
+.cpt-cadre {
+	border-radius: var(--radius-lg);
+	border: 1px solid rgb(var(--c-line));
+	background: rgb(var(--c-surface));
+	overflow: auto;
+	max-height: calc(100dvh - 330px);
+	min-height: 240px;
+}
+@supports not (height: 100dvh) {
+	.cpt-cadre { max-height: calc(100vh - 330px); }
+}
+.cpt-table { width: 100%; min-width: 760px; border-collapse: separate; border-spacing: 0; font-size: 13.5px; }
+.cpt-table th {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	padding: 10px 12px;
+	text-align: left;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: .05em;
+	text-transform: uppercase;
+	color: rgb(var(--c-text-3));
+	background: rgb(var(--c-surface-2));
+	border-bottom: 1px solid rgb(var(--c-line));
+	white-space: nowrap;
+}
+.cpt-table td {
+	padding: 10px 12px;
+	border-bottom: 1px solid rgb(var(--c-line) / .6);
+	vertical-align: middle;
+	color: rgb(var(--c-text));
+}
+.cpt-table tbody tr:last-child td { border-bottom: 0; }
+.cpt-table tbody tr:hover td { background: rgb(var(--c-surface-2) / .7); }
+.cpt-table tr[hidden] { display: none; }
+
+.cpt-personne { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.cpt-avatar {
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 38px;
+	height: 38px;
+	border-radius: 999px;
+	overflow: hidden;
+	background: rgb(var(--c-accent) / .16);
+	color: rgb(var(--c-accent-text));
+	font-size: 13px;
+	font-weight: 700;
+}
+.cpt-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cpt-nom { font-weight: 600; color: rgb(var(--c-text)); }
+.cpt-mail { display: block; font-size: 12px; color: rgb(var(--c-text-3)); overflow-wrap: anywhere; }
+.cpt-pseudo {
+	font-family: var(--font-mono);
+	font-size: 12px;
+	padding: 2px 8px;
+	border-radius: 6px;
+	color: rgb(var(--c-gold-text));
+	background: rgb(var(--c-gold) / .10);
+}
+.cpt-poste { color: rgb(var(--c-text-2)); }
+
+/* Roles et etats : une teinte par role, lisible dans les deux themes. */
+.cpt-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 2px 10px;
+	border-radius: 999px;
+	font-size: 11.5px;
+	font-weight: 600;
+	white-space: nowrap;
+	color: rgb(var(--ton));
+	background: rgb(var(--ton) / .12);
+	border: 1px solid rgb(var(--ton) / .32);
+}
+.cpt-role--superadmin   { --ton: var(--c-danger); }
+.cpt-role--admin        { --ton: var(--c-gold-text); }
+.cpt-role--registraire  { --ton: var(--c-accent-text); }
+.cpt-role--comptabilite { --ton: var(--c-success); }
+.cpt-role--media        { --ton: var(--cpt-rose); }
+.cpt-role--chef         { --ton: var(--c-warning); }
+.cpt-role--professeur   { --ton: var(--cpt-sarcelle); }
+.cpt-role--etudiant     { --ton: var(--c-text-2); }
+.cpt-role--work-education { --ton: var(--c-info); }
+.cpt-etat--actif        { --ton: var(--c-success); }
+.cpt-etat--inactif      { --ton: var(--c-danger); }
+
+.cpt-vide { padding: 28px 16px; text-align: center; color: rgb(var(--c-text-3)); font-size: 13px; }
+
+/* --------------------------------------------------------------- fenetres */
+
+.cpt-voile {
+	position: fixed;
+	inset: 0;
+	z-index: 1050;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 16px;
+	background: rgb(6 8 22 / .62);
+}
+.cpt-voile[hidden] { display: none; }
+.cpt-dialogue {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	max-width: 720px;
+	max-height: calc(100dvh - 32px);
+	border-radius: 16px;
+	background: rgb(var(--c-surface));
+	border: 1px solid rgb(var(--c-line-strong));
+	box-shadow: var(--shadow-2);
+	color: rgb(var(--c-text));
+	animation: cpt-entree .18s ease-out;
+}
+@supports not (height: 100dvh) {
+	.cpt-dialogue { max-height: calc(100vh - 32px); }
+}
+.cpt-dialogue > form { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+@keyframes cpt-entree {
+	from { opacity: 0; transform: translateY(8px) scale(.99); }
+	to   { opacity: 1; transform: none; }
+}
+.cpt-dialogue__tete {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 16px 20px;
+	border-bottom: 1px solid rgb(var(--c-line));
+}
+.cpt-dialogue__tete h2 { margin: 0; font-size: 17px; font-weight: 700; }
+.cpt-dialogue__tete h2 .bi { color: rgb(var(--c-accent-text)); margin-right: 6px; }
+/* Le corps defile, la tete et le pied restent : Enregistrer est toujours visible. */
+.cpt-dialogue__corps { flex: 1 1 auto; overflow-y: auto; padding: 20px; }
+.cpt-dialogue__pied {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	padding: 14px 20px;
+	border-top: 1px solid rgb(var(--c-line));
+	background: rgb(var(--c-surface-2));
+	border-radius: 0 0 16px 16px;
+}
+
+.cpt-formulaire { display: grid; grid-template-columns: 1fr; gap: 20px; }
+@media (min-width: 640px) {
+	.cpt-formulaire { grid-template-columns: 180px minmax(0, 1fr); }
+}
+.cpt-champs { display: grid; gap: 14px; min-width: 0; }
+.cpt-deux { display: grid; grid-template-columns: 1fr; gap: 14px; }
+@media (min-width: 480px) {
+	.cpt-deux { grid-template-columns: 1fr 1fr; }
+}
+.cpt-separe { height: 1px; margin: 2px 0; background: rgb(var(--c-line)); border: 0; }
+
+.cpt-photo {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	width: 100%;
+	aspect-ratio: 1;
+	max-width: 180px;
+	border-radius: 14px;
+	border: 2px dashed rgb(var(--c-line-strong));
+	background: rgb(var(--c-inset));
+	color: rgb(var(--c-text-3));
+	font-size: 12.5px;
+	overflow: hidden;
+	cursor: pointer;
+	transition: border-color .15s ease;
+}
+.cpt-photo:hover, .cpt-photo:focus-within { border-color: rgb(var(--c-accent)); }
+.cpt-photo .bi { font-size: 26px; }
+.cpt-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cpt-photo input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+
+/* Interrupteur Actif / Inactif */
+.cpt-interrupteur { display: inline-flex; align-items: center; gap: 10px; margin-top: 14px; cursor: pointer; font-size: 13.5px; }
+.cpt-interrupteur input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.cpt-interrupteur__piste {
+	position: relative;
+	width: 42px;
+	height: 24px;
+	border-radius: 999px;
+	background: rgb(var(--c-line-strong));
+	transition: background-color .15s ease;
+}
+.cpt-interrupteur__piste::after {
+	content: '';
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 18px;
+	height: 18px;
+	border-radius: 999px;
+	background: #fff;
+	box-shadow: 0 1px 2px rgb(0 0 0 / .3);
+	transition: transform .15s ease;
+}
+.cpt-interrupteur input:checked + .cpt-interrupteur__piste { background: rgb(var(--c-success)); }
+.cpt-interrupteur input:checked + .cpt-interrupteur__piste::after { transform: translateX(18px); }
+.cpt-interrupteur input:focus-visible + .cpt-interrupteur__piste { outline: 2px solid rgb(var(--c-accent)); outline-offset: 2px; }
+
+/* Lien vers un etudiant : recherche, resultats, etudiant retenu */
+.cpt-resultats {
+	margin-top: 4px;
+	max-height: 190px;
+	overflow-y: auto;
+	border-radius: 9px;
+	border: 1px solid rgb(var(--c-line-strong));
+	background: rgb(var(--c-surface));
+}
+.cpt-resultats[hidden] { display: none; }
+.cpt-resultat {
+	display: block;
+	width: 100%;
+	padding: 8px 12px;
+	border: 0;
+	border-bottom: 1px solid rgb(var(--c-line) / .6);
+	background: transparent;
+	text-align: left;
+	font-size: 13px;
+	color: rgb(var(--c-text));
+	cursor: pointer;
+}
+.cpt-resultat:last-child { border-bottom: 0; }
+.cpt-resultat:hover, .cpt-resultat:focus-visible { background: rgb(var(--c-accent) / .12); outline: none; }
+.cpt-resultat b { color: rgb(var(--c-accent-text)); font-family: var(--font-mono); font-size: 12px; }
+.cpt-resultat small { color: rgb(var(--c-text-3)); }
+.cpt-lien {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-top: 6px;
+	padding: 7px 10px;
+	border-radius: 8px;
+	font-size: 13px;
+	background: rgb(var(--c-accent) / .10);
+	border: 1px solid rgb(var(--c-accent) / .3);
+	color: rgb(var(--c-text));
+}
+.cpt-lien[hidden] { display: none; }
+.cpt-lien--aucun { background: rgb(var(--c-warning) / .10); border-color: rgb(var(--c-warning) / .35); }
+.cpt-lien span { flex: 1; min-width: 0; }
+.cpt-lien button { border: 0; background: transparent; color: rgb(var(--c-danger)); cursor: pointer; font-size: 15px; }
+
+@media (prefers-reduced-motion: reduce) {
+	.cpt-dialogue { animation: none; }
+	.cpt-interrupteur__piste, .cpt-interrupteur__piste::after, .cpt-btn, .cpt-champ { transition: none; }
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Query Params</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <a href="#" id="changeParam" data-id="1234" data-page="updatedPage">Change Params</a>
+    
+    <!-- Zone pour afficher le contenu mis à jour -->
+    <div id="content">
+        <!-- Le contenu sera mis à jour ici -->
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Fonction pour mettre à jour le contenu basé sur les paramètres de requête
+            function updateContent() {
+                var params = new URLSearchParams(window.location.search);
+                var id = params.get('id');
+                var page = params.get('page');
+                
+                // Exemple de mise à jour du contenu
+                var contentHtml = '<p>ID: ' + (id ? id : 'N/A') + '</p>';
+                contentHtml += '<p>Page: ' + (page ? page : 'N/A') + '</p>';
+                
+                $('#content').html(contentHtml);
+            }
+
+            // Mettre à jour le contenu lorsque la page est chargée
+            updateContent();
+
+            $('#changeParam').on('click', function(event) {
+                event.preventDefault(); // Empêche le comportement par défaut du lien
+
+                // Récupère les nouveaux paramètres depuis les attributs data
+                var newId = $(this).data('id');
+                var newPage = $(this).data('page');
+
+                // Récupère l'URL actuelle
+                var currentUrl = new URL(window.location.href);
+                
+                // Met à jour les paramètres de requête
+                currentUrl.searchParams.set('id', newId);
+                currentUrl.searchParams.set('page', newPage);
+
+                // Change l'URL sans recharger la page
+                window.history.pushState({}, '', currentUrl);
+
+                // Mettre à jour le contenu en fonction des nouveaux paramètres
+                updateContent();
+            });
+        });
+    </script>
+</body>
+</html>

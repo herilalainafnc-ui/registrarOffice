@@ -1,0 +1,805 @@
+﻿/* ==========================================================================
+   RESPONSIVE CSS - Application Registrar
+   Mobile-First Responsive Design — Refonte UI 2026
+   ========================================================================== */
+
+/* ==========================================================================
+   BASE & VIEWPORT
+   ========================================================================== */
+
+html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    min-width: 320px;
+    overflow-x: hidden;
+}
+
+/* ==========================================================================
+   MOBILE LAYOUT — allow natural scroll
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+    html, body {
+        height: auto !important;
+        max-height: none !important;
+        min-height: 100vh;
+    }
+
+    /* C'est l'écran qui défile, pas <body>. Un body en overflow auto ou hidden
+       devient un conteneur de défilement qui ne défile jamais : la barre du
+       haut (sticky) s'accrochait à lui et partait avec la page. overflow-x: clip
+       rogne sans créer de conteneur (repli : hidden, sur les vieux navigateurs). */
+    html {
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+    }
+    body {
+        overflow-x: hidden !important;
+        overflow-x: clip !important;
+        overflow-y: visible !important;
+    }
+
+    /* IMPORTANT : l'animation d'entrée laisse un transform sur <body>, ce qui
+       casse `position: fixed` (sidebar + toolbar se positionnent alors par
+       rapport au body au lieu de l'écran). On le neutralise sur mobile pour
+       que la sidebar et la barre d'outils du bas restent réellement fixes. */
+    body {
+        animation: none !important;
+        transform: none !important;
+    }
+
+    /* Verrouille le défilement de l'arrière-plan quand la sidebar est ouverte :
+       sur l'écran (html), le body restant sans conteneur de défilement */
+    html:has(> body.sidebar-open) {
+        overflow: hidden !important;
+    }
+
+    /* La toolbar fixe du bas passe au-dessus du bas de la sidebar : on ajoute
+       une marge basse pour que le dernier élément du menu reste atteignable. */
+    .sidebar-menu {
+        padding-bottom: 72px !important;
+    }
+
+    /* The h-screen wrapper becomes min-height instead of fixed */
+    .h-screen {
+        height: auto !important;
+        min-height: 100vh !important;
+    }
+
+    /* Sidebar hidden off-canvas */
+    .sidebar-menu {
+        transform: translateX(-100%) !important;
+        visibility: hidden !important;
+    }
+    .sidebar-menu.active {
+        transform: translateX(0) !important;
+        visibility: visible !important;
+    }
+
+    /* Main content takes full width */
+    .lg\:w-10\/12,
+    .lg\:w-9\/12,
+    .w-full.lg\:w-10\/12 {
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+
+    /* Flex row to column on mobile */
+    .w-full.flex.flex-col.lg\:flex-row {
+        flex-direction: column !important;
+    }
+
+    /* Allow content to scroll naturally */
+    .flex-1.overflow-hidden,
+    .flex-1.overflow-auto {
+        overflow: visible !important;
+        height: auto !important;
+    }
+
+    /* Break fixed calc heights */
+    [style*="height: calc(100vh - 56px)"],
+    [style*="height:calc(100vh - 56px)"] {
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+    }
+    [style*="height: calc(100vh - 160px)"],
+    [style*="height:calc(100vh - 160px)"],
+    [style*="max-height: calc(100vh - 160px)"],
+    [style*="max-height:calc(100vh - 160px)"] {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    /* Table containers scroll horizontally */
+    #all-std,
+    #stdSearch-result,
+    #stdTriage-result,
+    .overflow-auto {
+        overflow-x: auto !important;
+        overflow-y: visible !important;
+        -webkit-overflow-scrolling: touch;
+        max-height: none !important;
+        height: auto !important;
+    }
+
+    /* Body bottom padding for fixed toolbar */
+    body {
+        padding-bottom: 72px !important;
+    }
+}
+
+/* ==========================================================================
+   TOPBAR
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+    .topbar-bleu-nuit {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 1002 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .h-14 {
+        height: 52px !important;
+    }
+
+    .theme-toggle {
+        width: 32px !important;
+        height: 32px !important;
+    }
+
+    .user-avatar {
+        width: 32px !important;
+        height: 32px !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .search-wrapper {
+        max-width: 100% !important;
+    }
+}
+
+/* ==========================================================================
+   TOOLBAR — Fixed bottom bar on mobile
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+    .toolbar-container {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        padding: 6px 4px !important;
+        min-height: auto !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        z-index: 1000 !important;
+        background: rgb(var(--c-surface)) !important;
+        border-top: 1px solid rgb(var(--c-line)) !important;
+        border-bottom: none !important;
+        box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.4) !important;
+        flex-wrap: nowrap !important;
+        justify-content: flex-start !important;
+        gap: 0 !important;
+    }
+
+    .toolbar-container::-webkit-scrollbar {
+        display: none;
+    }
+
+    .toolbar-section {
+        border-right: none !important;
+        border-bottom: none !important;
+        flex-shrink: 0 !important;
+        padding: 0 1px !important;
+    }
+
+    .tool-btn {
+        min-height: 52px !important;
+        min-width: 56px !important;
+        padding: 4px 6px !important;
+        gap: 4px !important;
+    }
+
+    .tool-icon {
+        width: 30px !important;
+        height: 30px !important;
+        font-size: 15px !important;
+    }
+
+    .tool-label {
+        font-size: 8px !important;
+        line-height: 1.15 !important;
+        min-height: 18px !important;
+        width: 54px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .toolbar-container {
+        padding: 4px 2px !important;
+    }
+
+    .tool-btn {
+        min-height: 48px !important;
+        min-width: 50px !important;
+        padding: 3px 4px !important;
+    }
+
+    .tool-icon {
+        width: 26px !important;
+        height: 26px !important;
+        font-size: 13px !important;
+    }
+
+    .tool-label {
+        font-size: 7px !important;
+        width: 48px !important;
+    }
+}
+
+/* ==========================================================================
+   SIDEBAR OVERLAY
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+    .sidebar-overlay {
+        position: fixed !important;
+        top: 56px !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        z-index: 998 !important;
+    }
+}
+
+/* ==========================================================================
+   TABLES — Horizontal scroll
+   ========================================================================== */
+
+.table-responsive-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 1023px) {
+    .overflow-auto,
+    #all-std,
+    #stdSearch-result,
+    #stdTriage-result {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    .simpleTbl,
+    .simpleTblLight,
+    .classicTbl {
+        min-width: 540px;
+    }
+}
+
+@media (max-width: 768px) {
+    .simpleTbl,
+    .simpleTblLight,
+    .classicTbl {
+        font-size: 11px !important;
+        min-width: 480px;
+    }
+
+    .simpleTbl th,
+    .simpleTbl td,
+    .simpleTblLight th,
+    .simpleTblLight td,
+    .classicTbl th,
+    .classicTbl td {
+        padding: 4px 6px !important;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .simpleTbl,
+    .simpleTblLight,
+    .classicTbl {
+        font-size: 10px !important;
+    }
+
+    .simpleTbl th,
+    .simpleTbl td,
+    .simpleTblLight th,
+    .simpleTblLight td {
+        padding: 3px 4px !important;
+    }
+}
+
+/* ==========================================================================
+   STUDENT PAGE
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+    .student-flex-container,
+    .student-main-container,
+    .student-content-wrapper,
+    .student-profile-sidebar {
+        max-height: none !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    .lg\:w-4\/12.xl\:w-3\/12,
+    .my-1.px-2.mx-0\.5.lg\:w-4\/12 {
+        width: 100% !important;
+        max-height: none !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    .sm\:w-10\/12.lg\:w-9\/12 {
+        width: 100% !important;
+        max-height: none !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .w-full.px-0\.5.flex-1 .flex.w-full {
+        flex-direction: column;
+    }
+
+    .my-1.mx-0\.5.lg\:w-4\/12,
+    .my-1.px-2.mx-0\.5.lg\:w-4\/12 {
+        width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        margin-bottom: 0.5rem;
+    }
+
+    .my-1.mx-0\.5.sm\:w-10\/12,
+    .my-1.mx-0\.5.lg\:w-9\/12 {
+        width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: auto !important;
+    }
+
+    .h-\[70px\] {
+        height: auto !important;
+        min-height: 56px;
+        flex-wrap: wrap;
+    }
+}
+
+/* ==========================================================================
+   STUDENT PROFILE SIDEBAR MENU
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+    .my-1.px-2.mx-0\.5.lg\:w-4\/12.xl\:w-3\/12 {
+        width: 100% !important;
+        height: auto !important;
+        max-height: 220px !important;
+        overflow-y: auto !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        padding: 0.5rem !important;
+    }
+
+    .w-\[75px\] { width: 56px !important; }
+
+    .w-full.text-md > a {
+        display: inline-block;
+        width: calc(50% - 4px);
+    }
+}
+
+@media (max-width: 640px) {
+    .my-1.px-2.mx-0\.5.lg\:w-4\/12.xl\:w-3\/12 {
+        max-height: 200px !important;
+    }
+
+    .w-\[75px\] { width: 48px !important; }
+
+    .w-full.text-md > a { width: 100%; }
+}
+
+/* ==========================================================================
+   STUDENT TOOLBAR
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .std-toolbar {
+        flex-direction: row !important; /* évite que .flex.w-full (l.348) la force en colonne */
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+    }
+    .std-toolbar::-webkit-scrollbar { display: none; }
+
+    .std-toolbar-btn {
+        min-width: 54px !important;
+        padding: 6px 8px !important;
+        flex-shrink: 0;
+    }
+
+    .std-toolbar-btn span { font-size: 9px !important; white-space: nowrap; }
+    .std-toolbar-btn i   { font-size: 15px !important; }
+}
+
+@media (max-width: 480px) {
+    .std-toolbar-btn {
+        min-width: 46px !important;
+        padding: 4px 6px !important;
+    }
+    .std-toolbar-btn span { font-size: 8px !important; }
+    .std-toolbar-btn i   { font-size: 13px !important; }
+}
+
+/* ==========================================================================
+   STUDENT DASHBOARD
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .std-content {
+        height: auto !important;
+        overflow-y: visible !important;
+        padding: 1rem !important;
+    }
+
+    .std-profile {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center;
+    }
+
+    .std-profile-name {
+        font-size: 1.2rem !important;
+        white-space: normal !important;
+    }
+
+    .std-info-grid {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    .std-card {
+        padding: 1rem !important;
+        border-radius: 12px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .std-content { padding: 0.75rem !important; }
+    .std-info-grid { grid-template-columns: 1fr !important; }
+
+    .std-profile-photo,
+    .std-profile-placeholder {
+        width: 80px !important;
+        height: 80px !important;
+    }
+}
+
+/* ==========================================================================
+   MODALS
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .w-\[500px\],
+    .w-\[600px\],
+    .w-\[700px\],
+    .w-\[800px\] {
+        width: 95vw !important;
+        max-width: 95vw !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    .w-\[500px\] input,
+    .w-\[600px\] input,
+    .w-\[500px\] select,
+    .w-\[600px\] select,
+    .w-\[500px\] textarea,
+    .w-\[600px\] textarea {
+        font-size: 16px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .w-\[500px\],
+    .w-\[600px\] {
+        width: 98vw !important;
+    }
+}
+
+/* ==========================================================================
+   DROPDOWN MENUS
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .dropdown-menu   { max-width: 90vw !important; min-width: 200px !important; }
+    .toolbar-dropdown{ max-width: 85vw !important; min-width: 180px !important; }
+}
+
+@media (max-width: 480px) {
+    .dropdown-menu { min-width: 180px !important; font-size: 12px !important; }
+}
+
+/* ==========================================================================
+   FORMS & INPUTS
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    /* Prevent iOS zoom */
+    input:not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+
+    .grid.grid-cols-3,
+    .grid.grid-cols-4 {
+        grid-template-columns: 1fr 1fr !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .grid.grid-cols-2,
+    .grid.grid-cols-3,
+    .grid.grid-cols-4 {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .footer-bleu-nuit {
+        flex-wrap: wrap !important;
+        height: auto !important;
+        padding: 4px 8px !important;
+    }
+
+    .footer-bleu-nuit > div {
+        width: 50% !important;
+    }
+
+    .footer-bleu-nuit > div:last-child {
+        width: 100% !important;
+        text-align: left !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-bleu-nuit {
+        display: none !important;
+    }
+}
+
+/* ==========================================================================
+   BULLETIN / NOTES TABLE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    [style*="max-height: calc(100vh - 246px)"] {
+        max-height: none !important;
+        padding: 0.5rem !important;
+    }
+
+    .simpleTbl thead th { padding: 4px 3px !important; font-size: 10px !important; }
+    .simpleTbl tbody td { font-size: 10px !important; }
+
+    .simpleTbl .mobile-hide,
+    .simpleTblLight .mobile-hide { display: none !important; }
+}
+
+@media (max-width: 480px) {
+    .simpleTbl thead th { font-size: 9px !important; padding: 3px 2px !important; }
+    .simpleTbl tbody td { font-size: 9px !important; padding: 2px !important; }
+}
+
+/* ==========================================================================
+   TEXT
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .text-2xl { font-size: 1.25rem !important; }
+    .text-xl  { font-size: 1.1rem !important; }
+    .text-lg  { font-size: 1rem !important; }
+}
+
+@media (max-width: 480px) {
+    .text-2xl { font-size: 1.1rem !important; }
+    .text-xl  { font-size: 1rem !important; }
+    .text-lg  { font-size: 0.95rem !important; }
+    body      { font-size: 13px; }
+}
+
+/* ==========================================================================
+   TOUCH TARGETS
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+    .menu-item a,
+    .tool-btn,
+    .std-nav-icon,
+    .topbar-hamburger {
+        min-height: 44px;
+    }
+}
+
+/* ==========================================================================
+   PRINT
+   ========================================================================== */
+
+@media print {
+    .sidebar-menu,
+    .topbar-bleu-nuit,
+    .toolbar-container,
+    .mobile-menu-toggle,
+    .sidebar-overlay,
+    .footer-bleu-nuit {
+        display: none !important;
+    }
+
+    body { padding: 0 !important; }
+
+    .lg\:w-10\/12 { width: 100% !important; }
+}
+
+/* ==========================================================================
+   MOBILE CARD VIEW — .simpleTbl.stack-cards
+   Sur téléphone (<= 640px), chaque ligne du tableau devient une carte
+   lisible (libellé / valeur), au lieu d'un scroll horizontal.
+   Sélecteurs préfixés .simpleTbl.stack-cards pour l'emporter sur les
+   règles de tableau génériques plus haut dans ce fichier.
+   ========================================================================== */
+
+@media (max-width: 640px) {
+    /* Plus besoin de largeur mini ni de scroll horizontal */
+    .simpleTbl.stack-cards {
+        min-width: 0 !important;
+        width: 100% !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        font-size: 13px !important;
+    }
+
+    /* On masque l'en-tête du tableau (les libellés passent dans chaque carte) */
+    .simpleTbl.stack-cards thead {
+        display: none !important;
+    }
+
+    .simpleTbl.stack-cards tbody {
+        display: block !important;
+        width: 100% !important;
+    }
+
+    /* Chaque ligne = une carte */
+    .simpleTbl.stack-cards tr {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 0 12px 0 !important;
+        border: 1px solid rgb(var(--c-line)) !important;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        background: rgb(var(--c-surface-2)) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    /* Chaque cellule = une rangée libellé / valeur */
+    .simpleTbl.stack-cards td {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 12px !important;
+        width: 100% !important;
+        padding: 9px 14px !important;
+        border: none !important;
+        border-bottom: 1px solid rgb(var(--c-line) / 0.55) !important;
+        white-space: normal !important;
+        font-size: 13px !important;
+        text-align: left !important;
+    }
+
+    .simpleTbl.stack-cards td:last-child {
+        border-bottom: none !important;
+    }
+
+    /* Libellé de colonne, injecté depuis l'attribut data-label */
+    .simpleTbl.stack-cards td::before {
+        content: attr(data-label);
+        flex: 0 0 auto;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: rgb(var(--c-text-3));
+    }
+
+    /* La valeur (lien) prend le reste de la largeur, alignée à droite */
+    .simpleTbl.stack-cards td > a {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        text-align: right !important;
+        color: rgb(var(--c-text)) !important;
+        font-weight: 500 !important;
+    }
+
+    .simpleTbl.stack-cards td > a > .w-full {
+        width: auto !important;
+    }
+
+    /* Première cellule (ID) = en-tête coloré de la carte */
+    .simpleTbl.stack-cards td:first-child {
+        background: linear-gradient(to right, rgb(var(--c-raised)), rgb(var(--c-accent-strong))) !important;
+        padding: 11px 14px !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .simpleTbl.stack-cards td:first-child::before {
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    .simpleTbl.stack-cards td:first-child > a,
+    .simpleTbl.stack-cards td:first-child > a > .w-full {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        font-size: 15px !important;
+    }
+
+    /* Badge "Nouveau" : repasse dans le flux, à côté du nom */
+    .simpleTbl.stack-cards td .badge {
+        position: static !important;
+        top: auto !important;
+        display: inline-block !important;
+        margin-left: 8px !important;
+    }
+
+    .simpleTbl.stack-cards td[data-label="Nom"] > a > .w-full {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+    }
+
+    /* Ligne d'erreur (colspan) : reste lisible en pleine largeur */
+    .simpleTbl.stack-cards td[colspan] {
+        justify-content: center !important;
+    }
+    .simpleTbl.stack-cards td[colspan]::before {
+        content: "" !important;
+        display: none !important;
+    }
+
+    /* ---- Mode clair ---- */
+    [data-theme="light"] .simpleTbl.stack-cards tr {
+        background: rgb(var(--c-surface)) !important;
+        border-color: rgb(var(--c-line)) !important;
+        box-shadow: 0 2px 8px rgba(120, 150, 180, 0.15) !important;
+    }
+    [data-theme="light"] .simpleTbl.stack-cards td {
+        border-bottom-color: rgb(var(--c-line)) !important;
+    }
+    [data-theme="light"] .simpleTbl.stack-cards td > a {
+        color: rgb(var(--c-text)) !important;
+    }
+    [data-theme="light"] .simpleTbl.stack-cards td::before {
+        color: rgb(var(--c-text-3));
+    }
+}

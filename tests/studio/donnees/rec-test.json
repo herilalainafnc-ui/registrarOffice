@@ -1,0 +1,31 @@
+{
+	"preset": "rec",
+	"format": "4:5",
+	"donnees": {
+		"service": "Service de test",
+		"poste": "Poste de test",
+		"departement": "Département d'exemple",
+		"contrat": "CDD (exemple)",
+		"lieuTravail": "Ville test",
+		"dateLimite": "2026-12-15",
+		"profil": [
+			"Diplôme d'exemple",
+			"Expérience de test",
+			"Compétence d'exemple",
+			"Qualité de test"
+		],
+		"piecesPostuler": "CV, lettre de motivation et copies des diplômes à envoyer à :",
+		"email": "test@exemple.mg",
+		"objet": "",
+		"mention": "Fiche de poste de test"
+	},
+	"images": {
+		"photo": {
+			"unie": "#3A4380", "largeur": 2400, "hauteur": 1600,
+			"type": "image/png",
+			"alt": "Photo de test du campus (image unie)",
+			"fondre": false,
+			"ajustement": "remplir"
+		}
+	}
+}

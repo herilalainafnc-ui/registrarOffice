@@ -1,0 +1,500 @@
+{
+	"$schema": "./preset.schema.json",
+	"id": "com",
+	"code": "COM",
+	"nom": "Communiqué",
+	"description": "Un communiqué officiel, sobre : l'objet, trois paragraphes, la signature.",
+	"version": 1,
+	"anneeDepuis": "date",
+	"dateDepuis": "date",
+	"titreDepuis": "titre",
+	"champs": [
+		{ "id": "service", "libelle": "Service émetteur", "type": "texte", "max": 40, "requis": true },
+		{ "id": "reference", "libelle": "Référence (N°)", "type": "texte", "max": 20, "requis": true, "aide": "2026-014" },
+		{ "id": "date", "libelle": "Date", "type": "date", "requis": true },
+		{ "id": "titre", "libelle": "Objet", "type": "titre", "max": 80, "requis": true },
+		{ "id": "motCleOr", "libelle": "Mot-clé en or", "type": "motCle", "de": "titre", "max": 25, "aide": "Un passage de l'objet, écrit à l'identique : il passe en or." },
+		{ "id": "paragraphe1", "libelle": "Premier paragraphe (en gras)", "type": "texteLong", "max": 250, "requis": true, "aide": "Ce qui est annoncé, en une ou deux phrases." },
+		{ "id": "paragraphe2", "libelle": "Deuxième paragraphe", "type": "texteLong", "max": 250, "aide": "Les détails utiles : dates, personnes concernées, conditions." },
+		{ "id": "paragraphe3", "libelle": "Troisième paragraphe", "type": "texteLong", "max": 250, "aide": "Ce que le lecteur doit faire, et avant quand." },
+		{ "id": "suite", "libelle": "Suite du texte (A4)", "type": "texteLong", "max": 2400, "paragraphes": true, "formats": ["A4"], "aide": "Facultatif, pour le communiqué imprimé : la suite du texte, un paragraphe par ligne. S'il ne tient pas sur la page, il continue sur une seconde." },
+		{ "id": "signataireNom", "libelle": "Signataire", "type": "texte", "max": 40, "requis": true },
+		{ "id": "signataireFonction", "libelle": "Fonction du signataire", "type": "texte", "max": 50, "requis": true },
+		{ "id": "renseignements", "libelle": "Renseignements", "type": "texte", "max": 60, "aide": "Service, téléphone ou e-mail." }
+	],
+	"images": [],
+	"formats": {
+		"4:5": {
+			"largeur": 1080,
+			"hauteur": 1350,
+			"filet": 4,
+			"rangees": [
+				{
+					"id": "entete",
+					"hauteur": 110,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 22, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "logo", "taille": 78 },
+								{ "type": "groupe", "disposition": "colonne", "espace": 4, "blocs": [
+									{ "type": "texte", "valeur": "Université Adventiste Zurcher", "taille": 25, "graisse": 700, "approche": -0.01, "uneLigne": true },
+									{ "type": "texte", "valeur": "{service}", "taille": 19, "graisse": 500, "couleur": "navySoft", "uneLigne": true, "min": 14 }
+								] }
+							]
+						},
+						{
+							"largeur": 298, "fond": "navy", "aligner": "fin", "justifier": "centre", "espace": 2, "marges": [0, 40, 0, 36],
+							"blocs": [
+								{ "type": "texte", "valeur": "{code}", "taille": 17, "graisse": 800, "approche": 0.14, "couleur": "goldLight" },
+								{ "type": "texte", "valeur": "{annee}", "taille": 38, "graisse": 800, "couleur": "white" }
+							]
+						}
+					]
+				},
+				{
+					"id": "objet",
+					"hauteur": 330,
+					"cellules": [
+						{ "largeur": 90, "fond": "goldDeep", "blocs": [] },
+						{
+							"largeur": "reste", "fond": "cream", "marges": [40, 40, 36, 40],
+							"blocs": [
+								{ "type": "groupe", "disposition": "ligne", "justifier": "entre", "aligner": "ligneDeBase", "espace": 16, "blocs": [
+									{ "type": "label", "valeur": "Communiqué officiel", "taille": 17, "approche": 0.16, "uneLigne": true },
+									{ "type": "texte", "valeur": "Réf. {reference} · {date:numerique}", "taille": 17, "graisse": 600, "uneLigne": true, "min": 13 }
+								] },
+								{ "type": "ressort" },
+								{ "type": "titre", "valeur": "{titre}", "motCle": "{motCleOr}", "taille": 66, "min": 36 }
+							]
+						}
+					]
+				},
+				{
+					"id": "corps",
+					"hauteur": 700,
+					"recoit": true,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "paper", "espace": 28, "marges": [52, 40, 40, 134],
+							"blocs": [
+								{ "type": "texte", "valeur": "{paragraphe1}", "taille": 26, "graisse": 700, "couleur": "ink", "interligne": 1.45, "min": 18 },
+								{ "type": "texte", "valeur": "{paragraphe2}", "taille": 25, "graisse": 500, "couleur": "ink", "interligne": 1.5, "min": 18 },
+								{ "type": "texte", "valeur": "{paragraphe3}", "taille": 25, "graisse": 500, "couleur": "ink", "interligne": 1.5, "min": 18 },
+								{ "type": "ressort" },
+								{ "type": "groupe", "disposition": "colonne", "aligner": "fin", "espace": 6, "alignerSoi": "fin", "retrait": [20, 0, 0, 0], "filetHaut": 2, "couleurFilet": "navy", "largeurMin": 380, "blocs": [
+									{ "type": "label", "valeur": "Signataire", "taille": 15, "approche": 0.14 },
+									{ "type": "texte", "valeur": "{signataireNom}", "taille": 28, "graisse": 800, "min": 20 },
+									{ "type": "texte", "valeur": "{signataireFonction}", "taille": 20, "graisse": 600, "min": 15 }
+								] }
+							]
+						}
+					]
+				},
+				{
+					"id": "renseignements",
+					"hauteur": 110,
+					"si": "renseignements",
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 28, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "label", "valeur": "Renseignements", "taille": 15, "approche": 0.16, "uneLigne": true },
+								{ "type": "texte", "valeur": "{renseignements}", "taille": 22, "graisse": 700, "min": 15 }
+							]
+						}
+					]
+				},
+				{
+					"id": "pied",
+					"hauteur": "reste",
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "navy", "disposition": "ligne", "aligner": "centre", "espace": 24, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "texte", "valeur": "Document officiel de l'Université Adventiste Zurcher", "taille": 16, "graisse": 600, "uneLigne": true },
+								{ "type": "ressort" },
+								{ "type": "texte", "valeur": "zurcher.edu.mg", "taille": 18, "graisse": 600, "uneLigne": true }
+							]
+						}
+					]
+				}
+			]
+		},
+		"1:1": {
+			"largeur": 1080,
+			"hauteur": 1080,
+			"filet": 4,
+			"rangees": [
+				{
+					"id": "entete",
+					"hauteur": 96,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 18, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "logo", "taille": 68 },
+								{ "type": "groupe", "disposition": "colonne", "espace": 3, "blocs": [
+									{ "type": "texte", "valeur": "Université Adventiste Zurcher", "taille": 23, "graisse": 700, "approche": -0.01, "uneLigne": true },
+									{ "type": "texte", "valeur": "{service}", "taille": 17, "graisse": 500, "couleur": "navySoft", "uneLigne": true, "min": 13 }
+								] }
+							]
+						},
+						{
+							"largeur": 274, "fond": "navy", "aligner": "fin", "justifier": "centre", "espace": 2, "marges": [0, 40, 0, 34],
+							"blocs": [
+								{ "type": "texte", "valeur": "{code}", "taille": 15, "graisse": 800, "approche": 0.14, "couleur": "goldLight" },
+								{ "type": "texte", "valeur": "{annee}", "taille": 34, "graisse": 800, "couleur": "white" }
+							]
+						}
+					]
+				},
+				{
+					"id": "objet",
+					"hauteur": 250,
+					"cellules": [
+						{ "largeur": 70, "fond": "goldDeep", "blocs": [] },
+						{
+							"largeur": "reste", "fond": "cream", "marges": [32, 40, 28, 40],
+							"blocs": [
+								{ "type": "groupe", "disposition": "ligne", "justifier": "entre", "aligner": "ligneDeBase", "espace": 14, "blocs": [
+									{ "type": "label", "valeur": "Communiqué officiel", "taille": 15, "approche": 0.16, "uneLigne": true },
+									{ "type": "texte", "valeur": "Réf. {reference} · {date:numerique}", "taille": 15, "graisse": 600, "uneLigne": true, "min": 12 }
+								] },
+								{ "type": "ressort" },
+								{ "type": "titre", "valeur": "{titre}", "motCle": "{motCleOr}", "taille": 52, "min": 30 }
+							]
+						}
+					]
+				},
+				{
+					"id": "corps",
+					"hauteur": 560,
+					"recoit": true,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "paper", "espace": 20, "marges": [36, 40, 30, 114],
+							"blocs": [
+								{ "type": "texte", "valeur": "{paragraphe1}", "taille": 21, "graisse": 700, "couleur": "ink", "interligne": 1.42, "min": 15 },
+								{ "type": "texte", "valeur": "{paragraphe2}", "taille": 20, "graisse": 500, "couleur": "ink", "interligne": 1.48, "min": 15 },
+								{ "type": "texte", "valeur": "{paragraphe3}", "taille": 20, "graisse": 500, "couleur": "ink", "interligne": 1.48, "min": 15 },
+								{ "type": "ressort" },
+								{ "type": "groupe", "disposition": "colonne", "aligner": "fin", "espace": 5, "alignerSoi": "fin", "retrait": [16, 0, 0, 0], "filetHaut": 2, "couleurFilet": "navy", "largeurMin": 320, "blocs": [
+									{ "type": "label", "valeur": "Signataire", "taille": 13, "approche": 0.14 },
+									{ "type": "texte", "valeur": "{signataireNom}", "taille": 23, "graisse": 800, "min": 16 },
+									{ "type": "texte", "valeur": "{signataireFonction}", "taille": 17, "graisse": 600, "min": 13 }
+								] }
+							]
+						}
+					]
+				},
+				{
+					"id": "renseignements",
+					"hauteur": 76,
+					"si": "renseignements",
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 24, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "label", "valeur": "Renseignements", "taille": 13, "approche": 0.16, "uneLigne": true },
+								{ "type": "texte", "valeur": "{renseignements}", "taille": 19, "graisse": 700, "min": 13 }
+							]
+						}
+					]
+				},
+				{
+					"id": "pied",
+					"hauteur": "reste",
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "navy", "disposition": "ligne", "aligner": "centre", "espace": 24, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "texte", "valeur": "Document officiel de l'Université Adventiste Zurcher", "taille": 14, "graisse": 600, "uneLigne": true },
+								{ "type": "ressort" },
+								{ "type": "texte", "valeur": "zurcher.edu.mg", "taille": 16, "graisse": 600, "uneLigne": true }
+							]
+						}
+					]
+				}
+			]
+		},
+		"9:16": {
+			"largeur": 1080,
+			"hauteur": 1920,
+			"filet": 4,
+			"rangees": [
+				{
+					"id": "entete",
+					"hauteur": 140,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 22, "marges": [0, 56, 0, 56],
+							"blocs": [
+								{ "type": "logo", "taille": 92 },
+								{ "type": "groupe", "disposition": "colonne", "espace": 4, "blocs": [
+									{ "type": "texte", "valeur": "Université Adventiste Zurcher", "taille": 29, "graisse": 700, "approche": -0.01, "uneLigne": true },
+									{ "type": "texte", "valeur": "{service}", "taille": 21, "graisse": 500, "couleur": "navySoft", "uneLigne": true, "min": 16 }
+								] }
+							]
+						},
+						{
+							"largeur": 348, "fond": "navy", "aligner": "fin", "justifier": "centre", "espace": 2, "marges": [0, 56, 0, 56],
+							"blocs": [
+								{ "type": "texte", "valeur": "{code}", "taille": 19, "graisse": 800, "approche": 0.14, "couleur": "goldLight" },
+								{ "type": "texte", "valeur": "{annee}", "taille": 44, "graisse": 800, "couleur": "white" }
+							]
+						}
+					]
+				},
+				{
+					"id": "objet",
+					"hauteur": 460,
+					"cle": true,
+					"cellules": [
+						{ "largeur": 90, "fond": "goldDeep", "blocs": [] },
+						{
+							"largeur": "reste", "fond": "cream", "marges": [44, 56, 40, 56],
+							"blocs": [
+								{ "type": "ressort" },
+								{ "type": "groupe", "disposition": "ligne", "justifier": "entre", "aligner": "ligneDeBase", "espace": 16, "blocs": [
+									{ "type": "label", "valeur": "Communiqué officiel", "taille": 20, "approche": 0.16, "uneLigne": true },
+									{ "type": "texte", "valeur": "Réf. {reference} · {date:numerique}", "taille": 20, "graisse": 600, "uneLigne": true, "min": 14 }
+								] },
+								{ "type": "titre", "valeur": "{titre}", "motCle": "{motCleOr}", "taille": 80, "min": 44, "marges": [26, 0, 0, 0] }
+							]
+						}
+					]
+				},
+				{
+					"id": "corps",
+					"hauteur": 960,
+					"recoit": true,
+					"cle": true,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "paper", "espace": 30, "marges": [48, 56, 44, 150],
+							"blocs": [
+								{ "type": "texte", "valeur": "{paragraphe1}", "taille": 30, "graisse": 700, "couleur": "ink", "interligne": 1.42, "min": 20 },
+								{ "type": "texte", "valeur": "{paragraphe2}", "taille": 28, "graisse": 500, "couleur": "ink", "interligne": 1.48, "min": 19 },
+								{ "type": "texte", "valeur": "{paragraphe3}", "taille": 28, "graisse": 500, "couleur": "ink", "interligne": 1.48, "min": 19 },
+								{ "type": "ressort" },
+								{ "type": "groupe", "disposition": "colonne", "aligner": "fin", "espace": 7, "alignerSoi": "fin", "retrait": [22, 0, 0, 0], "filetHaut": 2, "couleurFilet": "navy", "largeurMin": 440, "blocs": [
+									{ "type": "label", "valeur": "Signataire", "taille": 18, "approche": 0.14 },
+									{ "type": "texte", "valeur": "{signataireNom}", "taille": 34, "graisse": 800, "min": 24 },
+									{ "type": "texte", "valeur": "{signataireFonction}", "taille": 24, "graisse": 600, "min": 17 }
+								] }
+							]
+						}
+					]
+				},
+				{
+					"id": "renseignements",
+					"hauteur": 130,
+					"si": "renseignements",
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 28, "marges": [0, 56, 0, 56],
+							"blocs": [
+								{ "type": "label", "valeur": "Renseignements", "taille": 18, "approche": 0.16, "uneLigne": true },
+								{ "type": "texte", "valeur": "{renseignements}", "taille": 26, "graisse": 700, "min": 18 }
+							]
+						}
+					]
+				},
+				{
+					"id": "pied",
+					"hauteur": "reste",
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "navy", "disposition": "ligne", "aligner": "debut", "espace": 24, "marges": [30, 56, 0, 56],
+							"blocs": [
+								{ "type": "texte", "valeur": "Document officiel de l'Université Adventiste Zurcher", "taille": 20, "graisse": 600, "uneLigne": true, "min": 15 },
+								{ "type": "ressort" },
+								{ "type": "texte", "valeur": "zurcher.edu.mg", "taille": 22, "graisse": 600, "uneLigne": true }
+							]
+						}
+					]
+				}
+			]
+		},
+		"A4": {
+			"largeur": 794,
+			"hauteur": 1123,
+			"filet": 3,
+			"rangees": [
+				{
+					"id": "entete",
+					"hauteur": 92,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 16, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "logo", "taille": 58 },
+								{ "type": "groupe", "disposition": "colonne", "espace": 3, "blocs": [
+									{ "type": "texte", "valeur": "Université Adventiste Zurcher", "taille": 18, "graisse": 700, "approche": -0.01, "uneLigne": true },
+									{ "type": "texte", "valeur": "{service}", "taille": 14, "graisse": 500, "couleur": "navySoft", "uneLigne": true, "min": 12 }
+								] }
+							]
+						},
+						{
+							"largeur": 247, "fond": "navy", "aligner": "fin", "justifier": "centre", "espace": 2, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "texte", "valeur": "{code}", "taille": 13, "graisse": 800, "approche": 0.14, "couleur": "goldLight" },
+								{ "type": "texte", "valeur": "{annee}", "taille": 28, "graisse": 800, "couleur": "white" }
+							]
+						}
+					]
+				},
+				{
+					"id": "objet",
+					"hauteur": 230,
+					"cellules": [
+						{ "largeur": 64, "fond": "goldDeep", "blocs": [] },
+						{
+							"largeur": "reste", "fond": "cream", "marges": [30, 40, 26, 40],
+							"blocs": [
+								{ "type": "groupe", "disposition": "ligne", "justifier": "entre", "aligner": "ligneDeBase", "espace": 12, "blocs": [
+									{ "type": "label", "valeur": "Communiqué officiel", "taille": 13, "approche": 0.16, "uneLigne": true },
+									{ "type": "texte", "valeur": "Réf. {reference} · {date:numerique}", "taille": 13, "graisse": 600, "uneLigne": true, "min": 12 }
+								] },
+								{ "type": "ressort" },
+								{ "type": "titre", "valeur": "{titre}", "motCle": "{motCleOr}", "taille": 44, "min": 26 }
+							]
+						}
+					]
+				},
+				{
+					"id": "corps",
+					"hauteur": 650,
+					"recoit": true,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "paper", "espace": 14, "marges": [34, 40, 30, 107],
+							"blocs": [
+								{ "type": "texte", "valeur": "{paragraphe1}", "taille": 16, "graisse": 700, "couleur": "ink", "interligne": 1.5 },
+								{ "type": "texte", "valeur": "{paragraphe2}", "taille": 15, "graisse": 500, "couleur": "ink", "interligne": 1.55 },
+								{ "type": "texte", "valeur": "{paragraphe3}", "taille": 15, "graisse": 500, "couleur": "ink", "interligne": 1.55 },
+								{ "type": "flux", "valeur": "{suite}", "taille": 15, "graisse": 500, "couleur": "ink", "interligne": 1.55, "espace": 14 },
+								{ "type": "ressort" },
+								{ "type": "groupe", "disposition": "colonne", "aligner": "fin", "espace": 4, "alignerSoi": "fin", "retrait": [14, 0, 0, 0], "filetHaut": 1.5, "couleurFilet": "navy", "largeurMin": 280, "blocs": [
+									{ "type": "label", "valeur": "Signataire", "taille": 12, "approche": 0.14 },
+									{ "type": "texte", "valeur": "{signataireNom}", "taille": 20, "graisse": 800, "min": 15 },
+									{ "type": "texte", "valeur": "{signataireFonction}", "taille": 15, "graisse": 600, "min": 12 }
+								] }
+							]
+						}
+					]
+				},
+				{
+					"id": "renseignements",
+					"hauteur": 70,
+					"si": "renseignements",
+					"derniere": true,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 22, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "label", "valeur": "Renseignements", "taille": 12, "approche": 0.16, "uneLigne": true },
+								{ "type": "texte", "valeur": "{renseignements}", "taille": 16, "graisse": 700, "min": 12 }
+							]
+						}
+					]
+				},
+				{
+					"id": "pied",
+					"hauteur": "reste",
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "navy", "disposition": "ligne", "aligner": "centre", "espace": 24, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "texte", "valeur": "Document officiel de l'Université Adventiste Zurcher", "taille": 12, "graisse": 600, "uneLigne": true },
+								{ "type": "ressort" },
+								{ "type": "texte", "valeur": "{pagination}", "taille": 12, "graisse": 600, "couleur": "goldLight", "uneLigne": true },
+								{ "type": "texte", "valeur": "zurcher.edu.mg", "taille": 13, "graisse": 600, "uneLigne": true }
+							]
+						}
+					]
+				}
+			],
+			"pageSuivante": {
+				"rangees": [
+					{
+						"id": "entete",
+						"hauteur": 92,
+						"cellules": [
+							{
+								"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 16, "marges": [0, 40, 0, 40],
+								"blocs": [
+									{ "type": "logo", "taille": 58 },
+									{ "type": "groupe", "disposition": "colonne", "espace": 3, "blocs": [
+										{ "type": "texte", "valeur": "Université Adventiste Zurcher", "taille": 18, "graisse": 700, "approche": -0.01, "uneLigne": true },
+										{ "type": "texte", "valeur": "{service}", "taille": 14, "graisse": 500, "couleur": "navySoft", "uneLigne": true, "min": 12 }
+									] }
+								]
+							},
+							{
+								"largeur": 247, "fond": "navy", "aligner": "fin", "justifier": "centre", "espace": 2, "marges": [0, 40, 0, 40],
+								"blocs": [
+									{ "type": "texte", "valeur": "{code}", "taille": 13, "graisse": 800, "approche": 0.14, "couleur": "goldLight" },
+									{ "type": "texte", "valeur": "{annee}", "taille": 28, "graisse": 800, "couleur": "white" }
+								]
+							}
+						]
+					},
+					{
+						"id": "corps",
+						"hauteur": 883,
+						"recoit": true,
+						"cellules": [
+							{
+								"largeur": "reste", "fond": "paper", "espace": 14, "marges": [34, 40, 30, 107],
+								"blocs": [
+									{ "type": "groupe", "disposition": "ligne", "justifier": "entre", "aligner": "ligneDeBase", "espace": 12, "marges": [0, 0, 8, 0], "blocs": [
+										{ "type": "label", "valeur": "Communiqué officiel · suite", "taille": 13, "approche": 0.16, "uneLigne": true },
+										{ "type": "texte", "valeur": "Réf. {reference} · {date:numerique}", "taille": 13, "graisse": 600, "uneLigne": true, "min": 12 }
+									] },
+									{ "type": "flux", "valeur": "{suite}", "taille": 15, "graisse": 500, "couleur": "ink", "interligne": 1.55, "espace": 14 },
+									{ "type": "ressort" },
+									{ "type": "groupe", "disposition": "colonne", "aligner": "fin", "espace": 4, "alignerSoi": "fin", "retrait": [14, 0, 0, 0], "filetHaut": 1.5, "couleurFilet": "navy", "largeurMin": 280, "blocs": [
+										{ "type": "label", "valeur": "Signataire", "taille": 12, "approche": 0.14 },
+										{ "type": "texte", "valeur": "{signataireNom}", "taille": 20, "graisse": 800, "min": 15 },
+										{ "type": "texte", "valeur": "{signataireFonction}", "taille": 15, "graisse": 600, "min": 12 }
+									] }
+								]
+							}
+						]
+					},
+					{
+						"id": "renseignements",
+						"hauteur": 70,
+						"si": "renseignements",
+						"cellules": [
+							{
+								"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 22, "marges": [0, 40, 0, 40],
+								"blocs": [
+									{ "type": "label", "valeur": "Renseignements", "taille": 12, "approche": 0.16, "uneLigne": true },
+									{ "type": "texte", "valeur": "{renseignements}", "taille": 16, "graisse": 700, "min": 12 }
+								]
+							}
+						]
+					},
+					{
+						"id": "pied",
+						"hauteur": "reste",
+						"cellules": [
+							{
+								"largeur": "reste", "fond": "navy", "disposition": "ligne", "aligner": "centre", "espace": 24, "marges": [0, 40, 0, 40],
+								"blocs": [
+									{ "type": "texte", "valeur": "Document officiel de l'Université Adventiste Zurcher", "taille": 12, "graisse": 600, "uneLigne": true },
+									{ "type": "ressort" },
+									{ "type": "texte", "valeur": "{pagination}", "taille": 12, "graisse": 600, "couleur": "goldLight", "uneLigne": true },
+									{ "type": "texte", "valeur": "zurcher.edu.mg", "taille": 13, "graisse": 600, "uneLigne": true }
+								]
+							}
+						]
+					}
+				]
+			}
+		}
+	}
+}

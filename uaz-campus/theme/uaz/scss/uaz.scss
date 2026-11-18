@@ -1,0 +1,586 @@
+/* =============================================================================
+   UAZ Campus : ce que le theme ajoute a Boost
+
+   La police Inter (celle du registrar), servie par le theme : aucune
+   ressource exterieure.
+
+   Les pages de connexion (pagelayout-login), dans la composition et les
+   couleurs de celle du registrar (src/index.php) : un cadre unique qui tient
+   l'encart de marque, sous un ciel etoile, et le formulaire ; marine et or
+   du sceau ; fond de nuit.
+   ========================================================================== */
+
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url([[font:theme|inter-latin.woff2]]) format("woff2");
+}
+
+$uaz-or: #88724b;
+$uaz-or-fonce: #7a6540;
+$uaz-or-clair: #ceb480;
+$uaz-fond-page: #0d1023;
+$uaz-fond-cadre: #12162c;
+$uaz-encre: #eceef6;
+$uaz-encre-douce: #b3b9d6;
+$uaz-filet: rgba(179, 185, 214, .2);
+$uaz-champ-fond: rgba(255, 255, 255, .05);
+$uaz-champ-texte: #f1f4fa;
+$uaz-champ-indication: #8890b5;   // 4,5:1 sur le fond des champs, comme au registrar
+$uaz-rayon-cadre: 2rem;
+$uaz-marge: clamp(.75rem, 2.4vw, 2.25rem);
+
+/* --- Ciel etoile (registrar : src/css/ciel.css) ------------------------------ */
+.uaz-ciel {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+.uaz-ciel__couche {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: var(--etoiles, none);
+    animation: uaz-ciel-monte var(--duree, 60s) linear infinite;
+    will-change: transform;
+
+    // la meme poignee d'etoiles 2000 px plus bas : quand la premiere sort par le haut, la seconde a pris sa place
+    &::after {
+        content: "";
+        position: absolute;
+        top: 2000px;
+        left: 0;
+        width: inherit;
+        height: inherit;
+        border-radius: inherit;
+        box-shadow: var(--etoiles, none);
+    }
+}
+.uaz-ciel__couche--1 { width: 1px; height: 1px; --duree: 60s; }
+.uaz-ciel__couche--2 { width: 2px; height: 2px; --duree: 120s; }
+.uaz-ciel__couche--3 { width: 3px; height: 3px; --duree: 180s; }
+@keyframes uaz-ciel-monte {
+    from { transform: translateY(0); }
+    to { transform: translateY(-2000px); }
+}
+
+.uaz-sceau {
+    display: block;
+    flex: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .08) url([[pix:theme|sceau]]) center / 40px 40px no-repeat;
+}
+
+/* --- Les pages de connexion ------------------------------------------------- */
+body.pagelayout-login {
+    background: $uaz-fond-page;
+    color: $uaz-encre;
+    -webkit-font-smoothing: antialiased;
+
+    #page-wrapper,
+    #page {
+        background: transparent;
+    }
+    #page {
+        min-height: 100vh;
+        padding: $uaz-marge;
+    }
+
+    a {
+        color: $uaz-or-clair;
+    }
+    a:hover,
+    a:focus {
+        color: lighten($uaz-or-clair, 8%);
+    }
+    .text-muted {
+        color: $uaz-encre-douce !important; // stylelint-disable-line declaration-no-important
+    }
+
+    // le bouton d'aide (?) en bas a droite
+    .btn-footer-popover,
+    .btn-footer-communication {
+        background: rgba(255, 255, 255, .08);
+        border: 1px solid $uaz-filet;
+        color: $uaz-encre;
+    }
+}
+
+.uaz-connexion {
+    min-height: calc(100vh - 2 * #{$uaz-marge});
+    display: grid;
+    grid-template-columns: minmax(0, 1.06fr) minmax(0, 1fr);
+    gap: clamp(1rem, 2vw, 1.75rem);
+    padding: clamp(.7rem, 1.3vw, 1.15rem);
+    border-radius: $uaz-rayon-cadre;
+    background: $uaz-fond-cadre;
+    box-shadow: 0 30px 70px rgba(2, 8, 23, .45);
+}
+
+/* L'encart de marque */
+.uaz-marque {
+    position: relative;
+    overflow: hidden;
+    border-radius: calc(#{$uaz-rayon-cadre} - .65rem);
+    color: #f3f6ff;
+    // horizon bleu Zurcher en bas, nuit en haut, une lueur or
+    background:
+        radial-gradient(120% 70% at 50% 112%, rgba(70, 88, 194, .45) 0%, transparent 58%),
+        radial-gradient(95% 70% at 88% 18%, rgba(206, 180, 128, .12) 0%, transparent 52%),
+        radial-gradient(ellipse at bottom, #222e65 0%, #12162c 58%, #07091a 100%);
+}
+.uaz-marque__contenu {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: clamp(1.6rem, 3vw, 2.75rem);
+}
+.uaz-marque__tete {
+    display: flex;
+    align-items: center;
+    gap: .9rem;
+}
+.uaz-marque__nom {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -.01em;
+}
+.uaz-marque__universite {
+    margin: 0;
+    font-size: .82rem;
+    color: rgba(243, 246, 255, .62);
+}
+.uaz-marque__accroche {
+    margin: 0 0 .9rem;
+    font-size: clamp(1.55rem, 2.6vw, 2.25rem);
+    line-height: 1.18;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    color: #f3f6ff;
+}
+.uaz-marque__presentation {
+    max-width: 34rem;
+    margin: 0 0 1.9rem;
+    font-size: .95rem;
+    line-height: 1.65;
+    color: rgba(243, 246, 255, .72);
+}
+.uaz-atouts {
+    display: flex;
+    flex-direction: column;
+    gap: 1.05rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        display: flex;
+        align-items: flex-start;
+        gap: .85rem;
+    }
+    strong {
+        display: block;
+        margin-bottom: .12rem;
+        font-size: .92rem;
+        font-weight: 600;
+    }
+    li > div > span {
+        font-size: .84rem;
+        line-height: 1.5;
+        color: rgba(243, 246, 255, .62);
+    }
+}
+.uaz-atout__puce {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, .14);
+    background: rgba(255, 255, 255, .06);
+    color: $uaz-or-clair;
+
+    svg {
+        width: 17px;
+        height: 17px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+}
+.uaz-marque__pied {
+    margin: 0;
+    font-size: .78rem;
+    color: rgba(243, 246, 255, .45);
+}
+
+/* Le panneau du formulaire */
+.uaz-acces {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1.1rem;
+    padding: clamp(1.5rem, 3vw, 3rem) clamp(1rem, 3vw, 2.5rem);
+}
+.uaz-acces__carte {
+    width: 100%;
+    max-width: 25rem;
+}
+// l'en-tete de l'encart, la ou celui-ci est masque
+.uaz-acces__marque {
+    display: none;
+    text-align: center;
+
+    .uaz-sceau {
+        width: 56px;
+        height: 56px;
+        margin: 0 auto .6rem;
+        background-size: 50px 50px;
+    }
+    .uaz-marque__universite {
+        color: $uaz-encre-douce;
+    }
+}
+
+.uaz-connexion .loginform {
+    .uaz-titre {
+        margin: 0 0 .35rem;
+        font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+        line-height: 1.15;
+        font-weight: 700;
+        letter-spacing: -.02em;
+        color: $uaz-encre;
+    }
+    .uaz-soustitre {
+        margin: 0 0 1.75rem;
+        font-size: .92rem;
+        color: $uaz-encre-douce;
+    }
+
+    .alert {
+        border-radius: 10px;
+        font-size: .87rem;
+    }
+    .alert-danger {
+        border: 1px solid rgba(248, 113, 113, .45);
+        background: rgba(248, 113, 113, .12);
+        color: #fca5a5;
+    }
+    .alert-info {
+        border: 1px solid rgba(147, 197, 253, .4);
+        background: rgba(147, 197, 253, .1);
+        color: #bfdbfe;
+    }
+
+    // Google d'abord, comme le bouton du registrar : blanc, a l'icone G
+    .login-identityproviders {
+        display: flex;
+        flex-direction: column;
+        gap: .6rem;
+    }
+    .login-identityprovider-btn {
+        width: 100%;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: .7rem;
+        margin: 0;
+        border: 0;
+        border-radius: 12px;
+        background: #fff;
+        color: #1f1f1f;
+        font-size: .95rem;
+        font-weight: 600;
+        transition: background-color .18s ease, transform .18s ease;
+
+        &:hover,
+        &:focus {
+            background: #eef0f6;
+            color: #1f1f1f;
+        }
+        &:hover {
+            transform: translateY(-1px);
+        }
+        &:focus-visible {
+            outline: 2px solid $uaz-or-clair;
+            outline-offset: 3px;
+        }
+    }
+    .uaz-info-google {
+        margin: .85rem 0 0;
+        text-align: center;
+        font-size: .8rem;
+        color: $uaz-encre-douce;
+    }
+
+    .login-separator {
+        display: flex;
+        align-items: center;
+        gap: .9rem;
+        margin: 1.6rem 0 1.2rem;
+        font-size: .76rem;
+        text-transform: uppercase;
+        letter-spacing: .1em;
+        color: $uaz-encre-douce;
+
+        &::before,
+        &::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: $uaz-filet;
+        }
+    }
+
+    .form-label {
+        margin-bottom: .4rem;
+        font-size: .82rem;
+        font-weight: 500;
+        color: $uaz-encre-douce;
+    }
+    .form-control {
+        min-height: 48px;
+        padding: .75rem 1rem;
+        border-radius: 12px;
+        border: 1px solid $uaz-filet;
+        background: $uaz-champ-fond;
+        color: $uaz-champ-texte;
+        font-size: .95rem;
+        transition: border-color .18s ease, box-shadow .18s ease;
+
+        &::placeholder {
+            color: $uaz-champ-indication;
+        }
+        &:focus {
+            border-color: $uaz-or;
+            box-shadow: 0 0 0 3px rgba(136, 114, 75, .35);
+            background: $uaz-champ-fond;
+            color: $uaz-champ-texte;
+        }
+    }
+    // l'oeil du mot de passe (core/togglesensitive) : dans le champ, comme au registrar
+    .toggle-sensitive-wrapper {
+        position: relative;
+        flex-wrap: nowrap;
+
+        .form-control {
+            padding-right: 3.25rem;
+            border-radius: 12px !important; // stylelint-disable-line declaration-no-important
+        }
+        .toggle-sensitive-btn {
+            position: absolute;
+            top: 50%;
+            right: .4rem;
+            z-index: 5;
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            padding: 0;
+            transform: translateY(-50%);
+            border: 0;
+            border-radius: 10px !important; // stylelint-disable-line declaration-no-important
+            background: transparent;
+            color: $uaz-encre-douce;
+
+            &:hover {
+                background: rgba(255, 255, 255, .06);
+                color: $uaz-encre;
+            }
+            &:focus-visible {
+                outline: 2px solid $uaz-or-clair;
+                outline-offset: 2px;
+                box-shadow: none;
+            }
+            .icon {
+                margin: 0;
+            }
+        }
+    }
+    .uaz-oubli {
+        text-align: right;
+        font-size: .85rem;
+
+        a {
+            color: $uaz-or-clair;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    }
+
+    // blanc sur l'or du sceau : 4,6:1
+    .uaz-envoyer {
+        min-height: 50px;
+        border: 0;
+        border-radius: 12px;
+        background: $uaz-or;
+        color: #fff;
+        font-size: .97rem;
+        font-weight: 600;
+        transition: background-color .18s ease, transform .18s ease;
+
+        &:hover,
+        &:focus,
+        &:active {
+            background: $uaz-or-fonce;
+            color: #fff;
+        }
+        &:hover {
+            transform: translateY(-1px);
+        }
+        &:focus-visible {
+            outline: 2px solid $uaz-or-clair;
+            outline-offset: 3px;
+            box-shadow: none;
+        }
+    }
+
+    .login-languagemenu {
+        margin: 1.5rem 0 .6rem !important; // stylelint-disable-line declaration-no-important
+
+        .dropdown-toggle {
+            font-size: .85rem;
+            color: $uaz-encre-douce;
+            text-decoration: none;
+
+            &:hover,
+            &:focus {
+                color: $uaz-encre;
+            }
+        }
+    }
+    .login-cookiesnotice .btn-link {
+        font-size: .8rem;
+        color: rgba(179, 185, 214, .75);
+        text-decoration: none;
+
+        &:hover {
+            color: $uaz-encre;
+        }
+    }
+}
+
+/* Les autres pages de la meme mise en page (mot de passe oublie, confirmation...) */
+.uaz-acces__carte {
+    color: $uaz-encre;
+
+    h2,
+    h3,
+    legend {
+        color: $uaz-encre;
+    }
+    h2 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        letter-spacing: -.02em;
+    }
+    hr,
+    .mform fieldset {
+        border-color: $uaz-filet;
+    }
+    // titre d'une section du formulaire (h3 a cote de la legende masquee)
+    .mform fieldset .ftoggler h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+    // l'etiquette au-dessus du champ : la carte est etroite pour deux colonnes
+    .mform .fitem.row {
+        flex-direction: column;
+
+        > [class*="col-md-"] {
+            width: 100%;
+            max-width: 100%;
+            flex: 0 0 auto;
+        }
+        > .col-form-label {
+            padding-bottom: .4rem;
+            font-size: .82rem;
+            font-weight: 500;
+            color: $uaz-encre-douce;
+        }
+    }
+    .mform .form-control,
+    .mform .form-select {
+        min-height: 46px;
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid $uaz-filet;
+        background-color: $uaz-champ-fond;
+        color: $uaz-champ-texte;
+
+        &:focus {
+            border-color: $uaz-or;
+            box-shadow: 0 0 0 3px rgba(136, 114, 75, .35);
+        }
+    }
+    .btn-primary {
+        min-height: 46px;
+        padding: 0 1.4rem;
+        border: 0;
+        border-radius: 12px;
+        background: $uaz-or;
+        color: #fff;
+        font-weight: 600;
+
+        &:hover,
+        &:focus {
+            background: $uaz-or-fonce;
+            color: #fff;
+        }
+    }
+    .btn-secondary {
+        min-height: 46px;
+        border-radius: 12px;
+        border: 1px solid $uaz-filet;
+        background: transparent;
+        color: $uaz-encre;
+    }
+    .box.generalbox,
+    .card {
+        background: transparent;
+        border-color: $uaz-filet;
+        color: $uaz-encre;
+    }
+}
+
+/* Ecrans etroits : l'encart raconte le campus ; il repousserait le formulaire hors de vue */
+@include media-breakpoint-down(lg) {
+    .uaz-connexion {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .uaz-marque {
+        display: none;
+    }
+    .uaz-acces__marque {
+        display: block;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .uaz-ciel__couche {
+        animation: none;
+    }
+    .uaz-connexion .loginform .login-identityprovider-btn:hover,
+    .uaz-connexion .loginform .uaz-envoyer:hover {
+        transform: none;
+    }
+}

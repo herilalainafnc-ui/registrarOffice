@@ -1,0 +1,110 @@
+/* =============================================================================
+   Studio UAZ — la charte graphique des visuels (docs/studio-uaz/, Charte.dc.html)
+
+   Ces jetons sont verrouilles : un preset ne peut nommer que ceux-ci
+   (src/studio/studio-schema.js le verifie). La meme feuille sert a l'apercu de
+   l'editeur (src/studio.php) et au service de rendu (outils/studio-rendu/), qui
+   charge exactement les memes fichiers : l'export ressemble a l'apercu.
+
+   Police : Archivo (licence OFL, polices/OFL.txt), servie d'ici : aucun appel
+   a Google, ni a l'ecran ni a l'export. Des instances fixes et non la police
+   variable (outils/studio-polices/instancier.py) : largeur 100 % en graisses
+   400 a 800, et 92 % en 800 pour les titres. Un PDF les incorpore alors comme
+   de vraies polices (une police variable y deviendrait du « Type 3 »).
+   ========================================================================== */
+
+@font-face { font-family: 'Archivo'; font-style: normal; font-weight: 400; font-stretch: 100%; font-display: block; src: url(polices/archivo-100-400-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Archivo'; font-style: normal; font-weight: 400; font-stretch: 100%; font-display: block; src: url(polices/archivo-100-400-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Archivo'; font-style: normal; font-weight: 500; font-stretch: 100%; font-display: block; src: url(polices/archivo-100-500-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Archivo'; font-style: normal; font-weight: 500; font-stretch: 100%; font-display: block; src: url(polices/archivo-100-500-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Archivo'; font-style: normal; font-weight: 600; font-stretch: 100%; font-display: block; src: url(polices/archivo-100-600-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Archivo'; font-style: normal; font-weight: 600; font-stretch: 100%; font-display: block; src: url(polices/archivo-100-600-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Archivo'; font-style: normal; font-weight: 700; font-stretch: 100%; font-display: block; src: url(polices/archivo-100-700-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Archivo'; font-style: normal; font-weight: 700; font-stretch: 100%; font-display: block; src: url(polices/archivo-100-700-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Archivo'; font-style: normal; font-weight: 800; font-stretch: 100%; font-display: block; src: url(polices/archivo-100-800-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Archivo'; font-style: normal; font-weight: 800; font-stretch: 100%; font-display: block; src: url(polices/archivo-100-800-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Archivo'; font-style: normal; font-weight: 800; font-stretch: 92%; font-display: block; src: url(polices/archivo-92-800-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Archivo'; font-style: normal; font-weight: 800; font-stretch: 92%; font-display: block; src: url(polices/archivo-92-800-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+.uaz-visuel {
+	/* Les jetons : memes noms que dans les presets (« fond », « couleur ») */
+	--uaz-navy: #232A5F;       /* fond general (les filets), titres, cellules pleines */
+	--uaz-gold: #8B7448;       /* le mot-cle du titre */
+	--uaz-goldDeep: #85703F;   /* bloc vedette plein */
+	--uaz-goldLight: #C8AE72;  /* labels et puces sur marine */
+	--uaz-bronze: #7A6535;     /* labels en capitales sur creme */
+	--uaz-cream: #F4F2ED;      /* fond des cellules */
+	--uaz-paper: #FBFAF7;      /* corps de texte long (communique) */
+	--uaz-sand: #E4DDCB;       /* zone image ; fond des illustrations */
+	--uaz-ink: #1D2233;        /* texte courant */
+	--uaz-rule: #8C93B8;       /* filets fins entre les lignes d'une liste */
+	--uaz-navySoft: #3A4380;   /* ligne secondaire de l'en-tete */
+	--uaz-white: #FFFFFF;      /* texte sur marine et sur or */
+
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	background: var(--uaz-navy);
+	color: var(--uaz-navy);
+	font-family: 'Archivo', sans-serif;
+	font-synthesis: none;
+	text-align: left;
+	line-height: normal;
+	letter-spacing: normal;
+	position: relative;
+}
+.uaz-visuel *, .uaz-visuel *::before, .uaz-visuel *::after { box-sizing: border-box; }
+
+.uaz-rangee { display: flex; flex-shrink: 0; min-height: 0; }
+.uaz-cellule { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; }
+.uaz-groupe { display: flex; min-width: 0; }
+.uaz-ressort { flex: 1 1 0; min-height: 0; min-width: 0; }
+.uaz-texte { margin: 0; min-width: 0; overflow-wrap: break-word; }
+.uaz-texte b { font-weight: 800; }
+.uaz-une-ligne { white-space: nowrap; }
+/* Un titre ne se coupe jamais au milieu d'un mot : trop long, il retrecit (ajustement). */
+.uaz-titre { overflow-wrap: normal; }
+.uaz-mot-cle { color: var(--uaz-gold); }
+
+.uaz-logo { flex-shrink: 0; object-fit: contain; border-radius: 50%; }
+.uaz-pastille { flex-shrink: 0; border-radius: 50%; }
+.uaz-badge { align-self: flex-start; }
+
+.uaz-liste { display: flex; flex-direction: column; }
+.uaz-liste__element { display: flex; align-items: center; min-width: 0; }
+.uaz-liste__numero { flex-shrink: 0; }
+
+.uaz-image { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--uaz-sand); }
+.uaz-image img { display: block; }
+.uaz-image--contenir img { width: auto; max-width: 100%; object-fit: contain; }
+.uaz-image--remplir img { width: 100%; height: 100%; object-fit: cover; }   /* puis recadree par le moteur (cadrer) */
+.uaz-filtres { position: absolute; width: 0; height: 0; overflow: hidden; }   /* le filtre duotone, hors de la grille */
+.uaz-image--fondre img { mix-blend-mode: multiply; }
+.uaz-image__etiquette { position: absolute; }
+
+/* Texte long (communique en A4) et QR code (inscriptions) */
+.uaz-flux { display: block; }
+.uaz-qr { flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--uaz-cream); }
+.uaz-qr svg { display: block; }
+
+/* Un document de deux pages : l'une sous l'autre a l'ecran, une par page en PDF */
+.uaz-document { display: flex; flex-direction: column; align-items: flex-start; gap: 32px; }
+@media print {
+	.uaz-document { display: block; }
+	.uaz-document > .uaz-visuel:not(:last-child) { break-after: page; }
+}
+
+/* Apercu seulement (jamais a l'export) : ce qui reste a remplir, ce qui deborde */
+.uaz-visuel--apercu [data-champ] { cursor: text; }
+.uaz-a-remplir { opacity: .45; }
+.uaz-a-remplir.uaz-une-ligne { overflow: hidden; text-overflow: ellipsis; }
+.uaz-deborde { outline: 6px solid #d92d20; outline-offset: -6px; }
+
+/* --- blocs ajoutes : texte libre, image, forme (poses par-dessus, dans l'ordre des calques) */
+.uaz-libres { position: absolute; inset: 0; z-index: 7; pointer-events: none; }
+.uaz-libre { position: absolute; box-sizing: border-box; pointer-events: auto; }
+.uaz-libre--texte { line-height: 1.15; white-space: pre-wrap; overflow-wrap: anywhere; font-family: 'Archivo', sans-serif; }
+.uaz-libre--image { overflow: hidden; }
+.uaz-libre--image img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.uaz-libre--vide { background: var(--uaz-sand); outline: 2px dashed var(--uaz-rule); outline-offset: -2px; }

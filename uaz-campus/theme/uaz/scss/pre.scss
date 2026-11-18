@@ -1,0 +1,48 @@
+// UAZ Campus : les couleurs, la police et les formes du registrar
+// (src/css/tokens.css), posees AVANT le preregle de Boost.
+//
+// Moodle 5.3 tire tout de deux palettes : les gris ($mds-color-gray-*) et les
+// bleus ($mds-color-blue-*) du systeme de dessin. Bootstrap ($gray-*,
+// $primary), les jetons --mds-* et le mode sombre (scss/moodle/dark.scss, qui
+// inverse l'echelle des gris) en derivent. Les redefinir ici suffit a faire
+// passer tout le site, dans les deux modes, aux couleurs du registrar :
+//
+//   gris  = les gris teintes du bleu Zurcher : du fond de page clair du
+//           registrar (#f3f4f9) a sa nuit (#12162c) ;
+//   bleus = l'accent du registrar : bleu Zurcher eclairci (#4658c2 en 500),
+//           jusqu'au bleu Zurcher exact du sceau (#222e65 en 800).
+
+// --- Gris ----------------------------------------------------------------
+$mds-color-gray-100: #f3f4f9;   // fond de page clair (registrar : --c-canvas, theme clair)
+$mds-color-gray-200: #e9ebf4;   // fond creuse clair
+$mds-color-gray-300: #dfe2ee;   // filets clairs
+$mds-color-gray-400: #c7ccdf;   // filets marques clairs ; texte secondaire en sombre
+$mds-color-gray-500: #8890b5;   // libelles, aides
+$mds-color-gray-600: #646c94;   // texte discret en clair : 5:1 sur blanc
+$mds-color-gray-700: #3a426c;   // texte secondaire clair ; filets marques en sombre
+$mds-color-gray-800: #1a1f3c;   // cartes en sombre (--c-surface)
+$mds-color-gray-900: #12162c;   // encre en clair ; fond de page en sombre (--c-canvas)
+
+// --- Bleus (l'accent) ------------------------------------------------------
+$mds-color-blue-50: #eef1fd;
+$mds-color-blue-100: #dfe4fb;
+$mds-color-blue-200: #c3cbf7;
+$mds-color-blue-300: #9eacf1;   // l'accent lu comme texte en sombre
+$mds-color-blue-400: #7a8ce8;
+$mds-color-blue-500: #4658c2;   // l'accent interactif (theme clair du registrar)
+$mds-color-blue-600: #36459f;
+$mds-color-blue-700: #2b387f;
+$mds-color-blue-800: #222e65;   // le bleu Zurcher du sceau
+$mds-color-blue-900: #151c42;
+
+$primary: #4658c2;
+
+// --- Police : Inter, celle du registrar (servie par le theme, scss/uaz.scss) --
+$mds-typography-font-family-sans-serif: "Inter";
+$font-family-sans-serif: "Inter", -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$headings-font-weight: 700;
+
+// --- Formes : les rayons du registrar (6, 10, 14 px) -------------------------
+$border-radius-sm: .375rem;
+$border-radius: .625rem;
+$border-radius-lg: .875rem;

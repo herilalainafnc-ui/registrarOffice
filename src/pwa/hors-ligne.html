@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#222e65">
+<title>Pas de connexion — Infinit Registrar</title>
+<!-- Page servie par /sw.js quand une page ne peut pas etre chargee faute de
+     reseau. Elle est gardee sur le telephone : tout y est en ligne (aucune
+     police ni feuille externe), sauf l'icone, gardee avec elle. -->
+<style>
+	:root {
+		color-scheme: dark;
+		--fond: #12162c; --carte: #1a1f3c; --trait: #282f56;
+		--texte: #eceef6; --texte-2: #b3b9d6; --or: #ceb480;
+		--accent: #5a6fda; --sur-accent: #fff;
+	}
+	@media (prefers-color-scheme: light) {
+		:root {
+			color-scheme: light;
+			--fond: #f3f4f9; --carte: #fff; --trait: #dfe2ee;
+			--texte: #12162c; --texte-2: #3a426c; --or: #7a6540;
+			--accent: #4658c2;
+		}
+	}
+	* { box-sizing: border-box; }
+	html, body { margin: 0; min-height: 100%; }
+	body {
+		min-height: 100dvh;
+		display: grid;
+		place-items: center;
+		padding: 24px 16px calc(24px + env(safe-area-inset-bottom, 0px));
+		background: var(--fond);
+		color: var(--texte);
+		font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+	}
+	main {
+		width: 100%;
+		max-width: 380px;
+		text-align: center;
+	}
+	.icone {
+		width: 72px; height: 72px;
+		border-radius: 18px;
+		display: block;
+		margin: 0 auto 20px;
+	}
+	/* Le signal : trois barres dont la derniere manque. */
+	.signal {
+		display: inline-flex; align-items: flex-end; gap: 4px;
+		height: 18px; margin-bottom: 14px;
+	}
+	.signal i { width: 6px; border-radius: 2px; background: var(--or); }
+	.signal i:nth-child(1) { height: 6px; }
+	.signal i:nth-child(2) { height: 12px; }
+	.signal i:nth-child(3) { height: 18px; background: none; outline: 1.5px dashed var(--texte-2); outline-offset: -1.5px; opacity: .55; }
+	h1 { font-size: 22px; line-height: 1.3; margin: 0 0 8px; }
+	p { margin: 0 0 24px; color: var(--texte-2); }
+	button {
+		width: 100%;
+		min-height: 48px;
+		border: 0;
+		border-radius: 12px;
+		background: var(--accent);
+		color: var(--sur-accent);
+		font: inherit;
+		font-weight: 600;
+		cursor: pointer;
+		touch-action: manipulation;
+	}
+	button:focus-visible { outline: 3px solid var(--or); outline-offset: 3px; }
+	button[aria-busy="true"] { opacity: .7; }
+	.attente {
+		margin: 16px 0 0;
+		font-size: 14px;
+		color: var(--texte-2);
+	}
+	/* Les pages gardees sur l'appareil (src/js/hors-ligne.js les note, /sw.js les sert). */
+	.gardees { margin: 28px 0 0; text-align: left; }
+	.gardees[hidden] { display: none; }
+	.gardees h2 { font-size: 14px; margin: 0 0 8px; color: var(--texte-2); font-weight: 600; }
+	.gardees ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+	.gardees a {
+		display: block; padding: 12px 14px; min-height: 48px; border-radius: 12px;
+		background: var(--carte); border: 1px solid var(--trait);
+		color: var(--texte); text-decoration: none; font-weight: 600; font-size: 15px;
+	}
+	.gardees a:focus-visible { outline: 3px solid var(--or); outline-offset: 2px; }
+	.gardees a small { display: block; font-weight: 400; color: var(--texte-2); font-size: 12.5px; }
+</style>
+</head>
+<body>
+<main>
+	<img class="icone" src="/src/pwa/icone-192.png" alt="" width="72" height="72">
+	<div class="signal" aria-hidden="true"><i></i><i></i><i></i></div>
+	<h1>Pas de connexion</h1>
+	<p>Vos notes, vos messages et vos dossiers viennent du serveur de l'université. Vérifiez le Wi-Fi ou les données mobiles, puis réessayez.</p>
+	<button type="button" id="reessayer">Réessayer</button>
+	<p class="attente" role="status" id="etat">La page s'ouvrira d'elle-même dès le retour du réseau.</p>
+	<section class="gardees" id="gardees" hidden>
+		<h2>Disponible sans connexion sur cet appareil</h2>
+		<ul id="listeGardees"></ul>
+	</section>
+</main>
+<script>
+	(function () {
+		var b = document.getElementById('reessayer');
+		function recharger() {
+			b.setAttribute('aria-busy', 'true');
+			b.textContent = 'Chargement…';
+			location.reload();
+		}
+			b.addEventListener('click', recharger);
+		window.addEventListener('online', recharger);
+
+		/* Les pages que ce compte a deja ouvertes (liste tenue par src/js/hors-ligne.js). */
+		try {
+			var r = indexedDB.open('registrar-hors-ligne');
+			r.onsuccess = function () {
+				var db = r.result;
+				if (!db.objectStoreNames.contains('pages') || !db.objectStoreNames.contains('meta')) { return; }
+				var t = db.transaction(['pages', 'meta'], 'readonly');
+				var mu = t.objectStore('meta').get('utilisateur');
+				var mp = t.objectStore('pages').getAll();
+				t.oncomplete = function () {
+					var util = mu.result ? mu.result.valeur : 0;
+					var pages = (mp.result || []).filter(function (p) { return p.utilisateur === util; })
+						.sort(function (x, y) { return y.le - x.le; });
+					if (!pages.length) { return; }
+					var ul = document.getElementById('listeGardees');
+					var deja = {};
+					pages.forEach(function (p) {
+						if (deja[p.titre]) { return; }   // meme titre : la plus recente suffit
+						deja[p.titre] = true;
+						var li = document.createElement('li'), a = document.createElement('a'), s = document.createElement('small');
+						a.href = p.url;
+						a.textContent = p.titre || p.url;
+						s.textContent = 'Vue le ' + new Date(p.le).toLocaleString('fr-FR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+						a.appendChild(s);
+						li.appendChild(a);
+						ul.appendChild(li);
+					});
+					document.getElementById('gardees').hidden = false;
+				};
+			};
+		} catch (e) { /* pas de liste */ }
+	})();
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+	"preset": "evt",
+	"format": "4:5",
+	"donnees": {
+		"organisateur": "Zurcher Research Center",
+		"sousCode": "TRS",
+		"type": "Table ronde scientifique",
+		"titre": "La préconnaissance et la prédestination divines dans la doctrine du Salut",
+		"motCleOr": "prédestination divines",
+		"sousTitre": "Enjeux théologiques et perspectives bibliques",
+		"date": "2026-10-22",
+		"heure": "15",
+		"lieu": "Zurcher",
+		"lieuPrecision": "Research Center",
+		"intervenants": ["Dr Daniel Kancel", "Dr Rabezanaka Pamphile", "Dr Ratsimbason Jacques"],
+		"inviteNom": "Dr Patrick Anani",
+		"inviteFonction": "Conférencier invité",
+		"moderation": "Pasteurs **Ranala Marc Arthur** et **Irina Andriamandranto**",
+		"acces": "Ouvert à tous",
+		"diffusion": "Diffusé en direct sur la page Facebook de l'UAZ",
+		"etiquetteImage": "01 — Éternité"
+	},
+	"images": {
+		"image": { "fichier": "docs/studio-uaz/assets/illustration-trs.jpg", "type": "image/jpeg", "alt": "Illustration : sablier et Bible ouverte dans un cadre géométrique", "fondre": true, "ajustement": "contenir" }
+	}
+}

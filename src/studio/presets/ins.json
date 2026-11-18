@@ -1,0 +1,473 @@
+{
+	"$schema": "./preset.schema.json",
+	"id": "ins",
+	"code": "INS",
+	"nom": "Inscriptions",
+	"description": "L'ouverture des inscriptions : la date limite, les filières, les pièces à fournir, où s'inscrire.",
+	"version": 1,
+	"anneeDepuis": "dateLimite",
+	"dateDepuis": "dateLimite",
+	"titreDepuis": "titre",
+	"champs": [
+		{ "id": "anneeUniversitaire", "libelle": "Année universitaire", "type": "texte", "max": 9, "requis": true, "aide": "2026–2027" },
+		{ "id": "titre", "libelle": "Titre", "type": "titre", "max": 40, "requis": true, "defaut": "Inscriptions ouvertes" },
+		{ "id": "motCleOr", "libelle": "Mot-clé en or", "type": "motCle", "de": "titre", "max": 25, "defaut": "ouvertes" },
+		{ "id": "dateLimite", "libelle": "Date limite", "type": "date", "requis": true },
+		{ "id": "filieres", "libelle": "Facultés ou filières", "type": "liste", "min": 3, "max": 6, "maxElement": 30 },
+		{ "id": "pieces", "libelle": "Pièces à fournir", "type": "liste", "min": 2, "max": 5, "maxElement": 40 },
+		{ "id": "ouSinscrire", "libelle": "Où s'inscrire", "type": "texteLong", "max": 90, "requis": true, "defaut": "En ligne, ou au bureau de la scolarité aux heures d'ouverture." },
+		{ "id": "horaires", "libelle": "Horaires du bureau", "type": "texte", "max": 40 },
+		{ "id": "qrUrl", "libelle": "Adresse du QR code", "type": "url", "max": 120, "formats": ["9:16", "A4"], "aide": "Facultatif : en Story et en A4, un QR code vers cette adresse (https://…) remplace l'adresse écrite." },
+		{ "id": "mention", "libelle": "Mention pratique (frais…)", "type": "texte", "max": 50 }
+	],
+	"images": [],
+	"formats": {
+		"4:5": {
+			"largeur": 1080,
+			"hauteur": 1350,
+			"filet": 4,
+			"rangees": [
+				{
+					"id": "entete",
+					"hauteur": 110,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 22, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "logo", "taille": 78 },
+								{ "type": "groupe", "disposition": "colonne", "espace": 4, "blocs": [
+									{ "type": "texte", "valeur": "Université Adventiste Zurcher", "taille": 25, "graisse": 700, "approche": -0.01, "uneLigne": true },
+									{ "type": "texte", "valeur": "Service de la scolarité", "taille": 19, "graisse": 500, "couleur": "navySoft", "uneLigne": true }
+								] }
+							]
+						},
+						{
+							"largeur": 298, "fond": "navy", "aligner": "fin", "justifier": "centre", "espace": 2, "marges": [0, 40, 0, 36],
+							"blocs": [
+								{ "type": "texte", "valeur": "{code}", "taille": 17, "graisse": 800, "approche": 0.14, "couleur": "goldLight" },
+								{ "type": "texte", "valeur": "{annee}", "taille": 38, "graisse": 800, "couleur": "white" }
+							]
+						}
+					]
+				},
+				{
+					"id": "titre",
+					"hauteur": 400,
+					"recoit": true,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "marges": [44, 40, 40, 40],
+							"blocs": [
+								{ "type": "label", "valeur": "Année universitaire {anneeUniversitaire}", "taille": 17, "approche": 0.16 },
+								{ "type": "ressort" },
+								{ "type": "titre", "valeur": "{titre}", "motCle": "{motCleOr}", "taille": 96, "min": 48, "interligne": 0.94, "approche": -0.03 }
+							]
+						},
+						{
+							"largeur": 330, "fond": "goldDeep", "marges": [40, 40, 40, 36],
+							"blocs": [
+								{ "type": "badge", "valeur": "Date limite", "taille": 14, "approche": 0.14, "bordure": 2, "remplissage": [7, 12] },
+								{ "type": "ressort" },
+								{ "type": "texte", "valeur": "{dateLimite:jourSeul}", "taille": 72, "graisse": 800, "approche": -0.03, "interligne": 0.9, "uneLigne": true },
+								{ "type": "texte", "valeur": "{dateLimite:mois}", "taille": 28, "graisse": 700, "uneLigne": true, "min": 18, "marges": [10, 0, 0, 0] }
+							]
+						}
+					]
+				},
+				{
+					"id": "filieres",
+					"hauteur": 244,
+					"repeter": "filieres",
+					"colonnes": 3,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "justifier": "entre", "marges": [22, 30, 22, 30],
+							"blocs": [
+								{ "type": "texte", "valeur": "{numero}", "taille": 13, "graisse": 800, "couleur": "bronze" },
+								{ "type": "texte", "valeur": "{element}", "taille": 27, "graisse": 800, "approche": -0.01, "interligne": 1.1, "min": 17 }
+							]
+						}
+					]
+				},
+				{
+					"id": "pieces",
+					"hauteur": 470,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "marges": [30, 40, 30, 40], "si": "pieces",
+							"blocs": [
+								{ "type": "liste", "champ": "pieces", "libelle": "Pièces à fournir", "tailleLibelle": 17, "approcheLibelle": 0.16, "espaceLibelle": 16,
+								  "taille": 25, "graisse": 700, "tailleNumero": 13, "pas": 20, "espace": 22, "epaisseurFilet": 1.5, "min": 17 }
+							]
+						},
+						{
+							"largeur": 400, "fond": "navy", "espace": 16, "marges": [30, 40, 30, 36],
+							"blocs": [
+								{ "type": "label", "valeur": "Où s'inscrire", "taille": 17, "approche": 0.16 },
+								{ "type": "texte", "valeur": "{ouSinscrire}", "taille": 23, "graisse": 600, "interligne": 1.4, "min": 16 },
+								{ "type": "ressort" },
+								{ "type": "texte", "valeur": "registrar.​zurcher.edu.mg", "taille": 30, "graisse": 800, "interligne": 1.15 },
+								{ "type": "texte", "valeur": "{horaires}", "taille": 19, "graisse": 600, "couleur": "goldLight", "min": 14 }
+							]
+						}
+					]
+				},
+				{
+					"id": "pied",
+					"hauteur": "reste",
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "navy", "disposition": "ligne", "aligner": "centre", "espace": 24, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "groupe", "disposition": "ligne", "aligner": "centre", "espace": 14, "si": "mention", "blocs": [
+									{ "type": "pastille", "taille": 12, "couleur": "goldLight" },
+									{ "type": "texte", "valeur": "{mention}", "taille": 18, "graisse": 800, "uneLigne": true, "min": 14 }
+								] },
+								{ "type": "ressort" },
+								{ "type": "texte", "valeur": "zurcher.edu.mg", "taille": 18, "graisse": 600, "uneLigne": true }
+							]
+						}
+					]
+				}
+			]
+		},
+		"1:1": {
+			"largeur": 1080,
+			"hauteur": 1080,
+			"filet": 4,
+			"rangees": [
+				{
+					"id": "entete",
+					"hauteur": 96,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 18, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "logo", "taille": 68 },
+								{ "type": "groupe", "disposition": "colonne", "espace": 3, "blocs": [
+									{ "type": "texte", "valeur": "Université Adventiste Zurcher", "taille": 23, "graisse": 700, "approche": -0.01, "uneLigne": true },
+									{ "type": "texte", "valeur": "Service de la scolarité", "taille": 17, "graisse": 500, "couleur": "navySoft", "uneLigne": true }
+								] }
+							]
+						},
+						{
+							"largeur": 274, "fond": "navy", "aligner": "fin", "justifier": "centre", "espace": 2, "marges": [0, 40, 0, 34],
+							"blocs": [
+								{ "type": "texte", "valeur": "{code}", "taille": 15, "graisse": 800, "approche": 0.14, "couleur": "goldLight" },
+								{ "type": "texte", "valeur": "{annee}", "taille": 34, "graisse": 800, "couleur": "white" }
+							]
+						}
+					]
+				},
+				{
+					"id": "titre",
+					"hauteur": 330,
+					"recoit": true,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "marges": [36, 40, 32, 40],
+							"blocs": [
+								{ "type": "label", "valeur": "Année universitaire {anneeUniversitaire}", "taille": 15, "approche": 0.16 },
+								{ "type": "ressort" },
+								{ "type": "titre", "valeur": "{titre}", "motCle": "{motCleOr}", "taille": 78, "min": 40, "interligne": 0.94, "approche": -0.03 }
+							]
+						},
+						{
+							"largeur": 290, "fond": "goldDeep", "marges": [34, 40, 34, 32],
+							"blocs": [
+								{ "type": "badge", "valeur": "Date limite", "taille": 13, "approche": 0.14, "bordure": 2, "remplissage": [6, 11] },
+								{ "type": "ressort" },
+								{ "type": "texte", "valeur": "{dateLimite:jourSeul}", "taille": 60, "graisse": 800, "approche": -0.03, "interligne": 0.9, "uneLigne": true },
+								{ "type": "texte", "valeur": "{dateLimite:mois}", "taille": 24, "graisse": 700, "uneLigne": true, "min": 15, "marges": [8, 0, 0, 0] }
+							]
+						}
+					]
+				},
+				{
+					"id": "filieres",
+					"hauteur": 190,
+					"repeter": "filieres",
+					"colonnes": 3,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "justifier": "entre", "marges": [16, 26, 16, 26],
+							"blocs": [
+								{ "type": "texte", "valeur": "{numero}", "taille": 12, "graisse": 800, "couleur": "bronze" },
+								{ "type": "texte", "valeur": "{element}", "taille": 22, "graisse": 800, "approche": -0.01, "interligne": 1.08, "min": 14 }
+							]
+						}
+					]
+				},
+				{
+					"id": "pieces",
+					"hauteur": 370,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "marges": [26, 32, 26, 40], "si": "pieces",
+							"blocs": [
+								{ "type": "liste", "champ": "pieces", "libelle": "Pièces à fournir", "tailleLibelle": 15, "approcheLibelle": 0.16, "espaceLibelle": 12,
+								  "taille": 21, "graisse": 700, "tailleNumero": 12, "pas": 14, "espace": 18, "epaisseurFilet": 1.5, "min": 14 }
+							]
+						},
+						{
+							"largeur": 360, "fond": "navy", "espace": 12, "marges": [26, 40, 26, 30],
+							"blocs": [
+								{ "type": "label", "valeur": "Où s'inscrire", "taille": 15, "approche": 0.16 },
+								{ "type": "texte", "valeur": "{ouSinscrire}", "taille": 19, "graisse": 600, "interligne": 1.36, "min": 13 },
+								{ "type": "ressort" },
+								{ "type": "texte", "valeur": "registrar.​zurcher.edu.mg", "taille": 25, "graisse": 800, "interligne": 1.15 },
+								{ "type": "texte", "valeur": "{horaires}", "taille": 16, "graisse": 600, "couleur": "goldLight", "min": 13 }
+							]
+						}
+					]
+				},
+				{
+					"id": "pied",
+					"hauteur": "reste",
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "navy", "disposition": "ligne", "aligner": "centre", "espace": 24, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "groupe", "disposition": "ligne", "aligner": "centre", "espace": 12, "si": "mention", "blocs": [
+									{ "type": "pastille", "taille": 10, "couleur": "goldLight" },
+									{ "type": "texte", "valeur": "{mention}", "taille": 16, "graisse": 800, "uneLigne": true, "min": 13 }
+								] },
+								{ "type": "ressort" },
+								{ "type": "texte", "valeur": "zurcher.edu.mg", "taille": 16, "graisse": 600, "uneLigne": true }
+							]
+						}
+					]
+				}
+			]
+		},
+		"9:16": {
+			"largeur": 1080,
+			"hauteur": 1920,
+			"filet": 4,
+			"rangees": [
+				{
+					"id": "entete",
+					"hauteur": 140,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 22, "marges": [0, 56, 0, 56],
+							"blocs": [
+								{ "type": "logo", "taille": 92 },
+								{ "type": "groupe", "disposition": "colonne", "espace": 4, "blocs": [
+									{ "type": "texte", "valeur": "Université Adventiste Zurcher", "taille": 29, "graisse": 700, "approche": -0.01, "uneLigne": true },
+									{ "type": "texte", "valeur": "Service de la scolarité", "taille": 21, "graisse": 500, "couleur": "navySoft", "uneLigne": true }
+								] }
+							]
+						},
+						{
+							"largeur": 348, "fond": "navy", "aligner": "fin", "justifier": "centre", "espace": 2, "marges": [0, 56, 0, 56],
+							"blocs": [
+								{ "type": "texte", "valeur": "{code}", "taille": 19, "graisse": 800, "approche": 0.14, "couleur": "goldLight" },
+								{ "type": "texte", "valeur": "{annee}", "taille": 44, "graisse": 800, "couleur": "white" }
+							]
+						}
+					]
+				},
+				{
+					"id": "titre",
+					"hauteur": 500,
+					"recoit": true,
+					"cle": true,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "marges": [120, 40, 44, 56],
+							"blocs": [
+								{ "type": "label", "valeur": "Année universitaire {anneeUniversitaire}", "taille": 20, "approche": 0.16 },
+								{ "type": "ressort" },
+								{ "type": "titre", "valeur": "{titre}", "motCle": "{motCleOr}", "taille": 112, "min": 56, "interligne": 0.94, "approche": -0.03 }
+							]
+						},
+						{
+							"largeur": 380, "fond": "goldDeep", "marges": [120, 56, 44, 40],
+							"blocs": [
+								{ "type": "badge", "valeur": "Date limite", "taille": 17, "approche": 0.14, "bordure": 2, "remplissage": [8, 14] },
+								{ "type": "ressort" },
+								{ "type": "texte", "valeur": "{dateLimite:jourSeul}", "taille": 96, "graisse": 800, "approche": -0.03, "interligne": 0.9, "uneLigne": true },
+								{ "type": "texte", "valeur": "{dateLimite:mois}", "taille": 34, "graisse": 700, "uneLigne": true, "min": 22, "marges": [12, 0, 0, 0] }
+							]
+						}
+					]
+				},
+				{
+					"id": "filieres",
+					"hauteur": 330,
+					"repeter": "filieres",
+					"colonnes": 3,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "justifier": "entre", "marges": [24, 34, 24, 34],
+							"blocs": [
+								{ "type": "texte", "valeur": "{numero}", "taille": 16, "graisse": 800, "couleur": "bronze" },
+								{ "type": "texte", "valeur": "{element}", "taille": 32, "graisse": 800, "approche": -0.01, "interligne": 1.08, "min": 20 }
+							]
+						}
+					]
+				},
+				{
+					"id": "ou",
+					"hauteur": 330,
+					"cle": true,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "navy", "disposition": "ligne", "aligner": "centre", "espace": 40, "marges": [36, 56, 36, 56],
+							"blocs": [
+								{ "type": "groupe", "disposition": "colonne", "espace": 14, "blocs": [
+									{ "type": "label", "valeur": "Où s'inscrire", "taille": 20, "approche": 0.16 },
+									{ "type": "texte", "valeur": "{ouSinscrire}", "taille": 27, "graisse": 600, "interligne": 1.34, "min": 18 },
+									{ "type": "texte", "valeur": "registrar.zurcher.edu.mg", "taille": 38, "graisse": 800, "uneLigne": true, "min": 26, "sauf": "qrUrl", "marges": [8, 0, 0, 0] },
+									{ "type": "texte", "valeur": "{horaires}", "taille": 22, "graisse": 600, "couleur": "goldLight", "min": 16 }
+								] },
+								{ "type": "qr", "valeur": "{qrUrl}", "taille": 236, "si": "qrUrl" }
+							]
+						}
+					]
+				},
+				{
+					"id": "pieces",
+					"hauteur": 400,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "marges": [34, 56, 30, 56], "si": "pieces",
+							"blocs": [
+								{ "type": "liste", "champ": "pieces", "libelle": "Pièces à fournir", "tailleLibelle": 20, "approcheLibelle": 0.16, "espaceLibelle": 14,
+								  "taille": 30, "graisse": 700, "tailleNumero": 15, "pas": 16, "espace": 24, "epaisseurFilet": 1.5, "min": 20 }
+							]
+						}
+					]
+				},
+				{
+					"id": "pied",
+					"hauteur": "reste",
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "navy", "disposition": "ligne", "aligner": "debut", "espace": 24, "marges": [30, 56, 0, 56],
+							"blocs": [
+								{ "type": "groupe", "disposition": "ligne", "aligner": "centre", "espace": 14, "si": "mention", "blocs": [
+									{ "type": "pastille", "taille": 13, "couleur": "goldLight" },
+									{ "type": "texte", "valeur": "{mention}", "taille": 22, "graisse": 800, "uneLigne": true, "min": 16 }
+								] },
+								{ "type": "ressort" },
+								{ "type": "texte", "valeur": "zurcher.edu.mg", "taille": 22, "graisse": 600, "uneLigne": true }
+							]
+						}
+					]
+				}
+			]
+		},
+		"A4": {
+			"largeur": 794,
+			"hauteur": 1123,
+			"filet": 3,
+			"rangees": [
+				{
+					"id": "entete",
+					"hauteur": 92,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 16, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "logo", "taille": 58 },
+								{ "type": "groupe", "disposition": "colonne", "espace": 3, "blocs": [
+									{ "type": "texte", "valeur": "Université Adventiste Zurcher", "taille": 18, "graisse": 700, "approche": -0.01, "uneLigne": true },
+									{ "type": "texte", "valeur": "Service de la scolarité", "taille": 14, "graisse": 500, "couleur": "navySoft", "uneLigne": true }
+								] }
+							]
+						},
+						{
+							"largeur": 247, "fond": "navy", "aligner": "fin", "justifier": "centre", "espace": 2, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "texte", "valeur": "{code}", "taille": 13, "graisse": 800, "approche": 0.14, "couleur": "goldLight" },
+								{ "type": "texte", "valeur": "{annee}", "taille": 28, "graisse": 800, "couleur": "white" }
+							]
+						}
+					]
+				},
+				{
+					"id": "titre",
+					"hauteur": 350,
+					"recoit": true,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "marges": [34, 28, 30, 40],
+							"blocs": [
+								{ "type": "label", "valeur": "Année universitaire {anneeUniversitaire}", "taille": 13, "approche": 0.16 },
+								{ "type": "ressort" },
+								{ "type": "titre", "valeur": "{titre}", "motCle": "{motCleOr}", "taille": 72, "min": 36, "interligne": 0.94, "approche": -0.03 }
+							]
+						},
+						{
+							"largeur": 250, "fond": "goldDeep", "marges": [32, 40, 32, 28],
+							"blocs": [
+								{ "type": "badge", "valeur": "Date limite", "taille": 12, "approche": 0.14, "bordure": 1.5, "remplissage": [5, 10] },
+								{ "type": "ressort" },
+								{ "type": "texte", "valeur": "{dateLimite:jourSeul}", "taille": 54, "graisse": 800, "approche": -0.03, "interligne": 0.9, "uneLigne": true },
+								{ "type": "texte", "valeur": "{dateLimite:mois}", "taille": 21, "graisse": 700, "uneLigne": true, "min": 14, "marges": [8, 0, 0, 0] }
+							]
+						}
+					]
+				},
+				{
+					"id": "filieres",
+					"hauteur": 200,
+					"repeter": "filieres",
+					"colonnes": 3,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "justifier": "entre", "marges": [16, 22, 16, 22],
+							"blocs": [
+								{ "type": "texte", "valeur": "{numero}", "taille": 12, "graisse": 800, "couleur": "bronze" },
+								{ "type": "texte", "valeur": "{element}", "taille": 20, "graisse": 800, "approche": -0.01, "interligne": 1.1, "min": 13 }
+							]
+						}
+					]
+				},
+				{
+					"id": "pieces",
+					"hauteur": 400,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "marges": [24, 26, 24, 40], "si": "pieces",
+							"blocs": [
+								{ "type": "liste", "champ": "pieces", "libelle": "Pièces à fournir", "tailleLibelle": 13, "approcheLibelle": 0.16, "espaceLibelle": 11,
+								  "taille": 19, "graisse": 700, "tailleNumero": 12, "pas": 15, "espace": 16, "epaisseurFilet": 1, "min": 13 }
+							]
+						},
+						{
+							"largeur": 300, "fond": "navy", "espace": 12, "marges": [24, 40, 24, 28],
+							"blocs": [
+								{ "type": "label", "valeur": "Où s'inscrire", "taille": 13, "approche": 0.16 },
+								{ "type": "texte", "valeur": "{ouSinscrire}", "taille": 17, "graisse": 600, "interligne": 1.4, "min": 12 },
+								{ "type": "ressort" },
+								{ "type": "qr", "valeur": "{qrUrl}", "taille": 150, "si": "qrUrl" },
+								{ "type": "texte", "valeur": "registrar.​zurcher.edu.mg", "taille": 23, "graisse": 800, "interligne": 1.15, "sauf": "qrUrl" },
+								{ "type": "texte", "valeur": "{horaires}", "taille": 14, "graisse": 600, "couleur": "goldLight", "min": 12 }
+							]
+						}
+					]
+				},
+				{
+					"id": "pied",
+					"hauteur": "reste",
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "navy", "disposition": "ligne", "aligner": "centre", "espace": 24, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "groupe", "disposition": "ligne", "aligner": "centre", "espace": 10, "si": "mention", "blocs": [
+									{ "type": "pastille", "taille": 9, "couleur": "goldLight" },
+									{ "type": "texte", "valeur": "{mention}", "taille": 13, "graisse": 800, "uneLigne": true, "min": 12 }
+								] },
+								{ "type": "ressort" },
+								{ "type": "texte", "valeur": "zurcher.edu.mg", "taille": 13, "graisse": 600, "uneLigne": true }
+							]
+						}
+					]
+				}
+			]
+		}
+	}
+}

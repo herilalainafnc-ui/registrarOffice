@@ -1,0 +1,197 @@
+<?php 
+require_once(__DIR__ . '/../../data/guard.ajax.php');
+exigerConnexion(); refuserEtudiant(); refuserEnseignant(); // fiches : personnel seul (un compte etudiant les lancait)
+refuserRequeteCroisee(); // action lancee depuis l application, jamais depuis un autre site (CSRF)
+
+require '../../data/backdb.php';
+require_once(__DIR__ . "/../../data/finance.bareme.php"); // bareme par session
+require_once(__DIR__ . "/../../data/finance.frais.php"); // frais supplementaires du bareme
+	
+	$etude_envisage = $_GET['etude_envisage'];
+	if ($_GET['status'] == "") {
+		$status = 'Externe';
+	}else{
+		$status = $_GET['status'];
+	}
+	
+	$student_id = $_GET['student_id'];
+	$session_id = $_GET['session_id'];
+	$annee_etude = $_GET['annee_etude'];
+	$abonment = $_GET['abonment'];
+	$graduated = $_GET['graduated'];
+	$new_student = $_GET['new_student'];
+
+	$verifySession = $dtb->prepare('SELECT * FROM t_2023_session WHERE session_id = :session_id');
+	$verifySession->execute(['session_id' => $session_id]);
+
+	$showSession = $verifySession->fetch();
+
+	$semester = $showSession['session_semester'];
+
+	$findMention = $dtb->prepare('SELECT * FROM filiere WHERE filiere_description = :etude_envisage');
+	$findMention->execute(['etude_envisage' => $etude_envisage]);
+
+		$showMention = $findMention->fetch();
+		
+		$etude_mention = $showMention['filiere_sigle'];
+
+
+	/* Bareme de la session visee, avec repli sur le bareme de base. Criteres
+	   inchanges par rapport a l'origine : seule la session est ajoutee. */
+	$result_finance = baremeLigne($dtb, $session_id, [
+		'std_status'  => $status,
+		'std_mention' => $etude_mention,
+	]);
+
+/* ::::::::::::::::::::::::::::::::::::::: GENERATE COST FINANCE :::::::::::::::::::::::::::::::::::::::::*/
+	
+	/*============== DETERMINATION OF DAYS NUMBER ==============*/
+	
+	if ($annee_etude == 1) {
+
+		$nbr_day = $result_finance['nb_jours_semestre'];
+	
+	}elseif ($annee_etude == 2) {
+	
+		$nbr_day = $result_finance['nb_jours_semestre_L2'];
+	
+	}elseif ($annee_etude == 3) {
+	
+		$nbr_day = $result_finance['nb_jours_semestre_L3'];
+	
+	}
+
+	/*============== FRAIS GENEREAUX ==============*/
+
+	if($annee_etude == 0 AND $etude_mention == "NURS") {
+	
+		$cout_fraix_generaux = 210000;
+	
+	}else{
+	
+		$cout_fraix_generaux = $result_finance['frais_generaux'];
+	
+	}
+	
+
+	/*============== LOGMENT ==============*/
+
+	$cout_logement = $result_finance['dortoir'] * $nbr_day;
+
+
+	/*============== ABONEMENT CAF ==============*/
+
+	if($abonment == 1) {
+
+		$cout_abonment = $result_finance['cafeteria'] * $nbr_day;
+
+	}else{
+		
+		$cout_abonment = 0;
+
+	}
+
+
+	/*============== FRAIS DE GRADUATION ==============*/
+
+	/* Deuxieme semestre et etudiant diplomant : voir baremeFraisGraduation().
+	   La condition de semestre manquait ici. */
+	$cout_frais_graduation = baremeFraisGraduation($result_finance['frais_graduation'], $semester, $graduated);
+
+
+	/*============== FRAIS DE COSTUME ==============*/
+
+	if ($annee_etude == 1 AND $new_student == 1) {
+
+		$frais_costume = $result_finance['frais_costume'];
+
+	}else{
+
+		$frais_costume = 0;
+
+	}
+
+	/*============== FOND DE DEPOT ==============*/
+
+	if ($annee_etude == 1 AND $status == "Interne") {
+		
+		$fond_depot = $result_finance['fond_depot'];	
+	
+	}else{
+	
+		$fond_depot = 0;
+	
+	}
+
+	
+	/*================= VOYAGE D'ETUDE ===============*/
+	
+	if ($semester == 1) {
+
+		// Semestre 1 → frais de voyage normal
+		$frais_voyage = $result_finance['frais_voyage'];
+
+	} else {
+		// Semestre 2 → vérifier si l'étudiant était inscrit au premier semestre
+		$annee_scolaire_current = $showSession['session_year'];
+		$checkSem1 = $dtb->prepare('SELECT COUNT(*) as cnt FROM t_2024_inscription_session ins 
+			INNER JOIN t_2023_session ses ON ins.session_id = ses.session_id 
+			WHERE ins.student_id = :student_id AND ses.session_year = :annee_scolaire AND ses.session_semester = 1');
+		$checkSem1->execute(['student_id' => $student_id, 'annee_scolaire' => $annee_scolaire_current]);
+		$hasSem1 = $checkSem1->fetch();
+		
+		if ($hasSem1['cnt'] > 0) {
+			// Ancien étudiant (inscrit au sem. 1) → frais de voyage normal (150 000)
+			$frais_voyage = $result_finance['frais_voyage'];
+		} else {
+			// Nouvel étudiant au semestre 2 → frais de voyage doublés (300 000)
+			$frais_voyage = floatval($result_finance['frais_voyage']) * 2;
+		}
+	}
+
+$financement = $dtb->prepare("UPDATE t_2024_etudiant_finace SET 
+	mention=:mention,
+	level=:level,
+	status=:status,
+	cout_logement=:cout_logement,
+	cout_fraix_generaux=:cout_fraix_generaux,
+	cout_fondDepot_dortoir=:cout_fondDepot_dortoir,
+	cout_abonment=:cout_abonment,
+	cout_frais_graduation=:cout_frais_graduation,
+	cout_costume=:cout_costume,
+	cout_voyage=:cout_voyage,
+	last_change_datetime=:last_change_datetime
+	
+	WHERE student_id=:student_id AND session_id=:session_id");
+	
+	$financement->bindParam(':mention',$etude_mention,PDO::PARAM_STR);
+	$financement->bindParam(':level',$annee_etude,PDO::PARAM_INT);
+	$financement->bindParam(':status',$status,PDO::PARAM_STR);
+	$financement->bindParam(':cout_logement',$cout_logement,PDO::PARAM_STR);
+	$financement->bindParam(':cout_fraix_generaux',$cout_fraix_generaux,PDO::PARAM_STR);
+	$financement->bindParam(':cout_fondDepot_dortoir',$fond_depot,PDO::PARAM_STR);
+	$financement->bindParam(':cout_abonment',$cout_abonment,PDO::PARAM_STR);
+	$financement->bindParam(':cout_frais_graduation',$cout_frais_graduation,PDO::PARAM_STR);
+	$financement->bindParam(':cout_costume',$frais_costume,PDO::PARAM_STR);
+	$financement->bindParam(':cout_voyage',$frais_voyage,PDO::PARAM_STR);
+	$financement->bindParam(':last_change_datetime',$last_change_datetime,PDO::PARAM_STR);
+	$financement->bindParam(':student_id',$student_id,PDO::PARAM_STR);
+	$financement->bindParam(':session_id',$session_id,PDO::PARAM_INT);
+
+	$financement->execute();
+
+	/* Frais supplementaires du bareme : memes criteres que baremeLigne()
+	   ci-dessus (data/finance.frais.php). */
+	fraisPersoAppliquer($dtb, (string) $student_id, (int) $session_id, [
+		'std_status'  => $status,
+		'std_mention' => $etude_mention,
+		'level'       => $annee_etude,
+		'semester'    => $semester,
+	], isset($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : null, [
+		'diplomant'       => $graduated,
+		'nouvel_etudiant' => $new_student,
+		'abonne'          => $abonment,
+		'statut'          => $status,
+	]);
+
+ ?>

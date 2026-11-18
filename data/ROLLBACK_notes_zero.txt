@@ -1,0 +1,4 @@
+Retour arriere de la migration 0 -> -4 (genere le 2026-08-06 03:02) :
+
+UPDATE t_2023_notes n JOIN bk_notes_zero_20260806_030210 b ON b.id = n.id SET n.grade = b.ancienne_note;
+DROP TABLE bk_notes_zero_20260806_030210;

@@ -1,0 +1,435 @@
+/* =============================================================================
+   Cours offerts par session
+
+   ---------------------------------------------------------------------------
+   POURQUOI CETTE PAGE A ETE REFAITE
+
+   Elle presentait 663 cours en lignes et les QUATRE sessions en colonnes de
+   cases a cocher : 2 652 cases sur un seul ecran. On ne pouvait pas voir d'un
+   coup d'oeil ce qui etait offert, et il fallait viser la bonne colonne parmi
+   quatre pour chaque cours.
+
+   Le modele mental juste n'est pas « ce cours, dans quelles sessions ? » mais
+   « cette session, quels cours ? ». On prepare une session a la fois. La page
+   suit donc ce sens : des onglets de session, UNE colonne de cases, et les
+   cours regroupes par mention et par niveau — c'est ainsi qu'un programme se
+   lit, pas en liste plate de six cents lignes.
+
+   Deux informations manquaient et coutaient du temps :
+
+     - le SEMESTRE NATIF du cours. Un cours de premier semestre offert
+       exceptionnellement au second est le cas meme que cette page existe pour
+       traiter ; rien ne le montrait. Un liseré « S1 → S2 » le dit maintenant.
+
+     - l'ANNEE SCOLAIRE reellement utilisee par le formulaire d'inscription.
+       Elle etait choisie ici dans une liste discrete, et pouvait differer de
+       celle que l'inscription regarde — on cochait alors des cases dans une
+       annee que personne ne lisait.
+   ---------------------------------------------------------------------------
+   ========================================================================== */
+
+.cso {
+    --cso-fond:      rgb(var(--c-canvas));
+    --cso-surface:   rgb(var(--c-canvas));
+    --cso-surface-2: rgb(var(--c-surface));
+    --cso-filet:     rgb(var(--c-line-strong) / .16);
+    --cso-texte:     rgb(var(--c-text));
+    --cso-doux:      rgb(var(--c-text-2));
+    --cso-accent:    rgb(var(--c-accent));
+    --cso-accent-f:  rgb(var(--c-accent-strong));
+    --cso-ok:        #34d399;
+    --cso-alerte:    #fbbf24;
+
+    color: var(--cso-texte);
+}
+
+/* --- Entete ---------------------------------------------------------------- */
+.cso-tete {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+.cso-tete h1 { margin: 0; font-size: 20px; font-weight: 700; }
+.cso-tete p { margin: 4px 0 0; font-size: 13px; color: var(--cso-doux); line-height: 1.55; }
+
+.cso-annee {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-shrink: 0;
+}
+.cso-annee label { font-size: 12.5px; font-weight: 600; color: var(--cso-doux); }
+.cso-annee select {
+    min-height: 40px;
+    padding: 9px 12px;
+    background-color: var(--cso-fond) !important;
+    border: 1px solid rgb(var(--c-line-strong) / .28) !important;
+    border-radius: 9px;
+    color: var(--cso-texte) !important;
+    font-family: inherit;
+    font-size: 13.5px;
+    color-scheme: dark;
+    cursor: pointer;
+}
+
+/* Avertissement quand l'annee choisie n'est pas celle que l'inscription lit.
+   C'est le piege qui a coute du temps : on cochait dans le vide. */
+.cso-avertit {
+    display: flex;
+    gap: 10px;
+    padding: 11px 14px;
+    margin-bottom: 14px;
+    border-radius: 10px;
+    background: rgba(245, 158, 11, .1);
+    border: 1px solid rgba(245, 158, 11, .32);
+    color: #fcd34d;
+    font-size: 12.5px;
+    line-height: 1.55;
+}
+.cso-avertit i { flex-shrink: 0; margin-top: 1px; }
+.cso-avertit a { color: inherit; font-weight: 700; text-decoration: underline; }
+
+/* --- Onglets de session ---------------------------------------------------
+   Une session a la fois. Le compteur sur chaque onglet dit ou en est la
+   preparation sans avoir a y entrer. */
+.cso-sessions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--cso-filet);
+}
+.cso-onglet {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 9px 16px;
+    border: 1px solid var(--cso-filet);
+    border-radius: 10px;
+    background: none;
+    color: var(--cso-doux);
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.cso-onglet:hover { color: var(--cso-texte); background: rgb(var(--c-text-3) / .08); }
+.cso-onglet:focus-visible { outline: 2px solid var(--cso-accent); outline-offset: 2px; }
+.cso-onglet[aria-selected="true"] {
+    background: var(--cso-accent-f);
+    border-color: var(--cso-accent-f);
+    color: #fff;
+}
+.cso-onglet__compte {
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: rgb(var(--c-text-3) / .2);
+    font-size: 11.5px;
+    font-variant-numeric: tabular-nums;   /* le compteur ne doit pas gigoter */
+}
+.cso-onglet[aria-selected="true"] .cso-onglet__compte { background: rgba(255, 255, 255, .25); }
+
+/* --- Barre de filtres ----------------------------------------------------- */
+.cso-filtres {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+.cso-filtres input[type="search"],
+.cso-filtres select {
+    min-height: 40px;
+    padding: 9px 12px;
+    background-color: var(--cso-fond) !important;
+    border: 1px solid rgb(var(--c-line-strong) / .28) !important;
+    border-radius: 9px;
+    color: var(--cso-texte) !important;
+    font-family: inherit;
+    font-size: 13.5px;
+    color-scheme: dark;
+}
+.cso-filtres input[type="search"] { flex: 1; min-width: 200px; }
+.cso-filtres input:focus,
+.cso-filtres select:focus {
+    outline: none;
+    border-color: var(--cso-accent) !important;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, .16);
+}
+.cso-resume {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--cso-doux);
+    font-variant-numeric: tabular-nums;
+}
+.cso-resume strong { color: var(--cso-ok); }
+
+/* --- Groupes : mention + niveau -------------------------------------------
+   Un programme se lit par promotion, pas en liste plate de six cents lignes. */
+.cso-groupe {
+    margin-bottom: 10px;
+    background: var(--cso-surface);
+    border: 1px solid var(--cso-filet);
+    border-radius: 12px;
+    overflow: hidden;
+}
+.cso-groupe[hidden] { display: none; }
+
+.cso-groupe__tete {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 13px 16px;
+    background: none;
+    border: 0;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background .15s ease;
+}
+.cso-groupe__tete:hover { background: rgb(var(--c-text-3) / .06); }
+.cso-groupe__tete:focus-visible { outline: 2px solid var(--cso-accent); outline-offset: -2px; }
+
+.cso-groupe__chevron { color: var(--cso-doux); transition: transform .2s ease; }
+.cso-groupe.est-ouvert .cso-groupe__chevron { transform: rotate(90deg); }
+
+.cso-groupe__nom { flex: 1; font-size: 14px; font-weight: 700; }
+.cso-groupe__niveau { font-weight: 400; color: var(--cso-doux); }
+
+.cso-groupe__compte {
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: rgb(var(--c-text-3) / .16);
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--cso-doux);
+    font-variant-numeric: tabular-nums;
+}
+.cso-groupe__compte--plein { background: rgba(52, 211, 153, .16); color: var(--cso-ok); }
+
+/* « Tout cocher » du groupe : un bouton, pas une case — il agit, il ne
+   represente pas un etat. */
+.cso-groupe__tout {
+    padding: 5px 11px;
+    border: 1px solid var(--cso-filet);
+    border-radius: 8px;
+    background: none;
+    color: var(--cso-doux);
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.cso-groupe__tout:hover { color: var(--cso-accent); border-color: var(--cso-accent); }
+.cso-groupe__tout:focus-visible { outline: 2px solid var(--cso-accent); outline-offset: 1px; }
+
+.cso-groupe__corps { border-top: 1px solid var(--cso-filet); }
+.cso-groupe:not(.est-ouvert) .cso-groupe__corps { display: none; }
+
+/* --- Ligne de cours ------------------------------------------------------- */
+.cso-cours {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 16px 9px 14px;
+    border-top: 1px solid rgb(var(--c-line-strong) / .08);
+    cursor: pointer;
+    transition: background .12s ease;
+}
+.cso-cours:first-child { border-top: none; }
+.cso-cours:hover { background: rgb(var(--c-text-3) / .05); }
+.cso-cours[hidden] { display: none; }
+.cso-cours.est-offert { background: rgba(52, 211, 153, .07); }
+.cso-cours.est-offert:hover { background: rgba(52, 211, 153, .11); }
+
+/* La case fait 20px et sa ligne entiere est cliquable : viser une case de
+   13px parmi six cents, c'est se tromper. */
+.cso-cours input[type="checkbox"] {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    accent-color: var(--cso-accent-f);
+    cursor: pointer;
+}
+.cso-cours input:focus-visible { outline: 2px solid var(--cso-accent); outline-offset: 2px; }
+
+/* Colonne de sigle : 132 px, et non 88.
+
+   Les sigles ne font pas tous la meme longueur. Sur 658 cours, 571 tiennent en
+   sept a dix caracteres (« DRTJ 211 »), mais 83 en comptent quatorze a seize
+   (« COFI/FINC/GIP10 »). A 88 px, ces derniers debordaient de leur boite — et
+   comme rien ne clippait, le titre venait s'ecrire par-dessus.
+
+   Largeur FIXE et non ajustee au contenu : quand on parcourt six cents lignes,
+   des titres qui commencent tous a la meme abscisse se lisent en descendant
+   l'oeil d'un trait. Ragés, il faut les chercher ligne par ligne.
+
+   overflow caché malgré tout : c'est un filet, pas la solution — un sigle plus
+   long que prevu sera coupé proprement, jamais superposé, et son attribut
+   title en donne la version entiere. */
+.cso-cours__sigle {
+    flex: 0 0 132px;
+    min-width: 0;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--cso-accent);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.01em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.cso-cours__titre {
+    flex: 1;
+    min-width: 0;
+    font-size: 13.5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.cso-cours__meta {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.cso-cours__prof,
+.cso-cours__parcours {
+    font-size: 11.5px;
+    color: var(--cso-doux);
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Semestre natif. Neutre quand il correspond a la session preparee ; mis en
+   avant quand il en differe — c'est le cas que cette page sert a traiter, et
+   rien ne le signalait. */
+.cso-sem {
+    flex-shrink: 0;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: rgb(var(--c-text-3) / .14);
+    color: var(--cso-doux);
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.cso-sem--decale {
+    background: rgba(251, 191, 36, .16);
+    border: 1px solid rgba(251, 191, 36, .35);
+    color: var(--cso-alerte);
+}
+
+/* --- Etat vide ------------------------------------------------------------ */
+.cso-vide {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--cso-doux);
+    font-size: 13px;
+}
+.cso-vide i { display: block; font-size: 26px; margin-bottom: 8px; opacity: .5; }
+
+/* --- Barre d'enregistrement collante --------------------------------------
+   Le bouton ne doit pas se trouver a six cents lignes de la case qu'on vient
+   de cocher. */
+.cso-barre {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+    padding: 13px 16px;
+    background: rgb(var(--c-canvas) / .96);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--cso-filet);
+    border-radius: 12px;
+}
+.cso-barre__note { font-size: 12.5px; color: var(--cso-doux); }
+.cso-barre__note strong { color: var(--cso-alerte); }
+
+.cso-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 10px 22px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--cso-accent-f);
+    color: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .15s ease, opacity .15s ease;
+}
+.cso-btn:hover { background: rgb(var(--c-accent-strong)); }
+.cso-btn:focus-visible { outline: 2px solid var(--cso-accent); outline-offset: 2px; }
+.cso-btn[disabled] { opacity: .45; cursor: not-allowed; }
+
+@media (prefers-reduced-motion: reduce) {
+    .cso-groupe__chevron, .cso-cours, .cso-onglet, .cso-btn { transition: none; }
+}
+
+/* --- Petits ecrans -------------------------------------------------------- */
+@media (max-width: 720px) {
+    .cso-cours { flex-wrap: wrap; gap: 8px 10px; }
+    /* Le sigle reprend sa largeur naturelle : une colonne de 132 px sur 360 px
+       d'ecran ne laisserait plus rien au titre, qui passe de toute facon a la
+       ligne en dessous. */
+    .cso-cours__sigle { flex: 0 0 auto; }
+    .cso-cours__titre { flex-basis: 100%; white-space: normal; padding-left: 32px; }
+    /* L'enseignant et le parcours passent a la trappe : sur 360 px ils
+       repoussaient le sigle et la case hors de vue. */
+    .cso-cours__prof, .cso-cours__parcours { display: none; }
+    .cso-resume { margin-left: 0; flex-basis: 100%; }
+    .cso-barre { flex-direction: column; align-items: stretch; }
+    .cso-btn { justify-content: center; }
+}
+
+/* --- Theme clair ---------------------------------------------------------- */
+[data-theme="light"] .cso {
+    --cso-fond:      rgb(var(--c-surface));
+    --cso-surface:   rgb(var(--c-surface));
+    --cso-surface-2: rgb(var(--c-surface-2));
+    --cso-filet:     rgb(var(--c-line));
+    --cso-texte:     rgb(var(--c-text));
+    --cso-doux:      rgb(var(--c-text-3));
+    --cso-accent:    rgb(var(--c-accent-strong));
+    --cso-accent-f:  rgb(var(--c-accent-strong));
+    --cso-ok:        #047857;
+    --cso-alerte:    #92400e;
+}
+[data-theme="light"] .cso-filtres input[type="search"],
+[data-theme="light"] .cso-filtres select,
+[data-theme="light"] .cso-annee select {
+    background-color: rgb(var(--c-surface)) !important;
+    border-color: rgb(var(--c-line-strong)) !important;
+    color: rgb(var(--c-text)) !important;
+    color-scheme: light;
+}
+[data-theme="light"] .cso-groupe { box-shadow: 0 1px 3px rgba(10, 22, 40, .06); }
+[data-theme="light"] .cso-barre { background: rgb(var(--c-surface-2) / .97); }
+[data-theme="light"] .cso-avertit { background: #fef6e7; border-color: #f0c977; color: #8a5a00; }
+
+/* Changement d’année en cours (src/js/cours-sessions.js) : le bloc s’estompe et
+   ne reçoit plus de clic, pour ne pas cocher une case sur le point d’être remplacée. */
+.cso.est-chargement {
+    opacity: .55;
+    pointer-events: none;
+    transition: opacity .15s ease;
+}

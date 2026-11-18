@@ -1,0 +1,16 @@
+{
+	"preset": "ins",
+	"format": "4:5",
+	"donnees": {
+		"anneeUniversitaire": "2027–2028",
+		"titre": "Inscriptions ouvertes",
+		"motCleOr": "ouvertes",
+		"dateLimite": "2027-08-31",
+		"filieres": ["Filière de test A", "Filière de test B", "Filière de test C", "Filière de test D", "Filière de test E", "Filière de test F"],
+		"pieces": ["Pièce d'exemple 1", "Pièce d'exemple 2", "Pièce d'exemple 3", "Pièce d'exemple 4"],
+		"ouSinscrire": "En ligne, ou au bureau de la scolarité aux heures d'ouverture.",
+		"horaires": "Du lundi au jeudi (exemple)",
+		"mention": "Frais d'exemple : 0 Ar (donnée de test)"
+	},
+	"images": {}
+}

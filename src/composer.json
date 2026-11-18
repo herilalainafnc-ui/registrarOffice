@@ -1,0 +1,6 @@
+{
+    "require": {
+        "cboden/ratchet": "^0.4.4",
+        "google/apiclient": "^1.1"
+    }
+}

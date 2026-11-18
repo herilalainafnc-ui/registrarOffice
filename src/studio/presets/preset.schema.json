@@ -1,0 +1,206 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "preset.schema.json",
+	"title": "Preset du Studio UAZ",
+	"description": "Un type de visuel : ses champs, ses emplacements d'image et sa grille pour chaque format. Les règles de la charte (couleurs, une cellule pleine par rangée, marges au bord, tailles minimales, en-tête et pied) sont vérifiées en plus par src/studio/studio-schema.js.",
+	"type": "object",
+	"required": ["id", "code", "nom", "version", "champs", "images", "formats"],
+	"additionalProperties": false,
+	"properties": {
+		"$schema": { "type": "string" },
+		"id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,30}$" },
+		"code": { "type": "string", "pattern": "^[A-Z]{3}$" },
+		"nom": { "type": "string", "minLength": 2, "maxLength": 40 },
+		"description": { "type": "string", "maxLength": 200 },
+		"version": { "type": "integer", "minimum": 1 },
+		"actif": { "type": "boolean" },
+		"sousCodes": {
+			"type": "array",
+			"maxItems": 20,
+			"items": {
+				"type": "object",
+				"required": ["code", "libelle"],
+				"additionalProperties": false,
+				"properties": {
+					"code": { "type": "string", "pattern": "^[A-Z]{3}$" },
+					"libelle": { "type": "string", "minLength": 2, "maxLength": 40 }
+				}
+			}
+		},
+		"anneeDepuis": { "type": "string" },
+		"dateDepuis": { "type": "string" },
+		"titreDepuis": { "type": "string" },
+		"champs": {
+			"type": "array",
+			"minItems": 1,
+			"maxItems": 40,
+			"items": { "$ref": "#/$defs/champ" }
+		},
+		"images": {
+			"type": "array",
+			"maxItems": 4,
+			"items": { "$ref": "#/$defs/image" }
+		},
+		"formats": {
+			"type": "object",
+			"minProperties": 1,
+			"additionalProperties": false,
+			"properties": {
+				"4:5": { "$ref": "#/$defs/format" },
+				"1:1": { "$ref": "#/$defs/format" },
+				"9:16": { "$ref": "#/$defs/format" },
+				"A4": { "$ref": "#/$defs/format" }
+			}
+		}
+	},
+	"$defs": {
+		"identifiant": { "type": "string", "pattern": "^[a-zA-Z][a-zA-Z0-9]{0,30}$" },
+		"couleur": { "enum": ["navy", "gold", "goldDeep", "goldLight", "bronze", "cream", "paper", "sand", "ink", "rule", "navySoft", "white"] },
+		"marges": {
+			"anyOf": [
+				{ "type": "number", "minimum": 0, "maximum": 200 },
+				{ "type": "array", "minItems": 4, "maxItems": 4, "items": { "type": "number", "minimum": 0, "maximum": 200 } }
+			]
+		},
+		"champ": {
+			"type": "object",
+			"required": ["id", "libelle", "type"],
+			"additionalProperties": false,
+			"properties": {
+				"id": { "$ref": "#/$defs/identifiant" },
+				"libelle": { "type": "string", "minLength": 2, "maxLength": 50 },
+				"type": { "enum": ["texte", "texteLong", "titre", "motCle", "date", "heure", "liste", "sousCode", "url"] },
+				"max": { "type": "integer", "minimum": 1, "maximum": 4000 },
+				"min": { "type": "integer", "minimum": 0, "maximum": 10 },
+				"maxElement": { "type": "integer", "minimum": 1, "maximum": 80 },
+				"requis": { "type": "boolean" },
+				"gras": { "type": "boolean" },
+				"de": { "$ref": "#/$defs/identifiant" },
+				"aide": { "type": "string", "maxLength": 200 },
+				"defaut": { "type": "string", "maxLength": 200 },
+				"paragraphes": { "type": "boolean", "description": "Texte long : garder les retours à la ligne (un paragraphe par ligne)." },
+				"formats": { "type": "array", "minItems": 1, "maxItems": 4, "items": { "enum": ["4:5", "1:1", "9:16", "A4"] }, "description": "Le champ ne sert que dans ces formats (l'éditeur le signale)." }
+			}
+		},
+		"image": {
+			"type": "object",
+			"required": ["id", "libelle"],
+			"additionalProperties": false,
+			"properties": {
+				"id": { "$ref": "#/$defs/identifiant" },
+				"libelle": { "type": "string", "minLength": 2, "maxLength": 50 },
+				"requis": { "type": "boolean" },
+				"fondre": { "type": "boolean" },
+				"ajustement": { "enum": ["contenir", "remplir"] }
+			}
+		},
+		"format": {
+			"type": "object",
+			"required": ["largeur", "hauteur", "filet", "rangees"],
+			"additionalProperties": false,
+			"properties": {
+				"largeur": { "type": "integer", "minimum": 300, "maximum": 4000 },
+				"hauteur": { "type": "integer", "minimum": 300, "maximum": 6000 },
+				"filet": { "type": "number", "minimum": 2, "maximum": 8 },
+				"rangees": { "type": "array", "minItems": 2, "maxItems": 16, "items": { "$ref": "#/$defs/rangee" } },
+				"pageSuivante": {
+					"type": "object",
+					"required": ["rangees"],
+					"additionalProperties": false,
+					"description": "La page suivante d'un texte long qui ne tient pas sur une page (A4) : en-tête et pied répétés, un bloc « flux » sur le même champ.",
+					"properties": {
+						"rangees": { "type": "array", "minItems": 2, "maxItems": 16, "items": { "$ref": "#/$defs/rangee" } }
+					}
+				}
+			}
+		},
+		"rangee": {
+			"type": "object",
+			"required": ["hauteur", "cellules"],
+			"additionalProperties": false,
+			"properties": {
+				"id": { "type": "string", "maxLength": 30 },
+				"hauteur": { "anyOf": [{ "type": "number", "minimum": 20, "maximum": 6000 }, { "const": "reste" }] },
+				"recoit": { "type": "boolean" },
+				"repeter": { "$ref": "#/$defs/identifiant" },
+				"colonnes": { "type": "integer", "minimum": 1, "maximum": 6 },
+				"si": { "type": "string", "maxLength": 120 },
+				"sauf": { "type": "string", "maxLength": 120 },
+				"cle": { "type": "boolean", "description": "Information clé : en story, hors des 250 px du haut et du bas." },
+				"derniere": { "type": "boolean", "description": "Seulement sur la dernière page d'un texte long." },
+				"cellules": { "type": "array", "minItems": 1, "maxItems": 6, "items": { "$ref": "#/$defs/cellule" } }
+			}
+		},
+		"cellule": {
+			"type": "object",
+			"required": ["largeur", "fond", "blocs"],
+			"additionalProperties": false,
+			"properties": {
+				"largeur": { "anyOf": [{ "type": "number", "minimum": 20, "maximum": 4000 }, { "const": "reste" }] },
+				"fond": { "enum": ["cream", "paper", "sand", "navy", "goldDeep"] },
+				"marges": { "$ref": "#/$defs/marges" },
+				"disposition": { "enum": ["colonne", "ligne"] },
+				"aligner": { "enum": ["debut", "centre", "fin", "etirer", "ligneDeBase"] },
+				"justifier": { "enum": ["debut", "centre", "fin", "entre"] },
+				"espace": { "type": "number", "minimum": 0, "maximum": 200 },
+				"si": { "type": "string", "maxLength": 120 },
+				"sauf": { "type": "string", "maxLength": 120 },
+				"blocs": { "type": "array", "minItems": 0, "maxItems": 20, "items": { "$ref": "#/$defs/bloc" } }
+			}
+		},
+		"bloc": {
+			"type": "object",
+			"required": ["type"],
+			"additionalProperties": false,
+			"properties": {
+				"type": { "enum": ["texte", "label", "titre", "ressort", "filet", "liste", "image", "logo", "badge", "pastille", "groupe", "flux", "qr"] },
+				"si": { "type": "string", "maxLength": 120 },
+				"sauf": { "type": "string", "maxLength": 120 },
+				"zone": { "type": "integer", "minimum": 4, "maximum": 8, "description": "QR code : zone de silence, en modules." },
+				"valeur": { "type": "string", "maxLength": 200 },
+				"motCle": { "type": "string", "maxLength": 60 },
+				"champ": { "$ref": "#/$defs/identifiant" },
+				"emplacement": { "$ref": "#/$defs/identifiant" },
+				"libelle": { "type": "string", "maxLength": 60 },
+				"taille": { "type": "number", "minimum": 1, "maximum": 400 },
+				"min": { "type": "number", "minimum": 1, "maximum": 400 },
+				"graisse": { "enum": [400, 500, 600, 700, 800] },
+				"approche": { "type": "number", "minimum": -0.1, "maximum": 0.3 },
+				"interligne": { "type": "number", "minimum": 0.8, "maximum": 2 },
+				"etirement": { "type": "number", "minimum": 62, "maximum": 125 },
+				"couleur": { "$ref": "#/$defs/couleur" },
+				"couleurMotCle": { "$ref": "#/$defs/couleur" },
+				"fond": { "$ref": "#/$defs/couleur" },
+				"majuscules": { "type": "boolean" },
+				"uneLigne": { "type": "boolean" },
+				"gras": { "type": "boolean" },
+				"marges": { "$ref": "#/$defs/marges" },
+				"largeur": { "anyOf": [{ "type": "number", "minimum": 1, "maximum": 4000 }, { "const": "plein" }] },
+				"epaisseur": { "type": "number", "minimum": 0.5, "maximum": 20 },
+				"bordure": { "type": "number", "minimum": 0, "maximum": 10 },
+				"remplissage": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number", "minimum": 0, "maximum": 100 } },
+				"hauteur": { "type": "number", "minimum": 10, "maximum": 100 },
+				"etiquette": { "type": "string", "maxLength": 60 },
+				"tailleEtiquette": { "type": "number", "minimum": 1, "maximum": 100 },
+				"approcheEtiquette": { "type": "number", "minimum": 0, "maximum": 0.3 },
+				"positionEtiquette": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number", "minimum": 0, "maximum": 400 } },
+				"tailleLibelle": { "type": "number", "minimum": 1, "maximum": 100 },
+				"approcheLibelle": { "type": "number", "minimum": 0, "maximum": 0.3 },
+				"espaceLibelle": { "type": "number", "minimum": 0, "maximum": 100 },
+				"tailleNumero": { "type": "number", "minimum": 1, "maximum": 100 },
+				"pas": { "type": "number", "minimum": 0, "maximum": 100 },
+				"epaisseurFilet": { "type": "number", "minimum": 0.5, "maximum": 10 },
+				"disposition": { "enum": ["colonne", "ligne"] },
+				"aligner": { "enum": ["debut", "centre", "fin", "etirer", "ligneDeBase"] },
+				"justifier": { "enum": ["debut", "centre", "fin", "entre"] },
+				"espace": { "type": "number", "minimum": 0, "maximum": 200 },
+				"alignerSoi": { "enum": ["debut", "centre", "fin", "etirer", "ligneDeBase"] },
+				"retrait": { "$ref": "#/$defs/marges" },
+				"filetHaut": { "type": "number", "minimum": 0.5, "maximum": 10 },
+				"couleurFilet": { "$ref": "#/$defs/couleur" },
+				"largeurMin": { "type": "number", "minimum": 1, "maximum": 4000 },
+				"blocs": { "type": "array", "minItems": 1, "maxItems": 12, "items": { "$ref": "#/$defs/bloc" } }
+			}
+		}
+	}
+}

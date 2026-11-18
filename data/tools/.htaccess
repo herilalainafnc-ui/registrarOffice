@@ -1,0 +1,3 @@
+# Outils de maintenance et documents sources : jamais servis en direct.
+# Le .docx du reglement se telecharge via la route authentifiee /reglement/telecharger.
+Require all denied

@@ -1,0 +1,132 @@
+<?php
+// Rediriger si trailing slash (conflit dossier prof/ vs prof.php)
+if (preg_match('#/prof/$#', $_SERVER['REQUEST_URI'])) {
+	$clean = preg_replace('#/+$#', '', $_SERVER['REQUEST_URI']);
+	header('Location: ' . $clean, true, 301);
+	exit;
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- REQUEST HEAD --><?php require('../init/head.php');?>
+	<?php
+	/* Le titre de l'onglet : l'enseignant de la fiche. Etudiants et
+	   enseignants n'ouvrent pas cette page (AdminController::professor). */
+	$ongletTitre = 'Fiche enseignant';
+	$ongletProf = $dtb->prepare('SELECT name, lastName FROM teacher WHERE teacher_id = :id LIMIT 1');
+	$ongletProf->execute(['id' => (int) ($_GET['id'] ?? 0)]);
+	if ($ongletProf = $ongletProf->fetch()) {
+		$ongletNom = trim(($ongletProf['name'] ?? '') . ' ' . ($ongletProf['lastName'] ?? ''));
+		if ($ongletNom !== '') { $ongletTitre = $ongletNom . ' — Fiche enseignant'; }
+	}
+	?>
+	<title><?= htmlspecialchars($ongletTitre, ENT_QUOTES, 'UTF-8') ?></title>
+</head>
+<body class="<?=$bg_three_color?> sm:text-xs lg:text-sm">
+	<div class="h-screen w-full <?=$bg_three_color?>">
+		
+		<!-- TOP BAR --><?php require('../init/topbar.php');?>
+
+		<div class="w-full flex flex-col lg:flex-row">
+			
+			<!-- BARRE DE MENU --><?php require('../init/menubar.php');?>
+
+			<div class="w-full lg:w-10/12 flex flex-col" style="height: calc(100vh - 56px);">
+			<!-- BARRE D'OUTILS --><?php require('../init/toolbar.php');?>
+				
+				<div class="w-full px-0.5 flex-1 overflow-hidden">
+					<div class="flex w-full">
+<?php
+	/* Entier et requete preparee : l'id vient de l'adresse. Il est ensuite
+	   reecrit dans les liens du menu et de la barre d'outils. */
+	$id = (int) ($_GET['id'] ?? 0);
+	$retrouve = $dtb->prepare('SELECT * FROM teacher WHERE teacher_id = :id LIMIT 1');
+	$retrouve->execute(['id' => $id]);
+
+if($retrouve->rowCount() > 0) {
+$profil = $retrouve->fetch();
+$uid = $profil['uid'];
+$teacher_id = $profil['teacher_id'];
+$name = $profil['name'];
+$lastName = $profil['lastName'];
+$phone = $profil['phone'];
+$email = $profil['email'];
+$diplome = $profil['diplome'];
+$sex = $profil['sex'];
+$religion = $profil['religion'];
+$address = $profil['address'];
+$position = $profil['position'];
+$teacher_image = $profil['teacher_image'];
+$category = $profil['category'];
+$date_entry = $profil['date_entry'];
+$yes = 1;
+
+						require('../init/.prof/prof.menubar.php');
+ ?>					
+					
+
+						<?php /* Le contenu de la fiche : remplace sans recharger quand on change
+						         de page dans le menu de l'enseignant (src/js/zone-ajax.js). */ ?>
+						<div class="my-1 p-2 mx-0.5 sm:w-10/12 lg:w-9/12 xxl:w-7/12 <?=$bg_one_color?> text-white overflow-auto" style="max-height: calc(100vh - 160px);" id="zoneProf" data-zone-ajax>
+							<div class="h-20 flex pb-2">
+								<div class="w-4/12 px-1">
+									<a class="sm:text-xs lg:text-lg mt-3"><?php 
+
+									if (isset($_GET['page']) AND !empty($_GET['page'])) {
+									$prof_page = $_GET['page'];
+									if($prof_page == "information") {
+										echo strtoupper($prof_page);
+										if(!empty($profil['last_change_user_id'])) {?>
+									 
+										 <p class="toolInactive text-xs">Dernière modification<br>le <?=$profil['last_change_datetime']?>
+										 par <?php 
+							$findUserModif = $dtb->query('SELECT * FROM compt_utilisateur WHERE id = "'.$profil['last_change_user_id'].'"');
+							$showUserModif = $findUserModif->fetch();
+							echo $showUserModif['prenom'];
+										  ?>
+										</p>
+									 
+									 <?php }else{?>
+									 	<p class="toolInactive text-xs">Créé le <?=$profil['date_entry']?></p>
+									  <?php	
+									 	}
+									}
+								}
+
+									 ?></a>
+									
+								</div>
+								<!-- PROF TOOLBAR --><?php require ('../init/.prof/prof.toolbar.php');?>
+								<!-- NOTIFICATION MANAGER --><?php require('./prof/notificationProf.php');?>
+							</div>
+							<?php 
+								
+								if (isset($_GET['page']) AND !empty($_GET['page'])) {
+									$prof_page = $_GET['page'];
+
+									if($prof_page == "information") {
+										require('./prof/information.php');
+									}elseif($prof_page == "cours") {
+										require('./prof/cours.php');
+									}
+								}
+							?>
+
+						</div>
+
+<?php 
+}
+ ?>
+					</div>
+				</div>
+				
+				<?php require('../init/footer.php'); ?>
+
+			</div>
+
+		</div>
+
+	</div>
+</body>
+</html>

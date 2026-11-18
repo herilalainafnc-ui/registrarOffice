@@ -1,0 +1,427 @@
+{
+	"$schema": "./preset.schema.json",
+	"id": "fel",
+	"code": "FEL",
+	"nom": "Félicitations",
+	"description": "Une réussite, une distinction, une soutenance : le portrait, le nom, le mot de l'université.",
+	"version": 1,
+	"anneeDepuis": "date",
+	"dateDepuis": "date",
+	"titreDepuis": "{prenom} {nom}",
+	"champs": [
+		{ "id": "service", "libelle": "Faculté ou service", "type": "texte", "max": 40, "requis": true },
+		{ "id": "prenom", "libelle": "Prénom", "type": "texte", "max": 20, "requis": true },
+		{ "id": "nom", "libelle": "NOM", "type": "texte", "max": 25, "requis": true, "aide": "En capitales : il passe en or." },
+		{ "id": "motif", "libelle": "Motif", "type": "texteLong", "max": 110, "requis": true, "aide": "Pour sa réussite, sa distinction ou sa soutenance, en une phrase." },
+		{ "id": "message", "libelle": "Le mot de l'université", "type": "texteLong", "max": 160, "requis": true, "aide": "Le message de félicitations, en une ou deux phrases." },
+		{ "id": "date", "libelle": "Date", "type": "date", "requis": true },
+		{ "id": "filiere", "libelle": "Filière ou diplôme", "type": "texte", "max": 40 }
+	],
+	"images": [
+		{ "id": "portrait", "libelle": "Portrait", "requis": true, "fondre": false, "ajustement": "remplir" }
+	],
+	"formats": {
+		"4:5": {
+			"largeur": 1080,
+			"hauteur": 1350,
+			"filet": 4,
+			"rangees": [
+				{
+					"id": "entete",
+					"hauteur": 110,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 22, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "logo", "taille": 78 },
+								{ "type": "groupe", "disposition": "colonne", "espace": 4, "blocs": [
+									{ "type": "texte", "valeur": "Université Adventiste Zurcher", "taille": 25, "graisse": 700, "approche": -0.01, "uneLigne": true },
+									{ "type": "texte", "valeur": "{service}", "taille": 19, "graisse": 500, "couleur": "navySoft", "uneLigne": true, "min": 14 }
+								] }
+							]
+						},
+						{
+							"largeur": 298, "fond": "navy", "aligner": "fin", "justifier": "centre", "espace": 2, "marges": [0, 40, 0, 36],
+							"blocs": [
+								{ "type": "texte", "valeur": "{code}", "taille": 17, "graisse": 800, "approche": 0.14, "couleur": "goldLight" },
+								{ "type": "texte", "valeur": "{annee}", "taille": 38, "graisse": 800, "couleur": "white" }
+							]
+						}
+					]
+				},
+				{
+					"id": "portrait",
+					"hauteur": 760,
+					"recoit": true,
+					"cellules": [
+						{
+							"largeur": 520, "fond": "cream", "marges": [12, 12, 12, 12], "si": "portrait",
+							"blocs": [
+								{ "type": "image", "emplacement": "portrait" }
+							]
+						},
+						{
+							"largeur": "reste", "fond": "cream", "marges": [52, 40, 44, 36],
+							"blocs": [
+								{ "type": "label", "valeur": "Félicitations", "taille": 17, "approche": 0.16 },
+								{ "type": "ressort" },
+								{ "type": "titre", "valeur": "{prenom} {nom}", "motCle": "{nom}", "taille": 76, "min": 40, "interligne": 0.96, "approche": -0.03 },
+								{ "type": "filet", "largeur": 120, "epaisseur": 3, "couleur": "gold", "marges": [30, 0, 0, 0] },
+								{ "type": "texte", "valeur": "{motif}", "taille": 26, "graisse": 600, "couleur": "ink", "interligne": 1.4, "min": 18, "marges": [22, 0, 0, 0] }
+							]
+						}
+					]
+				},
+				{
+					"id": "message",
+					"hauteur": 300,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "goldDeep", "justifier": "centre", "espace": 20, "marges": [40, 40, 40, 40],
+							"blocs": [
+								{ "type": "label", "valeur": "Le mot de l'université", "taille": 15, "approche": 0.14 },
+								{ "type": "texte", "valeur": "{message}", "taille": 36, "graisse": 700, "approche": -0.01, "interligne": 1.25, "min": 22 }
+							]
+						}
+					]
+				},
+				{
+					"id": "infos",
+					"hauteur": 90,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 28, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "label", "valeur": "Le", "taille": 15, "approche": 0.16 },
+								{ "type": "texte", "valeur": "{date:long}", "taille": 23, "graisse": 700, "uneLigne": true, "min": 15 }
+							]
+						},
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 28, "marges": [0, 40, 0, 40], "si": "filiere",
+							"blocs": [
+								{ "type": "label", "valeur": "Filière", "taille": 15, "approche": 0.16 },
+								{ "type": "texte", "valeur": "{filiere}", "taille": 23, "graisse": 700, "uneLigne": true, "min": 14 }
+							]
+						}
+					]
+				},
+				{
+					"id": "pied",
+					"hauteur": "reste",
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "navy", "disposition": "ligne", "aligner": "centre", "espace": 24, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "texte", "valeur": "Spiritus · Mens · Manus — Service", "taille": 16, "graisse": 600, "uneLigne": true },
+								{ "type": "ressort" },
+								{ "type": "texte", "valeur": "zurcher.edu.mg", "taille": 18, "graisse": 600, "uneLigne": true }
+							]
+						}
+					]
+				}
+			]
+		},
+		"1:1": {
+			"largeur": 1080,
+			"hauteur": 1080,
+			"filet": 4,
+			"rangees": [
+				{
+					"id": "entete",
+					"hauteur": 96,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 18, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "logo", "taille": 68 },
+								{ "type": "groupe", "disposition": "colonne", "espace": 3, "blocs": [
+									{ "type": "texte", "valeur": "Université Adventiste Zurcher", "taille": 23, "graisse": 700, "approche": -0.01, "uneLigne": true },
+									{ "type": "texte", "valeur": "{service}", "taille": 17, "graisse": 500, "couleur": "navySoft", "uneLigne": true, "min": 13 }
+								] }
+							]
+						},
+						{
+							"largeur": 274, "fond": "navy", "aligner": "fin", "justifier": "centre", "espace": 2, "marges": [0, 40, 0, 34],
+							"blocs": [
+								{ "type": "texte", "valeur": "{code}", "taille": 15, "graisse": 800, "approche": 0.14, "couleur": "goldLight" },
+								{ "type": "texte", "valeur": "{annee}", "taille": 34, "graisse": 800, "couleur": "white" }
+							]
+						}
+					]
+				},
+				{
+					"id": "portrait",
+					"hauteur": 590,
+					"recoit": true,
+					"cellules": [
+						{
+							"largeur": 440, "fond": "cream", "marges": [10, 10, 10, 10], "si": "portrait",
+							"blocs": [
+								{ "type": "image", "emplacement": "portrait" }
+							]
+						},
+						{
+							"largeur": "reste", "fond": "cream", "marges": [44, 40, 38, 32],
+							"blocs": [
+								{ "type": "label", "valeur": "Félicitations", "taille": 15, "approche": 0.16 },
+								{ "type": "ressort" },
+								{ "type": "titre", "valeur": "{prenom} {nom}", "motCle": "{nom}", "taille": 62, "min": 32, "interligne": 0.96, "approche": -0.03 },
+								{ "type": "filet", "largeur": 100, "epaisseur": 3, "couleur": "gold", "marges": [24, 0, 0, 0] },
+								{ "type": "texte", "valeur": "{motif}", "taille": 21, "graisse": 600, "couleur": "ink", "interligne": 1.36, "min": 15, "marges": [18, 0, 0, 0] }
+							]
+						}
+					]
+				},
+				{
+					"id": "message",
+					"hauteur": 220,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "goldDeep", "justifier": "centre", "espace": 16, "marges": [32, 40, 32, 40],
+							"blocs": [
+								{ "type": "label", "valeur": "Le mot de l'université", "taille": 13, "approche": 0.14 },
+								{ "type": "texte", "valeur": "{message}", "taille": 29, "graisse": 700, "approche": -0.01, "interligne": 1.25, "min": 18 }
+							]
+						}
+					]
+				},
+				{
+					"id": "infos",
+					"hauteur": 80,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 22, "marges": [0, 32, 0, 40],
+							"blocs": [
+								{ "type": "label", "valeur": "Le", "taille": 13, "approche": 0.16 },
+								{ "type": "texte", "valeur": "{date:long}", "taille": 20, "graisse": 700, "uneLigne": true, "min": 13 }
+							]
+						},
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 22, "marges": [0, 40, 0, 32], "si": "filiere",
+							"blocs": [
+								{ "type": "label", "valeur": "Filière", "taille": 13, "approche": 0.16 },
+								{ "type": "texte", "valeur": "{filiere}", "taille": 20, "graisse": 700, "uneLigne": true, "min": 13 }
+							]
+						}
+					]
+				},
+				{
+					"id": "pied",
+					"hauteur": "reste",
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "navy", "disposition": "ligne", "aligner": "centre", "espace": 24, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "texte", "valeur": "Spiritus · Mens · Manus — Service", "taille": 14, "graisse": 600, "uneLigne": true },
+								{ "type": "ressort" },
+								{ "type": "texte", "valeur": "zurcher.edu.mg", "taille": 16, "graisse": 600, "uneLigne": true }
+							]
+						}
+					]
+				}
+			]
+		},
+		"9:16": {
+			"largeur": 1080,
+			"hauteur": 1920,
+			"filet": 4,
+			"rangees": [
+				{
+					"id": "entete",
+					"hauteur": 140,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 22, "marges": [0, 56, 0, 56],
+							"blocs": [
+								{ "type": "logo", "taille": 92 },
+								{ "type": "groupe", "disposition": "colonne", "espace": 4, "blocs": [
+									{ "type": "texte", "valeur": "Université Adventiste Zurcher", "taille": 29, "graisse": 700, "approche": -0.01, "uneLigne": true },
+									{ "type": "texte", "valeur": "{service}", "taille": 21, "graisse": 500, "couleur": "navySoft", "uneLigne": true, "min": 16 }
+								] }
+							]
+						},
+						{
+							"largeur": 348, "fond": "navy", "aligner": "fin", "justifier": "centre", "espace": 2, "marges": [0, 56, 0, 56],
+							"blocs": [
+								{ "type": "texte", "valeur": "{code}", "taille": 19, "graisse": 800, "approche": 0.14, "couleur": "goldLight" },
+								{ "type": "texte", "valeur": "{annee}", "taille": 44, "graisse": 800, "couleur": "white" }
+							]
+						}
+					]
+				},
+				{
+					"id": "portrait",
+					"hauteur": 1000,
+					"recoit": true,
+					"cle": true,
+					"cellules": [
+						{
+							"largeur": 560, "fond": "cream", "marges": [14, 14, 14, 14], "si": "portrait",
+							"blocs": [
+								{ "type": "image", "emplacement": "portrait" }
+							]
+						},
+						{
+							"largeur": "reste", "fond": "cream", "marges": [140, 56, 48, 36],
+							"blocs": [
+								{ "type": "label", "valeur": "Félicitations", "taille": 20, "approche": 0.16 },
+								{ "type": "ressort" },
+								{ "type": "titre", "valeur": "{prenom} {nom}", "motCle": "{nom}", "taille": 66, "min": 36, "interligne": 0.96, "approche": -0.03 },
+								{ "type": "filet", "largeur": 120, "epaisseur": 3, "couleur": "gold", "marges": [30, 0, 0, 0] },
+								{ "type": "texte", "valeur": "{motif}", "taille": 27, "graisse": 600, "couleur": "ink", "interligne": 1.36, "min": 18, "marges": [22, 0, 0, 0] }
+							]
+						}
+					]
+				},
+				{
+					"id": "message",
+					"hauteur": 440,
+					"cle": true,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "goldDeep", "justifier": "centre", "espace": 24, "marges": [48, 56, 48, 56],
+							"blocs": [
+								{ "type": "label", "valeur": "Le mot de l'université", "taille": 18, "approche": 0.14 },
+								{ "type": "texte", "valeur": "{message}", "taille": 44, "graisse": 700, "approche": -0.01, "interligne": 1.22, "min": 26 }
+							]
+						}
+					]
+				},
+				{
+					"id": "infos",
+					"hauteur": 130,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "justifier": "centre", "espace": 8, "marges": [0, 30, 0, 56],
+							"blocs": [
+								{ "type": "label", "valeur": "Le", "taille": 16, "approche": 0.16 },
+								{ "type": "texte", "valeur": "{date:long}", "taille": 28, "graisse": 700, "uneLigne": true, "min": 18 }
+							]
+						},
+						{
+							"largeur": "reste", "fond": "cream", "justifier": "centre", "espace": 8, "marges": [0, 56, 0, 30], "si": "filiere",
+							"blocs": [
+								{ "type": "label", "valeur": "Filière", "taille": 16, "approche": 0.16 },
+								{ "type": "texte", "valeur": "{filiere}", "taille": 28, "graisse": 700, "uneLigne": true, "min": 16 }
+							]
+						}
+					]
+				},
+				{
+					"id": "pied",
+					"hauteur": "reste",
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "navy", "disposition": "ligne", "aligner": "debut", "espace": 24, "marges": [30, 56, 0, 56],
+							"blocs": [
+								{ "type": "texte", "valeur": "Spiritus · Mens · Manus — Service", "taille": 20, "graisse": 600, "uneLigne": true },
+								{ "type": "ressort" },
+								{ "type": "texte", "valeur": "zurcher.edu.mg", "taille": 22, "graisse": 600, "uneLigne": true }
+							]
+						}
+					]
+				}
+			]
+		},
+		"A4": {
+			"largeur": 794,
+			"hauteur": 1123,
+			"filet": 3,
+			"rangees": [
+				{
+					"id": "entete",
+					"hauteur": 92,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 16, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "logo", "taille": 58 },
+								{ "type": "groupe", "disposition": "colonne", "espace": 3, "blocs": [
+									{ "type": "texte", "valeur": "Université Adventiste Zurcher", "taille": 18, "graisse": 700, "approche": -0.01, "uneLigne": true },
+									{ "type": "texte", "valeur": "{service}", "taille": 14, "graisse": 500, "couleur": "navySoft", "uneLigne": true, "min": 12 }
+								] }
+							]
+						},
+						{
+							"largeur": 247, "fond": "navy", "aligner": "fin", "justifier": "centre", "espace": 2, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "texte", "valeur": "{code}", "taille": 13, "graisse": 800, "approche": 0.14, "couleur": "goldLight" },
+								{ "type": "texte", "valeur": "{annee}", "taille": 28, "graisse": 800, "couleur": "white" }
+							]
+						}
+					]
+				},
+				{
+					"id": "portrait",
+					"hauteur": 640,
+					"recoit": true,
+					"cellules": [
+						{
+							"largeur": 380, "fond": "cream", "marges": [9, 9, 9, 9], "si": "portrait",
+							"blocs": [
+								{ "type": "image", "emplacement": "portrait" }
+							]
+						},
+						{
+							"largeur": "reste", "fond": "cream", "marges": [38, 40, 32, 28],
+							"blocs": [
+								{ "type": "label", "valeur": "Félicitations", "taille": 13, "approche": 0.16 },
+								{ "type": "ressort" },
+								{ "type": "titre", "valeur": "{prenom} {nom}", "motCle": "{nom}", "taille": 56, "min": 30, "interligne": 0.96, "approche": -0.03 },
+								{ "type": "filet", "largeur": 90, "epaisseur": 2, "couleur": "gold", "marges": [22, 0, 0, 0] },
+								{ "type": "texte", "valeur": "{motif}", "taille": 19, "graisse": 600, "couleur": "ink", "interligne": 1.4, "min": 13, "marges": [16, 0, 0, 0] }
+							]
+						}
+					]
+				},
+				{
+					"id": "message",
+					"hauteur": 240,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "goldDeep", "justifier": "centre", "espace": 14, "marges": [30, 40, 30, 40],
+							"blocs": [
+								{ "type": "label", "valeur": "Le mot de l'université", "taille": 12, "approche": 0.14 },
+								{ "type": "texte", "valeur": "{message}", "taille": 27, "graisse": 700, "approche": -0.01, "interligne": 1.25, "min": 17 }
+							]
+						}
+					]
+				},
+				{
+					"id": "infos",
+					"hauteur": 70,
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 18, "marges": [0, 26, 0, 40],
+							"blocs": [
+								{ "type": "label", "valeur": "Le", "taille": 12, "approche": 0.16 },
+								{ "type": "texte", "valeur": "{date:long}", "taille": 17, "graisse": 700, "uneLigne": true, "min": 12 }
+							]
+						},
+						{
+							"largeur": "reste", "fond": "cream", "disposition": "ligne", "aligner": "centre", "espace": 18, "marges": [0, 40, 0, 26], "si": "filiere",
+							"blocs": [
+								{ "type": "label", "valeur": "Filière", "taille": 12, "approche": 0.16 },
+								{ "type": "texte", "valeur": "{filiere}", "taille": 17, "graisse": 700, "uneLigne": true, "min": 12 }
+							]
+						}
+					]
+				},
+				{
+					"id": "pied",
+					"hauteur": "reste",
+					"cellules": [
+						{
+							"largeur": "reste", "fond": "navy", "disposition": "ligne", "aligner": "centre", "espace": 24, "marges": [0, 40, 0, 40],
+							"blocs": [
+								{ "type": "texte", "valeur": "Spiritus · Mens · Manus — Service", "taille": 12, "graisse": 600, "uneLigne": true },
+								{ "type": "ressort" },
+								{ "type": "texte", "valeur": "zurcher.edu.mg", "taille": 13, "graisse": 600, "uneLigne": true }
+							]
+						}
+					]
+				}
+			]
+		}
+	}
+}

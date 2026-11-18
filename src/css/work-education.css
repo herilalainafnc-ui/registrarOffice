@@ -1,0 +1,408 @@
+/* =============================================================================
+   Work Education (/work-education) — prefixe « we- ».
+   Page : src/work-education.php ; comportement : src/js/work-education.js.
+
+   Une ligne par etudiant inscrit : sa photo, son nom, son niveau, et le champ
+   de sa tache, qui s'enregistre tout seul. Au-dessus, l'avancement de la
+   session et les taches deja donnees (un compte par tache, qui filtre). En
+   bas, la barre de la selection, pour donner la meme tache a plusieurs.
+   Meme langue que /finance/echeances : en-tete, session en titre, pastilles.
+   Couleurs : jetons de src/css/tokens.css, redefinis sous [data-theme="light"].
+   ========================================================================== */
+
+.we {
+	--we-ease: cubic-bezier(.22, 1, .36, 1);
+	max-width: 1080px; margin: 0 auto; padding: 24px 24px 40px;
+	font-family: var(--font-sans); font-size: 14px; line-height: 1.5; color: rgb(var(--c-text));
+}
+.we .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ------------------------------------------------------------------ en-tete */
+
+.we-tete { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+.we-tete__icone {
+	flex: none; width: 46px; height: 46px; border-radius: var(--radius); display: grid; place-items: center;
+	background: rgb(var(--c-accent) / .14); color: rgb(var(--c-accent-text)); font-size: 20px;
+	box-shadow: inset 0 0 0 1px rgb(var(--c-accent) / .3);
+}
+.we-tete__texte { flex: 1; min-width: 0; }
+.we-tete h1 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -.01em; }
+.we-tete p { margin: 2px 0 0; max-width: 72ch; font-size: 13.5px; color: rgb(var(--c-text-2)); }
+
+.we-avis { display: flex; align-items: baseline; gap: 10px; margin: 0 0 16px; padding: 12px 16px; border-radius: var(--radius); font-size: 13.5px; }
+.we-avis--erreur { background: rgb(var(--c-danger) / .1); color: rgb(var(--c-danger)); border: 1px solid rgb(var(--c-danger) / .35); }
+.we-avis code { font-family: var(--font-mono); font-size: 12.5px; }
+
+/* ----------------------------------------------------------------- boutons */
+
+.we-bouton {
+	display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 38px; padding: 0 16px;
+	border: 0; border-radius: 999px; background: rgb(var(--c-accent)); color: rgb(var(--c-on-accent));
+	font: 600 13.5px/1 var(--font-sans); white-space: nowrap; cursor: pointer; touch-action: manipulation;
+	transition: background-color .15s, box-shadow .15s, transform .12s;
+}
+.we-bouton:hover { background: rgb(var(--c-accent-strong)); }
+.we-bouton:active { transform: scale(.97); }
+.we-bouton[disabled] { opacity: .6; cursor: default; transform: none; }
+.we-bouton--discret { background: transparent; color: rgb(var(--c-text)); box-shadow: inset 0 0 0 1px rgb(var(--c-line-strong)); }
+.we-bouton--discret:hover { background: rgb(var(--c-text) / .06); }
+.we :is(.we-bouton, .we-pas, .we-etat, .we-puce, .we-fermer, .we-effacer):focus-visible { outline: none; box-shadow: var(--ring); }
+
+/* ------------------------------------------------------- la session */
+
+.we-session {
+	position: relative; overflow: hidden;
+	margin-bottom: 14px; padding: 14px 20px 16px; border-radius: var(--radius-lg);
+	background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line));
+}
+.we-session__ligne { display: flex; align-items: center; gap: 6px; }
+.we-pas {
+	flex: none; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%;
+	color: rgb(var(--c-text-2)); text-decoration: none; transition: background-color .15s, color .15s;
+}
+.we-pas:hover { background: rgb(var(--c-accent) / .12); color: rgb(var(--c-accent-text)); }
+.we-pas.is-inactif { opacity: .3; pointer-events: none; }
+.we-choix { position: relative; min-width: 0; display: inline-flex; align-items: center; border-radius: var(--radius); }
+.we-choix__texte {
+	display: block; min-width: 0; padding: 6px 30px 6px 8px; color: rgb(var(--c-text));
+	font: 700 20px/1.2 var(--font-sans); letter-spacing: -.01em; transition: color .15s;
+}
+.we-choix__texte > span { white-space: nowrap; }
+.we-choix:hover .we-choix__texte { color: rgb(var(--c-accent-text)); }
+.we-choix:focus-within { box-shadow: var(--ring); }
+.we-choix select {
+	position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; border: 0 !important;
+	opacity: 0; font-size: 16px; appearance: none; -webkit-appearance: none; cursor: pointer;
+}
+.we-choix select:focus-visible { outline: none; }
+.we-choix select option, .we-choix select optgroup { font-size: 14px; font-weight: 500; color: rgb(var(--c-text)); background: rgb(var(--c-surface)); }
+.we-choix select optgroup { font-weight: 700; color: rgb(var(--c-text-3)); }
+:root:not([data-theme="light"]) .we-choix select { color-scheme: dark; }
+.we-choix__chevron { position: absolute; right: 8px; font-size: 13px; color: rgb(var(--c-text-3)); pointer-events: none; }
+
+.we-avancement { margin: 10px 0 0 48px; }
+.we-avancement__texte { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; font-size: 13px; color: rgb(var(--c-text-2)); font-variant-numeric: tabular-nums; }
+.we-avancement__texte b { color: rgb(var(--c-text)); font-weight: 650; }
+.we-avancement__reste { color: rgb(var(--c-text-3)); }
+.we-avancement.is-complet .we-avancement__reste { color: rgb(var(--c-success)); font-weight: 600; }
+.we-barre { height: 6px; margin-top: 7px; border-radius: 999px; background: rgb(var(--c-line)); overflow: hidden; }
+.we-barre > span { display: block; height: 100%; border-radius: inherit; background: rgb(var(--c-accent)); transition: width .5s var(--we-ease); }
+.we-avancement.is-complet .we-barre > span { background: rgb(var(--c-success)); }
+
+/* Changement de session (sans recharger) : un trait qui file en haut de la
+   carte pendant la demande ; la liste attenuee ne se clique plus ; elle
+   reapparait en fondu. */
+.we.is-chargement .we-session::after {
+	content: ""; position: absolute; left: 0; top: 0; width: 35%; height: 2px; border-radius: 2px;
+	background: rgb(var(--c-accent)); animation: we-file 1s var(--we-ease) infinite;
+}
+.we.is-chargement :is(.we-contenu, .we-avancement) { opacity: .45; pointer-events: none; transition: opacity .2s .12s; }
+.we-contenu.is-arrivee { animation: we-arrive .35s var(--we-ease); }
+
+/* ----------------------------------------------------------- filtres */
+
+.we-outils { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 12px; }
+.we-recherche { position: relative; flex: 1 1 260px; min-width: 0; display: flex; align-items: center; }
+.we-recherche > i { position: absolute; left: 13px; color: rgb(var(--c-text-3)); font-size: 14px; pointer-events: none; }
+.we-recherche input {
+	width: 100%; height: 40px; padding: 0 12px 0 38px; border-radius: 999px;
+	border: 1px solid rgb(var(--c-line-strong)); background: rgb(var(--c-surface)); color: rgb(var(--c-text));
+	font: 400 14px/1 var(--font-sans);
+}
+.we-recherche input:focus { outline: none; border-color: rgb(var(--c-accent)); box-shadow: var(--ring); }
+.we-etats { display: inline-flex; padding: 3px; gap: 2px; border-radius: 999px; background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line)); }
+.we-etat {
+	display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 13px; border: 0; border-radius: 999px;
+	background: transparent; color: rgb(var(--c-text-2)); font: 600 13px/1 var(--font-sans); cursor: pointer; white-space: nowrap;
+	transition: background-color .15s, color .15s;
+}
+.we-etat b { font-weight: 600; font-variant-numeric: tabular-nums; color: rgb(var(--c-text-3)); }
+.we-etat:hover { color: rgb(var(--c-text)); }
+.we-etat.is-actif { background: rgb(var(--c-accent) / .16); color: rgb(var(--c-accent-text)); }
+.we-etat.is-actif b { color: inherit; }
+.we-filtre select {
+	height: 40px; max-width: 240px; padding: 0 30px 0 14px; border-radius: 999px;
+	border: 1px solid rgb(var(--c-line-strong)); background-color: rgb(var(--c-surface)); color: rgb(var(--c-text));
+	font: 500 13.5px/1 var(--font-sans); text-overflow: ellipsis; cursor: pointer;
+}
+.we-filtre select:focus { outline: none; border-color: rgb(var(--c-accent)); box-shadow: var(--ring); }
+:root:not([data-theme="light"]) .we-filtre select { color-scheme: dark; }
+
+/* Tri et filtres : une rangee sous la recherche. Un filtre choisi prend
+   l accent, comme l etat « Sans tache » choisi. */
+.we-filtres { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; width: 100%; }
+.we-filtre { position: relative; display: inline-flex; align-items: center; min-width: 0; }
+.we-filtre[hidden] { display: none; }
+/* chaque menu a la largeur de ce qu il affiche (navigateurs recents ; sinon 240 px au plus) */
+.we-filtres .we-filtre select { field-sizing: content; min-width: 120px; }
+.we-filtre--tri > i { position: absolute; left: 14px; color: rgb(var(--c-text-3)); font-size: 14px; pointer-events: none; }
+.we-filtre--tri select { padding-left: 36px; font-weight: 600; }
+.we-filtre select.is-actif { border-color: rgb(var(--c-accent) / .55); background-color: rgb(var(--c-accent) / .12); color: rgb(var(--c-accent-text)); }
+.we-effacer {
+	display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 0; border-radius: 999px;
+	background: transparent; color: rgb(var(--c-text-2)); font: 600 13px/1 var(--font-sans); cursor: pointer;
+	transition: background-color .15s, color .15s;
+}
+.we-effacer:hover { background: rgb(var(--c-text) / .06); color: rgb(var(--c-text)); }
+.we-effacer[hidden] { display: none; }
+
+/* Les taches de la session : une pastille par tache, avec son effectif. */
+.we-taches { margin-bottom: 14px; }
+.we-taches h2 { margin: 0 0 7px; font-size: 11.5px; font-weight: 650; letter-spacing: .06em; text-transform: uppercase; color: rgb(var(--c-text-3)); }
+.we-taches__liste { display: flex; flex-wrap: wrap; gap: 6px; }
+.we-puce {
+	display: inline-flex; align-items: center; gap: 8px; max-width: 100%; height: 30px; padding: 0 6px 0 12px;
+	border: 1px solid rgb(var(--c-line-strong)); border-radius: 999px; background: rgb(var(--c-surface));
+	color: rgb(var(--c-text)); font: 500 12.5px/1 var(--font-sans); cursor: pointer;
+	transition: background-color .15s, border-color .15s, color .15s;
+}
+.we-puce span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.we-puce b {
+	min-width: 22px; height: 20px; padding: 0 6px; display: grid; place-items: center; border-radius: 999px;
+	background: rgb(var(--c-text) / .08); font-size: 11.5px; font-weight: 650; font-variant-numeric: tabular-nums;
+}
+.we-puce:hover { border-color: rgb(var(--c-accent) / .6); }
+.we-puce.is-actif { background: rgb(var(--c-accent) / .16); border-color: rgb(var(--c-accent) / .55); color: rgb(var(--c-accent-text)); }
+.we-puce.is-actif b { background: rgb(var(--c-accent) / .22); }
+
+/* ------------------------------------------------------------ la liste */
+
+.we-liste { border-radius: var(--radius-lg); background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line)); }
+.we-liste__tete {
+	display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; padding: 10px 16px;
+	border-bottom: 1px solid rgb(var(--c-line)); font-size: 12.5px; color: rgb(var(--c-text-2));
+}
+.we-liste__compte { font-variant-numeric: tabular-nums; }
+.we-liste__astuce { margin-left: auto; color: rgb(var(--c-text-3)); }
+.we-liste__astuce kbd {
+	display: inline-block; padding: 1px 6px; border-radius: 5px; border: 1px solid rgb(var(--c-line-strong));
+	background: rgb(var(--c-sunken)); font: 600 11px/1.5 var(--font-sans); color: rgb(var(--c-text-2));
+}
+.we-coche { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; }
+.we-coche input { width: 18px; height: 18px; margin: 0; accent-color: rgb(var(--c-accent)); cursor: pointer; }
+
+.we-lignes { margin: 0; padding: 0; list-style: none; }
+/* Les groupes de la liste : le jour d inscription (tri par defaut), la
+   mention ou le niveau, avec le nombre d etudiants affiches. */
+.we-groupe {
+	display: flex; align-items: baseline; gap: 8px; padding: 9px 16px 7px;
+	background: rgb(var(--c-sunken)); border-bottom: 1px solid rgb(var(--c-line) / .7);
+	font-size: 11.5px; font-weight: 650; letter-spacing: .06em; text-transform: uppercase; color: rgb(var(--c-text-2));
+}
+.we-groupe[hidden] { display: none; }
+.we-groupe b { font-weight: 600; letter-spacing: 0; text-transform: none; font-variant-numeric: tabular-nums; color: rgb(var(--c-text-3)); }
+@media (min-width: 1024px) {
+	/* la zone de contenu defile : l en-tete du groupe reste en haut */
+	.we-groupe { position: sticky; top: 0; z-index: 2; }
+}
+.we-ligne {
+	position: relative; display: grid; grid-template-columns: auto 40px minmax(0, 1fr) minmax(0, 1.15fr); align-items: center; gap: 12px;
+	padding: 9px 16px; border-bottom: 1px solid rgb(var(--c-line) / .7);
+	content-visibility: auto; contain-intrinsic-size: auto 60px;
+	transition: background-color .2s;
+}
+.we-ligne:last-child { border-bottom: 0; }
+.we-ligne:hover { background: rgb(var(--c-text) / .025); }
+.we-ligne.is-cochee { background: rgb(var(--c-accent) / .07); }
+.we-ligne.is-cochee::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: rgb(var(--c-accent)); }
+.we-avatar {
+	width: 40px; height: 40px; border-radius: 50%; overflow: hidden; display: grid; place-items: center;
+	background: rgb(var(--c-accent) / .14); color: rgb(var(--c-accent-text)); font: 650 13px/1 var(--font-sans);
+}
+.we-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.we-ident { min-width: 0; }
+.we-nom { display: block; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.we-nom em { font-style: normal; font-weight: 700; letter-spacing: .01em; }
+.we-meta { display: block; font-size: 12.5px; color: rgb(var(--c-text-2)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.we-meta code { font-family: var(--font-mono); font-size: 12px; color: rgb(var(--c-text)); }
+.we-lignes.is-tri-recent .we-date { display: none; } /* deja dite par l en-tete du jour */
+
+/* Le champ de la tache et son etat (enregistre, en cours, erreur). */
+.we-champ { position: relative; display: flex; align-items: center; min-width: 0; }
+.we-champ input {
+	width: 100%; height: 40px; padding: 0 36px 0 12px; border-radius: var(--radius);
+	border: 1px solid rgb(var(--c-line-strong)); background: rgb(var(--c-sunken)); color: rgb(var(--c-text));
+	font: 500 14px/1 var(--font-sans); transition: border-color .15s, box-shadow .15s, background-color .15s;
+}
+.we-champ input::placeholder { color: rgb(var(--c-text-3)); font-weight: 400; }
+.we-champ input:focus { outline: none; border-color: rgb(var(--c-accent)); box-shadow: var(--ring); background: rgb(var(--c-surface)); }
+.we-ligne.is-avec .we-champ input { background: rgb(var(--c-surface)); border-color: rgb(var(--c-success) / .45); }
+.we-ligne.is-erreur .we-champ input { border-color: rgb(var(--c-danger)); }
+.we-etat-saisie {
+	position: absolute; right: 10px; width: 18px; height: 18px; display: grid; place-items: center;
+	font-size: 15px; pointer-events: none; color: rgb(var(--c-text-3));
+}
+.we-etat-saisie[data-etat="ok"] { color: rgb(var(--c-success)); }
+.we-etat-saisie[data-etat="encours"] i { animation: we-tourne .8s linear infinite; }
+.we-etat-saisie[data-etat="erreur"] { color: rgb(var(--c-danger)); pointer-events: auto; }
+.we-erreur { grid-column: 3 / -1; margin: -2px 0 0; font-size: 12.5px; color: rgb(var(--c-danger)); }
+.we-erreur button { margin-left: 6px; padding: 0; border: 0; background: none; color: inherit; font: 600 12.5px/1 var(--font-sans); text-decoration: underline; cursor: pointer; }
+
+.we-ligne.is-eclat .we-champ input { animation: we-eclat 1.2s var(--we-ease); }
+
+/* Un etudiant inscrit pendant que la page est ouverte : il arrive en
+   surbrillance, marque « Nouveau » (src/js/work-education.js, fusionner). */
+.we-ligne.is-nouveau { animation: we-nouveau 6s var(--we-ease); }
+.we-badge {
+	display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; vertical-align: 1px;
+	background: rgb(var(--c-gold) / .18); color: rgb(var(--c-gold-text)); font: 650 10.5px/1.5 var(--font-sans); letter-spacing: .03em;
+}
+
+.we-vide { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 40px 20px; text-align: center; }
+.we-vide--grand { border-radius: var(--radius-lg); border: 1px dashed rgb(var(--c-line-strong)); }
+.we-vide__icone { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 50%; background: rgb(var(--c-text) / .06); color: rgb(var(--c-text-3)); font-size: 20px; }
+.we-vide h2 { margin: 6px 0 0; font-size: 15px; font-weight: 650; }
+.we-vide p { margin: 0; font-size: 13px; color: rgb(var(--c-text-2)); }
+
+.we-note { display: flex; align-items: baseline; gap: 8px; margin: 12px 4px 0; font-size: 13px; color: rgb(var(--c-text-2)); }
+.we-note i { color: rgb(var(--c-text-3)); }
+
+/* La selection : une barre collee en bas de la zone qui defile. */
+.we-selection {
+	position: sticky; bottom: 12px; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+	margin-top: 14px; padding: 10px 10px 10px 18px; border-radius: 999px;
+	background: rgb(var(--c-surface-2)); border: 1px solid rgb(var(--c-line-strong)); box-shadow: var(--shadow-2, 0 12px 32px rgb(0 0 0 / .3));
+	animation: we-monte .3s var(--we-ease);
+}
+.we-selection[hidden] { display: none; }
+.we-selection__nombre { font-weight: 650; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.we-selection__nombre b { font-weight: 700; }
+.we-selection__champ { flex: 1 1 220px; min-width: 0; }
+.we-selection__champ input {
+	width: 100%; height: 38px; padding: 0 14px; border-radius: 999px;
+	border: 1px solid rgb(var(--c-line-strong)); background: rgb(var(--c-sunken)); color: rgb(var(--c-text));
+	font: 500 14px/1 var(--font-sans);
+}
+.we-selection__champ input:focus { outline: none; border-color: rgb(var(--c-accent)); box-shadow: var(--ring); }
+.we-fermer {
+	width: 38px; height: 38px; display: grid; place-items: center; border: 0; border-radius: 50%;
+	background: transparent; color: rgb(var(--c-text-2)); cursor: pointer;
+}
+.we-fermer:hover { background: rgb(var(--c-text) / .08); color: rgb(var(--c-text)); }
+
+/* ------------------------------------------------------------- ecrans */
+
+/* Sous 1024 px, c'est l'ecran qui defile et non la zone de contenu : une barre
+   collante ne collerait a rien. La selection se fixe en bas de l'ecran, sous la
+   bulle de la messagerie, et la liste lui laisse la place. */
+@media (max-width: 1023px) {
+	.we { padding: 18px 16px 32px; }
+	.we-selection {
+		position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 1041;
+		max-width: 760px; margin: 0 auto;
+	}
+	.we:has(.we-selection:not([hidden])) { padding-bottom: 96px; }
+}
+/* Tablette : la bulle de la messagerie est au ras du bas, a droite ; la barre
+   s'arrete avant elle, sur une seule rangee. */
+@media (min-width: 720px) and (max-width: 1023px) {
+	.we-selection { right: 92px; flex-wrap: nowrap; }
+	.we-selection__champ { flex: 1 1 160px; }
+	#weRetirer { width: 38px; padding: 0; }
+	#weRetirer .we-libelle { display: none; }
+}
+@media (max-width: 719px) {
+	.we-tete__icone { width: 40px; height: 40px; font-size: 18px; }
+	.we-tete h1 { font-size: 19px; }
+	.we-tete p { font-size: 13px; }
+	.we-session { padding: 12px 12px 14px; }
+	.we-choix__texte { font-size: 16px; }
+	.we-avancement { margin-left: 4px; }
+	.we-etats { order: 3; width: 100%; justify-content: space-between; }
+	.we-etat { flex: 1; justify-content: center; padding: 0 8px; }
+	.we-filtre { flex: 1 1 calc(50% - 4px); }
+	.we-filtre--tri { flex-basis: 100%; }
+	.we-filtre select { width: 100%; max-width: none; }
+	.we-groupe { padding: 9px 12px 7px; }
+	.we-liste__astuce { display: none; }
+	/* La ligne passe sur deux etages : l'etudiant, puis sa tache. */
+	.we-ligne { grid-template-columns: auto 40px minmax(0, 1fr); row-gap: 8px; padding: 10px 12px; contain-intrinsic-size: auto 104px; }
+	.we-nom { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.3; }
+	.we-champ { grid-column: 2 / -1; }
+	.we-champ input { font-size: 16px; } /* 16 px : pas de zoom automatique sur iPhone */
+	.we-erreur { grid-column: 2 / -1; }
+	/* Une seule rangee : le nombre, la tache, les boutons en icones. */
+	.we-selection { flex-wrap: nowrap; gap: 6px; padding: 7px 7px 7px 14px; }
+	.we-selection .we-libelle { display: none; }
+	.we-selection__nombre b {
+		min-width: 26px; height: 26px; padding: 0 7px; display: inline-grid; place-items: center; border-radius: 999px;
+		background: rgb(var(--c-accent)); color: rgb(var(--c-on-accent)); font-size: 13px;
+	}
+	.we-selection__champ { flex: 1 1 auto; }
+	.we-selection__champ input { height: 40px; font-size: 16px; padding: 0 12px; }
+	.we-selection .we-bouton { flex: none; width: 40px; height: 40px; padding: 0; }
+	.we-fermer { width: 36px; height: 40px; }
+}
+
+/* ----------------------------------------------------------- mouvements */
+
+@media (prefers-reduced-motion: no-preference) {
+	.we-entree :is(.we-tete, .we-session, .we-outils, .we-taches, .we-liste, .we-vide--grand) {
+		animation: we-monte .55s var(--we-ease) both; animation-delay: calc(var(--i, 0) * 70ms);
+	}
+}
+@keyframes we-monte { from { opacity: 0; transform: translateY(10px); } }
+@keyframes we-tourne { to { transform: rotate(360deg); } }
+@keyframes we-file { from { transform: translateX(-100%); } to { transform: translateX(290%); } }
+@keyframes we-arrive { from { opacity: 0; transform: translateY(6px); } }
+@keyframes we-nouveau {
+	0%, 40% { background-color: rgb(var(--c-gold) / .14); }
+	100% { background-color: transparent; }
+}
+@keyframes we-eclat {
+	0% { box-shadow: 0 0 0 0 rgb(var(--c-success) / .45); }
+	100% { box-shadow: 0 0 0 10px rgb(var(--c-success) / 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+	.we-barre > span, .we-ligne, .we-champ input { transition: none; }
+	.we-selection, .we-ligne.is-eclat .we-champ input, .we-contenu.is-arrivee, .we-ligne.is-nouveau { animation: none; }
+	.we.is-chargement .we-session::after { animation-duration: 2.5s; }
+}
+
+/* ------------------------------------------------- export de la liste en PDF
+   Le bouton de l'en-tete et la fenetre de choix (app/work-education.pdf.php). */
+
+.we-export { flex: none; align-self: center; }
+.we-dialogue {
+	width: min(560px, calc(100vw - 24px)); max-height: calc(100vh - 32px); padding: 18px 20px 16px; overflow-y: auto;
+	border: 1px solid rgb(var(--c-line-strong)); border-radius: var(--radius-lg);
+	background: rgb(var(--c-surface)); color: rgb(var(--c-text)); font-family: var(--font-sans); font-size: 14px; line-height: 1.5;
+	box-shadow: var(--shadow-2);
+}
+.we-dialogue::backdrop { background: rgb(0 0 0 / .5); }
+.we-dialogue[open] { animation: we-arrive .25s var(--we-ease); }
+.we-dialogue__tete { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+.we-dialogue__tete h2 { margin: 0; display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 700; }
+.we-dialogue__tete h2 i { color: rgb(var(--c-accent-text)); }
+.we-dialogue__aide { margin: 0 0 14px; font-size: 13px; color: rgb(var(--c-text-2)); }
+.we-dialogue__grille { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+.we-champ-export { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.we-champ-export--large { grid-column: 1 / -1; }
+.we-champ-export > span { font-size: 12.5px; font-weight: 600; color: rgb(var(--c-text-2)); }
+.we-champ-export select { text-overflow: ellipsis;
+	width: 100%; height: 42px; padding: 0 14px; border-radius: var(--radius);
+	border: 1px solid rgb(var(--c-line-strong)); background-color: rgb(var(--c-sunken)); color: rgb(var(--c-text));
+	font: 500 14px/1 var(--font-sans);
+}
+.we-champ-export select:focus { outline: none; border-color: rgb(var(--c-accent)); box-shadow: var(--ring); }
+.we-dialogue__compte { margin: 16px 0 0; padding: 10px 14px; border-radius: var(--radius); background: rgb(var(--c-accent) / .1); border: 1px solid rgb(var(--c-accent) / .3); font-size: 13.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.we-dialogue__erreur { margin: 10px 0 0; padding: 10px 14px; border-radius: var(--radius); background: rgb(var(--c-danger) / .1); border: 1px solid rgb(var(--c-danger) / .35); color: rgb(var(--c-danger)); font-size: 13.5px; }
+.we-dialogue__erreur[hidden] { display: none; }
+.we-dialogue__pied { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.we-dialogue__boutons { display: inline-flex; gap: 8px; margin-left: auto; }
+.we-lien { border: 0; background: none; padding: 6px 0; color: rgb(var(--c-accent-text)); font: 600 13px var(--font-sans); cursor: pointer; }
+.we-lien:hover { text-decoration: underline; }
+.we-lien:focus-visible { outline: none; box-shadow: var(--ring); border-radius: 4px; }
+.we-dialogue :is(.we-bouton, .we-fermer):focus-visible { outline: none; box-shadow: var(--ring); }
+
+@media (max-width: 640px) {
+	.we-tete { flex-wrap: wrap; }
+	.we-export { margin-left: auto; }
+	.we-export .we-libelle { display: none; }
+	.we-export { width: 40px; padding: 0; }
+	.we-dialogue__grille { grid-template-columns: 1fr; }
+	.we-champ-export select { height: 46px; font-size: 16px; }
+	.we-dialogue__boutons { width: 100%; }
+	.we-dialogue__boutons .we-bouton { flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .we-dialogue[open] { animation: none; } }

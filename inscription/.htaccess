@@ -1,0 +1,21 @@
+RewriteEngine On
+
+# ATTENTION : « RewriteEngine On » ici REMPLACE les règles de réécriture du
+# .htaccess parent, il ne les hérite pas (comportement de mod_rewrite en
+# contexte répertoire). Le commentaire précédent affirmait le contraire.
+# C'est pourquoi la redirection HTTPS doit être répétée ci-dessous, comme
+# elle l'est déjà dans src/.htaccess.
+
+# Redirection HTTP vers HTTPS.
+# Indispensable à la cohérence des origines : src/.htaccess force HTTPS, donc
+# une page servie ici en http appelait ses endpoints AJAX sous src/ en https —
+# changement d'origine, échec CORS au premier chargement des cours.
+# R=308 (et non 301) pour préserver la méthode POST et le corps du formulaire.
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=308,L]
+
+# Servir les fichiers .php sans l'extension (compatibilité arrière)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L]

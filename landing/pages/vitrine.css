@@ -1,0 +1,290 @@
+/* =============================================================================
+   Vitrine en page unique
+   =============================================================================
+   Complete pages.css : les rubriques y sont mises bout a bout dans un seul
+   document, avec un ecran de chargement, une barre de progression et une
+   section d'accueil propre a cette page.
+   ========================================================================== */
+
+/* Les heros des pages autonomes occupaient chacun toute la hauteur ; mis bout
+   a bout ils imposeraient cinq ecrans vides. On les allege ici seulement. */
+.vitrine-unique .hero {
+    min-height: auto;
+    padding-top: clamp(4rem, 10vh, 7rem);
+    padding-bottom: clamp(2rem, 5vh, 4rem);
+}
+
+.vitrine-section { position: relative; }
+
+/* -------------------------------------------------------------------------
+   Ecran de chargement
+   ------------------------------------------------------------------------- */
+
+.chargement {
+    position: fixed;
+    inset: 0;
+    z-index: 9800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0b1220;
+    transition: opacity .5s ease, visibility .5s ease;
+}
+.chargement.est-fini { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.chargement__centre { text-align: center; }
+.chargement__logo {
+    width: 74px; height: auto;
+    margin-bottom: 1.1rem;
+    animation: chargement-pulse 1.6s ease-in-out infinite;
+}
+.chargement__texte {
+    margin: 0;
+    font-size: .95rem;
+    letter-spacing: .18em;
+    color: #64748b;
+    font-variant-numeric: tabular-nums;
+}
+@keyframes chargement-pulse {
+    0%, 100% { opacity: .55; transform: scale(1); }
+    50%      { opacity: 1;   transform: scale(1.06); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .chargement__logo { animation: none; }
+}
+
+/* -------------------------------------------------------------------------
+   Barre de progression de lecture
+   ------------------------------------------------------------------------- */
+
+.vitrine-progression {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    z-index: 1100;
+    background: transparent;
+    pointer-events: none;
+}
+.vitrine-progression span {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #0e7490, #06b6d4);
+    transform-origin: left;
+}
+
+/* -------------------------------------------------------------------------
+   Section d'accueil
+   ------------------------------------------------------------------------- */
+
+.vitrine-accueil {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: clamp(5rem, 12vh, 9rem) clamp(1.25rem, 6vw, 6rem) clamp(3rem, 8vh, 6rem);
+}
+.vitrine-accueil__contenu {
+    position: relative;
+    z-index: 1;
+    max-width: 46rem;
+    text-align: center;
+}
+
+.vitrine-eyebrow {
+    margin: 0 0 1.1rem;
+    font-size: .78rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: #38bdf8;
+}
+.vitrine-titre {
+    margin: 0 0 1.4rem;
+    font-size: clamp(2.6rem, 9vw, 6rem);
+    line-height: .95;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    color: #f1f5f9;
+}
+.vitrine-titre span { display: block; }
+.vitrine-chapo {
+    margin: 0 auto 2.2rem;
+    max-width: 40rem;
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    line-height: 1.7;
+    color: #94a3b8;
+}
+
+.vitrine-actions {
+    display: flex;
+    gap: .8rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.vitrine-btn {
+    display: inline-block;
+    padding: .8rem 1.6rem;
+    border-radius: 10px;
+    border: 1px solid rgba(148,163,184,.35);
+    color: #e2e8f0;
+    text-decoration: none;
+    font-size: .95rem;
+    font-weight: 600;
+    transition: background .18s ease, border-color .18s ease, transform .18s ease;
+}
+.vitrine-btn:hover { background: rgba(148,163,184,.12); transform: translateY(-2px); }
+.vitrine-btn--plein { background: #0891b2; border-color: #0891b2; color: #fff; }
+.vitrine-btn--plein:hover { background: #06b6d4; border-color: #06b6d4; }
+
+/* -------------------------------------------------------------------------
+   Invite de defilement, au pied du hero
+
+   Le libelle seul ne disait pas ou aller ; la fleche, elle, montre le sens du
+   geste. Et comme elle le montre, elle le fait : c'est un lien vers la
+   premiere rubrique, plus un texte inerte.
+   ------------------------------------------------------------------------- */
+.vitrine-invite {
+    position: absolute;
+    bottom: clamp(1.5rem, 4vh, 3rem);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .6rem;
+    font-size: .75rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: #475569;
+    text-decoration: none;
+    /* Cible tactile confortable sans grossir le texte : le lien deborde de
+       son libelle, ce qui evite d'avoir a viser trois lignes de 12 pixels. */
+    padding: .5rem 1rem;
+}
+.vitrine-invite:hover,
+.vitrine-invite:focus-visible { color: #0f172a; }
+.vitrine-invite:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+    border-radius: 10px;
+}
+
+.vitrine-invite__fleche {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    /* Le cercle est plus pale que le texte : c'est le libelle qui se lit, la
+       fleche ne fait que l'accompagner. */
+    opacity: .75;
+    transition: opacity .2s ease, transform .2s ease;
+}
+.vitrine-invite__fleche svg { width: 1.1rem; height: 1.1rem; }
+.vitrine-invite:hover .vitrine-invite__fleche { opacity: 1; transform: translateY(3px); }
+
+/* Un va-et-vient discret : sur un hero qui occupe tout l'ecran, rien ne dit
+   qu'il y a quelque chose en dessous. Le mouvement le dit. */
+@media (prefers-reduced-motion: no-preference) {
+    .vitrine-invite__fleche { animation: invite-respire 2.4s ease-in-out infinite; }
+    .vitrine-invite:hover .vitrine-invite__fleche { animation: none; }
+}
+@keyframes invite-respire {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(6px); }
+}
+
+/* -------------------------------------------------------------------------
+   Confort de lecture
+   ------------------------------------------------------------------------- */
+
+/* Les ancres visees par la navigation ne doivent pas passer sous la barre. */
+.vitrine-unique :target,
+.vitrine-unique .vitrine-section { scroll-margin-top: 5rem; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+}
+
+/* -------------------------------------------------------------------------
+   Stinger de transition (canvas) — voir landing/pages/stinger.js
+   ------------------------------------------------------------------------- */
+
+.stinger-uaz {
+    position: fixed;
+    inset: 0;
+    z-index: 9700;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+}
+.stinger-uaz.est-visible { opacity: 1; visibility: visible; }
+
+@media (prefers-reduced-motion: reduce) {
+    .stinger-uaz { display: none; }
+}
+
+/* -------------------------------------------------------------------------
+   Galeries horizontales alternees
+
+   Une section sur deux part dans l'autre sens : la lecture rebondit d'un
+   bord a l'autre au lieu de filer toujours du meme cote.
+   ------------------------------------------------------------------------- */
+
+.galerie-horizontale {
+    position: relative;
+    overflow: hidden;
+    background: #0b1220;
+    padding: clamp(2rem, 6vh, 4rem) 0;
+}
+.galerie-horizontale__titre {
+    margin: 0 0 clamp(1rem, 3vh, 2rem);
+    padding: 0 clamp(1.25rem, 6vw, 6rem);
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    font-weight: 800;
+    color: #f1f5f9;
+    letter-spacing: -.01em;
+}
+.galerie-horizontale__piste {
+    display: flex;
+    gap: clamp(1rem, 2.5vw, 2rem);
+    padding: 0 clamp(1.25rem, 6vw, 6rem);
+    overflow-x: auto;          /* repli sans JavaScript */
+    scroll-snap-type: x proximity;
+}
+.galerie-horizontale.est-animee .galerie-horizontale__piste { overflow: visible; }
+
+.galerie-carte {
+    flex: 0 0 auto;
+    width: min(26rem, 74vw);
+    scroll-snap-align: center;
+    background: #111f33;
+    border: 1px solid rgba(148,163,184,.16);
+    border-radius: 14px;
+    padding: clamp(1.2rem, 3vw, 2rem);
+}
+.galerie-carte h3 {
+    margin: 0 0 .6rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #f1f5f9;
+}
+.galerie-carte p {
+    margin: 0;
+    font-size: .95rem;
+    line-height: 1.65;
+    color: #94a3b8;
+}
+.galerie-carte__num {
+    display: block;
+    margin-bottom: .8rem;
+    font-size: .75rem;
+    letter-spacing: .16em;
+    color: #22d3ee;
+    font-variant-numeric: tabular-nums;
+}

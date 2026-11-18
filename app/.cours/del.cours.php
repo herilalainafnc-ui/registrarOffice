@@ -1,0 +1,43 @@
+<?php 
+require_once(__DIR__ . '/../../data/guard.ajax.php');
+exigerConnexion(); refuserEtudiant(); refuserEnseignant(); // fiches : personnel seul (un compte etudiant les lancait)
+refuserRequeteCroisee(); // action lancee depuis l application, jamais depuis un autre site (CSRF)
+	// MVC base path
+	$_dr = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+	$_ar = rtrim(str_replace('\\', '/', dirname(dirname(__DIR__))), '/');
+	$app_base = substr($_ar, strlen($_dr)) ?: '';
+
+	if (session_status() === PHP_SESSION_NONE) {
+		session_start();
+	}
+
+	$currentUserLevel = isset($_SESSION['user_level']) ? (int)$_SESSION['user_level'] : 99;
+	if (!in_array($currentUserLevel, [1, 3], true)) {
+		http_response_code(403);
+		header('location:' . $app_base . '/courses?error=access_denied');
+		exit;
+	}
+
+	require '../../data/backdb.php';
+
+	$id = (int)($_GET['id'] ?? 0);
+	$last_change_user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : (int)($_GET['rg_id'] ?? 0);
+	$remove = 1;
+	$last_change_datetime = date('Y-m-d');
+
+	$update = $dtb->prepare("UPDATE t_2023_cours SET
+		remove=:remove,
+		last_change_user_id=:last_change_user_id,
+		last_change_datetime=:last_change_datetime
+	
+	WHERE id=:id");
+		$update->bindParam(':remove',$remove,PDO::PARAM_INT);
+		$update->bindParam(':last_change_user_id',$last_change_user_id,PDO::PARAM_INT);
+		$update->bindParam(':last_change_datetime',$last_change_datetime,PDO::PARAM_STR);
+		$update->bindParam(':id',$id,PDO::PARAM_INT);
+
+		$update->execute();
+
+	header('location:' . $app_base . '/courses');
+
+ ?>

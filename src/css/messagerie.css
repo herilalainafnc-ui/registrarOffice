@@ -1,0 +1,793 @@
+/* =============================================================================
+   Messagerie instantanee (src/messagerie.php, src/js/messagerie.js)
+
+   Trois colonnes : discussions, fil, informations. En dessous de 820 px, une
+   seule a la fois (data-vue sur .ms). Couleurs : jetons de src/css/tokens.css,
+   pour le theme clair comme le sombre. Mes bulles portent l'accent ; l'or du
+   sceau marque ce qui attend (non lus, jours, ondes des vocaux).
+   ========================================================================== */
+
+/* ------------------------------------------------------------------ cadre */
+.ms-page { overscroll-behavior: none; }
+.ms-cadre { display: flex; min-height: 0; overflow: hidden; }
+.back.ms-cadre { overflow: hidden; }
+
+/* Telephone et tablette (personnel) : src/css/responsive.css libere la hauteur
+   des pages (height: auto) pour que la page entiere defile. La messagerie est
+   une application : a hauteur d'ecran, la liste et le fil defilent chacun dans
+   leur cadre, comme sur ordinateur et dans l'espace etudiant. Sans cela, la
+   liste et le fil prenaient toute leur hauteur, le fil n'allait plus au dernier
+   message, et le doigt ne faisait rien defiler : le body, rendu defilant par
+   responsive.css, arretait le geste avec overscroll-behavior: none (08/10/2026). */
+@media (max-width: 1023px) {
+	body.ms-page { padding-bottom: 0 !important; }
+	body.ms-page:not(.ms-page--etudiant) .h-screen {
+		display: flex; flex-direction: column;
+		height: 100vh !important; height: 100dvh !important; min-height: 0 !important;
+	}
+	body.ms-page:not(.ms-page--etudiant) .h-screen > * { flex-shrink: 0; }   /* la barre du haut garde sa hauteur */
+	body.ms-page .h-screen > .w-full.flex.flex-col { flex: 1 1 0; min-height: 0; }
+	body.ms-page [style*="height: calc(100vh - 56px)"] {
+		flex: 1 1 auto; height: auto !important; min-height: 0 !important; overflow: hidden !important;
+	}
+}
+.ms-page--etudiant { margin: 0; background: rgb(var(--c-canvas)); color: rgb(var(--c-text)); font-family: var(--font-sans); }
+.ms-cadre--etudiant { height: calc(100vh - 56px); height: calc(100dvh - 56px); }
+
+.ms-barre-etudiant {
+	position: sticky; top: 0; z-index: 20; height: 56px; padding: 0 1rem;
+	display: flex; align-items: center; justify-content: space-between;
+	background: rgb(var(--c-canvas) / .92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+	border-bottom: 1px solid rgb(var(--c-line));
+}
+.ms-barre-etudiant__marque { display: flex; align-items: center; gap: .6rem; color: rgb(var(--c-text)); text-decoration: none; font-weight: 600; font-size: .95rem; }
+.ms-barre-etudiant__marque img { width: 32px; height: 32px; object-fit: contain; }
+.ms-barre-etudiant nav { display: flex; gap: .5rem; }
+.ms-barre-etudiant__icone {
+	width: 44px; height: 44px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center;
+	color: rgb(var(--c-accent-text)); background: rgb(var(--c-accent) / .1); border: 1px solid rgb(var(--c-accent) / .2);
+	text-decoration: none; font-size: 1.1rem;
+}
+
+/* ------------------------------------------------------------ application */
+.ms {
+	--ms-liste: 340px;
+	--ms-infos: 320px;
+	position: relative;
+	flex: 1;
+	min-width: 0;
+	display: grid;
+	grid-template-columns: var(--ms-liste) minmax(0, 1fr) auto;
+	height: 100%;
+	background: rgb(var(--c-canvas));
+}
+/* Base commune : la page (.ms), le dock, les dialogues et les menus. */
+.ms-racine { color: rgb(var(--c-text)); font-family: var(--font-sans); font-size: 14px; line-height: 1.4; }
+.ms-racine *, .ms-racine *::before, .ms-racine *::after { box-sizing: border-box; }
+.ms-racine button { font: inherit; color: inherit; }
+.ms-racine :focus-visible { outline: 2px solid rgb(var(--c-accent)); outline-offset: 2px; }
+.ms-racine p { margin: 0; }
+.ms .sr-only, .sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ---------------------------------------------------------------- boutons */
+.ms-rond {
+	position: relative; flex: none;
+	width: 38px; height: 38px; border-radius: 50%;
+	display: inline-flex; align-items: center; justify-content: center;
+	background: rgb(var(--c-surface-2)); border: 0; cursor: pointer;
+	color: rgb(var(--c-text)); font-size: 1.05rem;
+	transition: background-color .15s ease, transform .15s ease;
+}
+.ms-rond:hover { background: rgb(var(--c-raised)); }
+.ms-rond:active { transform: scale(.94); }
+.ms-rond--accent { background: rgb(var(--c-accent) / .16); color: rgb(var(--c-accent-text)); }
+.ms-rond--accent:hover { background: rgb(var(--c-accent) / .26); }
+.ms-rond--nu { background: transparent; }
+.ms-rond--nu:hover { background: rgb(var(--c-surface-2)); }
+.ms-rond[aria-pressed="true"] { background: rgb(var(--c-accent) / .2); color: rgb(var(--c-accent-text)); }
+.ms-rond__pastille {
+	position: absolute; top: -2px; right: -2px; min-width: 18px; height: 18px; padding: 0 5px;
+	border-radius: 9px; background: rgb(var(--c-danger)); color: #fff;
+	font-size: 11px; font-weight: 700; line-height: 18px; text-align: center;
+}
+
+.ms-bouton {
+	display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+	min-height: 40px; padding: 0 1.1rem; border-radius: 999px; border: 0; cursor: pointer;
+	background: rgb(var(--c-accent)); color: rgb(var(--c-on-accent)); font-weight: 600;
+	transition: background-color .15s ease, transform .15s ease;
+}
+.ms-bouton:hover { background: rgb(var(--c-accent-strong)); }
+.ms-bouton:active { transform: scale(.97); }
+.ms-bouton:disabled { opacity: .45; cursor: not-allowed; }
+.ms-bouton--doux { background: rgb(var(--c-surface-2)); color: rgb(var(--c-text)); }
+.ms-bouton--doux:hover { background: rgb(var(--c-raised)); }
+.ms-bouton--danger { background: rgb(var(--c-danger) / .14); color: rgb(var(--c-danger)); }
+.ms-bouton--danger:hover { background: rgb(var(--c-danger) / .22); }
+
+/* ----------------------------------------------------------------- avatar */
+.ms-av {
+	--t: 40px;
+	position: relative; flex: none;
+	width: var(--t); height: var(--t); border-radius: 50%;
+	display: inline-flex; align-items: center; justify-content: center;
+	background: hsl(var(--teinte, 230) 45% 42%); color: #fff;
+	font-size: calc(var(--t) * .38); font-weight: 600; letter-spacing: .02em;
+	user-select: none;
+}
+.ms-av img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+.ms-av__point {
+	position: absolute; right: 0; bottom: 0;
+	width: calc(var(--t) * .3); height: calc(var(--t) * .3); min-width: 10px; min-height: 10px;
+	border-radius: 50%; background: rgb(var(--c-success)); border: 2px solid rgb(var(--c-canvas));
+}
+/* Deux visages qui se chevauchent ; leur taille est posee par le script. */
+.ms-av--groupe { background: transparent; }
+.ms-av--groupe > .ms-av { position: absolute; box-shadow: 0 0 0 2px rgb(var(--c-canvas)); }
+.ms-av--groupe > .ms-av:first-child { top: 0; right: 0; }
+.ms-av--groupe > .ms-av:nth-child(2) { bottom: 0; left: 0; }
+
+/* -------------------------------------------------------- liste (colonne 1) */
+.ms-liste {
+	display: flex; flex-direction: column; min-height: 0;
+	border-right: 1px solid rgb(var(--c-line));
+	background: rgb(var(--c-canvas));
+}
+.ms-liste__tete { display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding: 14px 14px 8px 18px; }
+.ms-titre { margin: 0; font-size: 1.45rem; font-weight: 700; letter-spacing: -.02em; }
+.ms-liste__actions { display: flex; gap: 6px; }
+.ms-recherche {
+	display: flex; align-items: center; gap: 8px; margin: 4px 14px 10px; padding: 0 12px; height: 38px;
+	background: rgb(var(--c-surface-2)); border-radius: 999px; color: rgb(var(--c-text-3)); cursor: text;
+}
+.ms-recherche input {
+	flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: rgb(var(--c-text));
+	font: inherit; font-size: 14px; padding: 0; box-shadow: none;
+}
+.ms-recherche input:focus { outline: none; box-shadow: none; }
+.ms-recherche input::placeholder { color: rgb(var(--c-text-3)); }
+.ms-recherche:focus-within { box-shadow: 0 0 0 2px rgb(var(--c-accent) / .5); }
+.ms-liste__corps { flex: 1; min-height: 0; overflow-y: auto; padding: 0 8px 12px; scrollbar-width: thin; }
+.ms-liste__section { margin: 12px 10px 6px; font-size: 12px; font-weight: 600; color: rgb(var(--c-text-3)); text-transform: uppercase; letter-spacing: .06em; }
+.ms-liste__vide { padding: 2rem 1.25rem; text-align: center; color: rgb(var(--c-text-3)); line-height: 1.5; }
+
+/* Invitation a activer les notifications, en tete de liste (une fois). */
+.ms-invitation {
+	display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; align-items: start;
+	margin: 4px 2px 10px; padding: 12px 14px; border-radius: 14px;
+	background: rgb(var(--c-accent) / .1); border: 1px solid rgb(var(--c-accent) / .28);
+}
+.ms-invitation__icone {
+	display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
+	background: rgb(var(--c-accent) / .18); color: rgb(var(--c-accent-text)); font-size: 16px;
+}
+.ms-invitation__texte { display: flex; flex-direction: column; gap: 2px; font-size: 13px; line-height: 1.4; }
+.ms-invitation__texte strong { font-size: 14px; color: rgb(var(--c-text)); }
+.ms-invitation__texte span { color: rgb(var(--c-text-2)); }
+.ms-invitation__actions { grid-column: 2; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.ms-invitation__actions .ms-bouton { min-height: 36px; padding: 0 1rem; font-size: 13px; }
+
+.ms-conv {
+	display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px;
+	width: 100%; padding: 9px 10px; border: 0; border-radius: 12px; background: transparent;
+	text-align: left; cursor: pointer; color: rgb(var(--c-text));
+	transition: background-color .12s ease;
+}
+.ms-conv:hover { background: rgb(var(--c-surface-2)); }
+.ms-conv[aria-current="true"] { background: rgb(var(--c-accent) / .14); }
+.ms-conv .ms-av { --t: 52px; }
+.ms-conv .ms-av--groupe { --t-parent: 52px; }
+.ms-conv__titre { display: block; font-weight: 500; font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ms-conv__apercu { display: flex; gap: 4px; margin-top: 2px; font-size: 13px; color: rgb(var(--c-text-3)); white-space: nowrap; min-width: 0; }
+.ms-conv__apercu span:first-child { overflow: hidden; text-overflow: ellipsis; }
+.ms-conv__apercu time { flex: none; }
+.ms-conv--non-lu .ms-conv__titre { font-weight: 700; }
+.ms-conv--non-lu .ms-conv__apercu { color: rgb(var(--c-text)); font-weight: 600; }
+.ms-conv__meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.ms-conv__nb {
+	min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px;
+	background: rgb(var(--c-gold)); color: #fff; font-size: 11.5px; font-weight: 700; line-height: 20px; text-align: center;
+}
+.ms-conv__sourdine { color: rgb(var(--c-text-3)); font-size: 13px; }
+/* Mon dernier message : envoye (coche dans un rond) ou vu (le visage). */
+.ms-conv__envoye { display: inline-flex; color: rgb(var(--c-text-3)); font-size: 15px; line-height: 1; }
+.ms-conv__vus { display: inline-flex; align-items: center; }
+.ms-conv__vus .ms-av { --t: 16px; font-size: 7px; box-shadow: 0 0 0 1.5px rgb(var(--c-surface)); }
+.ms-conv__vus .ms-av + .ms-av { margin-left: -4px; }
+.ms-conv__vus-plus { margin-left: 3px; font-size: 10.5px; color: rgb(var(--c-text-3)); }
+
+.ms-personne {
+	display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px;
+	width: 100%; padding: 8px 10px; border: 0; border-radius: 12px; background: transparent; text-align: left; cursor: pointer; color: inherit;
+}
+.ms-personne:hover, .ms-personne[aria-selected="true"] { background: rgb(var(--c-surface-2)); }
+.ms-personne .ms-av { --t: 40px; }
+.ms-personne__nom { display: block; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ms-personne__role { display: block; font-size: 12.5px; color: rgb(var(--c-text-3)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ms-personne__coche { width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgb(var(--c-line-strong)); display: inline-flex; align-items: center; justify-content: center; font-size: 13px; color: transparent; }
+.ms-personne[aria-checked="true"] .ms-personne__coche { background: rgb(var(--c-accent)); border-color: rgb(var(--c-accent)); color: #fff; }
+
+.ms-squelette__ligne { display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: center; padding: 9px 10px; }
+.ms-squelette__ligne span { width: 52px; height: 52px; border-radius: 50%; background: rgb(var(--c-surface-2)); }
+.ms-squelette__ligne div { display: grid; gap: 8px; }
+.ms-squelette__ligne i { display: block; height: 11px; border-radius: 6px; background: rgb(var(--c-surface-2)); }
+.ms-squelette__ligne i:first-child { width: 60%; }
+.ms-squelette__ligne i:last-child { width: 85%; opacity: .6; }
+.ms-squelette { animation: ms-pulse 1.4s ease-in-out infinite; }
+@keyframes ms-pulse { 50% { opacity: .55; } }
+
+/* ---------------------------------------------------------- fil (colonne 2) */
+.ms-fil { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; background: rgb(var(--c-canvas)); }
+.ms-accueil { margin: auto; max-width: 360px; padding: 2rem 1.5rem; text-align: center; color: rgb(var(--c-text-2)); }
+.ms-accueil h2 { margin: 1rem 0 .4rem; font-size: 1.25rem; font-weight: 700; color: rgb(var(--c-text)); }
+.ms-accueil p { margin: 0 0 1.25rem; line-height: 1.55; }
+.ms-accueil__sceau {
+	width: 84px; height: 84px; margin: 0 auto; border-radius: 50%;
+	display: flex; align-items: center; justify-content: center; font-size: 2.1rem;
+	color: rgb(var(--c-gold-text)); background: rgb(var(--c-gold) / .1);
+	box-shadow: 0 0 0 1px rgb(var(--c-gold) / .35), 0 0 0 7px rgb(var(--c-gold) / .07);
+}
+
+.ms-fil__tete {
+	flex: none; display: flex; align-items: center; gap: 10px; min-height: 64px; padding: 8px 12px 8px 16px;
+	border-bottom: 1px solid rgb(var(--c-line)); background: rgb(var(--c-canvas));
+	box-shadow: 0 1px 0 rgb(0 0 0 / .04);
+}
+.ms-fil__retour { display: none; }
+.ms-fil__qui { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; padding: 4px 6px; margin-left: -6px; border: 0; background: transparent; border-radius: 10px; cursor: pointer; text-align: left; }
+.ms-fil__qui:hover { background: rgb(var(--c-surface-2)); }
+.ms-fil__qui .ms-av { --t: 40px; }
+.ms-fil__qui .ms-av--groupe { --t-parent: 40px; }
+.ms-fil__nom { display: block; font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ms-fil__etat { display: block; font-size: 12.5px; color: rgb(var(--c-text-3)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ms-fil__etat--en-ligne { color: rgb(var(--c-success)); }
+.ms-fil__outils { display: flex; gap: 4px; }
+
+.ms-destinataire { flex: none; display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid rgb(var(--c-line)); }
+.ms-destinataire > span { font-weight: 600; color: rgb(var(--c-text-2)); }
+.ms-destinataire input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: rgb(var(--c-text)); font: inherit; font-size: 15px; box-shadow: none; padding: 6px 0; }
+.ms-destinataire input:focus { box-shadow: none; outline: none; }
+.ms-destinataire__resultats { flex: 1; min-height: 0; overflow-y: auto; padding: 6px 8px; }
+
+.ms-flux {
+	flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden;
+	padding: 12px 16px 8px; display: flex; flex-direction: column;
+	scrollbar-width: thin; overscroll-behavior: contain;
+}
+.ms-flux__debut { margin: 18px auto 22px; text-align: center; color: rgb(var(--c-text-3)); font-size: 13px; }
+.ms-flux__debut .ms-av { --t: 76px; margin-bottom: 10px; }
+.ms-flux__debut .ms-av--groupe { --t-parent: 76px; }
+.ms-flux__debut strong { display: block; font-size: 17px; color: rgb(var(--c-text)); margin-bottom: 2px; }
+.ms-flux__plus { align-self: center; margin: 4px 0 10px; font-size: 12.5px; color: rgb(var(--c-text-3)); }
+
+.ms-jour {
+	display: flex; align-items: center; gap: 12px; margin: 16px 8px 10px;
+	font-size: 11.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: rgb(var(--c-gold-text));
+}
+.ms-jour::before, .ms-jour::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgb(var(--c-gold) / .45), transparent); }
+.ms-heure { align-self: center; margin: 12px 0 6px; font-size: 11.5px; color: rgb(var(--c-text-3)); }
+.ms-systeme { align-self: center; max-width: 80%; margin: 8px 0; text-align: center; font-size: 12.5px; color: rgb(var(--c-text-3)); line-height: 1.45; }
+
+/* ---------------------------------------------------------------- message */
+.ms-msg { position: relative; display: flex; align-items: flex-end; gap: 8px; margin-top: 2px; }
+.ms-msg--debut { margin-top: 10px; }
+.ms-msg--moi { flex-direction: row-reverse; }
+.ms-msg__av { width: 28px; flex: none; align-self: flex-end; }
+.ms-msg__av .ms-av { --t: 28px; }
+.ms-msg--moi .ms-msg__av { display: none; }
+.ms-msg__corps { display: flex; flex-direction: column; align-items: flex-start; max-width: min(560px, 74%); min-width: 0; }
+.ms-msg--moi .ms-msg__corps { align-items: flex-end; }
+.ms-msg__auteur { margin: 0 12px 3px; font-size: 12px; color: rgb(var(--c-text-3)); }
+
+.ms-bulle {
+	position: relative; max-width: 100%;
+	padding: 8px 12px; border-radius: 18px;
+	background: rgb(var(--c-surface-2)); color: rgb(var(--c-text));
+	line-height: 1.42; font-size: 14.5px; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word;
+}
+.ms-msg--moi .ms-bulle {
+	background: linear-gradient(180deg, rgb(var(--c-accent)), rgb(var(--c-accent-strong)));
+	color: rgb(var(--c-on-accent));
+}
+.ms-bulle a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+/* Bulles d'une meme serie : les coins qui se touchent s'arrondissent moins. */
+.ms-msg--suite-avant:not(.ms-msg--moi) .ms-bulle { border-top-left-radius: 6px; }
+.ms-msg--suite-apres:not(.ms-msg--moi) .ms-bulle { border-bottom-left-radius: 6px; }
+.ms-msg--moi.ms-msg--suite-avant .ms-bulle { border-top-right-radius: 6px; }
+.ms-msg--moi.ms-msg--suite-apres .ms-bulle { border-bottom-right-radius: 6px; }
+.ms-bulle--emoji { background: none !important; padding: 0 2px; font-size: 2.5rem; line-height: 1.15; }
+.ms-bulle--retire { background: transparent !important; color: rgb(var(--c-text-3)) !important; border: 1px solid rgb(var(--c-line-strong)); font-style: italic; font-size: 13.5px; }
+.ms-bulle--media { padding: 0; overflow: hidden; background: rgb(var(--c-surface-2)) !important; }
+.ms-bulle--media .ms-legende { padding: 7px 12px 9px; }
+.ms-msg--moi .ms-bulle--media .ms-legende { background: linear-gradient(180deg, rgb(var(--c-accent)), rgb(var(--c-accent-strong))); color: rgb(var(--c-on-accent)); }
+.ms-msg--envoi .ms-bulle { opacity: .72; }
+.ms-msg--echec .ms-bulle { box-shadow: 0 0 0 2px rgb(var(--c-danger) / .7); }
+
+.ms-image { display: block; max-width: 100%; height: auto; cursor: zoom-in; background: rgb(var(--c-sunken)); object-fit: cover; }
+.ms-image-cadre { position: relative; display: block; border: 0; padding: 0; background: none; cursor: zoom-in; max-width: 100%; }
+.ms-video { display: block; max-width: 100%; max-height: 420px; background: #000; }
+.ms-progression {
+	position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+	background: rgb(0 0 0 / .45); color: #fff; font-size: 12.5px; font-weight: 600;
+}
+.ms-progression svg { width: 48px; height: 48px; transform: rotate(-90deg); }
+.ms-progression circle { fill: none; stroke-width: 4; }
+.ms-progression .fond { stroke: rgb(255 255 255 / .25); }
+.ms-progression .plein { stroke: #fff; stroke-linecap: round; transition: stroke-dashoffset .2s linear; }
+
+.ms-doc {
+	display: flex; align-items: center; gap: 10px; min-width: 220px; max-width: 320px; padding: 10px 12px;
+	color: inherit; text-decoration: none !important; white-space: normal;
+}
+.ms-doc__icone {
+	flex: none; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+	font-size: 1.3rem; background: rgb(var(--c-canvas) / .35);
+}
+.ms-msg--moi .ms-doc__icone { background: rgb(255 255 255 / .18); }
+.ms-doc__nom { display: block; font-weight: 600; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px; }
+.ms-doc__taille { display: block; font-size: 12px; opacity: .75; }
+
+/* Message vocal : l'onde se remplit d'or pendant la lecture. */
+.ms-vocal { display: flex; align-items: center; gap: 10px; padding: 6px 12px 6px 6px; min-width: 220px; white-space: normal; }
+.ms-vocal__lire {
+	flex: none; width: 36px; height: 36px; border-radius: 50%; border: 0; cursor: pointer;
+	display: inline-flex; align-items: center; justify-content: center; font-size: 1.1rem;
+	background: rgb(var(--c-accent)); color: #fff;
+}
+.ms-msg--moi .ms-vocal__lire { background: #fff; color: rgb(var(--c-accent-strong)); }
+.ms-vocal__onde { flex: 1; display: flex; align-items: center; gap: 2px; height: 32px; cursor: pointer; min-width: 120px; }
+.ms-vocal__onde i { flex: 1; min-width: 2px; max-width: 4px; min-height: 5px; border-radius: 2px; background: currentColor; opacity: .42; transition: opacity .1s linear, background-color .1s linear; }
+.ms-vocal__onde i.lu { opacity: 1; background: rgb(var(--c-gold-text)); }
+.ms-msg--moi .ms-vocal__onde i.lu { background: #fff; }
+.ms-vocal__duree { flex: none; font-family: var(--font-mono); font-size: 12px; font-variant-numeric: tabular-nums; opacity: .85; min-width: 34px; }
+.ms-vocal__vitesse { flex: none; border: 0; border-radius: 999px; padding: 2px 7px; font-size: 11.5px; font-weight: 700; cursor: pointer; background: rgb(var(--c-canvas) / .3); }
+
+.ms-citation {
+	max-width: 100%; margin-bottom: -10px; padding: 7px 12px 16px; border-radius: 14px;
+	background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line)); color: rgb(var(--c-text-3));
+	font-size: 12.5px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left;
+}
+.ms-citation b { color: rgb(var(--c-text-2)); font-weight: 600; }
+.ms-msg__reponse-a { margin: 0 12px 3px; font-size: 12px; color: rgb(var(--c-text-3)); display: flex; align-items: center; gap: 4px; }
+
+.ms-reactions {
+	position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 2px;
+	margin: -8px 8px 0; padding: 1px 6px; border-radius: 999px; cursor: pointer; border: 0;
+	background: rgb(var(--c-surface)); box-shadow: 0 0 0 2px rgb(var(--c-canvas)), var(--shadow-1);
+	font-size: 13px; line-height: 20px; color: rgb(var(--c-text-2));
+}
+.ms-reactions b { font-size: 11.5px; font-weight: 600; margin-left: 2px; }
+
+.ms-msg__outils {
+	display: flex; align-items: center; gap: 2px; align-self: center; opacity: 0; pointer-events: none;
+	transition: opacity .12s ease;
+}
+.ms-msg:hover .ms-msg__outils, .ms-msg:focus-within .ms-msg__outils, .ms-msg--outils-ouverts .ms-msg__outils { opacity: 1; pointer-events: auto; }
+.ms-msg__outils .ms-rond { width: 30px; height: 30px; font-size: .95rem; background: transparent; color: rgb(var(--c-text-3)); }
+.ms-msg__outils .ms-rond:hover { background: rgb(var(--c-surface-2)); color: rgb(var(--c-text)); }
+
+.ms-statut { align-self: flex-end; margin: 3px 4px 0; font-size: 11.5px; color: rgb(var(--c-text-3)); display: flex; align-items: center; gap: 4px; min-height: 16px; }
+.ms-statut .ms-av { --t: 15px; font-size: 7px; }
+.ms-statut--echec { color: rgb(var(--c-danger)); cursor: pointer; }
+.ms-vus { display: flex; justify-content: flex-end; gap: 2px; margin: 2px 2px 0; }
+.ms-vus .ms-av { --t: 15px; font-size: 7px; }
+
+.ms-ecrit { display: flex; align-items: flex-end; gap: 8px; margin-top: 8px; }
+.ms-ecrit .ms-av { --t: 28px; }
+.ms-ecrit__bulle { display: inline-flex; gap: 4px; padding: 12px 14px; border-radius: 18px; background: rgb(var(--c-surface-2)); }
+.ms-ecrit__bulle i { width: 7px; height: 7px; border-radius: 50%; background: rgb(var(--c-text-3)); animation: ms-saut 1.2s infinite ease-in-out; }
+.ms-ecrit__bulle i:nth-child(2) { animation-delay: .15s; }
+.ms-ecrit__bulle i:nth-child(3) { animation-delay: .3s; }
+@keyframes ms-saut { 0%, 60%, 100% { transform: translateY(0); opacity: .5; } 30% { transform: translateY(-4px); opacity: 1; } }
+
+.ms-nouveaux {
+	position: absolute; left: 50%; bottom: 84px; transform: translateX(-50%); z-index: 3;
+	display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 999px; border: 0; cursor: pointer;
+	background: rgb(var(--c-accent)); color: #fff; font-weight: 600; font-size: 13px; box-shadow: var(--shadow-2);
+}
+
+.ms-msg--surligne .ms-bulle { animation: ms-surligne 1.6s ease; }
+@keyframes ms-surligne { 0%, 40% { box-shadow: 0 0 0 3px rgb(var(--c-gold) / .8); } 100% { box-shadow: 0 0 0 3px transparent; } }
+.ms-msg--entre { animation: ms-entre .22s ease-out; }
+@keyframes ms-entre { from { opacity: 0; transform: translateY(8px); } }
+
+/* ----------------------------------------------------------------- saisie */
+.ms-saisie { flex: none; padding: 8px 12px 12px; padding-bottom: max(12px, env(safe-area-inset-bottom)); background: rgb(var(--c-canvas)); }
+.ms-repondre {
+	display: flex; align-items: center; gap: 10px; margin: 0 4px 8px; padding: 8px 10px 8px 12px;
+	border-left: 3px solid rgb(var(--c-accent)); border-radius: 8px; background: rgb(var(--c-surface));
+	font-size: 13px; color: rgb(var(--c-text-2));
+}
+.ms-repondre div { flex: 1; min-width: 0; }
+.ms-repondre b { display: block; color: rgb(var(--c-text)); font-weight: 600; }
+.ms-repondre span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ms-saisie__ligne { display: flex; align-items: flex-end; gap: 4px; }
+.ms-outil {
+	flex: none; width: 38px; height: 38px; border-radius: 50%; border: 0; background: transparent; cursor: pointer;
+	display: inline-flex; align-items: center; justify-content: center; font-size: 1.2rem; color: rgb(var(--c-accent-text));
+	transition: background-color .12s ease, transform .12s ease;
+}
+.ms-outil:hover { background: rgb(var(--c-accent) / .12); }
+.ms-outil:active { transform: scale(.92); }
+.ms-outil:disabled { opacity: .4; cursor: default; }
+.ms-zone {
+	flex: 1; min-width: 0; display: flex; align-items: flex-end;
+	background: rgb(var(--c-surface-2)); border-radius: 20px; padding: 0 6px 0 14px;
+}
+.ms-zone textarea {
+	flex: 1; min-width: 0; resize: none; border: 0; outline: 0; background: transparent; color: rgb(var(--c-text));
+	font: inherit; font-size: 15px; line-height: 1.4; padding: 9px 0; max-height: 160px; box-shadow: none;
+}
+/* src/css/modal.css pose un contour !important sur tout champ au focus : ici,
+   c'est le conteneur qui s'allume (:focus-within). */
+.ms-racine .ms-zone textarea:focus, .ms-racine .ms-zone textarea:focus-visible,
+.ms-racine .ms-recherche input:focus, .ms-racine .ms-recherche input:focus-visible,
+.ms-racine .ms-destinataire input:focus, .ms-racine .ms-destinataire input:focus-visible { outline: none !important; box-shadow: none !important; }
+.ms-racine .ms-zone textarea { border-radius: 0; appearance: none; }
+.ms-zone textarea::placeholder { color: rgb(var(--c-text-3)); }
+.ms-zone:focus-within { box-shadow: 0 0 0 2px rgb(var(--c-accent) / .45); }
+.ms-zone .ms-outil { width: 34px; height: 34px; margin-bottom: 2px; }
+.ms-envoyer { color: rgb(var(--c-accent-text)); }
+
+.ms-bloque { padding: 14px 16px 16px; text-align: center; color: rgb(var(--c-text-2)); border-top: 1px solid rgb(var(--c-line)); line-height: 1.5; }
+.ms-bloque strong { display: block; color: rgb(var(--c-text)); margin-bottom: 4px; }
+.ms-bloque .ms-bouton { margin-top: 10px; }
+
+.ms-enregistrement { display: flex; align-items: center; gap: 10px; padding: 4px 4px 4px 8px; }
+.ms-enregistrement__point { width: 10px; height: 10px; border-radius: 50%; background: rgb(var(--c-danger)); animation: ms-pulse 1s infinite; flex: none; }
+.ms-enregistrement__duree { font-family: var(--font-mono); font-size: 13px; font-variant-numeric: tabular-nums; min-width: 44px; }
+.ms-enregistrement__onde { flex: 1; display: flex; align-items: center; justify-content: flex-end; gap: 2px; height: 32px; overflow: hidden; color: rgb(var(--c-gold-text)); }
+.ms-enregistrement__onde i { width: 3px; flex: none; border-radius: 2px; background: currentColor; }
+
+.ms-deposer {
+	position: absolute; inset: 8px; z-index: 6; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+	border: 2px dashed rgb(var(--c-accent)); border-radius: 18px; background: rgb(var(--c-canvas) / .9);
+	font-weight: 600; color: rgb(var(--c-accent-text)); pointer-events: none;
+}
+.ms-deposer i { font-size: 2rem; }
+
+/* ---------------------------------------------------- popovers et menus */
+.ms-pop {
+	position: fixed; z-index: 1300; min-width: 180px; padding: 6px; border-radius: 14px;
+	background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line)); box-shadow: var(--shadow-2);
+	animation: ms-apparait .12s ease-out;
+}
+@keyframes ms-apparait { from { opacity: 0; transform: scale(.96); } }
+.ms-pop--reactions { display: flex; gap: 2px; padding: 4px 6px; border-radius: 999px; min-width: 0; }
+.ms-pop--reactions button { width: 38px; height: 38px; border: 0; border-radius: 50%; background: transparent; font-size: 1.45rem; cursor: pointer; transition: transform .12s ease, background-color .12s ease; }
+.ms-pop--reactions button:hover { transform: scale(1.22); background: rgb(var(--c-surface-2)); }
+.ms-pop--reactions button[aria-pressed="true"] { background: rgb(var(--c-accent) / .2); }
+.ms-menu__item {
+	display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 12px; border: 0; border-radius: 9px;
+	background: transparent; text-align: left; cursor: pointer; font-size: 14px; color: rgb(var(--c-text)); text-decoration: none;
+}
+.ms-menu__item:hover { background: rgb(var(--c-surface-2)); }
+.ms-menu__item i { width: 18px; text-align: center; color: rgb(var(--c-text-2)); }
+.ms-menu__item--danger, .ms-menu__item--danger i { color: rgb(var(--c-danger)); }
+.ms-pop--emoji { width: 312px; max-width: calc(100vw - 16px); padding: 8px; }
+.ms-pop--emoji .ms-emoji-grille { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; max-height: 236px; overflow-y: auto; }
+.ms-pop--emoji button { height: 36px; border: 0; border-radius: 8px; background: transparent; font-size: 1.35rem; cursor: pointer; }
+.ms-pop--emoji button:hover { background: rgb(var(--c-surface-2)); }
+.ms-pop--emoji p { margin: 4px 4px 6px; font-size: 11.5px; font-weight: 600; color: rgb(var(--c-text-3)); text-transform: uppercase; letter-spacing: .05em; }
+
+/* --------------------------------------------------- informations (col. 3) */
+.ms-infos {
+	width: var(--ms-infos); min-height: 0; overflow-y: auto; border-left: 1px solid rgb(var(--c-line));
+	background: rgb(var(--c-canvas)); padding: 20px 14px 24px; scrollbar-width: thin;
+}
+.ms-infos[hidden] { display: none; }
+.ms-infos__fermer { display: none; }
+.ms-infos__tete { text-align: center; padding: 6px 6px 14px; }
+.ms-infos__tete .ms-av { --t: 80px; margin-bottom: 10px; }
+.ms-infos__tete .ms-av--groupe { --t-parent: 80px; }
+.ms-infos__nom { margin: 0; font-size: 17px; font-weight: 700; overflow-wrap: anywhere; }
+.ms-infos__role { margin: 3px 0 0; font-size: 13px; color: rgb(var(--c-text-3)); }
+.ms-infos__actions { display: flex; justify-content: center; gap: 18px; margin: 4px 0 14px; }
+.ms-infos__action { display: flex; flex-direction: column; align-items: center; gap: 6px; border: 0; background: none; cursor: pointer; font-size: 12px; color: rgb(var(--c-text-2)); width: 72px; }
+.ms-infos__action span.ms-rond { pointer-events: none; }
+.ms-infos details { border-radius: 12px; margin-bottom: 4px; }
+.ms-infos summary {
+	display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 11px 10px; border-radius: 10px;
+	cursor: pointer; list-style: none; font-weight: 600; font-size: 14.5px;
+}
+.ms-infos summary::-webkit-details-marker { display: none; }
+.ms-infos summary::after { content: "\F282"; font-family: bootstrap-icons; font-weight: 400; color: rgb(var(--c-text-3)); transition: transform .15s ease; }
+.ms-infos details[open] > summary::after { transform: rotate(180deg); }
+.ms-infos summary:hover { background: rgb(var(--c-surface-2)); }
+.ms-infos__corps { padding: 2px 2px 8px; }
+.ms-membre { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 6px 8px; border-radius: 10px; }
+.ms-membre:hover { background: rgb(var(--c-surface)); }
+.ms-membre .ms-av { --t: 36px; }
+.ms-membre__nom { display: block; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ms-membre__role { display: block; font-size: 12px; color: rgb(var(--c-text-3)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ms-medias { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; border-radius: 10px; overflow: hidden; }
+.ms-medias button { position: relative; padding: 0; border: 0; aspect-ratio: 1; background: rgb(var(--c-surface-2)); cursor: pointer; overflow: hidden; }
+.ms-medias img, .ms-medias video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ms-medias .bi-play-circle-fill { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #fff; text-shadow: 0 1px 6px rgb(0 0 0 / .5); }
+.ms-infos__vide { padding: 6px 10px 10px; font-size: 13px; color: rgb(var(--c-text-3)); }
+
+/* ----------------------------------------------------------------- dialogs */
+.ms-dialogue {
+	width: min(480px, calc(100vw - 24px)); max-height: min(640px, calc(100vh - 32px)); padding: 0; border: 1px solid rgb(var(--c-line));
+	border-radius: 18px; background: rgb(var(--c-surface)); color: rgb(var(--c-text)); box-shadow: var(--shadow-2);
+	font-family: var(--font-sans); font-size: 14px;
+}
+.ms-dialogue[open] { display: flex; flex-direction: column; animation: ms-dialogue .16s ease-out; }
+@keyframes ms-dialogue { from { opacity: 0; transform: translateY(8px) scale(.98); } }
+.ms-dialogue::backdrop { background: rgb(4 6 18 / .55); backdrop-filter: blur(2px); }
+.ms-dialogue__tete { display: flex; align-items: center; gap: 10px; padding: 14px 14px 10px 20px; border-bottom: 1px solid rgb(var(--c-line)); }
+.ms-dialogue__tete h2 { flex: 1; margin: 0; font-size: 1.1rem; font-weight: 700; text-align: center; padding-left: 38px; }
+.ms-dialogue__corps { flex: 1; min-height: 0; overflow-y: auto; padding: 14px 16px; }
+.ms-dialogue__pied { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 16px; border-top: 1px solid rgb(var(--c-line)); }
+.ms-champ { display: block; margin-bottom: 12px; }
+.ms-champ > span { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: rgb(var(--c-text-2)); }
+.ms-champ input, .ms-champ textarea {
+	width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgb(var(--c-line-strong));
+	background: rgb(var(--c-inset)); color: rgb(var(--c-text)); font: inherit; font-size: 14.5px; box-shadow: none;
+}
+.ms-champ input:focus, .ms-champ textarea:focus { outline: none; border-color: rgb(var(--c-accent)); box-shadow: 0 0 0 3px rgb(var(--c-accent) / .2); }
+.ms-puces { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.ms-puce { display: inline-flex; align-items: center; gap: 6px; padding: 4px 6px 4px 4px; border-radius: 999px; background: rgb(var(--c-accent) / .16); color: rgb(var(--c-accent-text)); font-size: 13px; font-weight: 500; border: 0; cursor: pointer; }
+.ms-puce .ms-av { --t: 22px; font-size: 9px; }
+.ms-puce i { font-size: 12px; }
+.ms-aide { font-size: 12.5px; color: rgb(var(--c-text-3)); margin: 8px 2px 0; line-height: 1.45; }
+
+/* Message a plusieurs personnes : choix des destinataires */
+fieldset.ms-champ { border: 0; padding: 0; margin: 0 0 12px; min-width: 0; }
+fieldset.ms-champ legend { float: none; width: auto; margin: 0 0 6px; padding: 0; font-size: 13px; font-weight: 600; color: rgb(var(--c-text-2)); }
+.ms-cibles { display: grid; gap: 8px; }
+.ms-cible {
+	display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin: 0;
+	border: 1px solid rgb(var(--c-line-strong)); border-radius: 12px; cursor: pointer;
+	transition: border-color .15s ease, background-color .15s ease;
+}
+.ms-cible:hover { background: rgb(var(--c-surface-2)); }
+.ms-cible:has(input:checked) { border-color: rgb(var(--c-accent)); background: rgb(var(--c-accent) / .1); }
+/* Rond dessine ici : le style global des champs le laissait vide une fois coche. */
+.ms-champ .ms-cible input {
+	-webkit-appearance: none; appearance: none; flex: none;
+	width: 18px; height: 18px; margin: 0; padding: 0; border-radius: 50%;
+	border: 2px solid rgb(var(--c-line-strong)); background: transparent none; box-shadow: none;
+}
+.ms-champ .ms-cible input:checked {
+	border-color: rgb(var(--c-accent)); background: rgb(var(--c-accent)) none;
+	box-shadow: inset 0 0 0 3px rgb(var(--c-surface));
+}
+.ms-champ .ms-cible input:focus-visible { outline: 2px solid rgb(var(--c-accent)); outline-offset: 2px; }
+.ms-cible span { flex: 1; font-weight: 500; }
+.ms-cible b { font-variant-numeric: tabular-nums; color: rgb(var(--c-text-2)); font-weight: 600; }
+
+.ms-signalement { padding: 12px; border: 1px solid rgb(var(--c-line)); border-radius: 12px; margin-bottom: 10px; background: rgb(var(--c-canvas)); }
+.ms-signalement__tete { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; color: rgb(var(--c-text-3)); margin-bottom: 8px; }
+.ms-signalement blockquote { margin: 0 0 8px; padding: 8px 12px; border-left: 3px solid rgb(var(--c-danger)); background: rgb(var(--c-surface)); border-radius: 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.ms-signalement__actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+/* Visionneuse des photos et videos */
+.ms-visionneuse { width: 100vw; height: 100vh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: rgb(0 0 0 / .94); color: #fff; }
+.ms-visionneuse[open] { display: flex; align-items: center; justify-content: center; }
+.ms-visionneuse::backdrop { background: rgb(0 0 0 / .9); }
+.ms-visionneuse img, .ms-visionneuse video { max-width: 94vw; max-height: 86vh; object-fit: contain; border-radius: 6px; }
+.ms-visionneuse__outils { position: absolute; top: 12px; right: 12px; display: flex; gap: 8px; }
+.ms-visionneuse__outils .ms-rond { background: rgb(255 255 255 / .12); color: #fff; }
+.ms-visionneuse__outils .ms-rond:hover { background: rgb(255 255 255 / .22); }
+.ms-visionneuse__nom { position: absolute; top: 18px; left: 18px; right: 120px; font-size: 13px; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.ms-toast {
+	position: fixed; left: 50%; bottom: 24px; z-index: 1400; transform: translateX(-50%);
+	max-width: min(440px, calc(100vw - 24px)); padding: 10px 16px; border-radius: 12px;
+	background: rgb(var(--c-text)); color: rgb(var(--c-canvas)); font-size: 13.5px; font-weight: 500; box-shadow: var(--shadow-2);
+	animation: ms-entre .2s ease-out;
+}
+
+/* ===================================================================== dock
+   Au-dessus des autres pages (init/messagerie.dock.php), comme Facebook :
+   un bouton rond en bas a droite, au-dessus du pied de page (la date et
+   l'heure restent visibles) ; la liste des discussions s'ouvre au-dessus de
+   lui ; les discussions reduites sont des bulles empilees sur le bouton ; les
+   fenetres de discussion s'ouvrent a gauche. Sur telephone, seul le bouton
+   reste, et mene a la page /messagerie. */
+.ms-dock { --ms-bas: 36px; --ms-ressort: cubic-bezier(.34, 1.56, .64, 1); cursor: auto; }
+.ms-dock button, .ms-dock a, .ms-dock label { cursor: pointer; }
+.ms-dock input, .ms-dock textarea { cursor: text; }
+
+/* Colonne : bulles, puis le bouton Messagerie */
+.ms-dock__colonne {
+	position: fixed; right: 18px; bottom: var(--ms-bas); z-index: 1042;
+	display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.ms-dock__tetes { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+
+.ms-lanceur {
+	position: relative; width: 56px; height: 56px; padding: 0; border: 0; border-radius: 50%;
+	display: flex; align-items: center; justify-content: center;
+	color: #fff; font-size: 1.45rem;
+	background: radial-gradient(circle at 30% 22%, rgb(var(--c-accent)), rgb(var(--c-accent-strong)) 70%);
+	box-shadow: 0 10px 26px -8px rgb(4 6 18 / .65), inset 0 0 0 1px rgb(255 255 255 / .12);
+	transition: transform .25s var(--ms-ressort), box-shadow .2s ease;
+	animation: ms-bulle-entre .45s var(--ms-ressort);
+}
+.ms-lanceur:hover { transform: scale(1.07); box-shadow: 0 14px 30px -8px rgb(4 6 18 / .7), inset 0 0 0 1px rgb(255 255 255 / .16); }
+.ms-lanceur:active { transform: scale(.93); }
+.ms-lanceur i { position: absolute; transition: transform .25s var(--ms-ressort), opacity .15s ease; }
+.ms-lanceur__fermer { opacity: 0; transform: rotate(-90deg) scale(.5); font-size: 1.15rem; }
+.ms-lanceur--ouvert .ms-lanceur__ouvrir { opacity: 0; transform: rotate(90deg) scale(.5); }
+.ms-lanceur--ouvert .ms-lanceur__fermer { opacity: 1; transform: none; }
+.ms-lanceur__nb, .ms-tete__nb {
+	position: absolute; top: -4px; right: -4px; min-width: 21px; height: 21px; padding: 0 6px; border-radius: 11px;
+	background: rgb(var(--c-danger)); color: #fff; font: 700 11.5px/21px var(--font-sans); text-align: center;
+	box-shadow: 0 0 0 2px rgb(var(--c-canvas));
+	animation: ms-bulle-entre .35s var(--ms-ressort);
+}
+.ms-lanceur__nb[hidden] { display: none; }
+
+/* Bulle d'une discussion reduite */
+.ms-tete { position: relative; width: 48px; height: 48px; animation: ms-bulle-entre .4s var(--ms-ressort); }
+.ms-tete__bouton {
+	position: relative; width: 48px; height: 48px; padding: 0; border: 0; border-radius: 50%; background: none;
+	box-shadow: 0 8px 20px -8px rgb(4 6 18 / .7);
+	transition: transform .2s var(--ms-ressort);
+}
+.ms-tete__bouton:hover { transform: scale(1.08); }
+.ms-tete__bouton .ms-av { box-shadow: 0 0 0 2px rgb(var(--c-canvas) / .9); }
+.ms-tete__fermer {
+	position: absolute; top: -5px; left: -5px; width: 20px; height: 20px; padding: 0; border-radius: 50%;
+	display: flex; align-items: center; justify-content: center; font-size: 13px;
+	background: rgb(var(--c-surface-2)); color: rgb(var(--c-text)); border: 1px solid rgb(var(--c-line-strong));
+	opacity: 0; transform: scale(.5); transition: opacity .15s ease, transform .2s var(--ms-ressort);
+}
+.ms-tete:hover .ms-tete__fermer, .ms-tete:focus-within .ms-tete__fermer { opacity: 1; transform: none; }
+/* Au survol, a gauche de la bulle : le nom, l'extrait du dernier message
+   (deux lignes au plus) et l'heure, comme Messenger. */
+.ms-tete__carte {
+	position: absolute; right: calc(100% + 12px); top: 50%; z-index: 1;
+	width: max-content; min-width: 140px; max-width: 250px; padding: 8px 12px 9px; border-radius: 12px;
+	display: flex; flex-direction: column; gap: 2px; text-align: left;
+	background: rgb(var(--c-surface)); color: rgb(var(--c-text)); border: 1px solid rgb(var(--c-line));
+	box-shadow: var(--shadow-2); pointer-events: none;
+	opacity: 0; transform: translate(6px, -50%); transition: opacity .15s ease, transform .15s ease;
+}
+.ms-tete:hover .ms-tete__carte, .ms-tete:focus-within .ms-tete__carte { opacity: 1; transform: translate(0, -50%); }
+.ms-tete__carte-nom { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ms-tete__carte-texte {
+	font-size: 12.5px; line-height: 1.35; color: rgb(var(--c-text-2));
+	display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere;
+}
+.ms-tete__carte--non-lu .ms-tete__carte-texte { color: rgb(var(--c-text)); font-weight: 600; }
+.ms-tete__carte-heure { font-size: 11px; color: rgb(var(--c-text-3)); }
+.ms-tete--secoue { animation: ms-sautille .7s var(--ms-ressort) 2; }
+.ms-tete.ms-sort { animation: ms-bulle-sort .18s ease-in forwards; }
+
+@keyframes ms-bulle-entre { 0% { opacity: 0; transform: scale(.3); } 100% { opacity: 1; transform: none; } }
+@keyframes ms-bulle-sort { to { opacity: 0; transform: scale(.3); } }
+@keyframes ms-sautille { 0%, 100% { transform: none; } 25% { transform: translateY(-9px) scale(1.06); } 50% { transform: none; } 70% { transform: translateY(-4px); } }
+
+/* Liste des discussions, au-dessus du bouton */
+.ms-dock__panneau {
+	position: fixed; right: 18px; bottom: calc(var(--ms-bas) + 70px); z-index: 1043;
+	width: 360px; height: min(560px, calc(100vh - var(--ms-bas) - 150px));
+	display: flex; flex-direction: column;
+	background: rgb(var(--c-surface)); color: rgb(var(--c-text));
+	border: 1px solid rgb(var(--c-line-strong)); border-radius: 18px;
+	box-shadow: 0 24px 48px -12px rgb(4 6 18 / .6);
+	overflow: hidden; transform-origin: calc(100% - 28px) 100%;
+	animation: ms-panneau-entre .24s var(--ms-ressort);
+}
+.ms-dock__panneau[hidden] { display: none; }
+.ms-dock__panneau.ms-sort { animation: ms-panneau-sort .15s ease-in forwards; }
+@keyframes ms-panneau-entre { from { opacity: 0; transform: translateY(12px) scale(.9); } }
+@keyframes ms-panneau-sort { to { opacity: 0; transform: translateY(10px) scale(.94); } }
+.ms-dock__tete { display: flex; align-items: center; gap: 2px; padding: 14px 10px 6px 18px; }
+.ms-dock__tete h2 { flex: 1; margin: 0; font-size: 1.3rem; font-weight: 700; letter-spacing: -.01em; }
+.ms-dock__tete .ms-rond { width: 34px; height: 34px; font-size: .95rem; color: rgb(var(--c-text-2)); }
+.ms-dock__tete .ms-rond:hover { color: rgb(var(--c-text)); }
+.ms-dock__panneau .ms-recherche { margin: 6px 12px 8px; height: 38px; }
+.ms-dock__panneau .ms-liste__corps { padding: 0 8px 10px; }
+.ms-dock .ms-conv { padding: 7px 8px; gap: 10px; }
+.ms-dock .ms-conv .ms-av { --t: 46px; }
+.ms-dock .ms-conv__titre { font-size: 14px; }
+.ms-dock .ms-conv__apercu { font-size: 12.5px; }
+.ms-dock .ms-liste__vide { padding: 1.5rem 1rem; font-size: 13px; }
+
+/* Fenetres de discussion, a gauche de la colonne */
+.ms-dock__fenetres {
+	position: fixed; right: 92px; bottom: var(--ms-bas); z-index: 1041;
+	display: flex; align-items: flex-end; gap: 12px;
+}
+.ms-fenetre {
+	position: relative;
+	width: 336px; height: min(480px, calc(100vh - var(--ms-bas) - 84px));
+	display: flex; flex-direction: column;
+	background: rgb(var(--c-canvas)); color: rgb(var(--c-text));
+	border: 1px solid rgb(var(--c-line-strong)); border-radius: 16px;
+	box-shadow: 0 24px 48px -14px rgb(4 6 18 / .65);
+	overflow: hidden;
+	transform-origin: 100% 100%;
+	animation: ms-fenetre-entre .28s var(--ms-ressort);
+}
+.ms-fenetre[hidden] { display: none; }
+.ms-fenetre.ms-sort { animation: ms-fenetre-sort .18s ease-in forwards; }
+.ms-fenetre.ms-sort--bulle { animation: ms-fenetre-bulle .22s ease-in forwards; }
+.ms-sans-anim, .ms-sans-anim * { animation: none !important; }
+@keyframes ms-fenetre-entre { from { opacity: 0; transform: translateY(26px) scale(.88); } }
+@keyframes ms-fenetre-sort { to { opacity: 0; transform: translateY(18px) scale(.92); } }
+/* Reduire : la fenetre file vers les bulles, a droite. */
+@keyframes ms-fenetre-bulle { to { opacity: 0; transform: translate(70px, 20px) scale(.2); } }
+
+.ms-fenetre .ms-fil__tete { min-height: 54px; padding: 5px 5px 5px 9px; gap: 4px; background: rgb(var(--c-surface)); box-shadow: none; }
+.ms-fenetre .ms-fil__qui { margin-left: 0; padding: 3px 4px; gap: 8px; }
+.ms-fenetre .ms-fil__nom { font-size: 14px; display: flex; align-items: center; }
+.ms-fenetre .ms-fil__etat { font-size: 11.5px; }
+.ms-fil__nb { margin-left: 6px; flex: none; }
+.ms-fenetre .ms-fil__outils { gap: 0; }
+.ms-fenetre .ms-fil__outils .ms-rond { width: 30px; height: 30px; font-size: .9rem; color: rgb(var(--c-text-2)); }
+.ms-fenetre .ms-fil__outils .ms-rond:hover { color: rgb(var(--c-text)); }
+.ms-fenetre .ms-flux { padding: 8px 10px 6px; }
+.ms-fenetre .ms-flux__debut { margin: 12px auto 14px; }
+.ms-fenetre .ms-flux__debut strong { font-size: 15px; }
+.ms-fenetre .ms-msg__corps { max-width: 80%; }
+.ms-fenetre .ms-bulle { font-size: 14px; padding: 7px 11px; }
+.ms-fenetre .ms-bulle--emoji { font-size: 2.1rem; }
+.ms-fenetre .ms-video { max-height: 260px; }
+.ms-fenetre .ms-doc { min-width: 0; max-width: 230px; }
+.ms-fenetre .ms-doc__nom { max-width: 150px; }
+.ms-fenetre .ms-vocal { min-width: 0; gap: 8px; padding-right: 10px; }
+/* 48 barres dans une fenetre etroite : elles s'affinent au lieu de deborder. */
+.ms-fenetre .ms-vocal__onde { min-width: 0; width: 132px; gap: 1px; overflow: hidden; }
+.ms-fenetre .ms-vocal__onde i { min-width: 1px; }
+/* Outils d'un message : par-dessus la bulle, la fenetre est etroite. */
+.ms-fenetre .ms-msg__outils {
+	position: absolute; top: -16px; right: 34px; z-index: 2;
+	background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line)); border-radius: 999px; box-shadow: var(--shadow-1); padding: 1px;
+}
+.ms-fenetre .ms-msg--moi .ms-msg__outils { right: auto; left: 8px; }
+.ms-fenetre .ms-msg__outils .ms-rond { width: 26px; height: 26px; font-size: .85rem; }
+.ms-fenetre .ms-saisie { padding: 6px 6px 8px; }
+.ms-fenetre .ms-saisie__ligne { gap: 0; }
+.ms-fenetre .ms-outil { width: 32px; height: 32px; font-size: 1.05rem; }
+.ms-fenetre .ms-zone { padding: 0 2px 0 11px; border-radius: 18px; }
+.ms-fenetre .ms-zone textarea { font-size: 14px; padding: 7px 0; }
+.ms-fenetre .ms-zone .ms-outil { width: 30px; height: 30px; }
+.ms-fenetre .ms-nouveaux { bottom: 64px; font-size: 12px; padding: 5px 11px; }
+.ms-fenetre .ms-repondre { margin: 0 2px 6px; font-size: 12.5px; }
+.ms-fenetre .ms-bloque { padding: 10px 12px 12px; font-size: 13px; }
+.ms-fenetre .ms-destinataire { padding: 8px 12px; }
+.ms-fenetre .ms-destinataire__resultats { flex: 1; min-height: 0; }
+.ms-fenetre .ms-deposer { inset: 4px; border-radius: 12px; }
+.ms-fenetre .ms-enregistrement { gap: 6px; padding: 2px; }
+
+@media (max-width: 767px) {
+	/* Au-dessus des barres d'outils que certaines listes posent en bas de l'ecran */
+	.ms-dock { --ms-bas: 76px !important; }
+	.ms-dock__fenetres, .ms-dock__panneau, .ms-dock__tetes { display: none !important; }
+	.ms-lanceur { width: 52px; height: 52px; }
+}
+
+/* ------------------------------------------------------------- reactivite */
+@media (max-width: 1180px) {
+	.ms { --ms-liste: 300px; }
+	.ms-infos {
+		position: absolute; top: 0; right: 0; bottom: 0; z-index: 8; box-shadow: var(--shadow-2);
+		width: min(var(--ms-infos), 100%);
+	}
+	.ms-infos__fermer { display: inline-flex; position: absolute; top: 10px; right: 10px; }
+}
+@media (max-width: 820px) {
+	.ms { grid-template-columns: minmax(0, 1fr); }
+	.ms-liste, .ms-fil { grid-column: 1; grid-row: 1; }
+	.ms[data-vue="liste"] .ms-fil { display: none; }
+	.ms[data-vue="fil"] .ms-liste { display: none; }
+	.ms-liste { border-right: 0; }
+	.ms-fil__retour { display: inline-flex; }
+	.ms-msg__corps { max-width: 80%; }
+	.ms-msg__outils { display: none; }
+	.ms-infos { width: 100%; border-left: 0; }
+	.ms-liste__tete { padding-left: 14px; }
+	.ms-titre { font-size: 1.3rem; }
+	.ms-rond { width: 42px; height: 42px; }
+	.ms-outil { width: 42px; height: 42px; }
+	.ms-dialogue { width: 100vw; max-width: 100vw; max-height: 100dvh; height: 100dvh; border-radius: 0; margin: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.ms-racine, .ms-racine *, .ms-racine *::before, .ms-racine *::after, .ms-toast { animation: none !important; transition: none !important; }
+}

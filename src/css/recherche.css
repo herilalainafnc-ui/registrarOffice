@@ -1,0 +1,214 @@
+/* =============================================================================
+   Recherche rapide (Ctrl+K) — src/js/recherche.js, app/recherche.rapide.php
+   Sur le modele de laravel.com : un bouton « Rechercher… » avec son raccourci
+   dans la barre du haut, puis une fenetre centree, resultats par groupes,
+   navigation au clavier. Jetons de src/css/tokens.css : themes clair et sombre.
+   ========================================================================== */
+
+/* --- Le bouton, dans la barre du haut (toujours bleu nuit) ---------------------- */
+.rc-declencheur {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 440px;
+    height: 38px;
+    padding: 0 8px 0 12px;
+    border-radius: 10px;
+    border: 1px solid rgb(255 255 255 / .16);
+    background: rgb(255 255 255 / .08);
+    color: rgb(255 255 255 / .72);
+    font: inherit;
+    font-size: 13.5px;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+.rc-declencheur:hover { background: rgb(255 255 255 / .13); border-color: rgb(255 255 255 / .26); color: #fff; }
+.rc-declencheur:focus-visible { outline: none; box-shadow: 0 0 0 3px rgb(var(--c-gold) / .55); }
+.rc-declencheur .bi { font-size: 14px; }
+.rc-declencheur__texte { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rc-touches { display: inline-flex; gap: 3px; }
+.rc-declencheur kbd,
+.rc-pied kbd,
+.rc-fermer kbd {
+    min-width: 20px;
+    padding: 1px 5px;
+    border-radius: 5px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 16px;
+    text-align: center;
+}
+.rc-declencheur kbd { border: 1px solid rgb(255 255 255 / .22); background: rgb(255 255 255 / .08); color: rgb(255 255 255 / .8); }
+
+/* Tactile : 44 px de haut, comme les autres boutons de la barre (theme.css) */
+@media (max-width: 1023px) {
+    .rc-declencheur { height: 44px; }
+}
+/* Ecran etroit : la loupe seule */
+@media (max-width: 640px) {
+    .rc-declencheur { width: 44px; padding: 0; justify-content: center; margin-left: auto; }
+    .rc-declencheur__texte, .rc-declencheur .rc-touches { display: none; }
+}
+
+/* --- La fenetre ------------------------------------------------------------------ */
+html.rc-ouvert { overflow: hidden; }
+.rc-fond {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 10vh 16px 16px;
+    background: rgb(var(--c-sunken) / .62);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    animation: rcFond .14s ease-out;
+}
+.rc-fond[hidden] { display: none; }
+.rc-panneau {
+    display: flex;
+    flex-direction: column;
+    width: min(660px, 100%);
+    max-height: min(78vh, 680px);
+    border-radius: 14px;
+    border: 1px solid rgb(var(--c-line-strong));
+    background: rgb(var(--c-surface));
+    color: rgb(var(--c-text));
+    box-shadow: 0 24px 60px rgb(0 0 0 / .35), 0 2px 8px rgb(0 0 0 / .2);
+    overflow: hidden;
+    animation: rcPanneau .16s cubic-bezier(.2, .9, .3, 1);
+}
+@keyframes rcFond { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rcPanneau { from { opacity: 0; transform: translateY(-8px) scale(.985); } to { opacity: 1; transform: none; } }
+
+/* Saisie */
+.rc-saisie {
+    flex: none;                 /* seuls les resultats defilent ; la saisie garde sa hauteur */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 14px 0 18px;
+    height: 60px;
+    border-bottom: 1px solid rgb(var(--c-line));
+}
+.rc-saisie > .bi-search { font-size: 18px; color: rgb(var(--c-accent-text)); }
+.rc-saisie input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    border: 0;
+    background: none;
+    color: rgb(var(--c-text));
+    font: inherit;
+    font-size: 16.5px;
+    outline: none;
+}
+/* Pas d'anneau autour du champ : toute la fenetre est la zone de saisie, et
+   l'option choisie se lit au surlignage. A neutraliser : l'anneau de
+   Tailwind Forms (ombre), celui de modal.css (!important) et le padding de style.css. */
+.rc-saisie input { padding: 0; border-radius: 0; }
+.rc-saisie input:focus,
+.rc-saisie input:focus-visible { outline: none !important; box-shadow: none; }
+.rc-saisie input::placeholder { color: rgb(var(--c-text-3)); }
+.rc-saisie input::-webkit-search-cancel-button { display: none; }
+.rc-chargement { width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgb(var(--c-line-strong)); border-top-color: rgb(var(--c-accent)); animation: rcTourne .7s linear infinite; }
+.rc-chargement[hidden] { display: none; }
+@keyframes rcTourne { to { transform: rotate(360deg); } }
+.rc-fermer {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+}
+.rc-fermer kbd, .rc-pied kbd { border: 1px solid rgb(var(--c-line-strong)); background: rgb(var(--c-surface-2)); color: rgb(var(--c-text-2)); }
+.rc-fermer:focus-visible { outline: none; box-shadow: var(--ring); border-radius: 6px; }
+
+/* Resultats */
+.rc-resultats { flex: 1; min-height: 0; overflow-y: auto; padding: 6px 10px 12px; overscroll-behavior: contain; }
+.rc-groupe { margin-top: 10px; }
+.rc-groupe__entete {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 4px 8px 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: rgb(var(--c-gold-text));
+}
+.rc-groupe__tout { font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none; color: rgb(var(--c-accent-text)); text-decoration: none; }
+.rc-groupe__tout:hover { text-decoration: underline; }
+.rc-liste { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; }
+.rc-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 52px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: rgb(var(--c-surface-2) / .55);
+    color: rgb(var(--c-text));
+    text-decoration: none;
+    scroll-margin: 8px;
+}
+.rc-option[aria-selected="true"] { background: rgb(var(--c-accent-strong)); border-color: rgb(var(--c-accent-strong)); color: rgb(var(--c-on-accent)); }
+.rc-option__icone {
+    flex: none;
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    border: 1px solid rgb(var(--c-line));
+    background: rgb(var(--c-surface));
+    color: rgb(var(--c-text-2));
+    font-size: 15px;
+}
+.rc-option[aria-selected="true"] .rc-option__icone { border-color: rgb(255 255 255 / .25); background: rgb(255 255 255 / .14); color: inherit; }
+.rc-option__texte { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.rc-option__titre { font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rc-option__detail { font-size: 12.5px; color: rgb(var(--c-text-3)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rc-option[aria-selected="true"] .rc-option__detail { color: rgb(255 255 255 / .78); }
+.rc-option mark { padding: 0; background: none; color: inherit; font-weight: 800; text-decoration: underline; text-decoration-color: rgb(var(--c-gold)); text-decoration-thickness: 2px; text-underline-offset: 2px; }
+.rc-option__entree { flex: none; font-size: 15px; opacity: 0; }
+.rc-option[aria-selected="true"] .rc-option__entree { opacity: 1; }
+
+/* Messages */
+.rc-message { margin: 0; padding: 28px 16px 22px; text-align: center; font-size: 14px; color: rgb(var(--c-text-2)); }
+.rc-message b { color: rgb(var(--c-text)); }
+.rc-message small { display: block; margin-top: 6px; font-size: 12.5px; color: rgb(var(--c-text-3)); }
+.rc-attente { margin: 8px 8px 0; font-size: 12.5px; color: rgb(var(--c-text-3)); }
+
+/* Pied : les touches */
+.rc-pied {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 6px 16px;
+    flex-wrap: wrap;
+    padding: 10px 16px;
+    border-top: 1px solid rgb(var(--c-line));
+    background: rgb(var(--c-surface-2) / .6);
+    font-size: 12px;
+    color: rgb(var(--c-text-3));
+}
+.rc-pied span { display: inline-flex; align-items: center; gap: 5px; }
+
+@media (max-width: 640px) {
+    .rc-fond { padding: 0; }
+    .rc-panneau { width: 100%; max-height: 100%; height: 100%; border-radius: 0; border: 0; }
+    .rc-pied { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .rc-fond, .rc-panneau, .rc-chargement { animation: none; }
+    .rc-declencheur { transition: none; }
+}

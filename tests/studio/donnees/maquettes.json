@@ -1,0 +1,68 @@
+{
+	"_note": "Les textes des maquettes du kit (docs/studio-uaz/reference/presets/), pour comparer chaque preset a sa maquette (tests/studio/test-maquettes.mjs). Les dates et l'heure ne peuvent pas s'ecrire « [JJ] » : leurs zones different.",
+	"evt": {
+		"maquette": "Preset-Evenement.dc.html",
+		"image": "image",
+		"donnees": {
+			"organisateur": "[Organisateur]", "type": "[Type d'événement]",
+			"titre": "Titre de l'événement avec son mot-clé mis en valeur", "motCleOr": "son mot-clé",
+			"sousTitre": "[Sous-titre ou thème en une ligne]", "date": "2026-10-22", "heure": "15",
+			"lieu": "[Lieu]", "lieuPrecision": "[Précision]",
+			"intervenants": ["[Nom de l'intervenant 1]", "[Nom de l'intervenant 2]", "[Nom de l'intervenant 3]"],
+			"inviteNom": "[Nom de l'invité]", "inviteFonction": "[Titre ou fonction]",
+			"moderation": "**[Nom du ou des modérateurs]**", "acces": "[Ouvert à tous]", "diffusion": "[Diffusion ou inscription]"
+		}
+	},
+	"ann": {
+		"maquette": "Preset-Annonce.dc.html",
+		"image": "photo",
+		"donnees": {
+			"service": "[Service émetteur]", "titre": "Titre de l'annonce avec un mot-clé en or", "motCleOr": "un mot-clé",
+			"texte": "Texte d'accompagnement : une à trois phrases qui donnent l'essentiel — qui est concerné, ce qui change, ce qu'il faut faire.",
+			"quandJour": "[Jour JJ]", "quandMois": "[mois AAAA]", "lieu": "[Lieu]", "lieuPrecision": "[Précision du lieu]",
+			"contactNom": "[Nom du service]", "contactCoord": "[téléphone ou e-mail]",
+			"retenir": "[L'information clé en une seule ligne]", "mention": "[Mention pratique]"
+		}
+	},
+	"com": {
+		"maquette": "Preset-Communique.dc.html",
+		"donnees": {
+			"service": "[Service émetteur]", "reference": "[N°]", "date": "2026-10-22",
+			"titre": "Objet du communiqué en quelques mots", "motCleOr": "quelques mots",
+			"paragraphe1": "[Premier paragraphe : ce qui est annoncé, en une ou deux phrases.]",
+			"paragraphe2": "[Deuxième paragraphe : les détails utiles — dates, personnes concernées, conditions.]",
+			"paragraphe3": "[Troisième paragraphe : ce que le lecteur doit faire, et avant quand.]",
+			"signataireNom": "[Prénom Nom]", "signataireFonction": "[Fonction]", "renseignements": "[Service · téléphone ou e-mail]"
+		}
+	},
+	"fel": {
+		"maquette": "Preset-Felicitations.dc.html",
+		"image": "portrait",
+		"donnees": {
+			"service": "[Faculté ou service]", "prenom": "[Prénom]", "nom": "[NOM]",
+			"motif": "[pour sa réussite, sa distinction ou sa soutenance — en une phrase]",
+			"message": "[Message de félicitations en une ou deux phrases.]", "date": "2026-10-22", "filiere": "[Filière ou diplôme]"
+		}
+	},
+	"ins": {
+		"maquette": "Preset-Inscriptions.dc.html",
+		"donnees": {
+			"anneeUniversitaire": "[AAAA–AAAA]", "titre": "Inscriptions ouvertes", "motCleOr": "ouvertes", "dateLimite": "2026-10-22",
+			"filieres": ["[Faculté ou filière]", "[Faculté ou filière]", "[Faculté ou filière]", "[Faculté ou filière]", "[Faculté ou filière]", "[Faculté ou filière]"],
+			"pieces": ["[Pièce 1]", "[Pièce 2]", "[Pièce 3]", "[Pièce 4]"],
+			"ouSinscrire": "En ligne, ou au bureau de la scolarité aux heures d'ouverture.",
+			"horaires": "[Horaires du bureau]", "mention": "[Frais d'inscription ou mention pratique]"
+		}
+	},
+	"rec": {
+		"maquette": "Preset-Recrutement.dc.html",
+		"image": "photo",
+		"donnees": {
+			"service": "[Service des ressources humaines]", "poste": "[Intitulé du poste]", "departement": "[Faculté ou département]",
+			"contrat": "[CDI · CDD · Vacation]", "lieuTravail": "[Ville]", "dateLimite": "2026-10-22",
+			"profil": ["[Diplôme exigé]", "[Expérience demandée]", "[Compétence clé]", "[Qualité personnelle]"],
+			"piecesPostuler": "CV, lettre de motivation et copies des diplômes à envoyer à :", "email": "[adresse e-mail]",
+			"objet": "[Intitulé du poste]", "mention": "[Fiche de poste complète sur le site]"
+		}
+	}
+}

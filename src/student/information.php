@@ -1,0 +1,1298 @@
+<?php
+require_once(__DIR__ . '/../../data/guard.ajax.php');
+exigerConnexion();
+// Helper function to format dates - returns empty string for invalid dates
+function formatDateForInput($date) {
+	if (empty($date) || $date === '0000-00-00' || $date === '0000-00-00 00:00:00') {
+		return '';
+	}
+	return $date;
+}
+
+$latest_session_id = 0;
+if (isset($dtb, $student_id) && !empty($student_id)) {
+	$findLatestSessionForForm = $dtb->prepare('SELECT session_id FROM t_2024_inscription_session WHERE student_id = :student_id ORDER BY id DESC LIMIT 1');
+	$findLatestSessionForForm->execute(['student_id' => $student_id]);
+	$latest_session_id = (int)($findLatestSessionForForm->fetchColumn() ?: 0);
+}
+?>
+<!-- Toast Container -->
+<div id="toast-container" class="toast-container"></div>
+
+<style>
+	/* ===== TOAST NOTIFICATIONS ===== */
+	.toast-container {
+		position: fixed;
+		top: 20px;
+		right: 20px;
+		z-index: 9999;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		pointer-events: none;
+	}
+
+	.toast {
+		pointer-events: all;
+		min-width: 320px;
+		max-width: 420px;
+		padding: 16px 20px;
+		border-radius: 12px;
+		backdrop-filter: blur(16px);
+		box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+		display: flex;
+		align-items: flex-start;
+		gap: 14px;
+		animation: toastSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.toast.toast-out {
+		animation: toastSlideOut 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
+	}
+
+	@keyframes toastSlideIn {
+		from { opacity: 0; transform: translateX(100%) scale(0.8); }
+		to { opacity: 1; transform: translateX(0) scale(1); }
+	}
+
+	@keyframes toastSlideOut {
+		from { opacity: 1; transform: translateX(0) scale(1); }
+		to { opacity: 0; transform: translateX(100%) scale(0.8); }
+	}
+
+	.toast-icon {
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		font-size: 14px;
+	}
+
+	.toast-content {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.toast-title {
+		font-size: 14px;
+		font-weight: 600;
+		margin-bottom: 4px;
+	}
+
+	.toast-message {
+		font-size: 13px;
+		opacity: 0.85;
+		line-height: 1.4;
+	}
+
+	.toast-close {
+		background: none;
+		border: none;
+		color: inherit;
+		opacity: 0.5;
+		cursor: pointer;
+		padding: 4px;
+		margin: -4px;
+		transition: opacity 0.2s;
+		font-size: 18px;
+	}
+
+	.toast-close:hover {
+		opacity: 1;
+	}
+
+	.toast-progress {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		height: 3px;
+		border-radius: 0 0 12px 12px;
+		animation: toastProgress linear forwards;
+	}
+
+	@keyframes toastProgress {
+		from { width: 100%; }
+		to { width: 0%; }
+	}
+
+	/* Toast types */
+	.toast-success {
+		background: linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.95));
+		color: white;
+	}
+	.toast-success .toast-icon { background: rgba(255, 255, 255, 0.2); }
+	.toast-success .toast-progress { background: rgba(255, 255, 255, 0.4); }
+
+	.toast-error {
+		background: linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 0.95));
+		color: white;
+	}
+	.toast-error .toast-icon { background: rgba(255, 255, 255, 0.2); }
+	.toast-error .toast-progress { background: rgba(255, 255, 255, 0.4); }
+
+	.toast-warning {
+		background: linear-gradient(135deg, rgba(245, 158, 11, 0.95), rgba(217, 119, 6, 0.95));
+		color: white;
+	}
+	.toast-warning .toast-icon { background: rgba(255, 255, 255, 0.2); }
+	.toast-warning .toast-progress { background: rgba(255, 255, 255, 0.4); }
+
+	.toast-info {
+		background: linear-gradient(135deg, rgb(var(--c-accent) / 0.95), rgb(var(--c-accent) / 0.95));
+		color: white;
+	}
+	.toast-info .toast-icon { background: rgba(255, 255, 255, 0.2); }
+	.toast-info .toast-progress { background: rgba(255, 255, 255, 0.4); }
+
+	/* Light mode toasts */
+	[data-theme="light"] .toast {
+		box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+	}
+
+	/* Saving overlay */
+	.saving-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgb(var(--c-canvas) / 0.6);
+		backdrop-filter: blur(4px);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 9998;
+		opacity: 0;
+		visibility: hidden;
+		transition: all 0.3s ease;
+	}
+
+	.saving-overlay.active {
+		opacity: 1;
+		visibility: visible;
+	}
+
+	.saving-spinner {
+		width: 50px;
+		height: 50px;
+		border: 3px solid rgb(var(--c-accent) / 0.2);
+		border-top-color: rgb(var(--c-accent));
+		border-radius: 50%;
+		animation: spin 0.8s linear infinite;
+	}
+
+	@keyframes spin {
+		to { transform: rotate(360deg); }
+	}
+
+	/* ===== SHADCN-INSPIRED MODERN STYLES ===== */
+	.info-card {
+		background: rgb(var(--c-canvas) / 0.6);
+		backdrop-filter: blur(12px);
+		border: 1px solid rgb(var(--c-line) / 0.5);
+		border-radius: 12px;
+		padding: 20px;
+		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+	
+	.info-card:hover {
+		border-color: rgb(var(--c-accent) / 0.4);
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(56, 189, 248, 0.1);
+	}
+	
+	.card-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 20px;
+		padding-bottom: 12px;
+		border-bottom: 1px solid rgb(var(--c-line) / 0.5);
+	}
+	
+	.card-title {
+		font-size: 14px;
+		font-weight: 600;
+		color: rgb(var(--c-text));
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+	
+	.card-title i {
+		color: rgb(var(--c-accent-text));
+		font-size: 16px;
+	}
+	
+	.card-actions {
+		display: flex;
+		gap: 8px;
+		align-items: center;
+	}
+	
+	.btn-edit {
+		width: 32px;
+		height: 32px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 8px;
+		background: rgb(var(--c-raised) / 0.5);
+		color: rgb(var(--c-text-3));
+		transition: all 0.15s ease;
+		border: 1px solid transparent;
+	}
+	
+	.btn-edit:hover {
+		background: rgb(var(--c-accent) / 0.1);
+		color: rgb(var(--c-accent-text));
+		border-color: rgb(var(--c-accent) / 0.3);
+	}
+	
+	.btn-primary {
+		padding: 6px 14px;
+		border-radius: 8px;
+		background: linear-gradient(135deg, rgb(var(--c-accent)), rgb(var(--c-accent-strong)));
+		color: white;
+		font-size: 12px;
+		font-weight: 500;
+		transition: all 0.15s ease;
+		border: none;
+		box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+	}
+	
+	.btn-primary:hover {
+		background: linear-gradient(135deg, rgb(var(--c-accent)), rgb(var(--c-accent)));
+		transform: translateY(-1px);
+		box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+	}
+	
+	.btn-secondary {
+		padding: 6px 14px;
+		border-radius: 8px;
+		background: rgb(var(--c-raised) / 0.6);
+		color: rgb(var(--c-text-3));
+		font-size: 12px;
+		font-weight: 500;
+		transition: all 0.15s ease;
+		border: 1px solid rgb(var(--c-line) / 0.5);
+	}
+	
+	.btn-secondary:hover {
+		background: rgb(var(--c-raised) / 0.6);
+		color: rgb(var(--c-text));
+	}
+	
+	.field-group {
+		margin-bottom: 16px;
+	}
+	
+	.field-label {
+		font-size: 11px;
+		font-weight: 500;
+		color: rgb(var(--c-text-3));
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		margin-bottom: 4px;
+		display: block;
+	}
+	
+	.field-value {
+		font-size: 13px;
+		color: rgb(var(--c-text));
+		padding: 8px 0;
+		border-bottom: 1px solid rgb(var(--c-line) / 0.3);
+	}
+	
+	.field-value.locked {
+		color: rgb(var(--c-text-3));
+		display: flex;
+		align-items: center;
+		gap: 6px;
+	}
+	
+	.field-value.locked i {
+		font-size: 12px;
+		color: rgb(var(--c-text-3));
+	}
+	
+	.field-input {
+		width: 100%;
+		padding: 8px 12px;
+		background: rgb(var(--c-canvas) / 0.8);
+		border: 1px solid rgb(var(--c-line) / 0.6);
+		border-radius: 8px;
+		color: rgb(var(--c-text));
+		font-size: 13px;
+		transition: all 0.15s ease;
+	}
+	
+	.field-input:focus {
+		outline: none;
+		border-color: rgb(var(--c-accent));
+		box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+	}
+	
+	.field-input::placeholder {
+		color: rgb(var(--c-text-3));
+	}
+	
+	select.field-input {
+		cursor: pointer;
+	}
+	
+	select.field-input option {
+		background: rgb(var(--c-canvas));
+		color: rgb(var(--c-text));
+		padding: 8px;
+	}
+	
+	.grid-two-cols {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 24px;
+	}
+	
+	@media (max-width: 640px) {
+		.grid-two-cols {
+			grid-template-columns: 1fr;
+			gap: 16px;
+		}
+		
+		.info-card {
+			padding: 16px;
+		}
+	}
+	
+	/* Light mode */
+	[data-theme="light"] .info-card {
+		background: rgb(var(--c-surface) / 0.9);
+		border-color: rgb(var(--c-line-strong) / 0.8);
+	}
+	
+	[data-theme="light"] .info-card:hover {
+		border-color: rgb(var(--c-accent) / 0.5);
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+	}
+	
+	[data-theme="light"] .card-header {
+		border-bottom-color: rgb(var(--c-line-strong) / 0.6);
+	}
+	
+	[data-theme="light"] .card-title {
+		color: rgb(var(--c-text));
+	}
+	
+	[data-theme="light"] .field-label {
+		color: rgb(var(--c-text-3));
+	}
+	
+	[data-theme="light"] .field-value {
+		color: rgb(var(--c-text));
+		border-bottom-color: rgb(var(--c-line-strong) / 0.5);
+	}
+	
+	[data-theme="light"] .field-input {
+		background: rgb(var(--c-surface));
+		border-color: rgb(var(--c-line));
+		color: rgb(var(--c-text));
+	}
+	
+	[data-theme="light"] .btn-edit {
+		background: rgb(var(--c-surface-2) / 0.8);
+		color: rgb(var(--c-text-3));
+	}
+	
+	[data-theme="light"] .btn-edit:hover {
+		background: rgb(var(--c-accent) / 0.1);
+		color: rgb(var(--c-accent-text));
+	}
+	
+	[data-theme="light"] .btn-secondary {
+		background: rgb(var(--c-surface-2));
+		color: rgb(var(--c-text-2));
+		border-color: rgb(var(--c-line));
+	}
+</style>
+
+<form method="post" action="<?=$app_base?>/app/.student/updateStd?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>&etude_envisage=<?=$etude_envisage?>" class="form-no-refrech" target="_blank">
+<div class="w-full grid gap-4 grid-cols-1 lg:grid-cols-2 mt-3 p-3 overflow-auto" style="max-height: calc(100vh - 246px);">
+
+	<div class='info-card'>
+		<div class="card-header">
+			<div class="card-title">
+				<i class="bi bi-person-badge"></i>
+				<span>Informations personnelles</span>
+			</div>
+			<div class="card-actions">
+				<a href="#" class="submitPers submitRedirect btn-primary hidden">Enregistrer</a>
+				<a href="#" class="annulPers btn-secondary hidden">Annuler</a>
+				<a href="#" id="editPers" class="btn-edit"><i class="bi-pencil"></i></a>	
+			</div>
+		</div>
+
+		<div class="grid-two-cols">
+			<div>
+				<div class="field-group">
+					<label class="field-label">Nom</label>
+					<p class="showPers field-value"><?=strtoupper($student_nom)?></p>
+					<input id="firstPers" class="editPers field-input hidden" type="text" name="student_nom" value="<?=$student_nom?>">
+				</div>
+
+				<div class="field-group">
+					<label class="field-label">Date de naissance</label>
+					<p class="showPers field-value"><?=formatDateForInput($profil['dateNaissance'])?></p>
+					<input class="editPers field-input hidden" type="date" name="dateNaissance" value="<?=formatDateForInput($profil['dateNaissance'])?>">
+				</div>
+
+				<div class="field-group">
+					<label class="field-label">Genre</label>
+					<p class="showPers field-value"><?php if($profil['sex'] == '0'){echo 'Féminin';}else{echo 'Masculin';}?></p>
+					<select class="editPers field-input hidden" name="sex">
+						<option value="1" <?php if($profil['sex'] == '1'){echo 'selected';}?>>Masculin</option>
+						<option value="0" <?php if($profil['sex'] == '0'){echo 'selected';}?>>Féminin</option>
+					</select>
+				</div>
+
+				<div class="field-group">
+					<label class="field-label">CIN</label>
+					<p class="showPers field-value"><?=$profil['num_cin']?></p>
+					<input class="editPers field-input hidden" type="text" name="num_cin" value="<?=$profil['num_cin']?>">
+				</div>
+
+				<div class="field-group">
+					<label class="field-label">CIN région</label>
+					<p class="showPers field-value"><?php $findRegi = $dtb->query('SELECT * FROM region WHERE id ="'.$profil['cin_region'].'"'); $showRegi = $findRegi->fetch(); if(!empty($showRegi)){echo $showRegi['region'];}?></p>
+					<select class="editPers field-input hidden" name="cin_region">
+						<option value=""></option>
+<?php 
+$findRegion = $dtb->query('SELECT * FROM region ORDER BY region');
+while ($showR = $findRegion->fetch()) {
+ ?>	
+ 						<option value="<?=$showR['id']?>" <?php if($profil['cin_region'] == $showR['id'] OR $profil['cin_region'] == $showR['region']){echo 'selected';}?>><?=$showR['region']?></option>
+ <?php 
+}
+ ?>
+					</select>
+				</div>
+			</div>
+			<div>
+				<div class="field-group">
+					<label class="field-label">Prénom</label>
+					<p class="showPers field-value"><?=$student_prenom?></p>
+					<input class="editPers field-input hidden" type="text" name="student_prenom" value="<?=$student_prenom?>">
+				</div>
+
+				<div class="field-group">
+					<label class="field-label">Lieu de naissance</label>
+					<p class="showPers field-value"><?=$profil['lieuNaissance']?></p>
+					<input class="editPers field-input hidden" type="text" name="lieuNaissance" value="<?=$profil['lieuNaissance']?>">
+				</div>
+
+				<div class="field-group">
+					<label class="field-label">Nationalité</label>
+					<p class="showPers field-value"><?=$profil['nationalite']?></p>
+					<input class="editPers field-input hidden" type="text" name="nationalite" value="<?=$profil['nationalite']?>">
+				</div>
+
+				<div class="field-group">
+					<label class="field-label">Date de délivrance</label>
+					<p class="showPers field-value"><?=formatDateForInput($profil['cin_date_delivre'])?></p>
+					<input class="editPers field-input hidden" type="date" name="cin_date_delivre" value="<?=formatDateForInput($profil['cin_date_delivre'])?>">
+				</div>
+
+				<input type="hidden" name="session_id" value="<?=$latest_session_id?>">
+			</div>
+		</div>
+	</div>
+
+<!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<div class='info-card'>
+		<div class="card-header">
+			<div class="card-title">
+				<i class="bi bi-telephone"></i>
+				<span>Informations de contact</span>
+			</div>
+			<div class="card-actions">
+				<a href="#" class="submitContact submitRedirect btn-primary hidden">Enregistrer</a>
+				<a href="#" class="annulContact btn-secondary hidden">Annuler</a>
+				<a href="#" id="editContact" class="btn-edit"><i class="bi-pencil"></i></a>
+			</div>
+		</div>
+
+		<div class="grid-two-cols">
+			<div>
+				<div class="field-group">
+					<label class="field-label">Téléphone</label>
+					<p class="showContact field-value"><?=$profil['student_tel']?></p>
+					<input id="firstContact" class="editContact field-input hidden" type="text" name="student_tel" value="<?=$profil['student_tel']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Adresse mail</label>
+					<p class="showContact field-value"><?=$profil['student_email']?></p>
+					<input class="editContact field-input hidden" type="text" name="student_email" value="<?=$profil['student_email']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Adresse d'origine</label>
+					<p class="showContact field-value"><?=$profil['pays_origine']?></p>
+					<input class="editContact field-input hidden" type="text" name="pays_origine" value="<?=$profil['pays_origine']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Région</label>
+					<p class="showContact field-value"><?php $findRegi = $dtb->query('SELECT * FROM region WHERE id ="'.$profil['student_region'].'"'); $showRegi = $findRegi->fetch(); if (!empty($showRegi)) {echo $showRegi['region'];}?></p>
+					<select class="editContact field-input hidden" name="student_region">
+						<option value=""></option>
+<?php 
+$findRegion = $dtb->query('SELECT * FROM region ORDER BY region');
+while ($showR = $findRegion->fetch()) {
+ ?>	
+ 						<option value="<?=$showR['id']?>" <?php if($profil['student_region'] == $showR['id'] OR $profil['student_region'] == $showR['region']){echo 'selected';}?>><?=$showR['region']?></option>
+ <?php 
+}
+ ?>
+					</select>
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Adresse actuelle</label>
+					<p class="showContact field-value"><?=$profil['student_adresse']?></p>
+					<input class="editContact field-input hidden" type="text" name="student_adresse" value="<?=$profil['student_adresse']?>">
+				</div>
+			</div>
+			<div>
+				<?php 
+					if ($level <= 3) {
+$findBacc = $dtb->query('SELECT * FROM t_2024_bacc WHERE student_id = "'.$student_id.'"');
+$showBacc = $findBacc->fetch();
+				 ?>	
+				<div class="field-group">
+					<label class="field-label">Série du Bacc</label>
+					<p class="showContact field-value"><?php if(!empty($showBacc)) {echo $showBacc['bacc_serie'];}?></p>
+					<select class="editContact field-input hidden" name="serie_bacc">
+						<option value=""></option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'A1') { echo 'selected';}}?>>A1</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'A2') { echo 'selected';}}?>>A2</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'BTP') { echo 'selected';}}?>>BTP</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'C') { echo 'selected';}}?>>C</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'D') { echo 'selected';}}?>>D</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'Electronique') { echo 'selected';}}?>>Electronique</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'G1') { echo 'selected';}}?>>G1</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'G2') { echo 'selected';}}?>>G2</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'G3') { echo 'selected';}}?>>G3</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'L') { echo 'selected';}}?>>L</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'S') { echo 'selected';}}?>>S</option>
+						<option <?php if(!empty($showBacc)) {if($showBacc['bacc_serie'] == 'OSE') { echo 'selected';}}?>>OSE</option>
+					</select>
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Année d'obtention Bacc</label>
+					<p class="showContact field-value"><?php if(!empty($showBacc)) {echo formatDateForInput($showBacc['date_obtent']);}?></p>
+					<input class="editContact field-input hidden" type="date" name="obtention_bacc" value="<?php if(!empty($showBacc)) { echo formatDateForInput($showBacc['date_obtent']); } ?>">
+				</div>
+				
+				<?php 
+					}elseif($level > 3){
+$findDiplome = $dtb->query('SELECT * FROM t_2024_diplome_preced WHERE student_id = "'.$student_id.'"');
+$showDiplome = $findDiplome->fetch();
+				?>
+				<div class="field-group">
+					<label class="field-label">Diplôme précédent</label>
+					<p class="showContact field-value"><?php if(!empty($showDiplome)) {echo $showDiplome['diplome_name'];}?></p>
+					<input class="editContact field-input hidden" type="text" name="diplome_preced" value="<?php if(!empty($showDiplome)) {echo $showDiplome['diplome_name'];}?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Date d'obtention</label>
+					<p class="showContact field-value"><?php if(!empty($showDiplome)) {echo formatDateForInput($showDiplome['date_obtent']);}?></p>
+					<input class="editContact field-input hidden" type="date" name="date_obtent_diplome_preced" value="<?php if(!empty($showDiplome)) { echo formatDateForInput($showDiplome['date_obtent']); } ?>">
+				</div>
+				<?php 
+					}
+				?>
+				
+				<div class="field-group">
+					<label class="field-label">Mot de passe mail</label>
+					<p class="showContact field-value locked"><i class="bi bi-lock-fill"></i><?=$profil['password'];?></p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<div class='info-card'>
+		<div class="card-header">
+			<div class="card-title">
+				<i class="bi bi-mortarboard"></i>
+				<span>Informations d'études</span>
+			</div>
+			<div class="card-actions">
+				<a href="#" class="submitEtd submitRedirect btn-primary hidden">Enregistrer</a>
+				<a href="#" class="annulEtd btn-secondary hidden">Annuler</a>
+				<a href="#" id="editEtd" class="btn-edit"><i class="bi-pencil"></i></a>
+			</div>
+		</div>
+
+		<div class="grid-two-cols">
+			<div>
+				<div class="field-group">
+					<label class="field-label">Mention</label>
+					<p class="field-value locked"><i class="bi-lock-fill"></i><?=$etude_envisage?></p>
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Niveau</label>
+					<p class="showEtd field-value"><?php if ($profil['annee_etude']==0) {
+										echo "Remise à niveau";
+									}elseif($profil['annee_etude'] > 0 AND $profil['annee_etude'] < 4) {
+										echo "Licence ".$profil['annee_etude'];
+									}else{
+										echo "Master ".($profil['annee_etude']-3);
+									} ?>	
+					</p>
+					<select class="editEtd field-input hidden" name="annee_etude" id="annee_etude">
+						<option value="0" <?php if($profil['annee_etude'] == 0){echo 'selected';}?>>Remise à niveau</option>
+						<option value="1" <?php if($profil['annee_etude'] == 1){echo 'selected';}?>>Licence 1</option>
+						<option value="2" <?php if($profil['annee_etude'] == 2){echo 'selected';}?>>Licence 2</option>
+						<option value="3" <?php if($profil['annee_etude'] == 3){echo 'selected';}?>>Licence 3</option>
+						<option value="4" <?php if($profil['annee_etude'] == 4){echo 'selected';}?>>Master 1</option>
+						<option value="5" <?php if($profil['annee_etude'] == 5){echo 'selected';}?>>Master 2</option>
+					</select>
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Matricule</label>
+					<p class="field-value locked"><i class="bi-lock-fill"></i><?=$profil['student_id']?></p>
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Status</label>
+					<p class="showEtd field-value"><?=$profil['status']?></p>
+					<select class="editEtd field-input hidden" name="status" id="status">
+						<option value=""></option>
+						<option <?php if($profil['status'] == 'Externe'){echo 'selected';}?>>Externe</option>
+						<option <?php if($profil['status'] == 'Interne'){echo 'selected';}?>>Interne</option>
+						<option <?php if($profil['status'] == 'Bungalow'){echo 'selected';}?>>Bungalow</option>
+					</select>
+				</div>
+				<div class="field-group">
+					<label class="field-label">Taille (T-shirt)</label>
+					<p class="showEtd field-value"><?=$profil['taille']?></p>
+					<select class="editEtd field-input hidden" name="taille">
+						<option value="">Sélectionner...</option>
+						<option value="S" <?php if($profil['taille'] == 'S'){echo 'selected';}?>>S</option>
+						<option value="M" <?php if($profil['taille'] == 'M'){echo 'selected';}?>>M</option>
+						<option value="L" <?php if($profil['taille'] == 'L'){echo 'selected';}?>>L</option>
+						<option value="XL" <?php if($profil['taille'] == 'XL'){echo 'selected';}?>>XL</option>
+						<option value="XXL" <?php if($profil['taille'] == 'XXL'){echo 'selected';}?>>XXL</option>
+						<option value="XXXL" <?php if($profil['taille'] == 'XXXL'){echo 'selected';}?>>XXXL</option>
+					</select>
+				</div>
+			</div>
+			<div>
+				<div class="field-group">
+					<label class="field-label">Parcours</label>
+					<p class="showEtd field-value"><?=$etude_option?></p>
+					<select id="firstEtd" class="editEtd field-input hidden" name="etude_option">
+						<option value=""></option>
+<?php 
+$findSignMention = $dtb->query('SELECT * FROM filiere WHERE filiere_description ="'.$etude_envisage.'"');
+
+	$showSignMention = $findSignMention->fetch();
+	$SignMention = $showSignMention['filiere_sigle'];
+
+/* Parcours du cycle de l'etudiant : ceux du master ne sont pas ceux de la
+   licence (colonne cycles, reglee dans /settings/mentions). Le parcours
+   deja enregistre reste propose meme s'il sort du cycle, sinon la fiche
+   perdrait sa valeur au premier enregistrement — 26 etudiants de master
+   portent un parcours partage avec la licence au 23/09/2026. */
+require_once(__DIR__ . '/../../data/mentions.php');
+$parcoursCycle = mentionParcoursListe($dtb, $SignMention, $profil['annee_etude'] ?? null);
+$libellesParcours = array_column($parcoursCycle, 'description');
+$optionActuelle = (string) ($profil['etude_option'] ?? '');
+if ($optionActuelle !== '' && !in_array($optionActuelle, $libellesParcours, true)) {
+	$libellesParcours[] = $optionActuelle;
+}
+foreach ($libellesParcours as $libelleParcours) { ?>
+ 						<option <?php if ($optionActuelle === $libelleParcours) { echo 'selected'; } ?>><?= htmlspecialchars($libelleParcours, ENT_QUOTES, 'UTF-8') ?></option>
+<?php }
+ ?>		
+ 					</select>
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Année universitaire</label>
+					<p class="showEtd field-value"><?=$profil['annee_scolaire']?></p>
+					<select class="editEtd field-input hidden" name="annee_scolaire">
+<?php
+$y = date('Y');
+for ($i=0; $i <= 8; $i++) { 
+	
+	$as = $y." - ".($y+1);
+	?>
+						<option <?php if($profil['annee_scolaire'] == $as){echo 'selected';}?>><?=$as?></option>
+<?php
+$y = $y - 1;
+}
+ ?>
+					</select>
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Ancien étudiant</label>
+					<p class="showEtd field-value"><?php $new_student = $profil['new_student']; if($profil['new_student'] == 1){echo 'Non';}else{echo 'Oui';}?></p>
+					<select class="editEtd field-input hidden" name="new_student" id="new_student">
+						<option <?php if($profil['new_student'] == 1){echo 'selected';}?> value="1">Non</option>
+						<option <?php if($profil['new_student'] == 0){echo 'selected';}?> value="0">Oui</option>
+					</select>
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Gradué</label>
+					<p class="showEtd field-value"><?php if($profil['graduated'] == "" OR $profil['graduated'] == 0){echo 'Non';}else{echo 'Oui';}?></p>
+					<select class="editEtd field-input hidden" name="graduated" id="graduated">
+						<option <?php if($profil['graduated'] == 0){echo 'selected';}?> value="0">Non</option>
+						<option <?php if($profil['graduated'] == 1){echo 'selected';}?> value="1">Oui</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<div class='info-card'>
+		<div class="card-header">
+			<div class="card-title">
+				<i class="bi bi-people"></i>
+				<span>Informations parentales</span>
+			</div>
+			<div class="card-actions">
+				<a href="#" class="submitParent submitRedirect btn-primary hidden">Enregistrer</a>
+				<a href="#" class="annulParent btn-secondary hidden">Annuler</a>
+				<a href="#" id="editParent" class="btn-edit"><i class="bi-pencil"></i></a>
+			</div>
+		</div>
+
+		<div class="grid-two-cols">
+			<div>
+				<div class="field-group">
+					<label class="field-label">Nom du père</label>
+					<p class="showParent field-value"><?=$profil['father_name']?></p>
+					<input id="firstParent" class="editParent field-input hidden" type="text" name="father_name" value="<?=$profil['father_name']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Nom de la mère</label>
+					<p class="showParent field-value"><?=$profil['mother_name']?></p>
+					<input class="editParent field-input hidden" type="text" name="mother_name" value="<?=$profil['mother_name']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Téléphone</label>
+					<p class="showParent field-value"><?=$profil['parent_tel']?></p>
+					<input class="editParent field-input hidden" type="text" name="parent_tel" value="<?=$profil['parent_tel']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Adresse</label>
+					<p class="showParent field-value"><?=$profil['parent_adresse']?></p>
+					<input class="editParent field-input hidden" type="text" name="parent_adresse" value="<?=$profil['parent_adresse']?>">
+				</div>
+			</div>
+			<div>
+				<div class="field-group">
+					<label class="field-label">Sa profession (père)</label>
+					<p class="showParent field-value"><?=$profil['father_prof']?></p>
+					<input class="editParent field-input hidden" type="text" name="father_prof" value="<?=$profil['father_prof']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Sa profession (mère)</label>
+					<p class="showParent field-value"><?=$profil['mother_prof']?></p>
+					<input class="editParent field-input hidden" type="text" name="mother_prof" value="<?=$profil['mother_prof']?>">
+				</div>
+			</div>
+		</div>
+	</div>
+
+<!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<div class='info-card'>
+		<div class="card-header">
+			<div class="card-title">
+				<i class="bi bi-heart"></i>
+				<span>Informations sponsoring</span>
+			</div>
+			<div class="card-actions">
+				<a href="#" class="submitSpons submitRedirect btn-primary hidden">Enregistrer</a>
+				<a href="#" class="annulSpons btn-secondary hidden">Annuler</a>
+				<a href="#" id="editSpons" class="btn-edit"><i class="bi-pencil"></i></a>
+			</div>
+		</div>
+
+		<div class="grid-two-cols">
+			<div>
+				<div class="field-group">
+					<label class="field-label">Nom du sponsor</label>
+					<p class="showSpons field-value"><?=$profil['sponsor_nom']?></p>
+					<input id="firstSpons" class="editSpons field-input hidden" type="text" name="sponsor_nom" value="<?=$profil['sponsor_nom']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Téléphone</label>
+					<p class="showSpons field-value"><?=$profil['sponsor_tel']?></p>
+					<input class="editSpons field-input hidden" type="text" name="sponsor_tel" value="<?=$profil['sponsor_tel']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Adresse</label>
+					<p class="showSpons field-value"><?=$profil['sponsor_adresse']?></p>
+					<input class="editSpons field-input hidden" type="text" name="sponsor_adresse" value="<?=$profil['sponsor_adresse']?>">
+				</div>
+			</div>
+			<div>
+				<div class="field-group">
+					<label class="field-label">Prénom</label>
+					<p class="showSpons field-value"><?=$profil['sponsor_prenom']?></p>
+					<input class="editSpons field-input hidden" type="text" name="sponsor_prenom" value="<?=$profil['sponsor_prenom']?>">
+				</div>
+			</div>
+		</div>
+	</div>
+
+<!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<div class='info-card'>
+		<div class="card-header">
+			<div class="card-title">
+				<i class="bi bi-three-dots"></i>
+				<span>Autres informations</span>
+			</div>
+			<div class="card-actions">
+				<a href="#" class="submitAutr submitRedirect btn-primary hidden">Enregistrer</a>
+				<a href="#" class="annulAutr btn-secondary hidden">Annuler</a>
+				<a href="#" id="editAutr" class="btn-edit"><i class="bi-pencil"></i></a>
+			</div>
+		</div>
+
+		<div class="grid-two-cols">
+			<div>
+				<div class="field-group">
+					<label class="field-label">État civil</label>
+					<p class="showAutr field-value"><?=$profil['situationf']?></p>
+					<select id="firstAutr" class="editAutr field-input hidden" name="situationf">
+						<option <?php if($profil['situationf'] == 'Célibataire'){echo 'selected';}?>>Célibataire</option>
+						<option <?php if($profil['situationf'] == 'Marié'){echo 'selected';}?>>Marié</option>
+					</select>
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Nombre d'enfants</label>
+					<p class="showAutr field-value"><?=$profil['nb_enfant']?></p>
+					<input class="editAutr field-input hidden" type="text" name="nb_enfant" value="<?=$profil['nb_enfant']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Numéro visa</label>
+					<p class="showAutr field-value"><?=$profil['num_visa']?></p>
+					<input class="editAutr field-input hidden" type="text" name="num_visa" value="<?=$profil['num_visa']?>">
+				</div>
+			</div>
+			<div>
+				<div class="field-group">
+					<label class="field-label">Nom du/de conjoint(e)</label>
+					<p class="showAutr field-value"><?=$profil['nom_conjoint']?></p>
+					<input class="editAutr field-input hidden" type="text" name="nom_conjoint" value="<?=$profil['nom_conjoint']?>">
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Religion</label>
+					<p class="showAutr field-value"><?=$profil['religion']?></p>
+					<select class="editAutr field-input hidden" name="religion">
+						<option <?php if($profil['religion'] == 'Adventiste' OR $profil['religion'] == 'Adventiste du Septieme-jour'){echo 'selected';}?>>Adventiste</option>
+						<option <?php if($profil['religion'] != 'Adventiste' AND $profil['religion'] != 'Adventiste du Septieme-jour'){echo 'selected';}?>>non Adventiste</option>
+					</select>
+				</div>
+				
+				<div class="field-group">
+					<label class="field-label">Abonné au CAF</label>
+					<p class="showAutr field-value"><?php if ($profil['abonment'] == 1) { echo "Oui"; }else{ echo "Non"; }?></p>
+					<select class="editAutr field-input hidden" name="abonment" id="abonment">
+						<option <?php if($profil['abonment'] == 1){ echo 'selected'; }?> value="1">Oui</option>
+						<option <?php if($profil['abonment'] == 0 OR $profil['abonment'] == ''){ echo 'selected'; }?> value="0">Non</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<div class="fixed inset-0 z-50 hidden" id="sessionForInformation" style="backdrop-filter: blur(8px); background: rgba(0,0,0,0.5);">
+	<div class="flex items-center justify-center min-h-screen p-4">
+		<div class="w-full max-w-md bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden">
+			<div class="px-6 py-4 border-b border-slate-700 bg-gradient-to-r from-slate-800 to-slate-900">
+				<h3 class="text-lg font-semibold text-white flex items-center gap-2">
+					<i class="bi bi-save text-cyan-400"></i>
+					Enregistrement de la modification
+				</h3>
+				<p class="text-sm text-slate-400 mt-1">Sélectionnez la session pour cette modification</p>
+			</div>
+			
+			<div class="p-6 space-y-4">
+				<div class="grid grid-cols-2 gap-4">
+					<div>
+						<label class="field-label">Semestre</label>
+						<select name="semesterForInformation" class="field-input w-full mt-1">
+							<option <?php if (date('m')>7) { echo "selected"; } ?>>Premier semestre</option>
+							<option>Semestre d'été</option>
+							<option <?php if (date('m')<=7) { echo "selected"; } ?>>Deuxième semestre</option>
+							<option>Semestre d'hiver</option>
+						</select>
+					</div>
+
+					<div>
+						<label class="field-label">Année scolaire</label>
+						<select name="annee_scolaireForInformation" class="field-input w-full mt-1">
+							<?php
+							$y = date('Y');
+							for ($i=0; $i <= 3; $i++) { 
+								if (date('m')>7) {
+									$as = $y." - ".($y+1);	
+								}else{
+									$as = ($y-1)." - ".$y;
+								}
+							?>
+							<option><?=$as?></option>
+							<?php
+							$y = $y - 1;
+							}
+							?>
+						</select>
+					</div>
+				</div>
+			</div>
+			
+			<div class="px-6 py-4 border-t border-slate-700 bg-slate-800/50 flex justify-end gap-3">
+				<a href="#" id="cancelsessionForInformation" class="btn-secondary px-5 py-2">Annuler</a>
+				<input id="submit" type="submit" class="btn-primary px-5 py-2 cursor-pointer" value="Confirmer">
+			</div>
+		</div>
+	</div>
+</div>
+
+</form>
+
+<!--  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<script type="text/javascript">
+	// ===== TOAST NOTIFICATION SYSTEM =====
+	function showToast(type, title, message, duration = 4000) {
+		const container = document.getElementById('toast-container');
+		const toast = document.createElement('div');
+		toast.className = `toast toast-${type}`;
+		
+		const icons = {
+			success: '<i class="bi bi-check-lg"></i>',
+			error: '<i class="bi bi-x-lg"></i>',
+			warning: '<i class="bi bi-exclamation-triangle"></i>',
+			info: '<i class="bi bi-info-lg"></i>'
+		};
+		
+		toast.innerHTML = `
+			<div class="toast-icon">${icons[type]}</div>
+			<div class="toast-content">
+				<div class="toast-title">${title}</div>
+				<div class="toast-message">${message}</div>
+			</div>
+			<button class="toast-close" onclick="this.parentElement.classList.add('toast-out'); setTimeout(() => this.parentElement.remove(), 300);">
+				<i class="bi bi-x"></i>
+			</button>
+			<div class="toast-progress" style="animation-duration: ${duration}ms;"></div>
+		`;
+		
+		container.appendChild(toast);
+		
+		setTimeout(() => {
+			toast.classList.add('toast-out');
+			setTimeout(() => toast.remove(), 300);
+		}, duration);
+	}
+
+	// ===== SAVING OVERLAY =====
+	let savingOverlayActivateTimer = null;
+
+	function showSavingOverlay() {
+		let overlay = document.querySelector('.saving-overlay');
+		if (!overlay) {
+			overlay = document.createElement('div');
+			overlay.className = 'saving-overlay';
+			overlay.innerHTML = '<div class="saving-spinner"></div>';
+			document.body.appendChild(overlay);
+		}
+
+		if (savingOverlayActivateTimer) {
+			clearTimeout(savingOverlayActivateTimer);
+			savingOverlayActivateTimer = null;
+		}
+
+		savingOverlayActivateTimer = setTimeout(function() {
+			overlay.classList.add('active');
+			savingOverlayActivateTimer = null;
+		}, 10);
+	}
+
+	function hideSavingOverlay() {
+		if (savingOverlayActivateTimer) {
+			clearTimeout(savingOverlayActivateTimer);
+			savingOverlayActivateTimer = null;
+		}
+
+		const overlay = document.querySelector('.saving-overlay');
+		if (overlay) {
+			overlay.classList.remove('active');
+		}
+	}
+
+	// ===== REFRESH INFORMATION SECTION =====
+	function refreshInformationSection() {
+		const currentUrl = window.location.href;
+		$.get(currentUrl, function(response) {
+			const newContent = $(response).find('.w-full.grid.gap-4').first();
+			if (newContent.length) {
+				$('.w-full.grid.gap-4').first().html(newContent.html());
+				showToast('info', 'Données actualisées', 'Les informations ont été rechargées.');
+			}
+		}).fail(function() {
+			console.log('Refresh failed, but data was saved');
+		});
+	}
+
+	$(document).ready(function(){
+
+		var rg_user = <?=$rg_user['level'];?>;
+		function canModifyStudentInfo() {
+			var level = parseInt(rg_user, 10);
+			return level === 1 || level === 3;
+		}
+
+		if (!canModifyStudentInfo()) {
+			$('#editPers, #editContact, #editEtd, #editParent, #editSpons, #editAutr').addClass('hidden');
+		}
+		
+
+		/* Le script est rejoue a chaque retour sur cette page sans rechargement
+		   (src/js/zone-ajax.js) : ses delegations portent un espace de noms, et
+		   les precedentes sont retirees, pour qu'un clic n'agisse qu'une fois. */
+		$(document).off('.ficheInfo');
+
+		$(document).on('click.ficheInfo', '.submitRedirect', function(e){
+			e.preventDefault();
+			$('.form-no-refrech').trigger('submit');
+		});
+		
+		$('.form-no-refrech').on('submit',function (e) {
+			
+			e.preventDefault();
+
+			var url = '<?=$app_base?>/app/.student/updateStd?student_id=<?=$student_id?>&id=<?=$id?>&rg_id=<?=$rg_id?>&etude_envisage=<?=$etude_envisage?>';
+			
+			showSavingOverlay();
+			
+			var session_id = $('input[name="session_id"]').val();
+			
+			var data = $(this).serialize();
+			
+			$.ajax({
+				url: url,
+				type: 'POST',
+				data: data,
+				dataType: 'text',
+				headers: {
+					'X-Requested-With': 'XMLHttpRequest'
+				},
+				success: function(response){
+					showToast('success', 'Modification réussie', 'Les informations de l\'étudiant ont été mises à jour avec succès.');
+
+					// Reset UI state
+					$('.submitPers, .submitContact, .submitEtd, .submitParent, .submitSpons, .submitAutr').addClass('hidden').css({'display':''});
+					$('.annulPers, .annulContact, .annulEtd, .annulParent, .annulSpons, .annulAutr').addClass('hidden').css({'display':''});
+					$('#editPers, #editContact, #editEtd, #editParent, #editSpons, #editAutr').css({'display':'block'});
+					$('.editPers, .editContact, .editEtd, .editParent, .editSpons, .editAutr').addClass('hidden').css({'display':''});
+					$('.showPers, .showContact, .showEtd, .showParent, .showSpons, .showAutr').css({'display':'block'});
+
+					// Refresh section to show updated data
+					setTimeout(function() {
+						refreshInformationSection();
+					}, 500);
+				},
+				error: function(xhr, status, error){
+					var serverMessage = (xhr && xhr.responseText) ? xhr.responseText.trim() : '';
+					var message = serverMessage !== ''
+						? serverMessage
+						: 'Une erreur est survenue lors de la mise à jour. Veuillez réessayer.';
+					showToast('error', 'Erreur de modification', message);
+					console.error('Update error:', error);
+				},
+				complete: function() {
+					hideSavingOverlay();
+				}
+			});
+		});
+		
+		$(document).on('click.ficheInfo', '#editPers', function(){
+			if (canModifyStudentInfo()) {
+
+			$(this).css({'display':'none'});
+			$('.annulPers').removeClass('hidden').css({'display':'block'});
+			$('.editPers').removeClass('hidden').css({'display':'block'});
+			$('#firstPers').focus();
+			$('.showPers').css({'display':'none'});
+
+			}else{
+				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
+			}
+		});
+		$(document).on('click.ficheInfo', '.annulPers', function(){
+			$(this).addClass('hidden').css({'display':''});
+			$('#editPers').css({'display':'block'});
+			$('.editPers').addClass('hidden').css({'display':''});
+			$('.showPers').css({'display':'block'});
+			$('.submitPers').addClass('hidden').css({'display':''});
+		});
+
+		$(document).on('click.ficheInfo', '.editPers', function(){
+			$('.submitPers').removeClass('hidden').css({'display':'block'});
+		});
+
+
+		$(document).on('click.ficheInfo', '#editContact', function(){
+			if (canModifyStudentInfo()) {
+			$(this).css({'display':'none'});
+			$('.annulContact').removeClass('hidden').css({'display':'block'});
+			$('.editContact').removeClass('hidden').css({'display':'block'});
+			$('#firstContact').focus();
+			$('.showContact').css({'display':'none'});
+			}else{
+				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
+			}
+		});
+		$(document).on('click.ficheInfo', '.annulContact', function(){
+			$(this).addClass('hidden').css({'display':''});
+			$('#editContact').css({'display':'block'});
+			$('.editContact').addClass('hidden').css({'display':''});
+			$('.showContact').css({'display':'block'});
+			$('.submitContact').addClass('hidden').css({'display':''});
+		});
+
+		$(document).on('click.ficheInfo', '.editContact', function(){
+			$('.submitContact').removeClass('hidden').css({'display':'block'});
+		});
+
+
+		$(document).on('click.ficheInfo', '#editEtd', function(){
+			if (canModifyStudentInfo()) {
+			$(this).css({'display':'none'});
+			$('.annulEtd').removeClass('hidden').css({'display':'block'});
+			$('.editEtd').removeClass('hidden').css({'display':'block'});
+			$('#firstEtd').focus();
+			$('.showEtd').css({'display':'none'});
+			}else{
+				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
+			}
+		});
+		$(document).on('click.ficheInfo', '.annulEtd', function(){
+			$(this).addClass('hidden').css({'display':''});
+			$('#editEtd').css({'display':'block'});
+			$('.editEtd').addClass('hidden').css({'display':''});
+			$('.showEtd').css({'display':'block'});
+			$('.submitEtd').addClass('hidden').css({'display':''});
+		});
+
+		$(document).on('click.ficheInfo', '.editEtd', function(){
+			$('.submitEtd').removeClass('hidden').css({'display':'block'});
+		});
+
+
+		$(document).on('click.ficheInfo', '#editParent', function(){
+			if (canModifyStudentInfo()) {
+			$(this).css({'display':'none'});
+			$('.annulParent').removeClass('hidden').css({'display':'block'});
+			$('.editParent').removeClass('hidden').css({'display':'block'});
+			$('#firstParent').focus();
+			$('.showParent').css({'display':'none'});
+			}else{
+				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
+			}
+		});
+		$(document).on('click.ficheInfo', '.annulParent', function(){
+			$(this).addClass('hidden').css({'display':''});
+			$('#editParent').css({'display':'block'});
+			$('.editParent').addClass('hidden').css({'display':''});
+			$('.showParent').css({'display':'block'});
+			$('.submitParent').addClass('hidden').css({'display':''});
+		});
+
+		$(document).on('click.ficheInfo', '.editParent', function(){
+			$('.submitParent').removeClass('hidden').css({'display':'block'});
+		});
+
+
+		$(document).on('click.ficheInfo', '#editSpons', function(){
+			if (canModifyStudentInfo()) {
+			$(this).css({'display':'none'});
+			$('.annulSpons').removeClass('hidden').css({'display':'block'});
+			$('.editSpons').removeClass('hidden').css({'display':'block'});
+			$('#firstSpons').focus();
+			$('.showSpons').css({'display':'none'});
+			}else{
+				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
+			}
+		});
+		$(document).on('click.ficheInfo', '.annulSpons', function(){
+			$(this).addClass('hidden').css({'display':''});
+			$('#editSpons').css({'display':'block'});
+			$('.editSpons').addClass('hidden').css({'display':''});
+			$('.showSpons').css({'display':'block'});
+			$('.submitSpons').addClass('hidden').css({'display':''});
+		});
+
+		$(document).on('click.ficheInfo', '.editSpons', function(){
+			$('.submitSpons').removeClass('hidden').css({'display':'block'});
+		});
+
+
+		$(document).on('click.ficheInfo', '#editAutr', function(){
+			if (canModifyStudentInfo()) {
+			$(this).css({'display':'none'});
+			$('.annulAutr').removeClass('hidden').css({'display':'block'});
+			$('.editAutr').removeClass('hidden').css({'display':'block'});
+			$('#firstAutr').focus();
+			$('.showAutr').css({'display':'none'});
+			}else{
+				showToast('warning', 'Accès refusé', 'Vous n\'avez pas les droits pour modifier ce contenu.');
+			}
+		});
+		$(document).on('click.ficheInfo', '.annulAutr', function(){
+			$(this).addClass('hidden').css({'display':''});
+			$('#editAutr').css({'display':'block'});
+			$('.editAutr').addClass('hidden').css({'display':''});
+			$('.showAutr').css({'display':'block'});
+			$('.submitAutr').addClass('hidden').css({'display':''});
+		});
+
+		$(document).on('click.ficheInfo', '.editAutr', function(){
+			$('.submitAutr').removeClass('hidden').css({'display':'block'});
+		});
+	});
+</script>

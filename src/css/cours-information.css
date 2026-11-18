@@ -1,0 +1,342 @@
+/* ==========================================================================
+   FICHE D'INFORMATION D'UN COURS — src/cours/information.php
+   --------------------------------------------------------------------------
+   Une seule fiche, toujours modifiable, en quatre groupes. Un champ modifie
+   porte le filet or de l'entree active du menu, sa valeur d'avant et un
+   bouton « Retablir » ; la barre d'enregistrement n'apparait qu'a la premiere
+   modification. Jetons de src/css/tokens.css uniquement. Les listes
+   deroulantes gardent leur fleche et leur liste ouverte du theme
+   (src/css/theme.css) : on ne leur donne que leur forme.
+   ========================================================================== */
+
+.ci {
+	--ci-pad: 22px;
+	--ci-nom: 168px;
+	--ci-ease: cubic-bezier(.2, .8, .2, 1);
+	container: ci / inline-size;
+	display: flex;
+	flex-direction: column;
+	max-height: calc(100vh - 176px);
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	border: 1px solid rgb(var(--c-line));
+	border-radius: var(--radius-lg);
+	background: rgb(var(--c-surface));
+	color: rgb(var(--c-text));
+	font: 400 14px/1.5 var(--font-sans);
+}
+.ci [hidden] { display: none !important; }
+
+/* ------------------------------------------------------------- en-tete */
+
+.ci-tete {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 8px 24px;
+	padding: 18px var(--ci-pad) 14px;
+	border-bottom: 1px solid rgb(var(--c-line));
+}
+.ci-tete__titre { margin: 0; font-size: 17px; font-weight: 650; line-height: 1.3; color: rgb(var(--c-text)); }
+.ci-tete__trace { display: flex; align-items: center; gap: 6px; margin: 4px 0 0; font-size: 12px; color: rgb(var(--c-text-3)); font-variant-numeric: tabular-nums; }
+.ci-tete__aide { margin: 0; max-width: 46ch; font-size: 12px; color: rgb(var(--c-text-3)); text-align: right; }
+
+/* ------------------------------------------------------------ groupes */
+
+.ci-fiche { display: flex; flex-direction: column; flex: 1 0 auto; margin: 0; }
+.ci-fiche__champs { min-width: 0; margin: 0; padding: 0; border: 0; }
+.ci-bloc { padding: 4px var(--ci-pad) 10px; }
+.ci-bloc + .ci-bloc { border-top: 1px solid rgb(var(--c-line)); }
+.ci-bloc__titre {
+	margin: 16px 0 4px; font-size: 11px; font-weight: 700; line-height: 1.4; letter-spacing: .07em; text-transform: uppercase;
+	color: rgb(var(--c-text-3));
+}
+
+/* Une ligne : le nom a gauche, la valeur a droite. */
+.ci-ligne {
+	position: relative;
+	display: grid;
+	grid-template-columns: var(--ci-nom) minmax(0, 1fr);
+	gap: 6px 20px;
+	align-items: start;
+	padding: 8px 0;
+}
+.ci-ligne__nom { padding-top: 10px; font-size: 13px; font-weight: 600; line-height: 1.4; color: rgb(var(--c-text-2)); }
+.ci-ligne__valeur { min-width: 0; }
+.ci-ligne--calcul { padding: 4px 0; }
+.ci-ligne--calcul .ci-ligne__nom { padding-top: 2px; }
+
+/* Champ modifie : le filet or au bord de la carte. */
+.ci-ligne::before {
+	content: "";
+	position: absolute;
+	left: calc(-1 * var(--ci-pad));
+	top: 12px;
+	bottom: 12px;
+	width: 3px;
+	border-radius: 0 3px 3px 0;
+	background: rgb(var(--c-gold));
+	opacity: 0;
+	transform: scaleY(.4);
+	transition: opacity .18s ease, transform .22s var(--ci-ease);
+}
+.ci-ligne.is-modifie::before { opacity: 1; transform: none; }
+.ci-ligne.is-modifie .ci-ligne__nom { color: rgb(var(--c-text)); }
+
+/* ------------------------------------------------------- champs texte */
+
+.ci-saisie,
+.ci-liste {
+	width: 100%;
+	max-width: 560px;
+	height: 40px;
+	margin: 0;
+	padding: 0 12px;
+	border: 1px solid rgb(var(--c-line-strong));
+	border-radius: var(--radius);
+	background-color: rgb(var(--c-inset));
+	color: rgb(var(--c-text));
+	font: 400 14px var(--font-sans);
+	transition: border-color .15s ease, box-shadow .15s ease;
+}
+.ci-liste { cursor: pointer; }
+.ci-liste--courte { max-width: 280px; }
+.ci-saisie::placeholder { color: rgb(var(--c-text-3)); opacity: 1; }
+.ci-saisie:hover,
+.ci-liste:hover { border-color: rgb(var(--c-text-3) / .7); }
+.ci-saisie:focus,
+.ci-liste:focus-visible { outline: none; border-color: rgb(var(--c-accent)); box-shadow: var(--ring); }
+.ci-saisie--code {
+	max-width: 280px;
+	font: 600 14px var(--font-mono);
+	letter-spacing: .02em;
+	color: rgb(var(--c-gold-text));
+}
+.ci-saisie[aria-invalid="true"] { border-color: rgb(var(--c-danger)); }
+.ci-saisie[aria-invalid="true"]:focus { box-shadow: 0 0 0 3px rgb(var(--c-danger) / .3); }
+
+/* Enseignant : une recherche, sa liste de resultats en carte du theme (la
+   meme que la liste ouverte des listes deroulantes, src/css/theme.css). */
+.ci-cherche { position: relative; max-width: 560px; }
+.ci-cherche .ci-cherche__saisie { padding: 0 36px; }
+.ci-cherche__loupe,
+.ci-cherche__fleche {
+	position: absolute; top: 20px; transform: translateY(-50%); line-height: 1; pointer-events: none; color: rgb(var(--c-text-3));
+}
+.ci-cherche__loupe { left: 13px; font-size: 13px; }
+.ci-cherche__fleche { right: 13px; font-size: 10.5px; color: color-mix(in srgb, rgb(var(--c-text)) 72%, transparent); transition: rotate .2s ease; }
+.ci-cherche.is-ouverte .ci-cherche__fleche { rotate: 180deg; }
+.ci-cherche__liste {
+	position: absolute; z-index: 20; top: calc(100% + 4px); left: 0; right: 0;
+	max-height: min(50vh, 18rem); margin: 0; padding: 4px; overflow-y: auto; overscroll-behavior: contain; list-style: none;
+	border: 1px solid rgb(var(--c-line-strong)); border-radius: var(--radius); background: rgb(var(--c-surface)); box-shadow: var(--shadow-2);
+	animation: ci-apparition .16s var(--ci-ease);
+}
+.ci-cherche__option {
+	display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px;
+	font-size: 13.5px; font-weight: 500; color: rgb(var(--c-text)); cursor: pointer;
+}
+.ci-cherche__option.is-actif { background: rgb(var(--c-raised)); }
+.ci-cherche__option[aria-selected="true"] { color: rgb(var(--c-accent-text)); font-weight: 650; }
+.ci-cherche__option i { margin-left: auto; font-size: 15px; }
+.ci-cherche__option.is-aucun { color: rgb(var(--c-text-2)); font-style: italic; }
+.ci-cherche__option.is-aucun[aria-selected="true"] { color: rgb(var(--c-accent-text)); }
+.ci-cherche__option mark { padding: 0; border-radius: 2px; background: rgb(var(--c-gold) / .28); color: inherit; }
+.ci-cherche__vide { padding: 10px 12px; font-size: 13px; color: rgb(var(--c-text-3)); }
+
+.ci-aide { margin: 6px 0 0; max-width: 62ch; font-size: 12px; line-height: 1.5; color: rgb(var(--c-text-3)); }
+.ci-aide code {
+	padding: 0 4px; border-radius: 4px; background: rgb(var(--c-inset));
+	font: 600 11.5px var(--font-mono); color: rgb(var(--c-gold-text));
+}
+
+/* Avis en direct (sigle deja pris, parcours remis en tronc commun). */
+.ci-avis { margin: 6px 0 0; max-width: 62ch; font-size: 12px; line-height: 1.5; color: rgb(var(--c-text-2)); }
+.ci-avis:empty { display: none; }
+.ci-avis.is-ok { color: rgb(var(--c-success)); }
+.ci-avis.is-attente { color: rgb(var(--c-text-3)); }
+.ci-avis.is-alerte { color: rgb(var(--c-warning)); }
+.ci-avis.is-doublon { color: rgb(var(--c-danger)); }
+.ci-avis ul { margin: 4px 0 0; padding-left: 18px; list-style: disc; }
+.ci-avis a { color: rgb(var(--c-accent-text)); text-decoration: underline; text-underline-offset: 2px; }
+
+/* La valeur d'avant, et de quoi la remettre. */
+.ci-avant {
+	display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; margin: 6px 0 0;
+	font-size: 12px; line-height: 1.5; color: rgb(var(--c-text-3));
+	animation: ci-apparition .2s var(--ci-ease);
+}
+.ci-avant b { font-weight: 600; color: rgb(var(--c-text-2)); }
+.ci-retablir {
+	display: inline-flex; align-items: center; gap: 4px; padding: 0; border: 0; background: none;
+	font: 600 12px var(--font-sans); color: rgb(var(--c-accent-text)); cursor: pointer;
+}
+.ci-retablir:hover { text-decoration: underline; text-underline-offset: 2px; }
+.ci-retablir:focus-visible { outline: none; border-radius: 4px; box-shadow: var(--ring); }
+
+/* -------------------------------------------------- choix en pastilles */
+
+/* Niveau, semestre, categorie : tous les choix visibles, un clic suffit. */
+.ci-choix {
+	display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 3px; max-width: 100%;
+	border-radius: 999px; background: rgb(var(--c-inset)); box-shadow: inset 0 0 0 1px rgb(var(--c-line-strong));
+}
+.ci-choix label { position: relative; margin: 0; cursor: pointer; }
+.ci-choix input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.ci-choix span {
+	display: flex; align-items: center; justify-content: center; height: 34px; padding: 0 16px; border-radius: 999px;
+	font-size: 13px; font-weight: 600; color: rgb(var(--c-text-2)); white-space: nowrap;
+	transition: background-color .18s ease, color .18s ease, box-shadow .18s ease;
+}
+.ci-choix--niveau span { min-width: 50px; padding: 0 12px; font-variant-numeric: tabular-nums; }
+.ci-choix label:hover span { color: rgb(var(--c-text)); background: rgb(var(--c-raised) / .7); }
+.ci-choix input:checked + span {
+	background: rgb(var(--c-accent)); color: rgb(var(--c-on-accent));
+	box-shadow: 0 1px 2px rgb(0 0 0 / .25);
+}
+.ci-choix input:focus-visible + span { box-shadow: var(--ring); }
+
+/* ------------------------------------------------------------- credits */
+
+.ci-pas { display: inline-flex; align-items: center; }
+.ci-pas__bouton,
+.ci-pas__nombre {
+	height: 40px; margin: 0; border: 1px solid rgb(var(--c-line-strong)); background: rgb(var(--c-inset)); color: rgb(var(--c-text));
+}
+.ci-pas__bouton {
+	display: inline-flex; align-items: center; justify-content: center; width: 40px; padding: 0; font-size: 15px; cursor: pointer;
+	transition: background-color .15s ease, color .15s ease;
+}
+.ci-pas__bouton:first-child { border-radius: var(--radius) 0 0 var(--radius); border-right: 0; }
+.ci-pas__bouton:nth-child(3) { border-radius: 0 var(--radius) var(--radius) 0; border-left: 0; }
+.ci-pas__bouton:hover:not(:disabled) { background: rgb(var(--c-raised)); }
+.ci-pas__bouton:active:not(:disabled) { background: rgb(var(--c-accent) / .25); }
+.ci-pas__bouton:disabled { color: rgb(var(--c-text-3) / .5); cursor: not-allowed; }
+.ci-pas__bouton:focus-visible { outline: none; position: relative; z-index: 1; box-shadow: var(--ring); }
+.ci-pas__nombre {
+	width: 56px; padding: 0; border-radius: 0; text-align: center;
+	font: 650 15px var(--font-sans); font-variant-numeric: tabular-nums; -moz-appearance: textfield; appearance: textfield;
+}
+.ci-pas__nombre::-webkit-inner-spin-button,
+.ci-pas__nombre::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.ci-pas__nombre:focus { outline: none; position: relative; z-index: 1; border-color: rgb(var(--c-accent)); box-shadow: var(--ring); }
+.ci-pas__unite { margin-left: 10px; font-size: 13px; color: rgb(var(--c-text-2)); }
+
+/* ---------------------------------------------------------------- cout */
+
+.ci-cout { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; margin: 0; font-variant-numeric: tabular-nums; }
+.ci-cout__calcul { font-size: 13px; color: rgb(var(--c-text-2)); }
+.ci-cout__calcul:empty { display: none; }
+.ci-cout__total { font-size: 15px; font-weight: 650; color: rgb(var(--c-text)); }
+.ci-cout__total.is-nul { font-weight: 500; color: rgb(var(--c-text-3)); }
+.ci-bloc__note { margin: 4px 0 12px calc(var(--ci-nom) + 20px); }
+.ci-bloc__note.is-alerte { color: rgb(var(--c-warning)); }
+
+/* ---------------------------------------------- barre d'enregistrement */
+
+.ci-barre {
+	position: sticky;
+	bottom: 0;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	gap: 10px 16px;
+	margin-top: auto;
+	padding: 12px var(--ci-pad);
+	border-top: 1px solid rgb(var(--c-line-strong));
+	border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+	background: rgb(var(--c-surface-2));
+	box-shadow: 0 -10px 24px -14px rgb(0 0 0 / .5);
+}
+.ci-barre:not(.is-visible) { display: none; }
+/* La bulle de la messagerie (.ms-dock__colonne) se pose en bas a droite :
+   les boutons s'ecartent d'elle. */
+body:has(.ms-dock__colonne) .ci-barre { padding-right: calc(var(--ci-pad) + 64px); }
+.ci-barre.is-visible { animation: ci-barre-entree .24s var(--ci-ease); }
+.ci-barre__etat { flex: 1 1 auto; min-width: 0; margin: 0; font-size: 13px; line-height: 1.45; color: rgb(var(--c-text-2)); }
+.ci-barre__etat b { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: rgb(var(--c-text)); }
+.ci-barre__etat b::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: rgb(var(--c-gold)); flex: none; }
+.ci-barre__notes { display: block; margin-left: 16px; font-size: 12px; color: rgb(var(--c-text-3)); }
+.ci-barre__actions { display: flex; gap: 8px; flex: none; }
+
+.ci-bouton {
+	display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 38px; padding: 0 16px;
+	border: 1px solid transparent; border-radius: var(--radius); font: 600 13.5px var(--font-sans); white-space: nowrap; cursor: pointer;
+	transition: background-color .15s ease, border-color .15s ease, color .15s ease, opacity .15s ease;
+}
+.ci-bouton:focus-visible { outline: none; box-shadow: var(--ring); }
+.ci-bouton--plein { background: rgb(var(--c-accent)); color: rgb(var(--c-on-accent)); }
+.ci-bouton--plein:hover { background: rgb(var(--c-accent-strong)); }
+.ci-bouton--discret { border-color: rgb(var(--c-line-strong)); background: transparent; color: rgb(var(--c-text-2)); }
+.ci-bouton--discret:hover { background: rgb(var(--c-raised)); color: rgb(var(--c-text)); }
+.ci-bouton:disabled { opacity: .6; cursor: progress; }
+.ci-bouton--plein.is-bloque { opacity: .6; }
+.ci-bouton.is-occupe i { display: none; }
+.ci-bouton.is-occupe::before {
+	content: ""; width: 14px; height: 14px; border-radius: 50%;
+	border: 2px solid currentColor; border-right-color: transparent; animation: ci-tour .7s linear infinite;
+}
+
+/* ----------------------------------------------------------- animations */
+
+@keyframes ci-barre-entree { from { opacity: 0; transform: translateY(12px); } }
+@keyframes ci-apparition { from { opacity: 0; transform: translateY(-3px); } }
+@keyframes ci-tour { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+	.ci *, .ci *::before, .ci-barre { animation: none !important; transition: none !important; }
+	.ci-bouton.is-occupe::before { animation: ci-tour 1.4s linear infinite !important; }
+}
+
+/* ------------------------------------------------------------- tailles */
+
+/* Sous 1024 px la page defile d'un bloc et la barre d'outils du bas est fixe
+   (src/css/responsive.css). La zone du cours y est en overflow: auto, ce qui
+   empeche une barre collante : la barre d'enregistrement est fixe, au-dessus
+   de la barre d'outils, et la fiche se rallonge d'autant pour ne rien cacher. */
+@media (max-width: 1023px) {
+	.ci { max-height: none; overflow: visible; }
+	.ci-barre {
+		position: fixed; left: 8px; right: 8px; bottom: 69px; z-index: 900; margin: 0;
+		border: 1px solid rgb(var(--c-line-strong)); border-radius: var(--radius); box-shadow: var(--shadow-2);
+	}
+	.ci-fiche:has(.ci-barre.is-visible) { padding-bottom: 84px; }
+	/* Pas la place pour la bulle de la messagerie a cote : elle s'efface le
+	   temps d'enregistrer ou d'annuler. */
+	body:has(.ms-dock__colonne) .ci-barre { padding-right: var(--ci-pad); }
+	body:has(.ci-barre.is-visible) .ms-dock__colonne { opacity: 0; pointer-events: none; }
+}
+
+/* Fiche etroite (telephone, mais aussi tablette ou petit ecran, ou elle partage
+   la largeur avec le panneau du cours) : chaque nom au-dessus de sa valeur, les
+   pastilles en grille. La largeur de la fiche decide, pas celle de l'ecran. */
+@container ci (max-width: 600px) {
+	.ci-tete, .ci-bloc { --ci-pad: 16px; }
+	.ci-tete { flex-direction: column; align-items: flex-start; }
+	.ci-tete__aide { text-align: left; max-width: none; }
+	.ci-ligne { grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 8px 0 10px; }
+	.ci-ligne__nom { padding-top: 0; }
+	.ci-ligne::before { top: 4px; bottom: 10px; }
+	.ci-saisie, .ci-liste, .ci-saisie--code, .ci-liste--courte, .ci-cherche { max-width: none; }
+	.ci-saisie, .ci-liste { height: 44px; }
+	.ci-cherche__option { padding: 11px 12px; }
+	.ci-cherche__loupe, .ci-cherche__fleche { top: 22px; }
+	.ci-pas__bouton, .ci-pas__nombre { height: 44px; }
+	.ci-pas__bouton { width: 48px; }
+	.ci-choix { display: grid; width: 100%; border-radius: 16px; }
+	.ci-choix span { height: 40px; padding: 0 8px; border-radius: 13px; }
+	.ci-choix--niveau { grid-template-columns: repeat(auto-fit, minmax(48px, 1fr)); }
+	.ci-choix:not(.ci-choix--niveau) { grid-template-columns: 1fr 1fr; }
+	.ci-bloc__note { margin-left: 0; }
+}
+
+/* Telephone : 16 px dans les champs (sinon iOS agrandit la page a la saisie),
+   et la barre d'enregistrement sur deux lignes. */
+@media (max-width: 640px) {
+	.ci-saisie, .ci-liste, .ci-pas__nombre { font-size: 16px; }
+	.ci-cherche__option { font-size: 15px; }
+	.ci-barre { flex-wrap: wrap; }
+	.ci-fiche:has(.ci-barre.is-visible) { padding-bottom: 136px; }
+	.ci-barre__actions { width: 100%; }
+	.ci-barre__actions .ci-bouton { flex: 1; height: 44px; }
+}

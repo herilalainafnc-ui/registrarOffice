@@ -1,0 +1,59 @@
+/* ==========================================================================
+   CIEL ÉTOILÉ — les pages du seuil : connexion, chargement, au revoir.
+
+   Technique : codepen.io/sarazond/pen/LYGbwj — trois couches d étoiles
+   dessinées en box-shadow, qui montent à des vitesses différentes (parallaxe).
+   Couleurs : le sceau de l université. L horizon est teinté du bleu Zurcher,
+   une étoile sur douze environ est or. Les étoiles sont posées par
+   src/js/ciel.js, pas écrites ici : 40 Ko de coordonnées en moins.
+
+   Usage : <div class="ciel" data-ciel aria-hidden="true"></div>
+           (ajouter « ciel--local » pour le limiter à un panneau)
+   ========================================================================== */
+
+.ciel {
+	position: fixed;
+	inset: 0;
+	z-index: 0;
+	overflow: hidden;
+	pointer-events: none;
+	background:
+		radial-gradient(ellipse 120% 70% at 50% 110%, rgb(70 88 194 / .35) 0%, transparent 60%),
+		radial-gradient(ellipse at bottom, #222e65 0%, #12162c 55%, #07091a 100%);
+}
+.ciel--local { position: absolute; background: none; }
+
+.ciel__couche {
+	position: absolute;
+	top: 0;
+	left: 0;
+	border-radius: 50%;
+	background: transparent;
+	box-shadow: var(--etoiles, none);
+	animation: ciel-monte var(--duree, 60s) linear infinite;
+	will-change: transform;
+}
+/* La meme poignee d etoiles, 2000 px plus bas : quand la premiere est sortie
+   par le haut, la seconde a pris sa place. */
+.ciel__couche::after {
+	content: "";
+	position: absolute;
+	top: 2000px;
+	left: 0;
+	width: inherit;
+	height: inherit;
+	border-radius: inherit;
+	box-shadow: var(--etoiles, none);
+}
+.ciel__couche--1 { width: 1px; height: 1px; --duree: 60s; }
+.ciel__couche--2 { width: 2px; height: 2px; --duree: 120s; }
+.ciel__couche--3 { width: 3px; height: 3px; --duree: 180s; }
+
+@keyframes ciel-monte {
+	from { transform: translateY(0); }
+	to   { transform: translateY(-2000px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.ciel__couche { animation: none; }
+}

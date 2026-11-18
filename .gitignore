@@ -1,0 +1,80 @@
+/app/photosenseignants/
+/app/photosetudiants/
+/app/photosuser/
+/app/photosetudiants.zip
+/app/Motors/
+/dash/
+/data/backdb.php
+/data/config.local.php
+# On exclut le contenu de file/, pas le dossier lui-meme : git ne descend
+# pas dans un dossier exclu, et l exception ci-dessous resterait sans effet.
+/file/*
+
+# Les illustrations de la vitrine font partie du site, pas des fichiers
+# deposes par les utilisateurs : elles doivent suivre le code au deploiement.
+!/file/vitrine/
+/framework/
+/node_modules/
+/out/
+/desktop/dist/
+/src/student/ajax-meilleurs-etudiants.php
+
+# ---- Scripts de debug / diagnostic / maintenance (ne pas déployer) ----
+/data/check_*.php
+/data/debug_*.php
+/data/find_*.php
+/data/test_*.php
+/data/fix_*.php
+/data/fix_*.sql
+/test_sessions.php
+/test_sessions_auth.php
+/save_offered_debug.log
+*.log
+# ---- Secrets (jamais commiter) ----
+/data/config.secret.php
+
+# ---- Fichiers de la messagerie (correspondance privee, jamais commiter) ----
+# Photos, videos, vocaux et documents envoyes entre utilisateurs (data/messagerie.php).
+/data/messagerie/
+
+# ---- Retouche photo : photos et retouches des comptes Media (jamais commiter) ----
+# Copie serveur de l'atelier /retouche-photo (app/retouche-photo.api.php).
+/data/retouche/
+
+# ---- Studio UAZ : images des visuels enregistres (jamais commiter) ----
+# Fichiers de data/studio/images/<visuel>/ (data/studio.visuels.php).
+/data/studio/
+
+# ---- Donnees personnelles d'etudiants (jamais commiter) ----
+# Ces fichiers contiennent des noms, matricules et codes comptables reels.
+# Ils restent sur le disque mais ne doivent pas partir sur GitHub, meme prive.
+/data/ETUDIANT.import.xlsx
+/data/account_code_unmatched.tsv
+/data/account_code_corrections_template.tsv
+
+# ---- Exports et archives volumineux ----
+# Un export de base ou une archive de photos depasse la limite de 100 Mo par
+# fichier de GitHub et ferait echouer tout push.
+/app/photosetudiants.zip
+/data/registrar_db_export_clean.sql
+/data/registrar_db_export_clean.zip
+/data/*.tmp.sql
+/data/_tmp_*.sql
+
+# Fichiers generes par le systeme d exploitation
+.DS_Store
+**/.DS_Store
+Thumbs.db
+desktop.ini
+
+# Verrous temporaires de Microsoft Office : Word, Excel et PowerPoint
+# deposent un ~$nomdufichier a cote du document tant qu il est ouvert.
+~$*
+/php/
+/.claude/
+
+# Journaux d exploitation (contiennent des donnees personnelles)
+/logs/
+
+# Cle du compte de service Google Admin (data/google.admin.php) : jamais dans git.
+/data/prive/

@@ -1,0 +1,179 @@
+/* =============================================================================
+   Effets GSAP de la vitrine
+   =============================================================================
+
+   Trois modules, activables independamment :
+     1. defilement horizontal epingle  (.section-horizontale)
+     2. curseur suivi de formes        (.curseur-uaz / .formes-uaz)
+     3. transitions entre les pages    (.rideau-page)
+
+   Tout est ecrit pour se degrader proprement : si GSAP ne se charge pas — un
+   CDN peut etre lent ou bloque — les sections restent lisibles et defilent
+   normalement, et le curseur du systeme reste celui du navigateur.
+   ========================================================================== */
+
+/* -------------------------------------------------------------------------
+   1. Section a defilement horizontal
+   ------------------------------------------------------------------------- */
+
+.section-horizontale {
+    position: relative;
+    background: #0b1a2b;
+    color: #f1f5f9;
+    overflow: hidden;
+}
+
+/* Sans JavaScript, la piste defile lateralement a la main plutot que de
+   deborder : l'information reste accessible. */
+.section-horizontale__piste {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    padding: clamp(2rem, 6vw, 5rem) clamp(1.5rem, 8vw, 8vw);
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+}
+
+/* Une fois GSAP actif, c'est lui qui deplace la piste : on lui retire le
+   defilement natif pour eviter deux mecanismes concurrents. */
+.section-horizontale.est-animee { height: 100vh; display: flex; }
+.section-horizontale.est-animee .section-horizontale__piste {
+    height: 100vh;
+    overflow: visible;
+    padding-right: 10vw;
+}
+
+.section-horizontale__intro {
+    flex: 0 0 auto;
+    max-width: min(30rem, 80vw);
+    scroll-snap-align: start;
+}
+.section-horizontale__intro h2 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    line-height: 1.1;
+    margin: 0 0 1rem;
+    font-weight: 800;
+    text-wrap: balance;
+}
+.section-horizontale__intro p {
+    margin: 0;
+    color: #94a3b8;
+    font-size: clamp(.95rem, 1.6vw, 1.1rem);
+    line-height: 1.7;
+    max-width: 40ch;
+}
+
+.section-horizontale__vue {
+    flex: 0 0 auto;
+    width: min(34rem, 78vw);
+    scroll-snap-align: center;
+}
+.section-horizontale__vue img {
+    display: block;
+    width: 100%;
+    height: clamp(16rem, 55vh, 34rem);
+    object-fit: cover;
+    border-radius: 14px;
+    background: #16283d;   /* fond visible tant que l'image charge */
+}
+.section-horizontale__vue figcaption {
+    margin-top: .85rem;
+    font-size: .9rem;
+    color: #94a3b8;
+    line-height: 1.6;
+}
+.section-horizontale__vue figcaption strong {
+    display: block;
+    color: #f1f5f9;
+    font-size: 1rem;
+    margin-bottom: .2rem;
+}
+
+/* Indication de defilement, masquee des que l'animation prend le relais. */
+.section-horizontale__indice {
+    position: absolute;
+    right: clamp(1rem, 4vw, 3rem);
+    bottom: clamp(1rem, 3vw, 2rem);
+    font-size: .8rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #64748b;
+    pointer-events: none;
+}
+
+/* -------------------------------------------------------------------------
+   2. Curseur et formes qui le suivent
+
+   Reserve aux appareils dotes d'un pointeur precis : sur un ecran tactile il
+   n'y a pas de curseur a remplacer, et masquer celui du systeme y serait
+   nuisible.
+   ------------------------------------------------------------------------- */
+
+.curseur-uaz,
+.formes-uaz { display: none; }
+
+@media (hover: hover) and (pointer: fine) {
+    .curseur-uaz {
+        position: fixed;
+        top: 0; left: 0;
+        width: 18px; height: 18px;
+        margin: -9px 0 0 -9px;
+        border-radius: 50%;
+        background: #0891b2;
+        pointer-events: none;
+        user-select: none;
+        z-index: 10000;
+        will-change: transform;
+        display: block;
+    }
+
+    /* Les formes vivent dans leur section, pas sur toute la page : elles
+       accompagnent le bandeau d'accueil sans suivre le visiteur partout. */
+    .formes-uaz {
+        display: block;
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 0;
+    }
+    .forme-uaz {
+        position: absolute;
+        top: 0; left: 0;
+        border-radius: 50%;
+        will-change: transform;
+        opacity: .5;
+        filter: blur(2px);
+    }
+    .forme-uaz--1 { width: 420px; height: 420px; margin: -210px 0 0 -210px; background: #0e7490; }
+    .forme-uaz--2 { width: 260px; height: 260px; margin: -130px 0 0 -130px; background: #06b6d4; }
+    .forme-uaz--3 { width: 140px; height: 140px; margin: -70px 0 0 -70px;  background: #7c3aed; }
+}
+
+/* Un visiteur qui demande moins d'animation garde son curseur habituel. */
+@media (prefers-reduced-motion: reduce) {
+    .curseur-uaz, .formes-uaz { display: none !important; }
+}
+
+/* -------------------------------------------------------------------------
+   3. Rideau de transition entre les pages
+   ------------------------------------------------------------------------- */
+
+.rideau-page {
+    position: fixed;
+    inset: 0;
+    z-index: 9500;
+    pointer-events: none;
+    display: flex;
+    transform: translateY(100%);   /* hors champ au repos */
+}
+.rideau-page__bande {
+    flex: 1 1 0;
+    background: #0b1a2b;
+}
+.rideau-page__bande:nth-child(2) { background: #0e7490; }
+.rideau-page__bande:nth-child(3) { background: #06b6d4; }
+
+@media (prefers-reduced-motion: reduce) {
+    .rideau-page { display: none; }
+}

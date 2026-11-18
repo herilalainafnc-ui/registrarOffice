@@ -1,0 +1,447 @@
+<?php 
+	
+	require('../init/.forPrint/top.forPrint.php');
+	//require('../init/.forPrint/top.sa.php');
+	$exportation = $_POST['exportation'];
+	$semestre = $_POST['semestre'];
+	$yearScoolNow = $_POST['anneescolaire'];
+	
+	$findSessionOnSS = $dtb->prepare('SELECT * FROM t_2023_session WHERE session_semester = ? AND session_year = ?');
+	$findSessionOnSS->execute([$semestre, $yearScoolNow]);
+
+	$showSessionOnSS = $findSessionOnSS->fetch();
+	$session_id = $showSessionOnSS['session_id'];
+	$session_name = $showSessionOnSS['session_name'];
+	$session_year = $showSessionOnSS['session_year'];
+
+?>
+<center>
+	<?php
+	$isPresenceSheet = !empty($_POST['presence_sheet']);
+	$presenceType = $_POST['presence_type'] ?? 'classe';
+	$presenceTypeLabel = 'Presence par classe';
+	$presenceColumns = ['Presence', 'Observation'];
+	$presenceColumnWidth = '90px';
+	$defaultChapelleDates = [
+		'13 avril',
+		'20 avril',
+		'27 avril',
+		'11 mai',
+		'1 juin',
+		'8 juin',
+		'15 juin',
+		'22 juin',
+		'29 juin',
+		'6 juillet'
+	];
+
+	if ($presenceType === 'chapelle_lundi') {
+		$presenceTypeLabel = 'Exercice de chapelle (lundis)';
+		$chapelleDatesInput = trim((string)($_POST['chapelle_dates'] ?? ''));
+		if ($chapelleDatesInput !== '') {
+			$chapelleDates = preg_split('/\s*,\s*/', $chapelleDatesInput);
+			$chapelleDates = array_values(array_filter($chapelleDates, static function ($v) {
+				return $v !== '';
+			}));
+			$presenceColumns = !empty($chapelleDates) ? $chapelleDates : $defaultChapelleDates;
+		} else {
+			$presenceColumns = $defaultChapelleDates;
+		}
+		if (count($presenceColumns) >= 8) {
+			$presenceColumnWidth = '58px';
+		}
+	} elseif ($presenceType === 'semaine_priere') {
+		$presenceTypeLabel = 'Semaine de priere (lundi a jeudi)';
+		$presenceColumns = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi'];
+	}
+	?>
+	<b class="">
+	<?php if ($isPresenceSheet) { ?>
+		<?= $presenceTypeLabel ?>
+	<?php } else { ?>
+		Liste des <?php if (!empty($_POST['new_student'])) { echo "nouveaux";}?> étudiants <?php 
+		if($exportation == "internat"){
+			echo "internes";
+		}elseif($exportation == "abnment"){
+			echo "abonnée";	
+		}elseif($exportation == "adventiste"){
+			echo "Adventistes";	
+		}elseif($exportation == "non_adventiste"){
+			echo "Non-Adventistes";	
+		}
+		if (!empty($_POST['cours'])) {
+			echo " avec ces cours";
+			if (!empty($_POST['notes'])) {
+				echo ' et les notes';
+			}
+		}
+		?>
+	<?php } ?>
+	<?= " <br><em class='text-xs'>".$session_name."  ".$session_year."</em>"; ?>
+	</b>
+</center>
+
+<?php
+	$printName = "LISTE_ETUDIANT";
+	
+
+if(isset($_POST['types']) AND ($_POST['types']!= 'TOUT')){
+
+	$types = $_POST['types'];
+	
+	$mention = $dtb->prepare("SELECT * FROM filiere WHERE filiere_sigle = ? ORDER BY filiere_id");
+	$mention->execute([$types]);
+
+}elseif(isset($_POST['types']) AND ($_POST['types']== 'TOUT')){
+
+	$mention = $dtb->query("SELECT * FROM filiere ORDER BY filiere_id");
+
+}
+
+$nbrs = 1;
+$nombre = 0;
+while($affm = $mention->fetch()){ ?>
+
+	<b class="text-sm">Mention <?=$title = $affm['filiere_description']?></b><br>
+
+
+<?php
+	
+	$etude_mention = $affm['filiere_sigle'];
+
+if(empty($_POST['cours'])){
+ ?>
+ 
+
+<table class="tbl mb-0" style="table-layout: fixed; width: 100%;">
+	<thead class="bg-slate-200">
+ 			<tr>
+ 				<td style="width: 35px;" class="border-x px-1">No</td>
+ 				<td style="width: 75px;" class="border-r px-1">ID</td>
+ 				<td style="width: 230px;" class="border-r px-1">Nom et prénom</td>
+ 				<td style="width: 60px;" class="border-r px-1">Niveau</td>
+ 				
+ 				<?php 
+				if ($exportation == "abnment" OR $exportation == "internat") {
+					?>
+				<td style="width: 70px;" class="border-r px-1">Sexe</td>
+				<td style="width: 70px;" class="border-r px-1">Résidence</td>
+					<?php 
+				}elseif ($exportation == "adventiste" OR $exportation == "non_adventiste") {
+					?>
+				<td style="width: 70px;" class="border-r px-1">Sexe</td>
+				<td style="width: 100px;" class="border-r px-1">Religion</td>
+					<?php 
+				}else{
+					if ($isPresenceSheet) {
+						foreach ($presenceColumns as $presenceCol) {
+							echo '<td style="width: '.$presenceColumnWidth.';" class="border-r px-1">'.htmlspecialchars($presenceCol).'</td>';
+						}
+					} else {
+				 ?>
+				<td style="width: 180px;" class="border-r px-1">Adresse Email</td>
+				 <?php 
+					}
+				}
+				
+				if(!$isPresenceSheet && !empty($_POST['signature'])){
+					echo '<td style="width: 100px;" class="border-r px-1">Signature</td>';
+				}
+				if(!$isPresenceSheet && !empty($_POST['remarque'])){
+					echo '<td style="width: 120px;" class="border-r px-1">Remarque</td>';
+				}
+				if(!$isPresenceSheet && !empty($_POST['taille'])){
+					echo '<td style="width: 80px;" class="border-r px-1">Taille</td>';
+				}
+				?>
+ 				
+ 			</tr>
+ 	</thead>
+</table>
+	<?php
+}else{ echo "";}
+		$anneescolaire = $_POST['anneescolaire'];
+		
+		// Construction de la requête de base
+		// Aligner avec Statistique: exclure seulement suspendus et retraits universite.
+		/* Une seule fiche par matricule : l'active, la plus ancienne. Huit
+		   matricules ont deux fiches (une supprimee et vide, ou deux actives) ;
+		   la jointure les prenait toutes, et le niveau venait de l'une ou de
+		   l'autre (« M1 » pour un etudiant de M2, le 06/10/2026). Deux fiches
+		   actives sont deux personnes sous un meme matricule : la plus
+		   ancienne, celle que l'index rendait jusqu'ici, garde ses listes. */
+		$sql = "SELECT ins.*, COALESCE(NULLIF(ins.niveau_std, 0), std.annee_etude) AS real_niveau, std.graduated
+				FROM t_2024_inscription_session ins
+				INNER JOIN tbl_2024_etudiant std ON std.id = (
+					SELECT e2.id FROM tbl_2024_etudiant e2 WHERE e2.student_id = ins.student_id
+					ORDER BY e2.remove ASC, e2.id ASC LIMIT 1)
+				WHERE ins.session_id = ?
+				AND ins.etude_mention = ?
+				AND (std.suspended IS NULL OR std.suspended != 1)
+				AND (std.retrait_universite IS NULL OR std.retrait_universite = 0)";
+		$params = [$session_id, $etude_mention];
+		
+		// Filtre par type d'exportation
+		if ($exportation == "internat") {
+			$sql .= " AND ins.status = 'Interne'";
+		} elseif ($exportation == "abnment") {
+			$sql .= " AND std.abonment = 1";
+		} elseif ($exportation == "adventiste") {
+			$sql .= " AND (std.religion = 'Adventiste' OR std.religion = 'Adventiste du Septieme-jour')";
+		} elseif ($exportation == "non_adventiste") {
+			$sql .= " AND std.religion != 'Adventiste' AND std.religion != 'Adventiste du Septieme-jour'";
+		}
+		
+		// Filtre nouveaux étudiants
+		if (!empty($_POST['new_student'])) {
+			$sql .= " AND ins.new_student = 1";
+		}
+		
+		// Filtre par niveau : celui de l'inscription a cette session, a defaut celui de la fiche
+		$annee_etude_post = $_POST['annee_etude'] ?? 'tout';
+		$niveau_scope = $_POST['niveau_scope'] ?? 'all';
+
+		if ($annee_etude_post != "tout") {
+			$sql .= " AND COALESCE(NULLIF(ins.niveau_std, 0), std.annee_etude) = ?";
+			$params[] = $annee_etude_post;
+		} elseif ($niveau_scope === 'licence') {
+			$sql .= " AND COALESCE(NULLIF(ins.niveau_std, 0), std.annee_etude) < 4";
+		}
+		
+		// Éviter les doublons
+		$sql .= " GROUP BY ins.student_id";
+		
+		$sql .= " ORDER BY real_niveau ASC, ins.student_id ASC";
+		
+		$etudiant = $dtb->prepare($sql);
+		$etudiant->execute($params);
+	
+	$n = 1;
+	$tn = 0;
+	while($affiche = $etudiant->fetch()){
+		
+		$student_id = $affiche['student_id'];
+		$status = $affiche['status'];
+		
+		// Utiliser annee_etude de la jointure (real_niveau)
+		$annee_etude = $affiche['real_niveau'];
+
+		/* La fiche active, pas la premiere venue : une fiche supprimee et vide
+		   sortait un nom vide dans la liste. */
+		$findStd = $dtb->prepare('SELECT * FROM tbl_2024_etudiant WHERE student_id = ? ORDER BY remove ASC, id ASC LIMIT 1');
+		$findStd->execute([$student_id]);
+		
+		$showStd = $findStd->fetch();
+		
+		// Ne pas afficher si l'étudiant n'existe pas dans tbl_2024_etudiant
+		if(!$showStd){
+			continue;
+		}
+		
+		$student_nom = $showStd['student_nom'];
+		$student_prenom = $showStd['student_prenom'];
+		$student_email = $showStd['student_email'];
+
+ 	?>
+ 	<div>
+ 		<table class="tbl mb-0" style="table-layout: fixed; width: 100%;">
+ 			
+ 			<tr class="<?php if(!empty($_POST['cours'])){ echo"bg-slate-400"; } ?>" style="page-break-inside: avoid;">
+
+				<td style="width: 35px;" class="border-x <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><b><?=$n?></b></td>
+ 				
+ 				<td style="width: 75px;" class="border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><b><?=$student_id?></b></td>
+ 				
+ 				<td style="width: 230px;" class="border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?=$student_nom." ".$student_prenom?></td>
+ 				
+ 				<td style="width: 60px;" class="border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?php
+				if($annee_etude == 0){
+					echo "L1 (RN)";
+				}elseif($annee_etude<=3) {
+					echo "L".$annee_etude;
+				}else{
+					echo "M".($annee_etude-3);
+				} ?></td>
+ 				
+ 				<?php 
+				if ($exportation == "abnment" OR $exportation == "internat") {
+					?>
+				
+				<td style="width: 70px;" class="border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?php if ($showStd['sex'] == 1){ echo "Masculin";}else{ echo "Feminin";}?></td>
+				
+				<td style="width: 70px;" class="border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?=$status?></td>
+					<?php 
+					if(!empty($_POST['signature'])){
+						echo '<td style="width: 100px;" class="border-r"></td>';
+					}
+					if(!empty($_POST['remarque'])){
+						echo '<td style="width: 120px;" class="border-r"></td>';
+					}
+					if(!empty($_POST['taille'])){
+						echo '<td style="width: 80px;" class="border-r">'.$showStd['taille'].'</td>';
+					}
+				}elseif ($exportation == "adventiste" OR $exportation == "non_adventiste") {
+					?>
+				
+				<td style="width: 70px;" class="border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?php if ($showStd['sex'] == 1){ echo "Masculin";}else{ echo "Feminin";}?></td>
+				
+				<td style="width: 100px;" class="border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?=$showStd['religion']?></td>
+					<?php 
+					if(!$isPresenceSheet && !empty($_POST['signature'])){
+						echo '<td style="width: 100px;" class="border-r"></td>';
+					}
+					if(!$isPresenceSheet && !empty($_POST['remarque'])){
+						echo '<td style="width: 120px;" class="border-r"></td>';
+					}
+					if(!$isPresenceSheet && !empty($_POST['taille'])){
+						echo '<td style="width: 80px;" class="border-r">'.$showStd['taille'].'</td>';
+					}
+				}else{
+					if ($isPresenceSheet) {
+						foreach ($presenceColumns as $presenceCol) {
+							echo '<td style="width: '.$presenceColumnWidth.';" class="border-r"></td>';
+						}
+					} else {
+				 ?>
+				<td style="width: 180px;" class="border-r <?php if(!empty($_POST['cours'])){ echo"text-white"; }?>"><?=$student_email?></td>
+
+				 <?php 
+					}
+					if(!$isPresenceSheet && !empty($_POST['signature'])){
+						echo '<td style="width: 100px;" class="border-r"></td>';
+					}
+					if(!$isPresenceSheet && !empty($_POST['remarque'])){
+						echo '<td style="width: 120px;" class="border-r"></td>';
+					}
+					if(!$isPresenceSheet && !empty($_POST['taille'])){
+						echo '<td style="width: 80px;" class="border-r">'.$showStd['taille'].'</td>';
+					}
+				}
+				?>
+ 	
+ 			</tr>
+
+ 		</table>
+ 	</div>
+	
+	<?php
+		$semestre = $_POST['semestre'];
+		if(!empty($_POST['cours'])){
+	?>
+		<div class="mb-2">
+	 		<table class="tbl mb-1">
+		 		<thead class="bg-orange-200">
+		 			<tr style="page-break-inside: avoid;">
+		 				
+		 				<td class='w-[100px] px-1'><b>Sigle</b></td>
+		 				
+		 				<td class='w-[400px] px-1'><b>Titre du cours</b></td>
+		 				
+		 				<td class='w-20 px-1'><b>Crédit</b></td>
+		 				
+		 				<?php 
+		 				if(!empty($_POST['notes'])){
+		 					echo "<td class='w-16 px-1'><b>Notes/20</b></td>";
+		 				}else{echo '';}
+
+		 				if(!empty($_POST['signature'])){
+		 					echo "<td class=' px-1'><b>Signature</b></td>";
+		 				}
+		 				if (!empty($_POST['remarque'])) {
+		 					echo "<td class='w-[120px] px-1'><b>Remarque</b></td>";
+		 				}
+		 				 ?>
+		 				
+		 			</tr>
+		 		</thead>
+		 		<tbody>
+		 			<?php
+		 			$annee_scolaire = $_POST['anneescolaire'];
+		 	if($_POST['annee_etude']!='tout' AND $_POST['semestre']!='tout'){	
+				$cours = $dtb->prepare("SELECT * FROM t_2023_notes WHERE student_id = ? AND ajout = 1 AND annee_scolaire = ? AND yearlevel = ? AND semester = ? ORDER BY title_cours");
+				$cours->execute([$student_id, $annee_scolaire, $annee_etude, $semestre]);
+
+			}elseif($_POST['annee_etude']!='tout' AND $_POST['semestre']=='tout'){
+				$cours = $dtb->prepare("SELECT * FROM t_2023_notes WHERE student_id = ? AND ajout = 1 AND annee_scolaire = ? AND yearlevel = ? ORDER BY title_cours");
+				$cours->execute([$student_id, $annee_scolaire, $annee_etude]);
+
+			}elseif($_POST['annee_etude']=='tout' AND $_POST['semestre']!='tout'){
+				$cours = $dtb->prepare("SELECT * FROM t_2023_notes WHERE student_id = ? AND ajout = 1 AND annee_scolaire = ? AND semester = ? ORDER BY title_cours");
+				$cours->execute([$student_id, $annee_scolaire, $semestre]);
+			
+			}elseif($_POST['annee_etude']=='tout' AND $_POST['semestre']=='tout'){
+				$cours = $dtb->prepare("SELECT * FROM t_2023_notes WHERE student_id = ? AND ajout = 1 AND annee_scolaire = ? ORDER BY title_cours");
+				$cours->execute([$student_id, $annee_scolaire]);
+
+			}
+		 				$nn = 1;
+		 				$credit = 0;
+		 				$notes = 0;
+		 				$tcredit = 0;
+		 				$tnotes = 0;
+		 				while($affcours = $cours->fetch()){
+					?>
+					<tr style="page-break-inside: avoid;">
+
+						<td><?=$affcours['Sigle']?></td>
+						<td><?=$affcours['title_cours']?></td>
+						<td><?=$affcours['credit']?></td>
+						<?php 
+			 				if(!empty($_POST['notes'])){
+			 					require_once __DIR__ . '/../../data/notes.statut.php';
+			 					echo "<td id='c3'>".noteLibelle($affcours['grade'], noteEstCoursValidation($affcours))."</td>";
+			 				}else{echo '';}
+			 				if(!empty($_POST['signature'])){
+			 					echo "<td id='c3'></td>";
+			 				}
+			 				if (!empty($_POST['remarque'])) {
+			 					echo "<td id='c3' style='width:30%;'></td>";
+			 				}
+		 				 ?>
+		 				
+					</tr>
+					<?php
+							$tcredit+= $credit + intval($affcours['credit']);
+							require_once __DIR__ . '/../../data/notes.statut.php';
+							// NN (-4), V et E ne s'additionnent pas (data/notes.statut.php)
+							$tnotes+= $notes + (noteCompteDansMoyenne($affcours['grade'], noteEstCoursValidation($affcours)) ? (float) str_replace(',', '.', $affcours['grade']) : 0);
+						$nn++;
+		 				}
+		 			 ?>
+		 		</tbody>
+		 		<tfoot>
+		 			<tr style="page-break-inside: avoid;">
+		 				<td></td>
+		 				<td></td>
+		 				<td><b><?php
+
+		 				if (!empty($tcredit)){echo $tcredit;}else{echo'0';}?></b></td>
+		 				<?php 
+		 				if(!empty($_POST['notes'])){
+		 						echo "<td id='f3'>".$tnotes."</td>";	
+		 				}
+		 				 ?>
+		 			</tr>
+		 		</tfoot>
+		 	</table>
+		 </div>
+	<?php
+		}
+		$n++;
+		
+	}
+			$tn = $n-1;
+			$nombre= $nombre +$tn;	
+	$nbrs++;
+}
+?>
+<div class="mt-4">
+		<table class="tbl mb-1">
+			<thead class="bg-slate-200">
+				<tr>
+					<th><b><?=$nombre?></b></th>
+					<th colspan="4"><b>Total de tout les étudiants</b></th>
+				</tr>
+			</thead>
+		</table>
+</div><?php require('../init/.forPrint/foot.forPrint.php'); ?>

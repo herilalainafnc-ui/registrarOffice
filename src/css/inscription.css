@@ -1,0 +1,1197 @@
+/* ==========================================================================
+   INSCRIPTION — le guichet (inscription/inscription.php)
+   --------------------------------------------------------------------------
+   Styles de la page et des fragments qu elle charge (inscription/stages/).
+   Tout vient des jetons de src/css/tokens.css : les themes clair et sombre
+   suivent sans regle a part.
+
+   Le motif de la page : chaque etape franchie du dossier est « scellee ».
+   Sa pastille reprend le sceau de l universite (disque bleu Zurcher cercle
+   d or) et le fil qui la relie a la precedente passe a l or. C est le seul
+   ornement ; tout le reste suit la retenue des autres pages.
+   ========================================================================== */
+
+/* ------------------------------------------------------------------ page */
+
+.insc-page {
+	width: 100%;
+	padding: 20px 16px 28px;
+	color: rgb(var(--c-text));
+	font-size: 14px;
+}
+@media (min-width: 1024px) {
+	/* Au bureau, html et body sont figes a la hauteur de l ecran
+	   (init/head.php) : sans cela, tout ce qui passait sous le pied etait
+	   hors d atteinte. La colonne prend donc la hauteur disponible et la
+	   zone defile a l interieur ; zone-ajax la remet en haut a chaque
+	   dossier ouvert. Le contenu reste centre sur les tres grands ecrans
+	   (1680 px), par la marge interieure : la barre de defilement reste au
+	   bord de l ecran. */
+	.insc-colonne { height: calc(100vh - var(--topbar-h)); }
+	.insc-page {
+		min-height: 0;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		padding: 24px max(28px, calc((100% - 1680px) / 2)) 32px;
+	}
+}
+@supports (height: 100dvh) {
+	@media (min-width: 1024px) {
+		.insc-colonne { height: calc(100dvh - var(--topbar-h)); }
+	}
+}
+
+/* Petit titre au-dessus d un bloc : il dit ce que le bloc contient. */
+.insc-surtitre {
+	margin: 0 0 6px;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: .06em;
+	text-transform: uppercase;
+	color: rgb(var(--c-text-3));
+}
+
+/* --------------------------------------------------------------- en-tete */
+
+.insc-tete {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 14px 24px;
+	margin-bottom: 18px;
+}
+.insc-tete h1 {
+	margin: 0;
+	font-size: 22px;
+	font-weight: 700;
+	letter-spacing: -.015em;
+	line-height: 1.2;
+	color: rgb(var(--c-text));
+}
+.insc-tete p {
+	margin: 4px 0 0;
+	font-size: 13px;
+	color: rgb(var(--c-text-2));
+}
+
+.insc-recherche {
+	position: relative;
+	display: flex;
+	align-items: stretch;
+	gap: 8px;
+	flex: 0 1 460px;
+	min-width: min(100%, 300px);
+}
+.insc-recherche > .bi-search {
+	position: absolute;
+	left: 13px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: rgb(var(--c-text-3));
+	pointer-events: none;
+}
+.insc-recherche input {
+	flex: 1;
+	min-width: 0;
+	height: 44px;
+	padding: 0 12px 0 38px;
+	border-radius: 10px;
+	border: 1px solid rgb(var(--c-line-strong));
+	background: rgb(var(--c-inset));
+	color: rgb(var(--c-text));
+	font-size: 15px;
+	transition: border-color .15s ease, box-shadow .15s ease;
+}
+.insc-recherche input::placeholder { color: rgb(var(--c-text-3)); }
+.insc-recherche input:focus {
+	outline: none;
+	border-color: rgb(var(--c-accent));
+	box-shadow: var(--ring);
+}
+
+/* --------------------------------------------------------------- boutons */
+
+.insc-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	min-height: 44px;
+	padding: 0 18px;
+	border-radius: 10px;
+	border: 1px solid transparent;
+	font-size: 13.5px;
+	font-weight: 600;
+	line-height: 1;
+	white-space: nowrap;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color .15s ease, border-color .15s ease, color .15s ease, opacity .15s ease;
+	touch-action: manipulation;
+}
+.insc-btn:focus-visible {
+	outline: 2px solid rgb(var(--c-accent));
+	outline-offset: 2px;
+}
+.insc-btn--primaire {
+	background: rgb(var(--c-accent-strong));
+	color: rgb(var(--c-on-accent));
+}
+.insc-btn--primaire:hover { background: rgb(var(--c-accent)); }
+.insc-btn--second {
+	background: rgb(var(--c-raised));
+	border-color: rgb(var(--c-line-strong));
+	color: rgb(var(--c-text));
+}
+.insc-btn--second:hover { border-color: rgb(var(--c-text-3)); }
+.insc-btn--petit { min-height: 34px; padding: 0 12px; font-size: 12.5px; }
+
+/* Inactif : toolInactive est l etat que le script pose et retire (il
+   bloque aussi le pointeur) ; disabled bloque le clavier. */
+.insc-btn.toolInactive,
+.insc-btn:disabled {
+	background: rgb(var(--c-surface-2));
+	border-color: rgb(var(--c-line));
+	color: rgb(var(--c-text-3));
+	cursor: not-allowed;
+}
+
+/* ------------------------------------------------------- etat du dossier */
+
+.insc-bande {
+	padding: 14px 18px 12px;
+	border-radius: var(--radius-lg);
+	background: rgb(var(--c-surface));
+	border: 1px solid rgb(var(--c-line));
+}
+/* En tete de la bande : son titre, et la session sur la meme ligne. La
+   barre d etapes garde ainsi toute la largeur. */
+.insc-bande-tete {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 6px 16px;
+	margin-bottom: 12px;
+}
+.insc-bande-tete .insc-surtitre { margin: 0; }
+.insc-bande-barre { min-height: 52px; }   /* la barre arrive en AJAX : sans saut */
+
+/* La session (inscription/stages/session.php) : une ligne. */
+.insc-session {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 2px 10px;
+	font-size: 13px;
+}
+.insc-session .insc-surtitre { margin: 0; }
+.insc-session-nom { font-size: 13.5px; font-weight: 600; color: rgb(var(--c-text)); }
+.insc-session-annee { font-family: var(--font-mono); font-size: 12.5px; color: rgb(var(--c-text-2)); }
+.insc-session-note {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	font-size: 12px;
+	font-weight: 600;
+}
+.insc-session--ok .insc-session-note { color: rgb(var(--c-success)); }
+.insc-session--hors .insc-session-note,
+.insc-session--attente .insc-session-note { color: rgb(var(--c-warning)); }
+.insc-session--vide .insc-session-nom { color: rgb(var(--c-danger)); font-size: 13.5px; }
+
+/* --- La barre d etapes (inscription/stages/top.stages.php) -------------- */
+/* Quatre etats : franchie (le sceau), courante (anneau d accent : c est la
+   qu il faut reprendre), a venir (creuse), et l etape cochee que les
+   donnees dementent (alerte). */
+.insc-etapes {
+	display: flex;
+	align-items: flex-start;
+	margin: 0;
+	padding: 2px 0 4px;
+	list-style: none;
+	overflow-x: auto;
+	scroll-snap-type: x proximity;
+	-webkit-overflow-scrolling: touch;
+	scrollbar-width: thin;
+}
+.insc-etape {
+	position: relative;
+	flex: 1 0 86px;
+	min-width: 86px;
+	padding: 0 4px;
+	scroll-snap-align: start;
+	text-align: center;
+	font-size: 11.5px;
+	line-height: 1.25;
+	color: rgb(var(--c-text-3));
+}
+/* Le fil vient de la pastille precedente ; il passe a l or quand l etape
+   qu il atteint est scellee. */
+.insc-etape + .insc-etape::before {
+	content: '';
+	position: absolute;
+	top: 13px;
+	left: calc(-50% + 17px);
+	right: calc(50% + 17px);
+	height: 2px;
+	border-radius: 2px;
+	background: rgb(var(--c-line-strong));
+}
+.insc-etape--faite + .insc-etape--faite::before { background: rgb(var(--c-gold)); }
+
+.insc-etape-puce {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border-radius: 999px;
+	border: 2px solid rgb(var(--c-line-strong));
+	background: rgb(var(--c-surface));
+	color: rgb(var(--c-text-3));
+	font-family: var(--font-mono);
+	font-size: 11.5px;
+	font-weight: 600;
+}
+.insc-etape-nom { display: block; margin-top: 6px; }
+.insc-etape-note {
+	display: block;
+	margin-top: 1px;
+	font-size: 10.5px;
+	color: rgb(var(--c-text-3));
+}
+
+/* Le sceau : bleu Zurcher, anneau d or, liseré clair entre les deux. */
+.insc-etape--faite { color: rgb(var(--c-text-2)); }
+.insc-etape--faite .insc-etape-puce {
+	background: rgb(var(--c-topbar));
+	border-color: rgb(var(--c-gold));
+	box-shadow: inset 0 0 0 2px rgb(var(--c-topbar)), inset 0 0 0 3px rgb(255 255 255 / .32);
+	color: #fff;
+	font-size: 13px;
+}
+
+.insc-etape--courante { color: rgb(var(--c-text)); font-weight: 600; }
+.insc-etape--courante .insc-etape-puce {
+	border-color: rgb(var(--c-accent));
+	color: rgb(var(--c-accent-text));
+	box-shadow: 0 0 0 4px rgb(var(--c-accent) / .18);
+}
+
+.insc-etape--alerte { color: rgb(var(--c-warning)); }
+.insc-etape--alerte .insc-etape-puce {
+	background: rgb(var(--c-warning) / .12);
+	border-color: rgb(var(--c-warning));
+	box-shadow: none;
+	color: rgb(var(--c-warning));
+}
+.insc-etape--alerte .insc-etape-note { color: rgb(var(--c-warning)); }
+
+.insc-etapes-compte {
+	flex: 0 0 auto;
+	align-self: center;
+	margin-left: 8px;
+	padding-left: 14px;
+	border-left: 1px solid rgb(var(--c-line));
+	font-family: var(--font-mono);
+	font-size: 12px;
+	color: rgb(var(--c-text-3));
+	text-align: right;
+	white-space: nowrap;
+}
+.insc-etapes-compte b { font-size: 17px; color: rgb(var(--c-text)); }
+.insc-etapes-compte span {
+	display: block;
+	font-family: var(--font-sans);
+	font-size: 11px;
+}
+
+/* Pas de barre : aucune session, ou une session d une autre annee. */
+.insc-etapes-vide {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 44px;
+	padding: 10px 14px;
+	border-radius: var(--radius);
+	background: rgb(var(--c-surface-2));
+	color: rgb(var(--c-text-2));
+	font-size: 13px;
+	line-height: 1.45;
+}
+.insc-etapes-alerte {
+	background: rgb(var(--c-warning) / .1);
+	box-shadow: inset 3px 0 0 rgb(var(--c-warning));
+	color: rgb(var(--c-text));
+}
+.insc-etapes-alerte .bi { color: rgb(var(--c-warning)); }
+
+/* La barre selon la place qu elle a (et non selon l ecran : la colonne
+   change avec le menu replie). Elle defilait de cote sous 600 px, et l on
+   ne voyait ni les dernieres etapes ni le compte. */
+.insc-bande { container: bande / inline-size; }
+@container bande (max-width: 760px) {
+	.insc-etapes { flex-wrap: wrap; overflow: visible; row-gap: 10px; }
+	.insc-etape { flex: 1 1 0; min-width: 0; }
+	/* Le compte passe dessous, sur une ligne. */
+	.insc-etapes-compte {
+		flex: 0 0 100%;
+		display: flex;
+		align-items: baseline;
+		gap: 8px;
+		margin: 2px 0 0;
+		padding: 8px 0 0;
+		border-left: 0;
+		border-top: 1px solid rgb(var(--c-line));
+		text-align: left;
+	}
+	.insc-etapes-compte span { display: inline; }
+}
+@container bande (max-width: 480px) {
+	/* Telephone : deux rangees de trois ; le fil ne relie que les voisines
+	   d une meme rangee. */
+	.insc-etapes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 14px; }
+	.insc-etape:nth-child(3n+1)::before { display: none; }
+	.insc-etapes-compte { grid-column: 1 / -1; }
+}
+
+/* ----------------------------------------------------------- deux colonnes */
+
+.insc-grille {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 16px;
+	align-items: start;
+}
+/* Portables de bureau (1024-1279 px) : un dossier plus etroit laisse sa
+   place a l etape. */
+@media (min-width: 1024px) {
+	.insc-grille { grid-template-columns: 284px minmax(0, 1fr); }
+}
+@media (min-width: 1280px) {
+	.insc-grille { grid-template-columns: 320px minmax(0, 1fr); }
+}
+@media (min-width: 1440px) {
+	.insc-grille { grid-template-columns: 340px minmax(0, 1fr); }
+}
+/* La colonne de travail : l etat du dossier, puis l etape en cours. */
+.insc-travail { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+/* --- Le dossier ---------------------------------------------------------- */
+/* Filet or en tete, comme la barre du haut : la carte porte le dossier. */
+.insc-dossier {
+	padding: 18px;
+	border-radius: var(--radius-lg);
+	background: rgb(var(--c-surface));
+	border: 1px solid rgb(var(--c-line));
+	box-shadow: inset 0 2px 0 rgb(var(--c-gold-seal));
+}
+@media (min-width: 1024px) {
+	/* Retour et Suivant restent a portee pendant qu on descend dans l etape. */
+	/* Colle en haut de la zone qui defile ; sa hauteur tient entre la barre
+	   du haut et le pied (24 px), marges comprises. */
+	.insc-dossier {
+		position: sticky;
+		top: 16px;
+		max-height: calc(100vh - var(--topbar-h) - 24px - 32px);
+		overflow-y: auto;
+	}
+}
+
+.insc-dossier-tete { display: flex; gap: 14px; align-items: flex-start; }
+
+.insc-photo {
+	flex: 0 0 auto;
+	width: 76px;
+	height: 96px;
+	padding: 0;
+	border-radius: var(--radius);
+	overflow: hidden;
+	border: 1px solid rgb(var(--c-line-strong));
+	background: rgb(var(--c-sunken));
+	cursor: zoom-in;
+}
+.insc-photo:disabled { cursor: default; }
+.insc-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.insc-photo:focus-visible { outline: 2px solid rgb(var(--c-accent)); outline-offset: 2px; }
+
+.insc-dossier-id { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; }
+.insc-dossier-id .code-tag { font-size: 14px; }
+.insc-niveau { margin: 0; font-size: 13px; color: rgb(var(--c-text-2)); }
+
+.insc-type {
+	display: inline-flex;
+	align-items: center;
+	padding: 2px 9px;
+	border-radius: 999px;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: .02em;
+	border: 1px solid transparent;
+}
+.insc-type--nouveau { color: rgb(var(--c-accent-text)); background: rgb(var(--c-accent) / .14); border-color: rgb(var(--c-accent) / .35); }
+.insc-type--ancien  { color: rgb(var(--c-text-2)); background: rgb(var(--c-surface-2)); border-color: rgb(var(--c-line-strong)); }
+.insc-type--special { color: rgb(var(--c-gold-text)); background: rgb(var(--c-gold) / .12); border-color: rgb(var(--c-gold) / .4); }
+
+.insc-nom {
+	margin: 14px 0 2px;
+	font-size: 16px;
+	font-weight: 700;
+	letter-spacing: -.005em;
+	line-height: 1.3;
+	color: rgb(var(--c-text));
+}
+.insc-nom span { font-weight: 500; }
+.insc-filiere { margin: 0; font-size: 13px; color: rgb(var(--c-text-2)); }
+
+.insc-faits { margin: 12px 0 0; display: grid; gap: 6px; font-size: 12.5px; }
+.insc-faits > div { display: flex; gap: 10px; min-width: 0; }
+.insc-faits dt { flex: 0 0 72px; color: rgb(var(--c-text-3)); font-weight: 500; }
+.insc-faits dd { margin: 0; min-width: 0; overflow-wrap: anywhere; color: rgb(var(--c-text)); }
+.insc-faits a { color: rgb(var(--c-accent-text)); text-decoration: none; }
+.insc-faits a:hover { text-decoration: underline; }
+
+.insc-modifie { margin: 10px 0 0; font-size: 11.5px; color: rgb(var(--c-text-3)); }
+.insc-modifie b { color: rgb(var(--c-text-2)); font-weight: 600; }
+
+.insc-separe { height: 1px; margin: 16px 0 14px; background: rgb(var(--c-line)); border: 0; }
+
+/* Alerte dans la carte (etudiant suspendu) */
+.insc-alerte {
+	display: flex;
+	gap: 10px;
+	margin-top: 14px;
+	padding: 10px 12px;
+	border-radius: var(--radius);
+	font-size: 12.5px;
+	line-height: 1.45;
+}
+.insc-alerte b { display: block; font-size: 13px; }
+.insc-alerte p { margin: 2px 0 0; }
+.insc-alerte--danger {
+	background: rgb(var(--c-danger) / .12);
+	box-shadow: inset 3px 0 0 rgb(var(--c-danger));
+	color: rgb(var(--c-text));
+}
+.insc-alerte--danger .bi { color: rgb(var(--c-danger)); }
+.insc-alerte--warning {
+	background: rgb(var(--c-warning) / .1);
+	box-shadow: inset 3px 0 0 rgb(var(--c-warning));
+	color: rgb(var(--c-text));
+}
+.insc-alerte--warning .bi { color: rgb(var(--c-warning)); }
+
+/* --- Le guichet : ou l on en est dans la saisie ------------------------- */
+/* L etape en cours reprend l entree active du menu : fond d accent et
+   rail or. */
+.insc-guichet { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; }
+.insc-guichet li {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	min-height: 36px;
+	padding: 5px 10px;
+	border-radius: 8px;
+	font-size: 13.5px;
+	color: rgb(var(--c-text-2));
+	transition: background-color .2s ease, color .2s ease;
+}
+.insc-guichet-puce {
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	border-radius: 999px;
+	border: 1.5px solid rgb(var(--c-line-strong));
+	font-family: var(--font-mono);
+	font-size: 10.5px;
+	font-weight: 600;
+	color: rgb(var(--c-text-3));
+	transition: background-color .2s ease, border-color .2s ease, color .2s ease;
+}
+.insc-guichet li.est-passee { color: rgb(var(--c-text-3)); }
+.insc-guichet li.est-passee .insc-guichet-puce {
+	border-color: rgb(var(--c-accent) / .5);
+	color: rgb(var(--c-accent-text));
+}
+.insc-guichet li.est-courante {
+	background: rgb(var(--c-accent) / .14);
+	color: rgb(var(--c-text));
+	font-weight: 600;
+}
+.insc-guichet li.est-courante::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 7px;
+	bottom: 7px;
+	width: 3px;
+	border-radius: 0 3px 3px 0;
+	background: rgb(var(--c-gold));
+}
+.insc-guichet li.est-courante .insc-guichet-puce {
+	background: rgb(var(--c-accent-strong));
+	border-color: rgb(var(--c-accent-strong));
+	color: #fff;
+}
+.insc-guichet li.est-bloquee { opacity: .45; }
+.insc-guichet li.est-bloquee::after {
+	content: '\F47A';                         /* bi-lock-fill */
+	font-family: 'bootstrap-icons';
+	margin-left: auto;
+	font-size: 11px;
+	color: rgb(var(--c-text-3));
+}
+
+.insc-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+@media (min-width: 1024px) and (max-height: 860px) {
+	/* Ecran bas : le guichet se resume a ses sept pastilles (l etape en
+	   cours est nommee en tete du panneau, et au survol) ; la carte tient
+	   alors a l ecran, Retour et Suivant compris, sans defiler. */
+	.insc-guichet { display: flex; flex-wrap: wrap; gap: 6px; }
+	.insc-guichet li,
+	.insc-guichet li.est-courante { min-height: 0; padding: 0; gap: 0; font-size: 0; background: none; }
+	.insc-guichet li.est-courante::before,
+	.insc-guichet li.est-bloquee::after { display: none; }
+	.insc-guichet-puce { width: 28px; height: 28px; font-size: 11.5px; }
+}
+@media (min-width: 1024px) {
+	/* Ecran bas (portable 768 px) : la carte defile en elle-meme, et Retour /
+	   Suivant restent colles en bas de la carte au lieu d y disparaitre. */
+	.insc-actions {
+		position: sticky;
+		bottom: -18px;                      /* sous la marge basse de la carte */
+		margin: 16px 0 -18px;
+		padding: 12px 0 18px;
+		background: rgb(var(--c-surface));
+		box-shadow: 0 -1px 0 rgb(var(--c-line));
+	}
+}
+
+@media (max-width: 1023px) {
+	/* Mobile : la liste du guichet repousserait l etape sous la ligne de
+	   flottaison ; chaque panneau dit deja « Etape n sur 7 ». Retour et
+	   Suivant passent dans une barre fixee en bas, toujours a portee. */
+	.insc-dossier .insc-separe,
+	#inscGuichetTitre,
+	.insc-guichet { display: none; }
+	.insc-actions {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 40;
+		margin: 0;
+		padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+		background: rgb(var(--c-surface) / .96);
+		border-top: 1px solid rgb(var(--c-line));
+		box-shadow: 0 -10px 24px -14px rgb(4 6 18 / .55);
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
+	}
+	.insc-page:has(.insc-actions) { padding-bottom: 96px; }
+}
+
+/* --- Le panneau de l etape ------------------------------------------------ */
+
+.insc-panneau {
+	min-width: 0;
+	min-height: 420px;
+	padding: 20px;
+	border-radius: var(--radius-lg);
+	background: rgb(var(--c-surface));
+	border: 1px solid rgb(var(--c-line));
+	color: rgb(var(--c-text));
+}
+@media (min-width: 1024px) {
+	.insc-panneau { padding: 24px 28px; min-height: 560px; }
+}
+
+/* Chaque etape entre par un court fondu : on voit que le contenu a change. */
+.insc-etape-vue { animation: insc-entree .24s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes insc-entree {
+	from { opacity: 0; transform: translateY(6px); }
+	to   { opacity: 1; transform: none; }
+}
+
+.insc-vue-tete { max-width: 64ch; margin-bottom: 20px; }
+.insc-vue-tete h2 {
+	margin: 0;
+	font-size: 19px;
+	font-weight: 700;
+	letter-spacing: -.01em;
+	color: rgb(var(--c-text));
+}
+.insc-vue-tete p:not(.insc-surtitre) {
+	margin: 6px 0 0;
+	font-size: 13.5px;
+	line-height: 1.55;
+	color: rgb(var(--c-text-2));
+}
+
+/* Etape 1 : la session */
+.insc-session-form { max-width: 560px; }
+.insc-champs { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 640px) {
+	.insc-champs { grid-template-columns: 1fr 1fr; }
+}
+.insc-champ-bloc { display: flex; flex-direction: column; gap: 6px; }
+.insc-libelle {
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: .05em;
+	text-transform: uppercase;
+	color: rgb(var(--c-text-3));
+}
+.insc-champ {
+	width: 100%;
+	height: 44px;
+	padding: 0 36px 0 12px;
+	border-radius: 10px;
+	border: 1px solid rgb(var(--c-line-strong));
+	background-color: rgb(var(--c-inset));
+	color: rgb(var(--c-text));
+	font-size: 14px;
+}
+.insc-champ:focus {
+	outline: none;
+	border-color: rgb(var(--c-accent));
+	box-shadow: var(--ring);
+}
+.insc-session-pied {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px 16px;
+	margin-top: 18px;
+}
+
+/* Message d etat de la session */
+.insc-statut {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	margin: 0;
+	font-size: 13px;
+	line-height: 1.45;
+	color: rgb(var(--c-text-2));
+}
+.insc-statut::before {
+	font-family: 'bootstrap-icons';
+	font-size: 14px;
+	line-height: 1;
+}
+.insc-statut--attente::before { content: '\F130'; color: rgb(var(--c-text-3)); }      /* bi-arrow-repeat */
+.insc-statut--info::before    { content: '\F431'; color: rgb(var(--c-accent-text)); } /* bi-info-circle */
+.insc-statut--ok              { color: rgb(var(--c-text)); }
+.insc-statut--ok::before      { content: '\F26A'; color: rgb(var(--c-success)); }     /* bi-check-circle-fill */
+.insc-statut--erreur          { color: rgb(var(--c-text)); }
+.insc-statut--erreur::before  { content: '\F332'; color: rgb(var(--c-danger)); }      /* bi-exclamation-circle-fill */
+/* Inscription tardive (§ 334 du bulletin) : le retard et la penalite, avant et
+   apres l'enregistrement (data/inscriptions.tardives.php). */
+.insc-statut--alerte {
+	align-items: flex-start;
+	max-width: 62ch;
+	padding: 9px 12px;
+	border-radius: var(--radius);
+	border: 1px solid rgb(var(--c-warning) / .4);
+	background: rgb(var(--c-warning) / .12);
+	color: rgb(var(--c-text));
+}
+.insc-statut--alerte::before  { content: '\F33A'; color: rgb(var(--c-warning)); margin-top: 2px; } /* bi-exclamation-triangle-fill */
+
+/* Etape 5 : la fiche */
+.insc-document {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	max-width: 520px;
+	padding: 18px 20px;
+	border-radius: var(--radius-lg);
+	border: 1px solid rgb(var(--c-line-strong));
+	background: rgb(var(--c-surface-2));
+	color: rgb(var(--c-text));
+	text-decoration: none;
+	transition: border-color .15s ease, background-color .15s ease;
+}
+.insc-document:hover { border-color: rgb(var(--c-accent)); background: rgb(var(--c-raised)); }
+.insc-document:focus-visible { outline: 2px solid rgb(var(--c-accent)); outline-offset: 2px; }
+.insc-document-icone {
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 52px;
+	height: 52px;
+	border-radius: 12px;
+	background: rgb(var(--c-accent) / .14);
+	color: rgb(var(--c-accent-text));
+	font-size: 24px;
+}
+.insc-document-texte { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.insc-document-texte b { font-size: 15px; }
+.insc-document-texte span { font-size: 12.5px; color: rgb(var(--c-text-2)); }
+.insc-document > .bi:last-child { color: rgb(var(--c-text-3)); }
+
+/* Etape 6 : signatures et depot */
+.insc-consignes { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; max-width: 560px; }
+.insc-consignes li {
+	display: flex;
+	gap: 14px;
+	align-items: flex-start;
+	padding: 14px 16px;
+	border-radius: var(--radius);
+	border: 1px solid rgb(var(--c-line));
+	background: rgb(var(--c-surface-2));
+}
+.insc-consignes .bi {
+	flex: 0 0 auto;
+	font-size: 20px;
+	line-height: 1.2;
+	color: rgb(var(--c-gold-text));
+}
+.insc-consignes b { display: block; font-size: 14px; }
+.insc-consignes p { margin: 3px 0 0; font-size: 13px; color: rgb(var(--c-text-2)); }
+
+/* Etape 7 : terminee. Le grand sceau, en echo de la barre d etapes. */
+.insc-fin { text-align: center; padding: 40px 0 16px; }
+.insc-fin-sceau {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 92px;
+	height: 92px;
+	border-radius: 999px;
+	background: rgb(var(--c-topbar));
+	border: 4px solid rgb(var(--c-gold));
+	box-shadow: inset 0 0 0 5px rgb(var(--c-topbar)), inset 0 0 0 7px rgb(255 255 255 / .3);
+	color: #fff;
+	font-size: 42px;
+	animation: insc-sceau .5s cubic-bezier(.2, .9, .3, 1.25) both;
+}
+@keyframes insc-sceau {
+	from { opacity: 0; transform: scale(.7) rotate(-12deg); }
+	to   { opacity: 1; transform: none; }
+}
+.insc-fin h2 { margin: 18px 0 6px; font-size: 21px; font-weight: 700; }
+.insc-fin p { margin: 0 auto 20px; max-width: 46ch; font-size: 13.5px; color: rgb(var(--c-text-2)); }
+
+/* Etape 4 : le mode de paiement (inscription/stages/mode.payement.php) */
+/* Cote a cote seulement sur tres grand ecran : en dessous, le releve
+   gardait trop peu de place et son tableau defilait. Les options passent
+   alors dessous, en rangee. */
+.insc-pay { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+@media (min-width: 1536px) {
+	.insc-pay { grid-template-columns: minmax(0, 7fr) minmax(280px, 5fr); gap: 28px; }
+	/* Colonne de cote : une option par ligne, sinon leurs libelles se
+	   cassaient (« 100 / % »). */
+	.insc-pay .insc-pay-choix { grid-template-columns: minmax(0, 1fr); }
+}
+.insc-pay-releve, .insc-pay-options { min-width: 0; }
+.insc-pay-titre {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 4px 10px;
+	margin: 0 0 10px;
+	font-size: 14px;
+	font-weight: 700;
+	color: rgb(var(--c-text));
+}
+.insc-pay-releve .insc-pay-titre:not(:first-child) { margin-top: 22px; }
+.insc-pay-code { font-family: var(--font-mono); font-size: 11.5px; font-weight: 500; color: rgb(var(--c-text-3)); }
+.insc-num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.insc-pay-cadre {
+	overflow-x: auto;
+	border: 1px solid rgb(var(--c-line));
+	border-radius: var(--radius);
+}
+.insc-pay-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+.insc-pay-table th {
+	padding: 8px 10px;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: .04em;
+	text-transform: uppercase;
+	text-align: left;
+	color: rgb(var(--c-text-3));
+	background: rgb(var(--c-surface-2));
+	border-bottom: 1px solid rgb(var(--c-line));
+	white-space: nowrap;
+}
+.insc-pay-table th.insc-num { text-align: right; }
+.insc-pay-table td {
+	padding: 8px 10px;
+	border-bottom: 1px solid rgb(var(--c-line) / .6);
+	color: rgb(var(--c-text));
+	vertical-align: middle;
+}
+.insc-pay-table tbody tr:hover td { background: rgb(var(--c-surface-2) / .6); }
+.insc-pay-table tfoot th {
+	border-bottom: 0;
+	border-top: 1px solid rgb(var(--c-line));
+	font-size: 12px;
+	text-transform: none;
+	letter-spacing: 0;
+	color: rgb(var(--c-text-2));
+}
+.insc-pay-sigle { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: rgb(var(--c-gold-text)); }
+.insc-pay-offert { color: rgb(var(--c-warning)); }
+.insc-pay-vide td { padding: 16px 10px; text-align: center; color: rgb(var(--c-text-3)); }
+.insc-pay-action { width: 1%; text-align: right; }
+.insc-pay-retirer {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 8px;
+	border: 1px solid transparent;
+	background: transparent;
+	color: rgb(var(--c-text-3));
+	cursor: pointer;
+	transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.insc-pay-retirer:hover { color: rgb(var(--c-danger)); background: rgb(var(--c-danger) / .12); border-color: rgb(var(--c-danger) / .35); }
+.insc-pay-retirer:focus-visible { outline: 2px solid rgb(var(--c-accent)); outline-offset: 1px; }
+
+.insc-pay-frais {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+	margin: 0;
+	border: 1px solid rgb(var(--c-line));
+	border-radius: var(--radius);
+	overflow: hidden;
+}
+/* Traits par case, rognes au bord du cadre : une derniere rangee
+   incomplete ne laisse pas de pave colore. */
+.insc-pay-frais > div {
+	padding: 9px 12px;
+	border-right: 1px solid rgb(var(--c-line));
+	border-bottom: 1px solid rgb(var(--c-line));
+	margin: 0 -1px -1px 0;
+}
+.insc-pay-frais dt { font-size: 11.5px; color: rgb(var(--c-text-3)); }
+.insc-pay-frais dd {
+	margin: 2px 0 0;
+	font-family: var(--font-mono);
+	font-size: 13.5px;
+	font-weight: 600;
+	color: rgb(var(--c-text));
+	font-variant-numeric: tabular-nums;
+}
+
+.insc-pay-totaux { display: grid; gap: 6px; max-width: 460px; margin: 16px 0 12px; }
+.insc-pay-ligne {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	min-height: 40px;
+	padding: 6px 12px;
+	border-radius: var(--radius-sm);
+	background: rgb(var(--c-surface-2));
+	font-size: 13px;
+	color: rgb(var(--c-text-2));
+}
+.insc-pay-ligne b,
+.insc-pay-saisie {
+	font-family: var(--font-mono);
+	font-size: 14px;
+	font-weight: 600;
+	color: rgb(var(--c-text));
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+.insc-pay-saisie input {
+	width: 130px;
+	height: 32px;
+	padding: 0 8px;
+	border-radius: var(--radius-sm);
+	border: 1px solid rgb(var(--c-line-strong));
+	background: rgb(var(--c-inset));
+	color: rgb(var(--c-text));
+	font: inherit;
+	text-align: right;
+}
+.insc-pay-saisie input:focus { outline: none; border-color: rgb(var(--c-accent)); box-shadow: var(--ring); }
+/* Le reste a repartir : ce que les tranches se partagent. */
+.insc-pay-ligne--reste {
+	background: rgb(var(--c-gold) / .1);
+	box-shadow: inset 3px 0 0 rgb(var(--c-gold));
+	color: rgb(var(--c-text));
+}
+
+.insc-pay-choix {
+	margin: 0 0 16px;
+	padding: 0;
+	border: 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* la place des dates de chaque tranche */
+	gap: 8px;
+	min-width: 0;
+}
+.insc-pay-option {
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	align-items: start;
+	gap: 12px;
+	padding: 12px 14px;
+	border-radius: var(--radius);
+	border: 1px solid rgb(var(--c-line-strong));
+	background: rgb(var(--c-surface-2));
+	cursor: pointer;
+	transition: border-color .15s ease, background-color .15s ease;
+}
+.insc-pay-option:hover { border-color: rgb(var(--c-text-3)); }
+.insc-pay-option input {
+	width: 18px;
+	height: 18px;
+	margin: 2px 0 0;
+	padding: 0;
+	accent-color: rgb(var(--c-accent));
+	cursor: pointer;
+}
+.insc-pay-option:has(input:checked) {
+	border-color: rgb(var(--c-accent));
+	background: rgb(var(--c-accent) / .12);
+}
+.insc-pay-option:has(input:focus-visible) { outline: 2px solid rgb(var(--c-accent)); outline-offset: 2px; }
+.insc-pay-option-corps { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.insc-pay-option-corps b { font-size: 14px; color: rgb(var(--c-text)); }
+.insc-pay-option-corps span { font-size: 12.5px; color: rgb(var(--c-text-2)); }
+/* Chaque tranche : sa date limite (reglee par session sur /finance/echeances),
+   puis son montant. */
+.insc-pay-tranches {
+	display: grid;
+	grid-template-columns: auto auto;
+	align-items: baseline;
+	justify-items: end;
+	column-gap: 10px;
+	row-gap: 1px;
+	font-family: var(--font-mono);
+	font-size: 12px;
+	color: rgb(var(--c-text));
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+.insc-pay-date {
+	font: 500 11.5px/1.5 var(--font-sans);
+	color: rgb(var(--c-text-2));
+}
+.insc-pay-date.is-vide { font-style: italic; color: rgb(var(--c-warning)); }
+.insc-pay-note {
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+	margin: -6px 0 14px;
+	font-size: 12.5px;
+	color: rgb(var(--c-warning));
+}
+.insc-pay-note a { color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+
+/* ------------------------------------------------ sans dossier ouvert */
+
+.insc-introuvable {
+	display: flex;
+	gap: 14px;
+	align-items: flex-start;
+	margin-bottom: 16px;
+	padding: 16px 18px;
+	border-radius: var(--radius-lg);
+	background: rgb(var(--c-warning) / .08);
+	border: 1px solid rgb(var(--c-warning) / .35);
+}
+.insc-introuvable > .bi { font-size: 24px; line-height: 1.1; color: rgb(var(--c-warning)); }
+.insc-introuvable h2 { margin: 0; font-size: 15px; font-weight: 700; color: rgb(var(--c-text)); }
+.insc-introuvable p { margin: 4px 0 0; font-size: 13px; color: rgb(var(--c-text-2)); }
+
+/* Le parcours, affiche tant qu aucun dossier n est ouvert : les memes
+   pastilles que la barre d etapes, encore creuses. */
+.insc-parcours {
+	padding: 22px 20px 24px;
+	border-radius: var(--radius-lg);
+	background: rgb(var(--c-surface));
+	border: 1px solid rgb(var(--c-line));
+}
+.insc-parcours > h2 { margin: 0; font-size: 16px; font-weight: 700; color: rgb(var(--c-text)); }
+.insc-parcours > p { margin: 4px 0 20px; font-size: 13px; color: rgb(var(--c-text-2)); max-width: 70ch; }
+.insc-parcours ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 0; }
+.insc-parcours li {
+	position: relative;
+	display: grid;
+	grid-template-columns: 30px 1fr;
+	column-gap: 12px;
+	padding-bottom: 16px;
+}
+.insc-parcours li:last-child { padding-bottom: 0; }
+/* Le fil, vertical sur mobile */
+.insc-parcours li:not(:last-child)::before {
+	content: '';
+	position: absolute;
+	left: 14px;
+	top: 30px;
+	bottom: 0;
+	width: 2px;
+	background: rgb(var(--c-line-strong));
+}
+.insc-parcours-puce {
+	grid-row: span 2;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 999px;
+	border: 2px solid rgb(var(--c-line-strong));
+	background: rgb(var(--c-surface));
+	font-family: var(--font-mono);
+	font-size: 12px;
+	font-weight: 600;
+	color: rgb(var(--c-text-3));
+}
+.insc-parcours li:last-child .insc-parcours-puce {
+	background: rgb(var(--c-topbar));
+	border-color: rgb(var(--c-gold));
+	box-shadow: inset 0 0 0 2px rgb(var(--c-topbar)), inset 0 0 0 3px rgb(255 255 255 / .32);
+	color: #fff;
+}
+.insc-parcours li b { font-size: 13.5px; line-height: 30px; color: rgb(var(--c-text)); }
+.insc-parcours li span:not(.insc-parcours-puce) { font-size: 12.5px; line-height: 1.45; color: rgb(var(--c-text-2)); }
+
+@media (min-width: 1024px) {
+	/* Bureau : le parcours se lit de gauche a droite, fil horizontal. */
+	.insc-parcours ol { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+	.insc-parcours li {
+		grid-template-columns: 1fr;
+		align-content: start;      /* sinon les rangees s etirent a la hauteur du voisin */
+		justify-items: center;
+		text-align: center;
+		padding: 0 8px;
+	}
+	.insc-parcours li:not(:last-child)::before {
+		left: calc(50% + 19px);
+		right: calc(-50% + 19px);
+		top: 14px;
+		bottom: auto;
+		width: auto;
+		height: 2px;
+	}
+	.insc-parcours-puce { grid-row: auto; }
+	.insc-parcours li b { margin-top: 8px; line-height: 1.3; }
+	.insc-parcours li span:not(.insc-parcours-puce) { margin-top: 3px; }
+}
+
+/* ------------------------------------------------ fenetres par-dessus */
+
+/* La photo agrandie */
+.insc-visionneuse {
+	position: fixed;
+	inset: 0;
+	z-index: 1060;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 14px;
+	padding: 24px 16px;
+	background: rgb(6 8 22 / .72);
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+}
+.insc-visionneuse[hidden] { display: none; }
+.insc-visionneuse figure { margin: 0; text-align: center; }
+.insc-visionneuse img {
+	display: block;
+	max-width: min(420px, 90vw);
+	max-height: 70vh;
+	border-radius: var(--radius-lg);
+	border: 1px solid rgb(255 255 255 / .18);
+	box-shadow: var(--shadow-2);
+}
+.insc-visionneuse figcaption { margin-top: 10px; font-size: 13px; color: #fff; }
+
+/* Les blocages : reinscription non autorisee, dossier non valide */
+.insc-blocage {
+	position: fixed;
+	inset: 0;
+	z-index: 1070;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 16px;
+	background: rgb(6 8 22 / .75);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+}
+.insc-blocage-carte {
+	width: 100%;
+	max-width: 460px;
+	padding: 32px 26px 26px;
+	border-radius: 16px;
+	background: rgb(var(--c-surface));
+	border: 1px solid var(--insc-ton-trait);
+	box-shadow: var(--shadow-2);
+	text-align: center;
+	color: rgb(var(--c-text));
+}
+.insc-blocage--danger  { --insc-ton: var(--c-danger); }
+.insc-blocage--warning { --insc-ton: var(--c-warning); }
+.insc-blocage { --insc-ton-trait: rgb(var(--insc-ton) / .4); }
+.insc-blocage-icone {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 64px;
+	height: 64px;
+	margin-bottom: 16px;
+	border-radius: 999px;
+	background: rgb(var(--insc-ton) / .14);
+	border: 2px solid rgb(var(--insc-ton) / .35);
+	color: rgb(var(--insc-ton));
+	font-size: 28px;
+}
+.insc-blocage h2 { margin: 0 0 8px; font-size: 19px; font-weight: 700; color: rgb(var(--insc-ton)); }
+.insc-blocage p { margin: 0; font-size: 13.5px; line-height: 1.6; color: rgb(var(--c-text-2)); }
+.insc-blocage strong { color: rgb(var(--c-text)); }
+.insc-blocage .insc-blocage-note {
+	margin: 16px 0 20px;
+	padding: 10px 12px;
+	border-radius: var(--radius);
+	background: rgb(var(--insc-ton) / .1);
+	font-size: 13px;
+	text-align: left;
+}
+
+/* ------------------------------------------ fragments charges en AJAX */
+
+/* Ecrans etroits : les tableaux larges defilent dans leur cadre plutot que
+   d elargir la page. */
+@media (max-width: 1023px) {
+	#contentMain table { display: block; overflow-x: auto; white-space: nowrap; }
+	/* Le releve du paiement defile deja dans son cadre, et sa ligne vide
+	   doit pouvoir passer a la ligne. */
+	#contentMain .insc-pay-table { display: table; white-space: normal; }
+	#contentMain select,
+	#contentMain input[type="text"],
+	#contentMain button { min-height: 44px; }
+	#contentMain select,
+	#contentMain input[type="text"] { font-size: 16px; }   /* < 16 px : iOS zoome au focus */
+}
+
+/* ----------------------------------------------------------- mouvement */
+
+@media (prefers-reduced-motion: reduce) {
+	.insc-etape-vue,
+	.insc-fin-sceau { animation: none; }
+	.insc-btn,
+	.insc-guichet li,
+	.insc-guichet-puce { transition: none; }
+}

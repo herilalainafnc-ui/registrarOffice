@@ -1,0 +1,643 @@
+/* =============================================================================
+   Emploi du temps — grille en agenda
+
+   La grille etait un tableau HTML a rowspan. Le rowspan d'une cellule valait la
+   duree la plus longue parmi les seances commencant a cette heure, et les
+   lignes couvertes n'emettaient plus de cellule du tout. Deux consequences,
+   toutes deux verifiees :
+
+     - les seances commencant a l'interieur d'une plage couverte
+       DISPARAISSAIENT de la grille, sans aucun avertissement ;
+     - on ne pouvait rien deposer sur ces plages, puisqu'il n'y avait plus de
+       cellule pour recevoir le glisser.
+
+   On passe donc a un placement au pixel, comme un agenda : chaque journee est
+   une colonne en position relative, chaque seance y est posee selon son debut
+   et sa duree reels. Les seances qui se chevauchent se partagent la largeur.
+   Rien ne disparait, les demi-heures sont respectees, et une couche de zones
+   de depot couvre toute la colonne — y compris sous une seance existante.
+
+   Une variable porte la hauteur d'une heure : les positions sont calculees en
+   PHP a partir de cette meme valeur, exposee en ligne sur le conteneur.
+   ========================================================================== */
+
+.edt {
+    --edt-heure: 62px;          /* hauteur d'une heure ; surchargee en ligne */
+    --edt-gouttiere: 58px;      /* colonne des heures, a gauche */
+    --edt-trait: rgb(var(--c-line-strong) / .16);
+    --edt-fond: rgb(var(--c-canvas));
+    font-size: 12px;
+    user-select: none;
+}
+
+/* --- En-tete des jours ---------------------------------------------------- */
+.edt__entete {
+    display: grid;
+    grid-template-columns: var(--edt-gouttiere) repeat(var(--edt-jours), 1fr);
+    position: sticky;
+    top: 0;
+    z-index: 6;
+    background: rgb(var(--c-canvas));
+    border: 1px solid var(--edt-trait);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+}
+.edt__jour {
+    padding: 9px 6px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 12px;
+    color: rgb(var(--c-text-3));
+    border-left: 1px solid var(--edt-trait);
+}
+.edt__jour:first-child { border-left: none; }
+.edt__jour--aujourdhui { color: rgb(var(--c-accent-text)); }
+.edt__jour small { display: block; font-weight: 400; font-size: 10px; opacity: .75; }
+
+/* --- Corps ---------------------------------------------------------------- */
+.edt__corps {
+    display: grid;
+    grid-template-columns: var(--edt-gouttiere) repeat(var(--edt-jours), 1fr);
+    border: 1px solid var(--edt-trait);
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+    background: var(--edt-fond);
+}
+
+.edt__heures { position: relative; background: rgb(var(--c-canvas)); }
+.edt__heure {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: var(--edt-heure);
+    padding-right: 8px;
+    text-align: right;
+    font-size: 10.5px;
+    color: rgb(var(--c-text-3));
+    /* Le libelle est cale sur le trait, pas centre dans la case : c'est le
+       trait qui marque l'heure. */
+    transform: translateY(-.55em);
+}
+
+.edt__colonne {
+    position: relative;
+    border-left: 1px solid var(--edt-trait);
+    /* Les traits d'heure sont peints par le fond plutot que par des elements :
+       une journee de douze heures ferait autant de noeuds inutiles, multiplies
+       par six colonnes. */
+    background-image: linear-gradient(to bottom, var(--edt-trait) 1px, transparent 1px);
+    background-size: 100% var(--edt-heure);
+}
+.edt__colonne--weekend { background-color: rgb(var(--c-canvas) / .5); }
+
+/* --- Zones de depot -------------------------------------------------------
+   Une couche par demi-heure, sous les cartes. C'est elle qui rend tout le
+   calendrier accessible au glisser-deposer, y compris les creneaux situes
+   sous une seance longue — impossibles a viser dans l'ancienne grille. */
+.edt__creneau {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 1;
+}
+.edt__creneau.est-cible {
+    background: rgb(var(--c-accent) / .16);
+    outline: 2px dashed rgb(var(--c-accent));
+    outline-offset: -2px;
+}
+.edt__creneau.est-refuse {
+    background: rgba(239, 68, 68, .16);
+    outline: 2px dashed #ef4444;
+    outline-offset: -2px;
+}
+
+/* --- Cartes de seance ------------------------------------------------------ */
+.edt-carte {
+    position: absolute;
+    z-index: 2;
+    padding: 5px 7px;
+    border-radius: 6px;
+    color: #fff;
+    overflow: hidden;
+    cursor: grab;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .28);
+    transition: box-shadow .15s ease, opacity .15s ease, outline-color .15s ease;
+    outline: 2px solid transparent;
+}
+.edt-carte:hover  { box-shadow: 0 6px 18px rgba(0, 0, 0, .45); z-index: 4; }
+.edt-carte:focus-visible { outline-color: rgb(var(--c-line-strong)); z-index: 5; }
+.edt-carte.est-tiree { opacity: .45; cursor: grabbing; }
+
+/* Masquee par un filtre : retiree du flux ET du glisser, pas seulement
+   rendue transparente. */
+.edt-carte[hidden] { display: none !important; }
+
+.edt-carte__sigle {
+    font-weight: 700;
+    font-size: 11.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.edt-carte__titre {
+    font-size: 10.5px;
+    line-height: 1.25;
+    opacity: .95;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.edt-carte__ligne {
+    font-size: 10px;
+    opacity: .88;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.edt-carte__badge {
+    align-self: flex-start;
+    margin-top: 1px;
+    padding: 0 5px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, .22);
+    font-size: 9px;
+}
+
+/* Une carte trop courte pour tout montrer : on garde le sigle et l'heure.
+   Sans cela, une seance de trente minutes affichait un texte tronque au
+   milieu d'un mot. */
+.edt-carte--courte { padding: 3px 6px; }
+.edt-carte--courte .edt-carte__titre,
+.edt-carte--courte .edt-carte__badge { display: none; }
+.edt-carte--courte .edt-carte__sigle { font-size: 10.5px; }
+
+/* Couleur par mention. Le type de seance reste lisible par la pastille et par
+   la bordure gauche, plus bas : deux informations, deux canaux. */
+.edt-carte { background: linear-gradient(135deg, rgb(var(--c-line-strong)), rgb(var(--c-raised))); }
+.edt-carte[data-mention="THEO"] { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+.edt-carte[data-mention="GEST"] { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.edt-carte[data-mention="INFO"] { background: linear-gradient(135deg, rgb(var(--c-accent)), rgb(var(--c-accent-strong))); }
+.edt-carte[data-mention="NURS"] { background: linear-gradient(135deg, #ec4899, #db2777); }
+.edt-carte[data-mention="EDUC"] { background: linear-gradient(135deg, #10b981, #059669); }
+.edt-carte[data-mention="COMM"] { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+.edt-carte[data-mention="LANG"] { background: linear-gradient(135deg, #f97316, #ea580c); }
+.edt-carte[data-mention="DROI"] { background: linear-gradient(135deg, #ef4444, #dc2626); }
+
+/* Le type de seance, en liseré : la couleur seule ne doit pas porter
+   l'information, et la mention occupe deja le fond. */
+.edt-carte[data-type="cours"]  { border-left: 4px solid rgba(255, 255, 255, .30); }
+.edt-carte[data-type="td"]     { border-left: 4px solid #c4b5fd; }
+.edt-carte[data-type="tp"]     { border-left: 4px solid #6ee7b7; }
+.edt-carte[data-type="examen"] { border-left: 4px solid #fca5a5; }
+.edt-carte[data-type="controle"] { border-left: 4px solid #fde68a; }
+
+/* --- Trait de l'heure courante -------------------------------------------- */
+.edt__maintenant {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 0;
+    border-top: 2px solid #f43f5e;
+    z-index: 3;
+    pointer-events: none;
+}
+.edt__maintenant::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: -4px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #f43f5e;
+}
+
+/* --- Etat vide ------------------------------------------------------------ */
+.edt-vide {
+    padding: 44px 20px;
+    text-align: center;
+    color: rgb(var(--c-text-3));
+    font-size: 13px;
+}
+.edt-vide i { display: block; font-size: 26px; margin-bottom: 8px; opacity: .5; }
+
+/* --- Legendes ------------------------------------------------------------- */
+.legend-box {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+/* --- Petits ecrans --------------------------------------------------------
+   Six colonnes ne tiennent pas sous 900 px sans devenir illisibles. On laisse
+   la grille defiler horizontalement dans son propre conteneur, plutot que de
+   pousser toute la page a deborder. */
+.edt-defile { overflow-x: auto; }
+@media (max-width: 900px) {
+    .edt { --edt-heure: 56px; }
+    .edt__entete, .edt__corps { min-width: 720px; }
+}
+/* Telephone : la grille defile de toute facon ; plus large, trois seances
+   cote a cote gardent un sigle lisible. */
+@media (max-width: 640px) {
+    .edt__entete, .edt__corps { min-width: 960px; }
+    .edt-carte { padding: 4px 5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .edt-carte { transition: none; }
+}
+
+/* =============================================================================
+   Page : en-tete, vue, contexte (sur les jetons, clair et sombre)
+
+   Ce qui egarait l'utilisateur : une barre d'outils d'etudiants sans rapport,
+   toutes les classes superposees en bandes illisibles, et rien ne disait ce
+   que la grille montrait. La page dit maintenant ce qu'elle affiche (une
+   classe, une salle, un enseignant, ou tout), en toutes lettres, et comment
+   s'en servir.
+   ========================================================================== */
+
+.edt-page {
+    padding: 18px 20px 28px;
+    border-radius: var(--radius-lg);
+    background: rgb(var(--c-surface));
+    color: rgb(var(--c-text));
+}
+@media (max-width: 640px) { .edt-page { padding: 14px 12px 24px; } }
+
+.edt-tete {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px 20px;
+    margin-bottom: 14px;
+}
+.edt-tete h1 { margin: 0; font-size: 21px; font-weight: 700; letter-spacing: -.01em; color: rgb(var(--c-text)); }
+.edt-tete h1 .bi { color: rgb(var(--c-accent-text)); }
+.edt-tete p { margin: 3px 0 0; font-size: 12.5px; color: rgb(var(--c-text-3)); }
+.edt-tete__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.edt-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 38px;
+    padding: 0 14px;
+    border-radius: 9px;
+    border: 1px solid transparent;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color .15s ease, border-color .15s ease;
+}
+.edt-btn:focus-visible { outline: 2px solid rgb(var(--c-accent)); outline-offset: 2px; }
+.edt-btn--primaire { background: rgb(var(--c-accent-strong)); color: rgb(var(--c-on-accent)); }
+.edt-btn--primaire:hover { background: rgb(var(--c-accent)); }
+.edt-btn--second { background: rgb(var(--c-raised)); border-color: rgb(var(--c-line-strong)); color: rgb(var(--c-text)); }
+.edt-btn--second:hover { border-color: rgb(var(--c-text-3)); }
+.edt-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* --- Filtres ------------------------------------------------------------- */
+.edt-filtres {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px 18px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    border-radius: var(--radius);
+    border: 1px solid rgb(var(--c-line));
+    background: rgb(var(--c-surface-2));
+}
+/* La vue, en onglets : c'est le premier choix a faire. */
+.edt-vues { display: flex; flex-wrap: wrap; margin: 0; padding: 0; border: 0; min-width: 0; }
+.edt-vues legend, .edt-champ-bloc {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: rgb(var(--c-text-3));
+}
+.edt-vues legend { padding: 0; margin-bottom: 5px; float: left; width: 100%; }
+.edt-vues label { display: inline-flex; }
+.edt-vues input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.edt-vues span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 13px;
+    border: 1px solid rgb(var(--c-line-strong));
+    margin-left: -1px;
+    background: rgb(var(--c-inset));
+    color: rgb(var(--c-text-2));
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease;
+}
+.edt-vues label:first-of-type span { border-radius: 9px 0 0 9px; margin-left: 0; }
+.edt-vues label:last-of-type span { border-radius: 0 9px 9px 0; }
+.edt-vues input:checked + span {
+    background: rgb(var(--c-accent-strong));
+    border-color: rgb(var(--c-accent-strong));
+    color: rgb(var(--c-on-accent));
+    position: relative;
+    z-index: 1;
+}
+.edt-vues input:focus-visible + span { outline: 2px solid rgb(var(--c-accent)); outline-offset: 2px; position: relative; z-index: 2; }
+/* Ecran etroit : les quatre vues en deux rangees egales, plutot qu'une
+   rangee qui se casse avec un onglet seul et des bords decousus. */
+@media (max-width: 560px) {
+    .edt-vues { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+    .edt-vues legend { grid-column: 1 / -1; }
+    .edt-vues label span { width: 100%; justify-content: center; margin: 0; border-radius: 0; }
+    .edt-vues label:nth-of-type(2n) span { margin-left: -1px; width: calc(100% + 1px); }
+    .edt-vues label:nth-of-type(n+3) span { margin-top: -1px; }
+    .edt-vues label:nth-of-type(1) span { border-radius: 9px 0 0 0; }
+    .edt-vues label:nth-of-type(2) span { border-radius: 0 9px 0 0; }
+    .edt-vues label:nth-of-type(3) span { border-radius: 0 0 0 9px; }
+    .edt-vues label:nth-of-type(4) span { border-radius: 0 0 9px 0; }
+}
+
+.edt-filtres__champs { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 12px; }
+.edt-champ-bloc { display: flex; flex-direction: column; gap: 5px; }
+.edt-champ-bloc[hidden] { display: none; }
+.edt-champ-bloc--large .edt-champ { min-width: 220px; }
+/* Le chevron natif chevauchait le texte : place reservee a droite. */
+.edt-champ {
+    height: 36px;
+    min-width: 120px;
+    padding: 0 34px 0 11px;
+    border-radius: 9px;
+    border: 1px solid rgb(var(--c-line-strong));
+    background-color: rgb(var(--c-inset));
+    color: rgb(var(--c-text));
+    font-size: 13px;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 500;
+}
+.edt-champ:focus { outline: none; border-color: rgb(var(--c-accent)); box-shadow: var(--ring); }
+
+/* --- Contexte : ce que montre la grille ----------------------------------- */
+.edt-contexte { margin-bottom: 10px; }
+.edt-contexte__titre { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.edt-contexte h2 { margin: 0; font-size: 17px; font-weight: 700; color: rgb(var(--c-text)); }
+.edt-contexte__titre span { font-size: 12.5px; color: rgb(var(--c-text-3)); }
+.edt-alerte {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    background: rgb(var(--c-danger) / .10);
+    box-shadow: inset 3px 0 0 rgb(var(--c-danger));
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: rgb(var(--c-text));
+}
+.edt-alerte > .bi { color: rgb(var(--c-danger)); font-size: 15px; }
+.edt-alerte ul { margin: 4px 0 0; padding-left: 18px; color: rgb(var(--c-text-2)); list-style: disc; }
+
+.edt-legende {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 14px;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    background: rgb(var(--c-surface-2));
+    font-size: 12px;
+    color: rgb(var(--c-text-2));
+}
+.edt-legende__titre { font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: rgb(var(--c-text-3)); }
+/* Le liseré « cours » etait blanc translucide : invisible en theme clair. */
+.legend-box--cours { background: rgb(var(--c-text-3)); }
+.edt-aide { margin: 8px 0 12px; font-size: 12.5px; color: rgb(var(--c-text-2)); }
+.edt-aide .bi { color: rgb(var(--c-accent-text)); margin-right: 4px; }
+
+.edt-vide-bandeau {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    background: rgb(var(--c-accent) / .08);
+    border: 1px dashed rgb(var(--c-accent) / .45);
+    font-size: 13px;
+    color: rgb(var(--c-text-2));
+}
+.edt-vide-bandeau .bi { color: rgb(var(--c-accent-text)); font-size: 16px; }
+#edtZone[aria-busy="true"] { opacity: .55; transition: opacity .15s ease; }
+
+/* --- Grille : creneaux cliquables, seances en conflit --------------------- */
+.edt--modifiable .edt__creneau { cursor: copy; }
+.edt--modifiable .edt__creneau:hover { background: rgb(var(--c-accent) / .10); }
+.edt--modifiable .edt__creneau:hover::after {
+    content: '+';
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+    font-weight: 700;
+    color: rgb(var(--c-accent-text));
+}
+.edt:not(.edt--modifiable) .edt-carte { cursor: default; }
+.edt--modifiable .edt-carte { cursor: pointer; }
+.edt-carte--conflit { outline: 2px solid #f87171; outline-offset: -1px; }
+.edt-carte--alerte  { outline: 2px dashed #fbbf24; outline-offset: -1px; }
+.edt-carte--conflit .edt-carte__sigle,
+.edt-carte--alerte .edt-carte__sigle { padding-right: 14px; }
+
+/* Lignes d'une carte : coupees en bas plutot que tassees. Comprimees par la
+   colonne flexible, elles se chevauchaient (heure, salle et classe les unes
+   sur les autres dans une carte basse). */
+.edt-carte > * { flex-shrink: 0; }
+
+/* Carte etroite (trois seances ou plus cote a cote) : le sigle d'abord, sur
+   deux lignes s'il le faut ; l'intitule et le parcours restent dans l'infobulle. */
+.edt-carte { container-type: inline-size; }
+@container (max-width: 88px) {
+    .edt-carte__titre, .edt-carte__badge { display: none; }
+    .edt-carte__sigle { white-space: normal; overflow-wrap: anywhere; line-height: 1.15; }
+}
+/* Tres etroite (telephone) : des mots entiers, coupes au bord, plutot qu'un
+   sigle eclate lettre par lettre ; le triangle passe au-dessus du sigle. */
+@container (max-width: 50px) {
+    .edt-carte__sigle { overflow-wrap: normal; font-size: 10px; }
+    .edt-carte__ligne { display: none; }
+    .edt-carte--conflit .edt-carte__sigle,
+    .edt-carte--alerte .edt-carte__sigle { padding-right: 0; padding-top: 13px; }
+}
+.edt-carte__alerte {
+    position: absolute;
+    top: 4px;
+    right: 5px;
+    font-size: 12px;
+    color: #fff;
+    filter: drop-shadow(0 1px 1px rgb(0 0 0 / .5));
+}
+
+/* --- Liste --------------------------------------------------------------- */
+.edt-sous-titre { margin: 22px 0 8px; font-size: 15px; font-weight: 700; color: rgb(var(--c-text)); }
+.edt-sous-titre .bi { color: rgb(var(--c-accent-text)); }
+.edt-liste__sigle { font-family: var(--font-mono); font-weight: 600; color: rgb(var(--c-gold-text)); white-space: nowrap; }
+.edt-liste__sigle .bi { color: rgb(var(--c-danger)); }
+.edt-liste__heure { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.edt-liste__vide { text-align: center; padding: 16px !important; color: rgb(var(--c-text-3)); }
+.edt-liste__actions { white-space: nowrap; text-align: right; }
+.edt-liste__actions button {
+    width: 30px;
+    height: 30px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: rgb(var(--c-accent-text));
+    cursor: pointer;
+}
+.edt-liste__actions button:hover { background: rgb(var(--c-accent) / .12); }
+.edt-liste__actions .edt-liste__supprimer { color: rgb(var(--c-danger)); }
+.edt-liste__actions .edt-liste__supprimer:hover { background: rgb(var(--c-danger) / .12); }
+.edt-type {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgb(var(--ton));
+    background: rgb(var(--ton) / .12);
+    border: 1px solid rgb(var(--ton) / .3);
+}
+.edt-type--cours  { --ton: var(--c-accent-text); }
+.edt-type--td     { --ton: 167 139 250; }
+.edt-type--tp     { --ton: var(--c-success); }
+.edt-type--examen { --ton: var(--c-warning); }
+
+/* --- Fenetres : le pied reste visible, seul le corps defile ---------------- */
+#addModal form > .flex.justify-end,
+#editModal form > .flex.justify-end {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    margin: 16px -16px -16px;
+    padding: 12px 16px;
+    background: rgb(var(--c-surface-2));
+    border-top: 1px solid rgb(var(--c-line));
+}
+
+/* Les fenetres de la page passent au-dessus de la barre du haut, collante a
+   1001 sous 1024 px (init/topbar.php), qui masquait leur en-tete : meme
+   etage que les fenetres historiques (src/css/modal.css). */
+#addModal, #editModal, #exportModal, #sallesModal { z-index: 1050; }
+/* src/css/responsive.css libere toute « .overflow-auto » sous 1024 px
+   (max-height: none, overflow-y: visible, en !important) : centrees, les
+   fenetres debordaient alors de l'ecran par le haut et par le bas, en-tete
+   et boutons hors d'atteinte (mesure : 1658 px de haut sur un ecran de 844). */
+#addModal > div, #editModal > div, #exportModal > div, #sallesModal > div {
+    max-height: 90vh !important;
+    max-height: 90dvh !important;
+    overflow-y: auto !important;
+}
+
+/* --- Fenetre des salles ---------------------------------------------------- */
+/* L'en-tete reste en place pendant que la liste defile. */
+#sallesModal > div > div:first-child { position: sticky; top: 0; z-index: 3; background: inherit; }
+.edt-salles__tete {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 16px;
+    margin-bottom: 12px;
+}
+.edt-salles__tete p { margin: 0; font-size: 12.5px; color: rgb(var(--c-text-2)); }
+.edt-salles__defile { overflow-x: auto; }
+.edt-salles__table { width: 100%; font-size: 13px; }
+.edt-salles__table td { vertical-align: top; }
+.edt-salles__code { font-family: var(--font-mono); font-weight: 600; color: rgb(var(--c-gold-text)); }
+.edt-salles__table small { display: block; font-size: 11.5px; color: rgb(var(--c-text-3)); }
+.edt-salles__table small.edt-salles__equip { font-style: italic; }
+.edt-salles__hs td:not(:last-child) { opacity: .6; }
+.edt-etat {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    color: rgb(var(--ton));
+    background: rgb(var(--ton) / .12);
+    border: 1px solid rgb(var(--ton) / .3);
+}
+.edt-etat--ok { --ton: var(--c-success); }
+.edt-etat--hs { --ton: var(--c-danger); }
+/* Ecran etroit : places, type, lieu et seances passent sous le nom de la
+   salle ; restent l'etat et les actions. */
+.edt-salles__table small.edt-salles__mobile { display: none; }
+@media (max-width: 640px) {
+    .edt-salles__table small.edt-salles__mobile { display: block; }
+    .edt-salles__table th:nth-child(n+2):nth-child(-n+5),
+    .edt-salles__table td:nth-child(n+2):nth-child(-n+5) { display: none; }
+    .edt-salles__tete .edt-btn { width: 100%; justify-content: center; }
+    .edt-salles__table td { white-space: normal; }
+    /* Une regle globale impose 480 px aux tableaux sur telephone ; celui-ci
+       tient en trois colonnes. */
+    .edt-salles__table { min-width: 0 !important; }
+    .edt-salles__table small { overflow-wrap: anywhere; }
+    /* Fenetres d'ajout et de modification : une colonne. A deux, « Type de
+       seance » tenait dans une quarantaine de pixels. */
+    #addSeanceForm > .grid, #editSeanceForm > .grid { grid-template-columns: minmax(0, 1fr); }
+    #addSeanceForm > .grid > *, #editSeanceForm > .grid > * { grid-column: 1 / -1; }
+}
+
+.edt-salle-form h4 { margin: 0 0 12px; font-size: 15px; font-weight: 700; color: rgb(var(--c-text)); }
+.edt-salle-form__grille {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+}
+.edt-salle-form__grille .edt-champ { width: 100%; min-width: 0; padding-right: 11px; }
+.edt-salle-form__grille select.edt-champ { padding-right: 34px; }
+.edt-salle-form__large { grid-column: 1 / -1; }
+.edt-salle-form__dispo {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-top: 14px;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    background: rgb(var(--c-surface-2));
+    font-size: 13px;
+    font-weight: 600;
+    color: rgb(var(--c-text));
+    cursor: pointer;
+}
+.edt-salle-form__dispo input { width: 17px; height: 17px; margin-top: 1px; accent-color: rgb(var(--c-accent-strong)); flex: none; }
+.edt-salle-form__dispo small { display: block; margin-top: 2px; font-weight: 400; font-size: 12px; color: rgb(var(--c-text-3)); }
+.edt-salle-form__erreur {
+    margin: 12px 0 0;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    background: rgb(var(--c-danger) / .10);
+    box-shadow: inset 3px 0 0 rgb(var(--c-danger));
+    font-size: 12.5px;
+    color: rgb(var(--c-text));
+}
+.edt-salle-form__erreur[hidden], .edt-salle-form[hidden], #edtSallesCorps[hidden] { display: none; }
+.edt-salle-form__actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+
+@media (prefers-reduced-motion: reduce) {
+    .edt-vues span, .edt-btn, #edtZone[aria-busy="true"] { transition: none; }
+}

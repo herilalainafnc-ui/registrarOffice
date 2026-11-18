@@ -1,0 +1,289 @@
+/* =========================================================================
+   Transitions de page (effet « stinger ») + micro-animations de contenu.
+
+   Portage du systeme eprouve du projet ABC, recolore aux teintes Registrar.
+
+   L'application reste multi-pages : chaque navigation recharge le document.
+   Le stinger masque ce rechargement derriere un balayage, ce qui donne la
+   continuite visuelle d'une application monopage sans en avoir la mecanique.
+
+   Tout est desactive si le systeme demande moins d'animations
+   (prefers-reduced-motion) ou si .reduce-motion est pose sur <html>.
+   ========================================================================= */
+
+/* --- Le rideau ------------------------------------------------------------ */
+
+.pt-stinger {
+  /* Teintes du sceau de l'universite : l'or, puis le bleu Zurcher, puis la nuit.
+     Volontairement en dur plutot qu'en variables de theme : le rideau doit
+     s'afficher identiquement sur toutes les pages, y compris celles qui ne
+     chargent pas la feuille de styles principale (impressions, fragments). */
+  --pt-teal: #88724b;  /* or du sceau — bord d'attaque */
+  --pt-cyan: #222e65;  /* bleu Zurcher, la bande du sceau */
+  --pt-nuit: #0d1023;  /* bleu nuit, le fond de l application */
+
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  overflow: hidden;
+}
+
+.pt-stinger.is-active {
+  pointer-events: all;
+}
+
+.pt-band {
+  position: relative;
+  background: var(--pt-teal);
+  /* Bord biseaute : c'est lui qui donne le caractere « stinger » plutot
+     qu'un simple fondu. */
+  transform: translateX(-101%) skewX(-12deg);
+  transform-origin: left center;
+  will-change: transform;
+  /* Le biseau decale les coins d'environ un dixieme de la hauteur de bande :
+     sur un ecran haut et etroit (telephone), 6 % de marge ne suffisait plus
+     et la page restait visible aux coins. La marge suit donc aussi la hauteur. */
+  margin-left: calc(-6% - 4vh);
+  width: calc(112% + 8vh);
+}
+
+.pt-band:nth-child(2) { background: var(--pt-cyan); }
+.pt-band:nth-child(3) { background: var(--pt-nuit); }
+
+/* Le logo et l'indicateur d'attente apparaissent au centre pendant que
+   l'ecran est couvert. */
+.pt-mark {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6rem;
+  opacity: 0;
+  transition: opacity 0.14s ease;
+}
+
+.pt-mark img {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0.9rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+  /* Plaque claire : le logo est un PNG transparent. Sans elle il prend la
+     couleur de la bande sur laquelle il tombe — son chevron magenta jure sur
+     le cyan et sa moitie bleu nuit disparait sur la bande sombre. */
+  background: #fff;
+  padding: 0.4rem;
+  box-sizing: border-box;
+}
+
+/* --- Indicateur d'attente -------------------------------------------------
+   Carre qui pivote d'un quart de tour a chaque temps, pendant qu'un remplissage
+   monte puis redescend. Le cycle dure 2 s et se repete tant que la page
+   suivante n'a pas fini de charger.
+   ------------------------------------------------------------------------- */
+
+.pt-loader {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 4px solid #fff;
+  animation: ptLoader 2s infinite ease;
+}
+
+.pt-loader-inner {
+  display: inline-block;
+  /* Le remplissage monte depuis le BAS : sans cet alignement il grandirait
+     vers le bas et l'effet serait inverse. */
+  vertical-align: bottom;
+  width: 100%;
+  height: 0;
+  background: #fff;
+  animation: ptLoaderInner 2s infinite ease-in;
+}
+
+@keyframes ptLoader {
+  0%   { transform: rotate(0deg); }
+  25%  { transform: rotate(180deg); }
+  50%  { transform: rotate(180deg); }
+  75%  { transform: rotate(360deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes ptLoaderInner {
+  0%   { height: 0%; }
+  25%  { height: 0%; }
+  50%  { height: 100%; }
+  75%  { height: 100%; }
+  100% { height: 0%; }
+}
+
+/* L'indicateur ne tourne que tant que le rideau est baisse : une animation
+   qui continue derriere un ecran devoile consomme sans rien montrer. */
+.pt-stinger:not(.is-covered):not(.is-covering) .pt-loader,
+.pt-stinger:not(.is-covered):not(.is-covering) .pt-loader-inner {
+  animation: none;
+}
+
+/* Etat « deja couvert », pose des l'execution du script sur la page qui
+   arrive : l'ecran est masque avant le premier rendu, donc on ne voit jamais
+   la page apparaitre puis se faire recouvrir. */
+.pt-stinger.is-covered .pt-band {
+  transform: translateX(0) skewX(-12deg);
+}
+
+.pt-stinger.is-covered .pt-mark {
+  opacity: 1;
+}
+
+/* Couverture : les bandes entrent en decalage, de haut en bas. */
+.pt-stinger.is-covering .pt-band {
+  animation: ptCover 0.34s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+}
+
+.pt-stinger.is-covering .pt-band:nth-child(2) { animation-delay: 0.05s; }
+.pt-stinger.is-covering .pt-band:nth-child(3) { animation-delay: 0.1s; }
+.pt-stinger.is-covering .pt-mark { opacity: 1; transition-delay: 0.2s; }
+
+/* Reveler : les bandes sortent par la droite. */
+.pt-stinger.is-revealing .pt-band {
+  transform: translateX(0) skewX(-12deg);
+  animation: ptReveal 0.42s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+}
+
+.pt-stinger.is-revealing .pt-band:nth-child(2) { animation-delay: 0.06s; }
+.pt-stinger.is-revealing .pt-band:nth-child(3) { animation-delay: 0.12s; }
+
+@keyframes ptCover {
+  from { transform: translateX(-101%) skewX(-12deg); }
+  to   { transform: translateX(0) skewX(-12deg); }
+}
+
+@keyframes ptReveal {
+  from { transform: translateX(0) skewX(-12deg); }
+  to   { transform: translateX(101%) skewX(-12deg); }
+}
+
+/* --- Une attente qui se prolonge -----------------------------------------
+   Connexion lente : le rideau reste baisse jusqu'a ce que la page suivante le
+   remplace. Apres 2,5 s il dit ce qu'il attend ; apres 6 s il offre de rester
+   sur la page, ce qui annule le chargement (src/js/transitions.js, attendre).
+   ------------------------------------------------------------------------- */
+
+.pt-attente,
+.pt-rester {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.pt-attente {
+  margin: -0.4rem 0 0;
+  font: 500 14px/1.4 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: rgba(255, 255, 255, 0.92);
+  text-align: center;
+}
+
+.pt-rester {
+  margin-top: -0.6rem;
+  padding: 0.6rem 1.15rem;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+  font: 600 13px/1 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  cursor: pointer;
+}
+
+.pt-rester:hover,
+.pt-rester:focus-visible {
+  background: #fff;
+  color: var(--pt-cyan);
+  outline: none;
+}
+
+.pt-stinger.is-lent .pt-attente,
+.pt-stinger.is-tres-lent .pt-rester {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s;
+}
+
+/* --- Entree du contenu ----------------------------------------------------
+   Selecteurs adaptes a la structure de Registrar (la version ABC visait
+   .dash-main, .stat-grid, .fed-kpis, qui n'existent pas ici).
+   ------------------------------------------------------------------------- */
+
+.pt-enter .back > *,
+.pt-enter main > * {
+  animation: ptRise 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Cascade sur les blocs de tete : cartes de tableau de bord, tuiles. */
+.pt-enter .simpleTbl,
+.pt-enter .tbl,
+.pt-enter .card {
+  animation: ptRise 0.44s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes ptRise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* --- Changements a l'interieur d'une page --------------------------------- */
+
+/* Pose par transitions.js sur les elements qui viennent d'apparaitre
+   (lignes de tableau rechargees, resultats de recherche vive, listes...). */
+.pt-in {
+  animation: ptIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes ptIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Valeur chiffree qui change : un battement discret, sans deplacement. */
+.pt-bump {
+  animation: ptBump 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes ptBump {
+  0%   { transform: none; }
+  35%  { transform: scale(1.06); }
+  100% { transform: none; }
+}
+
+/* --- Respect du reglage systeme ------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-stinger { display: none; }
+
+  .pt-enter .back > *,
+  .pt-enter main > *,
+  .pt-enter .simpleTbl,
+  .pt-enter .tbl,
+  .pt-enter .card,
+  .pt-in,
+  .pt-bump {
+    animation: none !important;
+  }
+}
+
+.reduce-motion .pt-stinger { display: none; }
+
+.reduce-motion .pt-enter .back > *,
+.reduce-motion .pt-enter main > *,
+.reduce-motion .pt-enter .simpleTbl,
+.reduce-motion .pt-enter .tbl,
+.reduce-motion .pt-enter .card,
+.reduce-motion .pt-in,
+.reduce-motion .pt-bump {
+  animation: none !important;
+}

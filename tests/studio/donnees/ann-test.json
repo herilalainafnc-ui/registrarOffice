@@ -1,0 +1,19 @@
+{
+	"preset": "ann",
+	"format": "4:5",
+	"donnees": {
+		"service": "Service de test",
+		"titre": "Fermeture exceptionnelle de la bibliothèque de test",
+		"motCleOr": "bibliothèque",
+		"texte": "Donnée de test : la salle de lecture fermera pendant les travaux. Les prêts restent possibles au comptoir d'exemple.",
+		"quandJour": "Du 3 au 7",
+		"quandMois": "novembre 2026",
+		"lieu": "Salle de test",
+		"lieuPrecision": "Bâtiment d'exemple",
+		"contactNom": "Service de test",
+		"contactCoord": "test@exemple.mg",
+		"retenir": "Retours des livres avant le 2 novembre (exemple)",
+		"mention": "Visuel de test du Studio UAZ"
+	},
+	"images": {}
+}

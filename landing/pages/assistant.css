@@ -1,0 +1,280 @@
+/* =============================================================================
+   Assistant de la vitrine
+   =============================================================================
+   Un bouton flottant, en bas a droite, qui ouvre un panneau de conversation.
+   Ce n'est pas une intelligence artificielle : les reponses viennent d'un
+   jeu de questions preconfigurees (voir assistant.js), reconnues malgre les
+   fautes de frappe courantes. Le panneau le dit explicitement des l'ouverture,
+   pour ne pas laisser croire a autre chose.
+
+   Charge par footer.php, donc present sur la page unique comme sur les cinq
+   pages autonomes.
+   ========================================================================== */
+
+:root {
+    --aide-marine: #183060;
+    --aide-or: #907848;
+    --aide-or-clair: #c9a961;
+    --aide-fond: #ffffff;
+    --aide-fond-alt: #f6f7fb;
+    --aide-encre: #16233d;
+    --aide-encre-douce: #55627a;
+    --aide-filet: #e2e6ef;
+}
+
+/* -------------------------------------------------------------------------
+   Bouton flottant
+   ------------------------------------------------------------------------- */
+
+.aide-bouton {
+    position: fixed;
+    /* A GAUCHE : le coin bas-droit est desormais celui du bouton de retour
+       en haut (voir .haut-page dans pages.css). Les deux s'y superposaient. */
+    left: clamp(1rem, 3vw, 1.75rem);
+    bottom: clamp(1rem, 3vw, 1.75rem);
+    z-index: 1200;
+
+    display: inline-flex;
+    align-items: center;
+    gap: .55rem;
+    padding: .8rem 1.1rem .8rem .85rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--aide-marine);
+    color: #fff;
+    font-family: "Inter", sans-serif;
+    font-size: .88rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 12px 30px -10px rgba(24, 48, 96, .55);
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+.aide-bouton:hover { background: var(--aide-marine); transform: translateY(-2px); box-shadow: 0 16px 34px -8px rgba(24, 48, 96, .6); }
+.aide-bouton:focus-visible { outline: 2px solid var(--aide-or-clair); outline-offset: 3px; }
+
+.aide-bouton__icone {
+    display: inline-grid;
+    place-items: center;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--aide-or);
+    flex-shrink: 0;
+}
+.aide-bouton__icone svg { width: 15px; height: 15px; }
+
+/* Le libelle se cache sur petit ecran : seule la bulle ronde reste, pour ne
+   pas empieter sur le contenu. */
+@media (max-width: 640px) {
+    .aide-bouton__texte { display: none; }
+    .aide-bouton { padding: .8rem; }
+}
+
+/* Point d'alerte discret, affiche tant que le panneau n'a jamais ete ouvert :
+   il signale qu'une aide existe sans etre insistant. */
+.aide-bouton__puce {
+    position: absolute;
+    /* Coin haut-droit du bouton : avec celui-ci a gauche de l'ecran, c'est le
+       coin tourne vers le contenu, donc celui que le regard croise. */
+    top: -3px; right: -3px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: #e0563f;
+    border: 2px solid var(--aide-fond);
+}
+.aide-bouton.est-vue .aide-bouton__puce { display: none; }
+
+.aide-bouton[hidden] { display: none; }
+
+/* -------------------------------------------------------------------------
+   Panneau de conversation
+   ------------------------------------------------------------------------- */
+
+.aide-panneau {
+    position: fixed;
+    /* Meme cote que le bouton qui l'ouvre : un panneau qui surgit a l'oppose
+       du geste ne se rattache a rien. */
+    left: clamp(.75rem, 3vw, 1.75rem);
+    bottom: clamp(5rem, 12vh, 6.5rem);
+    z-index: 1200;
+
+    width: min(23rem, calc(100vw - 1.5rem));
+    height: min(34rem, calc(100vh - 7.5rem));
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    background: var(--aide-fond);
+    border-radius: 18px;
+    box-shadow: 0 30px 70px -20px rgba(12, 18, 32, .45);
+    border: 1px solid var(--aide-filet);
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px) scale(.98);
+    transform-origin: bottom left;
+    transition: opacity .2s ease, transform .2s ease, visibility .2s;
+}
+.aide-panneau.est-ouvert {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+@media (max-width: 640px) {
+    .aide-panneau {
+        right: .5rem; left: .5rem; bottom: .5rem;
+        width: auto;
+        height: min(78vh, 40rem);
+    }
+}
+
+.aide-entete {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: .75rem;
+    padding: 1rem 1.1rem;
+    background: var(--aide-marine);
+    color: #fff;
+}
+.aide-entete h2 { font-size: .98rem; font-weight: 700; margin-bottom: .18rem; }
+.aide-entete p { font-size: .74rem; color: rgba(255,255,255,.72); line-height: 1.4; }
+
+.aide-fermer {
+    flex-shrink: 0;
+    width: 30px; height: 30px;
+    display: grid; place-items: center;
+    border: 0; border-radius: 8px;
+    background: rgba(255,255,255,.12);
+    color: #fff;
+    cursor: pointer;
+    transition: background .15s ease;
+}
+.aide-fermer:hover { background: rgba(255,255,255,.22); }
+.aide-fermer:focus-visible { outline: 2px solid var(--aide-or-clair); outline-offset: 2px; }
+.aide-fermer svg { width: 15px; height: 15px; }
+
+/* -------------------------------------------------------------------------
+   Fil de conversation
+   ------------------------------------------------------------------------- */
+
+.aide-fil {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .65rem;
+    background: var(--aide-fond-alt);
+}
+
+.aide-msg {
+    max-width: 84%;
+    padding: .65rem .85rem;
+    border-radius: 14px;
+    font-size: .86rem;
+    line-height: 1.55;
+    white-space: pre-line;
+}
+.aide-msg--bot {
+    align-self: flex-start;
+    background: #fff;
+    color: var(--aide-encre);
+    border: 1px solid var(--aide-filet);
+    border-bottom-left-radius: 4px;
+}
+.aide-msg--moi {
+    align-self: flex-end;
+    background: var(--aide-marine);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+.aide-msg a { color: var(--aide-marine); font-weight: 600; }
+.aide-msg--moi a { color: #fff; text-decoration: underline; }
+
+/* Puces de sujets, proposees a la suite d'une reponse du bot : la porte de
+   sortie quand ecrire est plus lent que cliquer. */
+.aide-puces {
+    align-self: flex-start;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    max-width: 100%;
+}
+.aide-puce {
+    border: 1px solid var(--aide-marine);
+    background: #fff;
+    color: var(--aide-marine);
+    font-size: .78rem;
+    font-weight: 600;
+    padding: .4rem .75rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease;
+}
+.aide-puce:hover { background: var(--aide-marine); color: #fff; }
+.aide-puce:focus-visible { outline: 2px solid var(--aide-or); outline-offset: 2px; }
+
+/* Trois points qui indiquent que le bot « ecrit » : une pause volontaire
+   avant la reponse rend l'echange moins mecanique. */
+.aide-attente { align-self: flex-start; display: flex; gap: .3rem; padding: .7rem .9rem; background: #fff; border: 1px solid var(--aide-filet); border-radius: 14px; border-bottom-left-radius: 4px; }
+.aide-attente span { width: 6px; height: 6px; border-radius: 50%; background: var(--aide-encre-douce); animation: aide-clignote 1.1s infinite ease-in-out; }
+.aide-attente span:nth-child(2) { animation-delay: .15s; }
+.aide-attente span:nth-child(3) { animation-delay: .3s; }
+@keyframes aide-clignote { 0%, 60%, 100% { opacity: .3; } 30% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+    .aide-attente span { animation: none; opacity: .6; }
+}
+
+/* -------------------------------------------------------------------------
+   Saisie
+   ------------------------------------------------------------------------- */
+
+.aide-saisie {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: flex-end;
+    gap: .5rem;
+    padding: .75rem;
+    background: #fff;
+    border-top: 1px solid var(--aide-filet);
+}
+.aide-saisie textarea {
+    flex: 1 1 auto;
+    resize: none;
+    max-height: 5.5rem;
+    padding: .6rem .8rem;
+    border: 1px solid var(--aide-filet);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: .86rem;
+    line-height: 1.4;
+    color: var(--aide-encre);
+    background: var(--aide-fond-alt);
+}
+.aide-saisie textarea:focus {
+    outline: none;
+    border-color: var(--aide-or);
+    box-shadow: 0 0 0 3px rgba(144, 120, 72, .18);
+}
+.aide-saisie textarea::placeholder { color: var(--aide-encre-douce); }
+
+.aide-envoyer {
+    flex-shrink: 0;
+    width: 38px; height: 38px;
+    display: grid; place-items: center;
+    border: 0; border-radius: 10px;
+    background: var(--aide-or);
+    color: var(--aide-marine);
+    cursor: pointer;
+    transition: background .15s ease;
+}
+.aide-envoyer:hover { background: var(--aide-or-clair); }
+.aide-envoyer:focus-visible { outline: 2px solid var(--aide-marine); outline-offset: 2px; }
+.aide-envoyer svg { width: 17px; height: 17px; }
+.aide-envoyer:disabled { opacity: .45; cursor: not-allowed; }
+
+@media (prefers-reduced-motion: reduce) {
+    .aide-panneau, .aide-bouton { transition: opacity .15s ease, visibility .15s; }
+}

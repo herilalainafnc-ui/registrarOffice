@@ -1,0 +1,158 @@
+/* ==========================================================================
+   JETONS — Infinit Registrar
+   --------------------------------------------------------------------------
+   Les seules definitions de couleur de l application : des variables, et
+   rien d autre. Charge par init/head.php (avec src/css/theme.css) et par
+   init/head.noTem.php (seul : les apercus d export gardent leur mise en
+   page mais doivent pouvoir resoudre les var() des feuilles partagees).
+   Le mode d emploi est en tete de src/css/theme.css.
+
+   Les couleurs viennent du sceau de l Universite Adventiste Zurcher :
+       bleu Zurcher  #222e65   la bande du sceau
+       or Zurcher    #88724b   l anneau qui la cercle
+       blanc, noir             l anneau du nom, le disque central
+   Tout le reste en derive : les fonds sont des gris teintes de ce bleu,
+   l accent interactif est ce bleu eclairci pour rester lisible sur fond
+   sombre, l or est eclairci pour le texte et garde sa valeur pour les filets.
+   ========================================================================== */
+
+/* ------------------------------------------------------------------ jetons */
+
+:root {
+	color-scheme: dark;
+
+	/* Surfaces : gris teintes du bleu Zurcher */
+	--c-sunken:       13 16 35;    /* #0d1023  le plus profond             */
+	--c-canvas:       18 22 44;    /* #12162c  fond de page                */
+	--c-surface:      26 31 60;    /* #1a1f3c  cartes, panneaux            */
+	--c-surface-2:    32 38 72;    /* #202648  en-tete de carte, survol    */
+	--c-raised:       38 45 82;    /* #262d52  selection, survol appuye    */
+	--c-inset:        15 19 39;    /* #0f1327  champs de saisie            */
+
+	/* Traits */
+	--c-line:         40 47 86;    /* #282f56                              */
+	--c-line-strong:  58 66 108;   /* #3a426c                              */
+
+	/* Texte */
+	--c-text:         236 238 246; /* #eceef6                              */
+	--c-text-2:       179 185 214; /* #b3b9d6                              */
+	--c-text-3:       136 144 181; /* #8890b5  libelles, aides             */
+
+	/* Accent interactif : le bleu Zurcher eclairci */
+	--c-accent:        90 111 218;  /* #5a6fda */
+	--c-accent-strong: 70 88 194;   /* #4658c2 */
+	--c-accent-text:   158 172 241; /* #9eacf1  l accent lu comme texte   */
+	--c-on-accent:     255 255 255; /* le texte pose sur l accent       */
+
+	/* Or Zurcher : la marque, l entree active, les codes du registre */
+	--c-gold:          168 141 92;  /* #a88d5c  filets et pastilles, l or du
+	                                   sceau leve d un ton pour se voir sur
+	                                   le bleu nuit                     */
+	--c-gold-seal:     136 114 75;  /* #88724b  l or exact du sceau       */
+	--c-gold-text:     206 180 128; /* #ceb480  l or lu comme texte       */
+
+	/* Etats */
+	--c-success:       52 211 153;
+	--c-danger:        248 113 113;
+	--c-warning:       251 191 36;
+	--c-info:          158 172 241;
+
+	/* Coque, identique dans les deux themes */
+	--c-side:          14 18 46;    /* #0e122e  bleu nuit profond      */
+	--c-side-2:        27 33 74;    /* #1b214a                         */
+	--c-side-line:     36 43 90;    /* #242b5a                         */
+	--c-side-text:     160 168 206;
+	--c-side-text-hi:  240 242 250;
+	--c-topbar:        34 46 101;   /* #222e65  le bleu Zurcher exact   */
+	--c-topbar-2:      28 38 86;
+
+	/* Echelle neutre (slate et gray de Tailwind) */
+	--n-50:  246 247 251;
+	--n-100: 236 238 246;
+	--n-200: 213 217 234;
+	--n-300: 179 185 214;
+	--n-400: 150 158 196;
+	--n-500: 124 133 178;  /* texte secondaire : 4,5:1 sur une carte */
+	--n-600: 58 66 108;
+	--n-700: 38 45 82;
+	--n-800: 26 31 60;
+	--n-900: 18 22 44;
+	--n-950: 11 14 30;
+
+	/* Echelle d accent (cyan et blue de Tailwind) : le bleu Zurcher en 900 */
+	--a-50:  238 241 253;
+	--a-100: 223 228 251;
+	--a-200: 195 203 247;
+	--a-300: 158 172 241;
+	--a-400: 122 140 232;
+	--a-500: 90 111 218;
+	--a-600: 70 88 194;
+	--a-700: 54 69 159;
+	--a-800: 43 56 127;
+	--a-900: 34 46 101;
+	--a-950: 21 28 66;
+
+	/* Forme et rythme */
+	--radius-sm: 6px;
+	--radius:    10px;
+	--radius-lg: 14px;
+	--sidebar-w: 248px;
+	--topbar-h:  56px;
+	--shadow-1:  0 1px 2px rgb(0 0 0 / .22), 0 1px 1px rgb(0 0 0 / .12);
+	--shadow-2:  0 12px 32px -8px rgb(4 6 18 / .6);
+	--ring:      0 0 0 3px rgb(var(--c-accent) / .35);
+
+	--font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	--font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+}
+
+[data-theme="light"] {
+	color-scheme: light;
+
+	--c-sunken:       233 235 244;
+	--c-canvas:       243 244 249;
+	--c-surface:      255 255 255;
+	--c-surface-2:    248 249 252;
+	--c-raised:       229 232 242;
+	--c-inset:        250 251 253;
+
+	--c-line:         223 226 238;
+	--c-line-strong:  199 204 223;
+
+	--c-text:         18 22 44;
+	--c-text-2:       58 66 108;
+	--c-text-3:       100 108 148;
+
+	--c-accent:        70 88 194;
+	--c-accent-strong: 54 69 159;
+	--c-accent-text:   54 69 159;
+
+	--c-gold:          136 114 75;  /* l or exact du sceau, sur fond clair */
+	--c-gold-text:     122 101 64;  /* #7a6540 */
+
+	--c-success:       5 150 105;
+	--c-danger:        220 38 38;
+	--c-warning:       180 83 9;
+	--c-info:          54 69 159;
+
+	/* L echelle neutre s inverse : la carte devient blanche, le texte encre. */
+	--n-50:  18 22 44;
+	--n-100: 26 31 60;
+	--n-200: 38 45 82;
+	--n-300: 58 66 108;
+	--n-400: 76 84 124;
+	--n-500: 100 108 148;  /* texte secondaire : 5:1 sur blanc */
+	--n-600: 183 189 214;
+	--n-700: 221 225 238;
+	--n-800: 255 255 255;
+	--n-900: 243 244 249;
+	--n-950: 233 235 244;
+
+	/* L accent lu comme texte doit rester lisible sur blanc. */
+	--a-200: 54 69 159;
+	--a-300: 54 69 159;
+	--a-400: 70 88 194;
+
+	--shadow-1:  0 1px 2px rgb(18 22 44 / .06), 0 1px 1px rgb(18 22 44 / .04);
+	--shadow-2:  0 16px 36px -12px rgb(18 22 44 / .22);
+}

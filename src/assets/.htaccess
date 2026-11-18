@@ -1,0 +1,5 @@
+# Contenus inclus cote serveur (readfile) : jamais servis en direct.
+# Le bulletin academique n'est consultable que via la route authentifiee /reglement.
+<FilesMatch "\.(html|htm)$">
+	Require all denied
+</FilesMatch>

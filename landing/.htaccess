@@ -1,0 +1,18 @@
+# Activer le module de réécriture
+RewriteEngine On
+
+# Redirection HTTP vers HTTPS.
+# Repetee ici parce que « RewriteEngine On » remplace les regles du parent
+# au lieu de les heriter : sans elle, une page servie en http appellerait
+# les endpoints de src/ en https, ce qui change l origine et casse les
+# requetes AJAX (echec CORS).
+# R=308 (et non 301) pour preserver la methode POST et le corps du formulaire.
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=308,L]
+
+
+# Servir les fichiers .php sans l'extension (compatibilité arrière)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L]

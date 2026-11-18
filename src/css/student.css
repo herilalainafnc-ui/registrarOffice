@@ -1,0 +1,44 @@
+/* ==========================================================================
+   PAGES ÉTUDIANT — responsive mobile-first
+   - Tables de notes larges : défilement horizontal propre sur mobile
+     (la mise en page desktop reste intacte)
+   - Meilleure respiration du contenu sur petit écran
+   ========================================================================== */
+
+.tbl-x-scroll { width: 100%; }
+
+@media (max-width: 900px) {
+    .tbl-x-scroll {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 8px;
+        /* léger repère que ça défile latéralement */
+        box-shadow: inset -14px 0 12px -12px rgba(0, 0, 0, 0.35);
+    }
+    /* La table reprend sa largeur naturelle pour rester lisible et défiler */
+    .tbl-x-scroll .simpleTbl {
+        width: auto !important;
+        min-width: 620px;
+    }
+    .tbl-x-scroll::-webkit-scrollbar { height: 6px; }
+    .tbl-x-scroll::-webkit-scrollbar-thumb {
+        background: rgba(120, 150, 180, 0.5);
+        border-radius: 6px;
+    }
+    .tbl-x-scroll::-webkit-scrollbar-track { background: transparent; }
+}
+
+/* Contenu étudiant en pleine largeur et sans débordement horizontal sur mobile */
+@media (max-width: 1023px) {
+    .student-content-wrapper {
+        width: 100% !important;
+        padding-bottom: 90px; /* laisse la place à la toolbar fixe du bas */
+    }
+    .student-flex-container {
+        overflow-x: hidden;
+    }
+    /* Titre de section un peu plus lisible sur mobile */
+    .student-content-wrapper .lg\:text-lg {
+        font-size: 1rem;
+    }
+}

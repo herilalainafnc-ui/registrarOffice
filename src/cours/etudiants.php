@@ -1,0 +1,214 @@
+<div class=" mt-2 p-2 overflow-auto" style="max-height: calc(100vh - 246px);">
+<?php 
+$ctxUser = function_exists('currentUser') ? currentUser() : null;
+$sessionUserLevel = (int)($ctxUser['level'] ?? ($_SESSION['user_level'] ?? ($_SESSION['level'] ?? 99)));
+$normalizedPrivilege = strtolower(trim((string)($ctxUser['privilege'] ?? ($privilege ?? ''))));
+$canRemoveStudentFromCourse = false;
+if (function_exists('isRegistrar') && function_exists('isChefMention')) {
+	$canRemoveStudentFromCourse = isRegistrar() || isChefMention();
+} else {
+	$canRemoveStudentFromCourse = (
+		$normalizedPrivilege == "registrar"
+		|| $normalizedPrivilege == "administrator"
+		|| $normalizedPrivilege == "superadmin"
+		|| $normalizedPrivilege == "chef_mention"
+		|| $normalizedPrivilege == "chef mention"
+		|| strpos($normalizedPrivilege, 'chef') !== false
+		|| in_array($sessionUserLevel, [1, 2, 3, 6], true)
+		|| $sessionUserLevel === 6
+		|| (isset($rg_user['level']) && (int)$rg_user['level'] === 6)
+	);
+}
+
+$year = date('Y')+1;
+for ($i=0; $i < 4 ; $i++) { 
+
+$soustract = $year - $i;
+$preced = $soustract - 1;	
+?>
+
+<div class='p-1 <?=$bg_two_color?> hover:<?=$bg_three_color?> mb-4 rounded-md border-2 border-slate-700 hover:border-cyan-500 transition-all overflow-auto'>
+<div class="text-center bg-gradient-to-r from-cyan-500">
+	<b>Etudiants en année <?php echo $scolaire = $preced." - ".$soustract; ?>.</b>
+</div>
+
+	<div>
+
+		<div>
+
+
+			<table class="simpleTbl mb-1">
+				<thead class="<?=$bg_one_color?> text-white">
+					<tr>
+						<td class="w-20">ID</td>
+						<td>Nom et Prénoms</td>
+						<td class="w-20">Niveau</td>
+						<td class="w-20">Semestre</td>
+						<td class="w-4"><span class="bi-trash3-fill"></span></td>
+					</tr>
+				</thead>
+				<tbody class="<?=$bg_four_color?>">
+<?php
+$sigle = $profil['Sigle'];
+$title = $profil['title'];
+// Même critère que src/cours/notes.php (sigle + année), en requête préparée.
+require_once(__DIR__ . '/../../data/perimetre.php');
+$cors = $dtb->prepare('SELECT n.*, s.session_name, s.session_semester, s.session_year FROM t_2023_notes n LEFT JOIN t_2023_session s ON s.session_id = n.session_id WHERE n.Sigle = ? AND n.annee_scolaire = ? AND n.remove = 0 ORDER BY n.session_id ASC, n.student_id ASC');
+$cors->execute([$sigle, $scolaire]);
+
+$nbr = 1;
+$currentSessionId = null;
+while ($cours_table = $cors->fetch()) {
+$idcours = $cours_table['id'];
+$sessionId = (int)($cours_table['session_id'] ?? 0);
+
+$jer = $dtb->prepare('SELECT * FROM tbl_2024_etudiant WHERE student_id = :sid ORDER BY remove ASC, id ASC LIMIT 1');
+$jer->execute(['sid' => $cours_table['student_id']]);
+$apotr = $jer->fetch();
+
+// Exclure les etudiants suspendus et retires de l'universite.
+if (
+	$apotr
+	&& (
+		(isset($apotr['suspended']) && (int)$apotr['suspended'] === 1)
+		|| (isset($apotr['retrait_universite']) && (int)$apotr['retrait_universite'] !== 0)
+	)
+) {
+	continue;
+}
+
+// Hors du perimetre du compte (data/perimetre.php) : invisible.
+if (!perimetreEtudiantVisible($apotr)) {
+	continue;
+}
+
+if ($currentSessionId !== $sessionId) {
+	$currentSessionId = $sessionId;
+	$sessionName = trim((string)($cours_table['session_name'] ?? ''));
+	$sessionSemester = trim((string)($cours_table['session_semester'] ?? ''));
+	$sessionYear = trim((string)($cours_table['session_year'] ?? ''));
+	$sessionLabel = 'Session #'.$currentSessionId;
+	if ($sessionName !== '' || $sessionSemester !== '' || $sessionYear !== '') {
+		$sessionLabel = trim($sessionName.' - S'.$sessionSemester.' / '.$sessionYear, ' -/S');
+		if ($sessionLabel === '') {
+			$sessionLabel = 'Session #'.$currentSessionId;
+		}
+	}
+ ?>
+					<tr class="bg-cyan-900 text-white">
+						<td colspan="5"><b><?=htmlspecialchars($sessionLabel)?></b></td>
+					</tr>
+<?php
+}
+ ?>
+
+<form method="post" action="<?=$app_base?>/app/completnotes?id=<?=$id?>&idcours=<?=$idcours?>" class="form-no-refrech">
+					<tr>
+						<td class="bg-gradient-to-r from-orange-800 to-orange-400"><?=$cours_table['student_id']?></td>
+						<td class="c<?=$nbr.$i;?>"><?php
+if($apotr){
+	if(is_null($apotr['student_nom']) AND is_null($apotr['student_prenom'])){
+		echo "<em style='color:red'>Non défini</em>";
+	}else{
+		echo $apotr['student_nom']." ".$apotr['student_prenom'];
+	}
+}else{
+	echo "<em style='color:red'>Etudiant non inscrit dans la base!!</em>";
+}
+					?></td>
+						<td class="c<?=$nbr.$i;?>">
+<?php 
+if($apotr){
+	echo "L".$apotr['annee_etude'];
+}else{
+	echo "-";
+}
+ ?>			
+						</td>
+					<td class="c<?=$nbr.$i;?>"><?=$cours_table['semester']?></td>
+						<td>
+							<?php if ($canRemoveStudentFromCourse): ?>
+							<div class="nav-item dropstart" style="list-style: none">
+								<a href="#" class="btn nav-link" type="button" role="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="bi-three-dots-vertical"></span></a>
+								<ul class="dropdown-menu">
+							        <li>
+	<a class="dropdown-item" href="<?=$app_base?>/app/.cours/dell-listcours.incours?idSupprCours=<?=$idcours?>&id=<?=$id?>"><span class="bi-trash3-fill" style="color: red;"></span> Supprimer cet étudiant</a></li>
+					          		</ul>
+							</div>
+							<?php endif; ?>
+						</td>
+					</tr>
+		<button type="submit" style="display: none;"></button>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$('.form-no-refrech').on('submit',function(e){
+					e.preventDefault();
+					var url = APP_BASE+'/app/.cours/completnotes';
+					var data = $(this).serialize();
+
+					$.post(url,data,function(response){
+							
+							$('.g<?=$nbr.$i?>').css({
+								'border':'none',
+								'border-radius':'0px',
+								'background':'none'
+							})
+							$('.g<?=$nbr.$i?>').blur();
+							
+							
+							if($('.g<?=$nbr.$i;?>').val() == 0){
+								$('.stp<?=$nbr.$i;?>').css({
+									'background' : 'none',
+								})
+								$('.stp<?=$nbr.$i;?>').innerHTML('');
+
+							}else if($('.g<?=$nbr.$i;?>').val() < 10){
+								$('.stp<?=$nbr.$i;?>').css({
+									'background' : '#ff0000',
+									'color' : 'white',
+								})
+								$('.stp<?=$nbr.$i;?>').innerHTML('E');
+
+							}else if($('.g<?=$nbr.$i;?>').val()>=10){
+								$('.stp<?=$nbr.$i;?>').css({
+									'background' : '#15dd2a',
+									'color' : 'white',
+								})
+								$('.stp<?=$nbr.$i;?>').innerHTML('S');
+
+							}
+							
+					})
+
+				})
+			})
+
+		</script>
+</form>
+					
+<?php 
+
+$nbr++;
+	}
+ ?>
+				</tbody>
+			</table>
+
+<div class="text-center text-white">
+	<b><p style="margin: 0px;">Nombre : <?php 
+if (($nbr-1)<=1) {
+	echo ($nbr-1)." étudiant";
+}else{
+	echo ($nbr-1)." étudiants";
+}
+	?></p></b>
+
+</div>
+	</div>
+
+				</div>
+</div>
+<?php 
+	}
+ ?>
+</div>

@@ -1,0 +1,47 @@
+RewriteEngine On
+
+# Redirection HTTP vers HTTPS (nécessaire pour la géolocalisation GPS)
+# R=308 (et non 301) pour PRÉSERVER la méthode POST et le corps du formulaire
+# lors de l'upgrade http->https (un 301/302 transformerait le POST en GET).
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=308,L]
+
+# Désactiver l'ajout automatique de slash pour les dossiers
+DirectorySlash Off
+
+# Désactiver l'affichage du contenu des dossiers
+Options -Indexes
+
+# Permettre l'accès aux ressources existantes (fichiers et liens symboliques)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -l
+RewriteRule ^ - [L]
+
+# PRIORITÉ 1: Si c'est un dossier avec trailing slash ET qu'un .php existe, rediriger SANS slash
+# Empêche le problème de chemins relatifs quand DirectorySlash Off est ignoré par le serveur
+RewriteCond %{REQUEST_URI} ^(.+)/$
+RewriteCond %{DOCUMENT_ROOT}%1.php -f [OR]
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+)/$ $1 [R=301,L,QSA]
+
+# PRIORITÉ 2: Supprimer le slash final pour tous les autres cas
+RewriteCond %{REQUEST_URI} ^(.+)/$
+RewriteRule ^(.+)/$ $1 [R=301,L,QSA]
+
+# Empêcher l'accès direct aux fichiers .php (redirection 301)
+# Redirige /student.php vers /student (relatif)
+RewriteCond %{THE_REQUEST} \s/+(.*/)?([^/.]+)\.php[\s?] [NC]
+RewriteRule ^ %1%2 [R=301,L,NE]
+
+# Si c'est un dossier ET qu'un fichier .php du même nom existe, servir le .php
+# Ex: /student?id=1 -> student.php?id=1 (même si dossier student/ existe)
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L,QSA]
+
+# Servir les fichiers .php sans l'extension (cas standard)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L,QSA]
+

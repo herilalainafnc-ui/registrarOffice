@@ -1,0 +1,373 @@
+/* =============================================================================
+   Sessions (/sessions) — prefixe « sn- ». Page : src/sessions.php,
+   comportement : src/js/sessions.js.
+
+   Une frise par annee universitaire : chaque session est une ligne, sa barre
+   posee sur les mois de l'annee ; le trait dore marque aujourd'hui (l'or du
+   sceau, --c-gold). Couleurs : les jetons de src/css/tokens.css, redefinis
+   sous [data-theme="light"] : les deux themes suivent sans regle de plus.
+
+   Mouvement : une seule entree orchestree (les cartes montent, les barres se
+   deroulent de leur debut, puis le trait d'aujourd'hui tombe), et des
+   transitions qui disent ce qui change (repli, edition, apercu des dates).
+   Tout s'arrete sous prefers-reduced-motion.
+   ========================================================================== */
+
+.sn {
+	--sn-info: minmax(200px, 268px);
+	--sn-act: 104px;
+	--sn-pad: 11px;                                   /* demi-espace vertical d'une ligne */
+	--sn-trait: rgb(var(--c-line) / .85);             /* les mois de la frise */
+	--sn-trait-fort: rgb(var(--c-line-strong));       /* le 1er janvier */
+	--sn-ease: cubic-bezier(.22, 1, .36, 1);
+	max-width: 1240px; margin: 0 auto; padding: 24px 24px 104px; /* le bas libre du bouton Messagerie */
+	font-family: var(--font-sans); font-size: 14px; line-height: 1.5; color: rgb(var(--c-text));
+}
+
+/* ------------------------------------------------------------------ en-tete */
+
+.sn-tete { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+.sn-tete__icone {
+	flex: none; width: 46px; height: 46px; border-radius: var(--radius); display: grid; place-items: center;
+	background: rgb(var(--c-accent) / .14); color: rgb(var(--c-accent-text)); font-size: 20px;
+	box-shadow: inset 0 0 0 1px rgb(var(--c-accent) / .3);
+}
+.sn-tete__texte { flex: 1; min-width: 0; }
+.sn-tete h1 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -.01em; color: rgb(var(--c-text)); }
+.sn-tete p { margin: 2px 0 0; max-width: 70ch; font-size: 13.5px; color: rgb(var(--c-text-2)); }
+.sn-tete__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+
+/* ----------------------------------------------------------------- boutons */
+
+.sn-bouton {
+	display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 38px; padding: 0 16px;
+	border: 0; border-radius: 999px; background: rgb(var(--c-accent)); color: rgb(var(--c-on-accent));
+	font: 600 13.5px/1 var(--font-sans); white-space: nowrap; cursor: pointer; touch-action: manipulation;
+	transition: background-color .15s, box-shadow .15s, transform .12s;
+}
+.sn-bouton:hover { background: rgb(var(--c-accent-strong)); }
+.sn-bouton:active { transform: scale(.97); }
+.sn-bouton[disabled] { opacity: .6; cursor: default; transform: none; }
+.sn-bouton--discret { background: transparent; color: rgb(var(--c-accent-text)); box-shadow: inset 0 0 0 1px rgb(var(--c-line-strong)); }
+.sn-bouton--discret:hover { background: rgb(var(--c-accent) / .1); }
+.sn-bouton--fantome { height: 32px; padding: 0 12px; gap: 6px; background: transparent; color: rgb(var(--c-accent-text)); font-size: 12.5px; }
+.sn-bouton--fantome:hover { background: rgb(var(--c-accent) / .12); }
+.sn-bouton.is-charge > i { animation: sn-tourne .8s linear infinite; }
+.sn :is(.sn-bouton, .sn-modifier, .sn-annee__bascule, .sn-passees__bascule):focus-visible { outline: none; box-shadow: var(--ring); }
+
+/* ------------------------------------------------------------- pastilles */
+
+.sn-etat {
+	display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 9px; border-radius: 999px;
+	background: rgb(var(--c-text-3) / .14); color: rgb(var(--c-text-2));
+	font-size: 11.5px; font-weight: 600; line-height: 1; white-space: nowrap;
+}
+.sn-etat > i:not(.bi) { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.sn-etat > i.bi { font-size: 12px; }
+.sn-etat--cours { background: rgb(var(--c-success) / .14); color: rgb(var(--c-success)); }
+.sn-etat--avenir { background: rgb(var(--c-accent) / .14); color: rgb(var(--c-accent-text)); }
+.sn-etat--alerte { background: rgb(var(--c-warning) / .14); color: rgb(var(--c-warning)); }
+.sn-etat--brouillon { background: transparent; color: rgb(var(--c-accent-text)); box-shadow: inset 0 0 0 1px rgb(var(--c-accent-text) / .55); }
+
+/* ------------------------------------------------- la session en cours */
+
+.sn-maintenant {
+	margin-bottom: 16px; padding: 16px 20px; border-radius: var(--radius-lg);
+	background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line));
+}
+.sn-maintenant--aucune { border-color: rgb(var(--c-warning) / .45); }
+.sn-maintenant__ligne { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.sn-maintenant h2 { flex: 1; min-width: 0; margin: 0; font-size: 17px; font-weight: 650; letter-spacing: -.01em; color: rgb(var(--c-text)); }
+.sn-maintenant h2 span { margin-left: 4px; font-weight: 500; color: rgb(var(--c-text-3)); }
+.sn-maintenant__compte { font-size: 12.5px; color: rgb(var(--c-text-3)); font-variant-numeric: tabular-nums; }
+.sn-maintenant__compte b { font-weight: 650; color: rgb(var(--c-text)); }
+.sn-progres { position: relative; height: 6px; margin: 12px 0 10px; border-radius: 999px; background: rgb(var(--c-line)); overflow: hidden; }
+.sn-progres__fait { position: absolute; top: 0; bottom: 0; left: 0; width: calc(var(--p, 0) * 100%); border-radius: inherit; background: rgb(var(--c-accent)); }
+.sn-maintenant__texte { margin: 0; font-size: 13.5px; color: rgb(var(--c-text-2)); }
+.sn-maintenant--aucune .sn-maintenant__texte { margin-top: 8px; }
+.sn-maintenant__texte b { font-weight: 600; color: rgb(var(--c-text)); }
+
+/* ------------------------------------------------------------ les annees */
+
+.sn-liste { display: flex; flex-direction: column; gap: 14px; }
+.sn-annee { border-radius: var(--radius-lg); background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-line)); }
+.sn-annee__tete { display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; }
+.sn-annee__bascule, .sn-passees__bascule {
+	flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 10px;
+	border: 0; border-radius: var(--radius); background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
+}
+.sn-annee__chevron { font-size: 12px; color: rgb(var(--c-text-3)); transition: transform .32s var(--sn-ease); }
+.is-ouverte > .sn-annee__tete .sn-annee__chevron,
+.sn-passees.is-ouverte > .sn-passees__bascule .sn-annee__chevron { transform: rotate(90deg); }
+.sn-annee__titre { font-size: 17px; font-weight: 700; letter-spacing: -.01em; font-variant-numeric: tabular-nums; transition: color .15s; }
+.sn-annee__bascule:hover .sn-annee__titre, .sn-passees__bascule:hover .sn-passees__titre { color: rgb(var(--c-accent-text)); }
+.sn-annee__infos { font-size: 12.5px; color: rgb(var(--c-text-3)); font-variant-numeric: tabular-nums; }
+
+/* Repli : la hauteur suit le contenu (grille 0fr -> 1fr) ; replie, le contenu
+   sort aussi de la tabulation (visibility, apres la fin du mouvement). */
+.sn-annee__corps { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .34s var(--sn-ease); }
+.is-ouverte > .sn-annee__corps { grid-template-rows: 1fr; }
+.sn-annee__interieur { min-height: 0; overflow: hidden; visibility: hidden; transition: visibility 0s linear .34s; }
+.is-ouverte > .sn-annee__corps > .sn-annee__interieur { visibility: visible; transition-delay: 0s; }
+.sn-passees:not(.is-ouverte) .sn-annee__interieur { visibility: hidden; }
+
+/* --------------------------------------------------- regle et lignes */
+
+.sn-regle, .sn-ligne {
+	display: grid; grid-template-columns: var(--sn-info) minmax(0, 1fr) var(--sn-act);
+	column-gap: 20px; padding-inline: 20px;
+}
+.sn-regle__mois { position: relative; height: 22px; }
+.sn-regle__mois > span {
+	position: absolute; bottom: 4px; transform: translateX(-50%); white-space: nowrap;
+	font-size: 10.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: rgb(var(--c-text-3));
+}
+.sn-regle__mois em { font-style: normal; }
+.sn-regle__mois b, .sn-regle__mois .sn-jan { font-weight: 600; color: rgb(var(--c-gold-text)); }
+.sn-regle__mois[data-densite="pleine"] .sn-c,
+.sn-regle__mois:not([data-densite="pleine"]) .sn-l { display: none; }
+.sn-regle__mois[data-densite="minime"] > span:not(:nth-child(3n+1)) { display: none; }
+.sn-regle__auj {
+	position: absolute; bottom: -4px; left: var(--sn-auj); width: 8px; height: 8px; margin-left: -4px; border-radius: 50%;
+	background: rgb(var(--c-gold)); box-shadow: 0 0 0 3px rgb(var(--c-gold) / .22); z-index: 1;
+}
+.sn-annee--sans-frise .sn-regle, .sn-annee--sans-frise .sn-piste { display: none; }
+
+.sn-ligne {
+	position: relative; align-items: center; padding-block: var(--sn-pad);
+	border-top: 1px solid rgb(var(--c-line) / .75); cursor: pointer; transition: background-color .15s;
+}
+.sn-ligne:hover, .sn-ligne.is-edition { background: rgb(var(--c-surface-2)); }
+.sn-ligne.is-edition { cursor: default; }
+.sn-ligne__info { min-width: 0; }
+.sn-ligne__nom { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.sn-ligne__titre { font-size: 14px; font-weight: 600; color: rgb(var(--c-text)); overflow-wrap: anywhere; }
+.sn-ligne--nouvelle .sn-ligne__titre { color: rgb(var(--c-accent-text)); }
+.sn-ligne__dates { margin-top: 2px; font-size: 12.5px; color: rgb(var(--c-text-2)); font-variant-numeric: tabular-nums; }
+.sn-ligne__duree { color: rgb(var(--c-text-3)); }
+.sn-ligne__code { margin-top: 1px; font: 500 11px/1.4 var(--font-mono); letter-spacing: .02em; color: rgb(var(--c-text-3)); }
+.sn-ligne__alerte { display: flex; align-items: baseline; gap: 6px; margin-top: 4px; font-size: 12px; color: rgb(var(--c-warning)); }
+
+/* La piste : l'etendue de l'annee (le filet du milieu), les mois en fond. */
+.sn-piste { position: relative; height: 30px; background: var(--sn-grille, none); }
+.sn-piste::before {
+	content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px;
+	border-radius: 2px; background: rgb(var(--c-line));
+}
+.sn-barre {
+	position: absolute; top: 50%; left: 0; width: 0; height: 10px; margin-top: -5px; border-radius: 999px;
+	background: rgb(var(--c-accent) / .6); transform-origin: left center; transition: filter .15s, box-shadow .2s;
+}
+.sn-ligne--cours .sn-barre {
+	background: linear-gradient(to right, rgb(var(--c-accent)) 0 var(--avance, 100%), rgb(var(--c-accent) / .38) var(--avance, 100%));
+	box-shadow: 0 0 0 3px rgb(var(--c-accent) / .2);
+}
+.sn-ligne--fini .sn-barre { background: rgb(var(--c-text-3) / .42); }
+.sn-ligne--aussi .sn-barre { background: rgb(var(--c-warning) / .55); }
+.sn-ligne--chevauche .sn-barre, .sn-ligne--croise .sn-barre { box-shadow: 0 0 0 2px rgb(var(--c-warning) / .85); }
+.sn-ligne:hover .sn-barre { filter: brightness(1.18); }
+.sn-ligne--sans-barre .sn-barre { display: none; }
+.sn-ligne--nouvelle .sn-barre, .sn-ligne.is-edition .sn-barre {
+	background: rgb(var(--c-accent) / .35); box-shadow: inset 0 0 0 1.5px rgb(var(--c-accent-text));
+}
+.sn-barre.is-fluide { transition: left .26s var(--sn-ease), width .26s var(--sn-ease), filter .15s, box-shadow .2s; }
+
+/* Aujourd'hui : un segment par piste, prolonge jusqu'aux pistes voisines,
+   d'ou un seul trait pointille sur toute l'annee. */
+.sn-annee[data-auj] .sn-piste::after {
+	content: ""; position: absolute; left: var(--sn-auj); top: calc(-1 * var(--sn-pad) - 1px); bottom: calc(-1 * var(--sn-pad));
+	margin-left: -1px; border-left: 2px dotted rgb(var(--c-gold)); pointer-events: none; transform-origin: top;
+}
+
+.sn-ligne__actions { display: flex; justify-content: flex-end; }
+.sn-modifier {
+	display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 32px; padding: 0 12px;
+	border: 0; border-radius: 999px; background: transparent; color: rgb(var(--c-text-2));
+	font: 600 12.5px/1 var(--font-sans); cursor: pointer; opacity: .7; touch-action: manipulation;
+	transition: opacity .15s, background-color .15s, color .15s;
+}
+.sn-ligne:hover .sn-modifier, .sn-modifier:focus-visible, .sn-modifier[aria-expanded="true"] {
+	opacity: 1; background: rgb(var(--c-accent) / .12); color: rgb(var(--c-accent-text));
+}
+
+/* ------------------------------------------------------- l'editeur */
+
+.sn-tiroir { display: grid; grid-template-rows: 0fr; background: rgb(var(--c-surface-2)); transition: grid-template-rows .32s var(--sn-ease); }
+.sn-tiroir.is-ouvert { grid-template-rows: 1fr; }
+.sn-tiroir__interieur { min-height: 0; overflow: hidden; }
+.sn-editeur {
+	display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 14px 16px; margin: 0; padding: 6px 20px 18px;
+	opacity: 0; transform: translateY(-6px); transition: opacity .22s ease .06s, transform .32s var(--sn-ease);
+}
+.sn-tiroir.is-ouvert .sn-editeur { opacity: 1; transform: none; }
+
+.sn-champ { min-width: 0; margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 6px; }
+.sn-champ > span, .sn-champ > legend { padding: 0; font-size: 12px; font-weight: 600; color: rgb(var(--c-text-2)); }
+.sn-champ em { margin-left: 4px; font-style: normal; font-weight: 500; color: rgb(var(--c-text-3)); }
+.sn-champ--semestre { display: block; grid-column: 1 / -1; }
+.sn-champ--semestre > legend { float: left; width: 100%; margin-bottom: 6px; }
+.sn-champ--semestre > .sn-segments { clear: both; }
+.sn-champ--nom { grid-column: span 5; }
+.sn-champ--annee { grid-column: span 3; }
+.sn-champ--code { grid-column: span 4; }
+.sn-champ--debut, .sn-champ--fin { grid-column: span 3; }
+
+.sn-champ input:not([type="radio"]) {
+	width: 100%; height: 40px; padding: 0 12px; border-radius: var(--radius);
+	border: 1px solid rgb(var(--c-line-strong)); background: rgb(var(--c-inset)); color: rgb(var(--c-text));
+	font: 400 14px var(--font-sans); transition: border-color .15s, box-shadow .15s;
+}
+.sn-champ input:not([type="radio"]):focus { outline: none; border-color: rgb(var(--c-accent)); box-shadow: var(--ring); }
+.sn-champ--code input:not([type="radio"]) { font-family: var(--font-mono); font-size: 13px; letter-spacing: .02em; text-transform: uppercase; }
+.sn-champ.is-erreur input:not([type="radio"]) { border-color: rgb(var(--c-danger)); }
+.sn-champ.is-erreur .sn-segments { box-shadow: inset 0 0 0 1px rgb(var(--c-danger)); }
+.sn-erreur { font-size: 12px; font-weight: 500; color: rgb(var(--c-danger)); }
+:root:not([data-theme="light"]) .sn input[type="date"] { color-scheme: dark; }
+[data-theme="light"] .sn input[type="date"] { color-scheme: light; }
+
+/* Le semestre : quatre choix, une pastille qui glisse vers le choix fait. */
+.sn-segments {
+	position: relative; display: inline-grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); padding: 3px;
+	border-radius: 999px; background: rgb(var(--c-inset)); box-shadow: inset 0 0 0 1px rgb(var(--c-line-strong));
+}
+.sn-segments label { position: relative; z-index: 1; margin: 0; cursor: pointer; }
+.sn-segments input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.sn-segments span {
+	display: flex; align-items: center; justify-content: center; height: 34px; padding: 0 18px; border-radius: 999px;
+	font-size: 13px; font-weight: 600; color: rgb(var(--c-text-2)); white-space: nowrap; transition: color .2s;
+}
+.sn-segments label:hover span { color: rgb(var(--c-text)); }
+.sn-segments input:checked + span { color: rgb(var(--c-on-accent)); }
+.sn-segments input:focus-visible + span { box-shadow: var(--ring); }
+.sn-segments__pouce {
+	position: absolute; z-index: 0; top: 0; left: 0; width: var(--w, 0); height: var(--h, 0); border-radius: 999px;
+	background: rgb(var(--c-accent)); transform: translate(var(--x, 0), var(--y, 0));
+}
+.sn-segments.is-pret .sn-segments__pouce { transition: transform .3s var(--sn-ease), width .3s var(--sn-ease), height .3s var(--sn-ease); }
+
+.sn-editeur__duree {
+	grid-column: span 6; align-self: end; display: flex; align-items: center; flex-wrap: wrap; gap: 0 6px; min-height: 40px; margin: 0;
+	font-size: 13px; color: rgb(var(--c-text-2)); font-variant-numeric: tabular-nums;
+}
+.sn-editeur__duree b { font-weight: 650; color: rgb(var(--c-text)); }
+.sn-editeur__notes { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px; }
+.sn-editeur__notes:empty { display: none; }
+.sn-note { display: flex; align-items: baseline; gap: 8px; margin: 0; padding: 8px 12px; border-radius: var(--radius); font-size: 13px; }
+.sn-note--alerte { background: rgb(var(--c-warning) / .1); color: rgb(var(--c-warning)); }
+.sn-note--info { background: rgb(var(--c-accent) / .1); color: rgb(var(--c-accent-text)); }
+.sn-editeur__pied { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; padding-top: 2px; }
+.sn-editeur__id { margin-right: auto; font: 500 11.5px var(--font-mono); color: rgb(var(--c-text-3)); }
+
+/* --------------------------------------------- annees precedentes */
+
+.sn-passees { border-radius: var(--radius-lg); border: 1px dashed rgb(var(--c-line-strong)); }
+.sn-passees__bascule { width: 100%; padding: 14px 16px; border-radius: var(--radius-lg); }
+.sn-passees__titre { font-size: 15px; font-weight: 650; transition: color .15s; }
+.sn-passees__liste { display: flex; flex-direction: column; gap: 10px; padding: 0 10px 10px; }
+.sn-passees .sn-annee__titre { font-size: 15px; }
+
+/* --------------------------------------------------------------- vide */
+
+.sn-vide {
+	display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 48px 20px; text-align: center;
+	border-radius: var(--radius-lg); border: 1px dashed rgb(var(--c-line-strong));
+}
+.sn-vide__icone {
+	width: 56px; height: 56px; margin-bottom: 8px; border-radius: 50%; display: grid; place-items: center; font-size: 24px;
+	color: rgb(var(--c-gold-text)); box-shadow: inset 0 0 0 2px rgb(var(--c-gold) / .55);
+}
+.sn-vide h2 { margin: 0; font-size: 17px; font-weight: 650; }
+.sn-vide p { margin: 0; max-width: 48ch; font-size: 13.5px; color: rgb(var(--c-text-2)); }
+
+/* ---------------------------------------------------------- tailles */
+
+@media (min-width: 1100px) {
+	.sn-annee__infos { margin-left: auto; }
+	.sn-passees .sn-annee__infos { margin-left: 0; }
+}
+
+@media (hover: none) {
+	.sn-modifier { opacity: 1; }
+}
+
+/* Tablette : la piste passe sous le nom, sur toute la largeur. */
+@media (max-width: 1023px) {
+	.sn { --sn-pad: 12px; }
+	.sn-ligne { grid-template-columns: minmax(0, 1fr) auto; row-gap: 10px; }
+	.sn-ligne__info { grid-column: 1; grid-row: 1; }
+	.sn-ligne__actions { grid-column: 2; grid-row: 1; align-self: start; }
+	.sn-piste { grid-column: 1 / -1; grid-row: 2; height: 24px; }
+	.sn-regle { grid-template-columns: minmax(0, 1fr); }
+	.sn-regle__vide { display: none; }
+	.sn-annee[data-auj] .sn-piste::after { top: -4px; bottom: -4px; }
+	.sn-champ--nom { grid-column: 1 / -1; }
+	.sn-champ--annee, .sn-champ--code, .sn-champ--debut, .sn-champ--fin { grid-column: span 6; }
+	.sn-editeur__duree { grid-column: 1 / -1; min-height: 0; }
+}
+
+/* Telephone */
+@media (max-width: 639px) {
+	.sn { padding: 16px 14px 104px; }
+	.sn-tete { flex-wrap: wrap; gap: 12px; }
+	.sn-tete__icone { width: 40px; height: 40px; font-size: 18px; }
+	.sn-tete h1 { font-size: 20px; }
+	.sn-tete__actions { width: 100%; }
+	.sn-tete__actions .sn-bouton { flex: 1 1 auto; height: 44px; }
+	.sn-maintenant { padding: 14px 16px; }
+	.sn-maintenant h2 { flex-basis: 100%; }
+	.sn-annee__tete { padding: 4px 8px 4px 2px; }
+	.sn-annee__ajouter { width: 40px; height: 40px; padding: 0; }
+	.sn-annee__ajouter span { display: none; }
+	.sn-annee__infos { flex-basis: 100%; padding-left: 24px; }
+	.sn-regle, .sn-ligne { padding-inline: 14px; }
+	.sn-modifier { width: 40px; height: 40px; padding: 0; opacity: 1; }
+	.sn-modifier span { display: none; }
+	.sn-editeur { grid-template-columns: minmax(0, 1fr); padding-inline: 14px; }
+	.sn-champ--nom, .sn-champ--annee, .sn-champ--code, .sn-champ--debut, .sn-champ--fin, .sn-editeur__duree { grid-column: 1 / -1; }
+	.sn-champ input:not([type="radio"]) { height: 44px; }
+	.sn-segments { display: grid; width: 100%; grid-auto-flow: row; grid-template-columns: 1fr 1fr; border-radius: 16px; }
+	.sn-segments span { height: 40px; border-radius: 13px; }
+	.sn-segments__pouce { border-radius: 13px; }
+	.sn-editeur__pied { flex-wrap: wrap; }
+	.sn-editeur__id { flex-basis: 100%; }
+	.sn-editeur__pied .sn-bouton { flex: 1 1 0; height: 44px; }
+	.sn-passees__liste { padding: 0 6px 6px; }
+}
+
+/* ------------------------------------------------------- mouvement */
+
+@media (prefers-reduced-motion: no-preference) {
+	/* L'entree : les cartes montent l'une apres l'autre... */
+	.sn-entree :is(.sn-tete, .sn-maintenant, .sn-liste > .sn-annee, .sn-passees) {
+		animation: sn-monte .55s var(--sn-ease) both; animation-delay: calc(var(--i, 0) * 70ms);
+	}
+	/* ...les barres se deroulent depuis leur debut... */
+	.sn-entree .is-ouverte .sn-barre, .sn-revele .sn-barre {
+		animation: sn-pousse .75s var(--sn-ease) both; animation-delay: calc(260ms + var(--j, 0) * 80ms);
+	}
+	.sn-revele .sn-barre { animation-delay: calc(60ms + var(--j, 0) * 60ms); }
+	/* ...puis tombe le trait d'aujourd'hui. */
+	.sn-entree .is-ouverte[data-auj] .sn-piste::after, .sn-revele[data-auj] .sn-piste::after {
+		animation: sn-trait .5s var(--sn-ease) both; animation-delay: .85s;
+	}
+	.sn-revele[data-auj] .sn-piste::after { animation-delay: .45s; }
+	.sn-entree .sn-progres__fait { animation: sn-remplit 1.1s var(--sn-ease) .3s both; }
+	.sn-etat--cours > i:not(.bi) { animation: sn-pouls 2.4s ease-out infinite; }
+	.sn-arrive { animation: sn-monte .45s var(--sn-ease) both; }
+	.sn-eclat { animation: sn-eclat 1.8s ease-out; }
+}
+
+@keyframes sn-monte { from { opacity: 0; transform: translateY(10px); } }
+@keyframes sn-pousse { from { transform: scaleX(0); } }
+@keyframes sn-trait { from { opacity: 0; transform: scaleY(0); } }
+@keyframes sn-remplit { from { width: 0; } }
+@keyframes sn-pouls {
+	0% { box-shadow: 0 0 0 0 rgb(var(--c-success) / .5); }
+	75%, 100% { box-shadow: 0 0 0 7px rgb(var(--c-success) / 0); }
+}
+@keyframes sn-eclat { from { background-color: rgb(var(--c-accent) / .22); } }
+@keyframes sn-tourne { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+	.sn *, .sn *::before, .sn *::after { transition-duration: 0s !important; transition-delay: 0s !important; }
+}

@@ -1,0 +1,71 @@
+RewriteEngine On
+
+# ============================================================================
+# ARCHITECTURE MVC - Infinit Registrar
+# ============================================================================
+# Toutes les requêtes passent par index.php (Front Controller)
+# sauf les fichiers statiques et les anciens chemins (compatibilité arrière)
+# ============================================================================
+
+# Redirection HTTP vers HTTPS (nécessaire pour la géolocalisation GPS)
+#
+# ACTIVE PARTOUT, local compris, et ce n'est pas un détail de confort :
+# src/.htaccess force déjà HTTPS de son côté. Quand cette règle-ci était
+# désactivée, une page servie en http appelait ses endpoints AJAX sous src/,
+# qui les renvoyait en https — changement de schéma, donc changement d'origine,
+# donc échec CORS :
+#   « Response to preflight request doesn't pass access control check »
+# Les deux règles doivent donc être cohérentes, sinon chaque appel AJAX
+# traverse une frontière d'origine.
+#
+# R=308 (et non 301) pour PRÉSERVER la méthode POST et le corps du formulaire
+# lors de l'upgrade http->https (un 301/302 transformerait le POST en GET).
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=308,L]
+
+# Désactiver l'ajout automatique de slash pour les dossiers
+<IfModule mod_dir.c>
+    DirectorySlash Off
+</IfModule>
+
+# Désactiver l'affichage du contenu des dossiers
+# -MultiViews : empêche la négociation de contenu de rediriger (301) les URL
+# sans extension vers le .php, ce qui transformait les POST en GET (corps perdu).
+Options -Indexes -MultiViews
+
+# Supprimer le trailing slash (redirection 301, sauf racine)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} ^(.+)/$
+RewriteRule ^(.+)/$ $1 [R=301,L,QSA]
+
+# Masquer l'extension .php dans les URLs (redirection 301)
+# La substitution DOIT commencer par « / » : sans elle, Apache considere la
+# cible comme relative et la prefixe par le chemin disque, ce qui produisait
+# des Location du type https://hote/C:/laragon/www/registrar/data/config
+# (divulgation du chemin absolu du serveur).
+# %{THE_REQUEST} contient toujours le chemin complet de la requete, y compris
+# un eventuel sous-repertoire d'installation : la barre initiale est donc
+# correcte aussi bien en vhost qu'en sous-dossier.
+RewriteCond %{THE_REQUEST} \s/+(.*/)?([^/.]+)\.php[\s?] [NC]
+RewriteRule ^ /%1%2 [R=301,L,NE]
+
+# Servir les fichiers statiques directement (CSS, JS, images, fonts, etc.)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -l
+RewriteRule ^ - [L]
+
+# Compatibilité arrière: servir les .php sans extension pour les anciens chemins
+# Fonctionne pour src/, app/, landing/, inscription/, data/, verifier/, etc.
+# Ne s'applique que si le fichier .php correspondant existe réellement
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+)$ $1.php [L,QSA]
+
+# ============================================================================
+# FRONT CONTROLLER MVC
+# Toutes les requêtes non résolues sont routées vers index.php
+# ============================================================================
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]

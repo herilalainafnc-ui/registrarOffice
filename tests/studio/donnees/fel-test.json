@@ -1,0 +1,16 @@
+{
+	"preset": "fel",
+	"format": "4:5",
+	"donnees": {
+		"service": "Faculté de test",
+		"prenom": "Prénom",
+		"nom": "TEST",
+		"motif": "pour la soutenance de son mémoire d'exemple, avec la mention très bien",
+		"message": "Donnée de test : l'université adresse ses félicitations et lui souhaite une belle suite de parcours.",
+		"date": "2026-11-20",
+		"filiere": "Licence de test"
+	},
+	"images": {
+		"portrait": { "unie": "#3A4380", "type": "image/png", "alt": "Portrait de test (image unie)", "fondre": false, "ajustement": "remplir" }
+	}
+}

@@ -1,0 +1,367 @@
+/* =============================================================================
+   UAZ Campus : toutes les pages, dans la coque du registrar (src/css/theme.css)
+
+   Les couleurs du contenu suivent le mode clair ou sombre (scss/pre.scss : les
+   palettes de Moodle sont celles du registrar). La coque, elle, garde ses
+   teintes dans les deux modes, comme au registrar : c'est l'identite de
+   l'outil, et un repere stable quand on bascule.
+     - la barre du haut : le bleu Zurcher exact, soulignee d'un filet or ;
+     - le volet des cours (index du cours) et le menu sur telephone : la nuit
+       de la barre laterale du registrar, l'entree active en bleu, au rail or ;
+     - l'or marque ce qui est actif : la pastille du menu, l'onglet courant.
+
+   Lu apres scss/uaz.scss : ses variables ($uaz-or...) sont connues ici.
+   ========================================================================== */
+
+$uaz-zurcher: #222e65;
+$uaz-or-vif: #a88d5c;           // l'or du sceau leve d'un ton, pour se voir sur le bleu nuit
+$uaz-nuit: #0e122e;             // barre laterale du registrar (--c-side)
+$uaz-nuit-2: #1b214a;           // survol
+$uaz-nuit-filet: #242b5a;
+$uaz-nuit-texte: #a0a8ce;
+$uaz-nuit-texte-fort: #f0f2fa;
+$uaz-accent-sombre: #5a6fda;    // l'accent du registrar en theme sombre
+
+:root {
+    --uaz-or-marque: #{$uaz-or};        // l'or des marques actives, sur fond clair
+}
+[data-bs-theme="dark"] {
+    --uaz-or-marque: #{$uaz-or-vif};
+}
+
+/* --- Base ----------------------------------------------------------------- */
+body {
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3 {
+    letter-spacing: -.02em;
+}
+::selection {
+    background: rgba($uaz-accent-sombre, .35);
+}
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--#{$prefix}gray-400) transparent;
+}
+
+/* --- Barre du haut ------------------------------------------------------------ */
+.navbar.fixed-top,
+.navbar.fixed-top.bg-body {
+    background-color: $uaz-zurcher !important; // stylelint-disable-line declaration-no-important
+    border-bottom: 0;
+    box-shadow: inset 0 -2px 0 $uaz-or;
+    color: #fff;
+
+    .navbar-brand {
+        gap: .65rem;
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: -.01em;
+
+        // le sceau, comme la marque du registrar
+        &::before {
+            content: "";
+            flex: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            background: rgba(255, 255, 255, .12) url([[pix:theme|sceau]]) center / 30px 30px no-repeat;
+        }
+        &:hover,
+        &:focus {
+            color: #fff;
+        }
+    }
+
+    // le menu principal : pastilles claires sur le bleu, la pastille active marquee d'or
+    .primary-navigation {
+        --mds-bg-nav-pill-hover: rgba(255, 255, 255, .1);
+        --mds-bg-nav-pill-pressed: rgba(255, 255, 255, .18);
+        --mds-bg-nav-pill-selected: rgba(255, 255, 255, .14);
+        --mds-focus-default: #{$uaz-or-clair};
+
+        .mds-nav-pill,
+        .mds-nav-pill:visited {
+            color: rgba(255, 255, 255, .8);
+        }
+        .mds-nav-pill:hover,
+        .mds-nav-pill--selected,
+        .mds-nav-pill--selected:visited {
+            color: #fff;
+        }
+        .mds-nav-pill__indicator {
+            background-color: $uaz-or-vif;
+        }
+    }
+
+    // les commandes de droite : icones et libelles blancs
+    #usernavigation {
+        > .divider {
+            border-color: rgba(255, 255, 255, .22) !important; // stylelint-disable-line declaration-no-important
+        }
+        .popover-region-toggle,
+        .colourmodemenu > .dropdown > .btn,
+        .langmenu > .dropdown > .btn,
+        .usermenu > .dropdown > .dropdown-toggle,
+        .usermenu .login a,
+        .search-input-wrapper > .btn,
+        > .nav-link {
+            color: #fff;
+        }
+        .popover-region-toggle .icon,
+        .colourmodemenu > .dropdown > .btn .icon {
+            color: #fff;
+        }
+        .count-container {
+            background-color: $uaz-or-vif;
+            color: $uaz-nuit;
+            font-weight: 700;
+        }
+        .usermenu > .dropdown > .dropdown-toggle .userinitials {
+            background-color: rgba(255, 255, 255, .22);
+            color: #fff;
+        }
+        .usermenu > .dropdown > .dropdown-toggle:hover .userinitials,
+        .usermenu > .dropdown > .dropdown-toggle:hover .userpicture {
+            box-shadow: 0 0 0 2px $uaz-or-vif;
+        }
+        // focus : l'anneau or du registrar, pas un cadre blanc apres un clic
+        .btn,
+        .dropdown-toggle,
+        .popover-region-toggle {
+            border-color: transparent;
+            box-shadow: none;
+
+            &:focus-visible {
+                outline: 2px solid $uaz-or-clair;
+                outline-offset: -3px;
+            }
+        }
+    }
+    // l'interrupteur « Mode edition » sur le bleu ; allume, il prend l'or
+    .editmode-switch-form {
+        --mds-bg-switch-track-default: rgba(255, 255, 255, .28);
+        --mds-bg-switch-track-hover: rgba(255, 255, 255, .4);
+        --mds-bg-switch-thumb-default: #fff;
+        --mds-bg-switch-thumb-hover: #fff;
+        --mds-bg-interactive-primary-default: #{$uaz-or-vif};
+        --mds-bg-interactive-primary-hover: #{$uaz-or-clair};
+        --mds-focus-default: #{$uaz-or-clair};
+
+        .mds-switch-label {
+            color: #fff;
+        }
+    }
+    .navbar-toggler-icon {
+        filter: brightness(0) invert(1);
+    }
+
+    // les menus deroulants retrouvent les couleurs du contenu
+    .dropdown-menu,
+    .popover-region-container {
+        color: var(--#{$prefix}body-color);
+    }
+}
+
+// menus deroulants et fenetres : comme ceux du registrar
+.dropdown-menu {
+    border-radius: 12px;
+    box-shadow: 0 12px 32px -8px rgba(4, 6, 18, .35);
+}
+.modal-content {
+    border-radius: $border-radius-lg;
+}
+
+/* --- Le volet des cours et le menu sur telephone : la nuit ------------------- */
+#theme_boost-drawers-courseindex,
+#theme_boost-drawers-primary {
+    --#{$prefix}body-color: #{$uaz-nuit-texte};
+    --#{$prefix}link-color-rgb: #{to-rgb($uaz-nuit-texte)};
+    --#{$prefix}link-hover-color-rgb: #{to-rgb($uaz-nuit-texte-fort)};
+    --mds-text-default: #{$uaz-nuit-texte};
+    --mds-text-subtle: #{$uaz-nuit-texte};
+    background-color: $uaz-nuit;
+    border-color: $uaz-nuit-filet;
+    color: $uaz-nuit-texte;
+
+    .drawerheader,
+    .drawercontent {
+        background-color: transparent;
+    }
+    hr {
+        border-color: $uaz-nuit-filet;
+        opacity: 1;
+    }
+    a,
+    .btn,
+    .courseindex-link,
+    .courseindex-chevron,
+    .courseindex-collapsemenu {
+        color: $uaz-nuit-texte;
+    }
+    a:hover,
+    a:focus,
+    .btn:hover {
+        color: $uaz-nuit-texte-fort;
+    }
+    #courseindexdrawerheading .courseindex-link {
+        color: $uaz-nuit-texte-fort;
+    }
+    // le bouton qui ferme le volet : sans fond, icone claire
+    .drawertoggle,
+    .btn-icon {
+        background-color: transparent;
+        border-color: transparent;
+
+        &:hover,
+        &:focus {
+            background-color: $uaz-nuit-2;
+        }
+    }
+    .drawertoggle img.icon,
+    .drawerheader img.icon {
+        filter: brightness(0) invert(.8);
+    }
+    .drawertoggle .icon {
+        color: $uaz-nuit-texte;
+    }
+
+    .courseindex .courseindex-item {
+        border-radius: 8px;
+
+        &:hover {
+            background-color: $uaz-nuit-2;
+
+            .courseindex-link {
+                color: $uaz-nuit-texte-fort;
+            }
+        }
+        // la page affichee : fond bleu et rail or, comme l'entree active du registrar
+        &.pageitem {
+            position: relative;
+            background-color: rgba($uaz-accent-sombre, .2);
+            color: $uaz-nuit-texte-fort;
+
+            a,
+            .courseindex-link {
+                color: $uaz-nuit-texte-fort;
+            }
+            &::before {
+                content: "";
+                position: absolute;
+                top: 6px;
+                bottom: 6px;
+                left: -6px;
+                width: 3px;
+                border-radius: 0 3px 3px 0;
+                background: $uaz-or-vif;
+            }
+        }
+        &.dimmed .courseindex-link {
+            color: rgba($uaz-nuit-texte, .6);
+        }
+    }
+
+    // menu principal sur telephone : le nom du campus en tete, aere
+    &#theme_boost-drawers-primary .drawerheader {
+        padding-inline: 1rem .5rem;
+        color: $uaz-nuit-texte-fort;
+        font-weight: 600;
+    }
+    .list-group-item {
+        background-color: transparent;
+        border-color: $uaz-nuit-filet;
+        color: $uaz-nuit-texte;
+
+        &:hover,
+        &:focus {
+            background-color: $uaz-nuit-2;
+            color: $uaz-nuit-texte-fort;
+        }
+        &.active {
+            background-color: rgba($uaz-accent-sombre, .2);
+            border-color: $uaz-nuit-filet;
+            box-shadow: inset 3px 0 0 $uaz-or-vif;
+            color: $uaz-nuit-texte-fort;
+        }
+    }
+}
+
+/* --- Contenu ------------------------------------------------------------------- */
+// cartes : arrondi et ombre legere du registrar
+.card {
+    border-radius: $border-radius;
+    box-shadow: 0 1px 2px rgba(18, 22, 44, .06), 0 1px 1px rgba(18, 22, 44, .04);
+}
+.btn {
+    font-weight: 600;
+}
+
+// l'onglet courant (Cours, Parametres, Participants...) : l'or
+.secondary-navigation .mds-nav-pill__indicator,
+.tertiary-navigation .mds-nav-pill__indicator {
+    background-color: var(--uaz-or-marque);
+}
+
+// tableaux : l'en-tete discret en petites capitales du registrar, survol lisible
+.generaltable,
+table.flexible {
+    font-variant-numeric: tabular-nums;
+
+    thead th {
+        font-size: .75rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        color: var(--#{$prefix}secondary-color);
+        background-color: var(--#{$prefix}tertiary-bg);
+        border-bottom-color: var(--#{$prefix}gray-400);
+    }
+    tbody tr:hover > * {
+        background-color: rgba($primary, .06);
+    }
+}
+
+/* --- Mode sombre : les surfaces et filets exacts du registrar ------------------ */
+[data-bs-theme="dark"] {
+    .card,
+    .dropdown-menu,
+    .modal-content {
+        border-color: #282f56;
+    }
+    .card {
+        box-shadow: 0 1px 2px rgba(0, 0, 0, .22), 0 1px 1px rgba(0, 0, 0, .12);
+    }
+    .dropdown-menu {
+        box-shadow: 0 12px 32px -8px rgba(4, 6, 18, .6);
+    }
+    // bouton secondaire : la surface relevee du registrar, plutot qu'un gris plein
+    .btn-secondary {
+        --#{$prefix}btn-color: #eceef6;
+        --#{$prefix}btn-bg: #202648;
+        --#{$prefix}btn-border-color: #3a426c;
+        --#{$prefix}btn-hover-color: #fff;
+        --#{$prefix}btn-hover-bg: #262d52;
+        --#{$prefix}btn-hover-border-color: #4a5384;
+        --#{$prefix}btn-active-color: #fff;
+        --#{$prefix}btn-active-bg: #262d52;
+        --#{$prefix}btn-active-border-color: #4a5384;
+        --#{$prefix}btn-disabled-color: #8890b5;
+        --#{$prefix}btn-disabled-bg: #1a1f3c;
+        --#{$prefix}btn-disabled-border-color: #282f56;
+    }
+    .generaltable,
+    table.flexible {
+        tbody tr:hover > * {
+            background-color: rgba($uaz-accent-sombre, .08);
+        }
+    }
+}

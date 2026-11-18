@@ -1,0 +1,43 @@
+-- Sigle affiche d'un cours : un alias, pour renommer sans rien rendre orphelin
+-- (24/09/2026)
+--
+-- Le bulletin academique 2027-2030 impose un plan de numerotation neuf
+-- (§IV.26 : quatre lettres puis trois chiffres). Les mentions Sciences
+-- Infirmieres, Theologie et Droit y changent entierement de codes :
+-- ANAT 4211 -> NRBC 216, RELT 241 -> THCO 241, DRT 321 -> DRCI 211, etc.
+-- Sur 658 cours vivants, 495 portent un sigle absent du bulletin.
+--
+-- Or le sigle sert de cle sans contrainte d'integrite. Releve le 24/09/2026
+-- sur registrar_db en production :
+--
+--   68 355 notes au total
+--   26 867 rattachees a une fiche de cours (39 %)
+--   41 412 SANS id_cours (61 %) : leur seul lien avec un cours est le sigle
+--   17 260 de ces dernieres sont retrouvees par ce seul moyen
+--
+-- Renommer t_2023_cours.Sigle detacherait ces 17 260 notes sans retour
+-- possible : il n'y a pas d'id_cours pour les rattraper. Six pages vivantes
+-- apparient en effet les notes au cours par le sigle brut (src/cours/
+-- etudiants.php, src/cours/notes.php, src/extenssionPrint/
+-- listStdInThisCours.php, src/extenssionPrint/vrai.cheklist.php,
+-- src/print/fiche.inscription.php, src/genPDF/print/fiche.inscription.php).
+--
+-- D'ou la separation :
+--
+--   Sigle          cle technique, JAMAIS modifiee. Les notes l'apparient.
+--   sigle_affiche  code montre au personnel. Libre, et unique.
+--
+-- La colonne est NULL par defaut : tant qu'aucun alias n'est pose, chaque
+-- cours s'affiche sous son Sigle et l'etat precedent est reproduit a
+-- l'identique. Aucune note ne bouge, ni maintenant ni plus tard.
+--
+-- Les releves et bulletins lisent t_2023_notes.Sigle, gele au moment de la
+-- saisie : un cours suivi en 2018 garde son code de 2018, ce qui est le
+-- comportement academique attendu. Ce fichier ne les touche pas.
+--
+-- data/cours.sigle.php pose cette colonne automatiquement a la premiere
+-- lecture (coursSigleAliasInstaller) : ce fichier sert a l'appliquer a la
+-- main.
+
+ALTER TABLE t_2023_cours
+    ADD COLUMN sigle_affiche VARCHAR(45) NULL AFTER Sigle;

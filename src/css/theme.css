@@ -1,0 +1,1549 @@
+/* ==========================================================================
+   THEME — Infinit Registrar
+   --------------------------------------------------------------------------
+   Une seule source pour les couleurs, la typographie et la coque du
+   back-office.
+
+   La STRUCTURE vient du tableau de bord « Dashboard » de Mustafa Omar
+   (codepen.io/themustafaomar/pen/jLMPKm) : barre laterale pleine hauteur
+   avec le compte connecte, barre du haut coloree, cartes sur un fond plus
+   sombre, police Inter.
+
+   Les COULEURS viennent du sceau de l universite (voir src/css/tokens.css) :
+   la barre du haut porte le bleu Zurcher exact, soulignee d un filet or
+   comme la bande bleue du sceau est cerclee d or ; l or marque l entree
+   active et les codes du registre.
+
+   Comment les couleurs atteignent toute l application
+   --------------------------------------------------
+   1. Les jetons de ROLE (--c-canvas, --c-surface, --c-text...) sont des
+      triplets « R G B » : on ecrit rgb(var(--c-surface)) ou, avec une
+      transparence, rgb(var(--c-surface) / .5).
+   2. Les palettes Tailwind slate, gray, cyan et blue sont redefinies dans
+      init/head.php sur les echelles --n-* et --a-* de tokens.css. Les 1 200
+      classes de ces familles suivent donc le theme sans etre touchees.
+   3. En theme clair, l echelle neutre est INVERSEE : bg-slate-800 (une
+      carte) devient blanc, text-slate-100 (le texte) devient encre. C est ce
+      qui permet au meme balisage de servir les deux themes.
+
+   La barre laterale et la barre du haut gardent leurs teintes dans les deux
+   themes : c est l identite de l outil, et un repere stable quand on bascule.
+   ========================================================================== */
+
+/* Les jetons (couleurs, formes, polices) sont dans src/css/tokens.css. */
+
+/* ------------------------------------------------------------------- base */
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+	font-family: var(--font-sans);
+	font-feature-settings: 'cv11', 'ss01';
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	background-color: rgb(var(--c-canvas));
+	color: rgb(var(--c-text));
+}
+
+::selection { background: rgb(var(--c-accent) / .35); color: inherit; }
+
+/* Le focus clavier doit se voir partout, sans deformer la souris. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+	outline: 2px solid rgb(var(--c-accent));
+	outline-offset: 2px;
+}
+
+/* Barres de defilement fines, comme la reference. */
+* { scrollbar-width: thin; scrollbar-color: rgb(var(--c-line-strong)) transparent; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+	background-color: rgb(var(--c-line-strong));
+	border-radius: 999px;
+	border: 2px solid transparent;
+	background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover { background-color: rgb(var(--c-text-3)); }
+
+/* Les chiffres s alignent en colonne : moyennes, credits, montants. */
+table, .tabular { font-variant-numeric: tabular-nums; }
+
+/* Code du registre : sigle, matricule, session. La signature visuelle de
+   l outil — un registre, c est d abord des codes. */
+.code-tag {
+	display: inline-flex;
+	align-items: center;
+	gap: .35em;
+	font-family: var(--font-mono);
+	font-size: .86em;
+	font-weight: 600;
+	letter-spacing: .02em;
+	line-height: 1.5;
+	padding: 0 .55em 0 .5em;
+	border-radius: 5px;
+	color: rgb(var(--c-gold-text));
+	background: rgb(var(--c-gold) / .10);
+	box-shadow: inset 2px 0 0 rgb(var(--c-gold));
+	white-space: nowrap;
+}
+
+/* --------------------------------------------------------------- la coque */
+
+/* Barre laterale : bleu nuit pleine hauteur, comme la reference. */
+.sidebar-menu {
+	background: rgb(var(--c-side)) !important;
+	border-right: 1px solid rgb(var(--c-side-line)) !important;
+	color: rgb(var(--c-side-text));
+}
+
+/* La marque prend la couleur de la barre du haut et son filet or : le bandeau
+   du haut court d un bord a l autre de l ecran, sans cassure au-dessus de la
+   barre laterale. */
+.side-brand {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	height: var(--topbar-h);
+	padding: 0 18px;
+	background: rgb(var(--c-topbar));
+	box-shadow: inset 0 -2px 0 rgb(var(--c-gold-seal));
+	text-decoration: none;
+	flex-shrink: 0;
+}
+.side-brand__mark {
+	width: 30px;
+	height: 30px;
+	border-radius: 8px;
+	padding: 4px;
+	background: rgb(255 255 255 / .1);
+	flex-shrink: 0;
+}
+.side-brand__mark img { width: 100%; height: 100%; object-fit: contain; }
+.side-brand__nom {
+	font-weight: 600;
+	font-size: 15px;
+	letter-spacing: -.01em;
+	color: #fff;
+	white-space: nowrap;
+}
+.side-brand__nom b { color: rgb(var(--c-gold-text)); font-weight: 700; }
+
+/* Le compte : qui est connecte, avec quel role — et, au clic, le menu du
+   compte. C est le seul endroit ou il apparait au bureau. */
+.side-compte { padding: 14px 10px 8px; flex-shrink: 0; }
+.side-profil {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	min-height: 56px;
+	padding: 6px 8px;
+	border: 0;
+	border-radius: 10px;
+	background: none;
+	text-align: left;
+	cursor: pointer;
+	transition: background-color .15s ease;
+}
+.side-profil:hover,
+.side-profil[aria-expanded="true"] { background: rgb(var(--c-side-2)); }
+.side-profil__photo {
+	width: 44px;
+	height: 44px;
+	border-radius: 999px;
+	flex-shrink: 0;
+	overflow: hidden;
+	display: grid;
+	place-items: center;
+	background: rgb(var(--c-accent) / .22);
+	color: rgb(var(--c-side-text-hi));
+	font-weight: 700;
+	font-size: 14px;
+	box-shadow: 0 0 0 2px rgb(var(--c-side)), 0 0 0 3px rgb(var(--c-gold) / .8);
+}
+.side-profil__photo img { width: 100%; height: 100%; object-fit: cover; }
+.side-profil__texte { display: block; flex: 1; min-width: 0; }
+.side-profil__nom {
+	display: block;
+	color: rgb(var(--c-side-text-hi));
+	font-weight: 600;
+	font-size: 13.5px;
+	line-height: 1.25;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.side-profil__role {
+	display: block;
+	margin-top: 2px;
+	font-size: 11.5px;
+	color: rgb(var(--c-side-text));
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.side-profil__chevron { font-size: 14px; color: rgb(var(--c-side-text)); flex-shrink: 0; }
+
+.side-compte__menu {
+	min-width: 232px;
+	padding: 6px !important;
+	font-size: 13.5px;
+}
+.side-compte__menu .dropdown-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	min-height: 40px;
+	padding: 8px 10px;
+	border-radius: 8px;
+}
+.side-compte__menu .dropdown-item i { font-size: 16px; color: rgb(var(--c-text-3)); }
+.side-compte__poste {
+	padding: 6px 10px 8px;
+	font-size: 11.5px;
+	color: rgb(var(--c-text-3));
+}
+/* La sortie, a l ecart et en rouge : une action qui ferme la session. */
+.side-compte__menu .side-compte__sortie,
+.side-compte__menu .side-compte__sortie i { color: rgb(var(--c-danger)); }
+.side-compte__menu .side-compte__sortie:hover { background: rgb(var(--c-danger) / .12); }
+
+/* Sections repliables, comme les « has-dropdown » de la reference. */
+.sidebar-menu .menu-section-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin: 14px 10px 2px;
+	padding: 6px 10px;
+	font-size: 10.5px;
+	font-weight: 600;
+	letter-spacing: .09em;
+	text-transform: uppercase;
+	color: rgb(var(--c-side-text) / .85);
+	border-radius: 6px;
+	cursor: pointer;
+	user-select: none;
+	background: none;
+	border: 0;
+	width: calc(100% - 20px);
+	text-align: left;
+}
+.sidebar-menu .menu-section-header:hover { color: rgb(var(--c-side-text-hi)); }
+.sidebar-menu .menu-section-header::after {
+	content: '\F282';                       /* bi-chevron-down */
+	font-family: 'bootstrap-icons';
+	font-size: 10px;
+	opacity: .7;
+	transition: transform .2s ease;
+}
+.sidebar-menu .menu-section-header.est-replie::after { transform: rotate(-90deg); }
+.sidebar-menu .menu-item.est-replie,
+
+.sidebar-menu .menu-item { margin: 1px 10px; border-radius: 8px; }
+.sidebar-menu .menu-item a {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 8px 10px;
+	border-radius: 8px;
+	color: rgb(var(--c-side-text));
+	font-size: 13.5px;
+	font-weight: 500;
+	text-decoration: none;
+	transition: background-color .15s ease, color .15s ease;
+}
+.sidebar-menu .menu-item:hover a {
+	background: rgb(var(--c-side-2));
+	color: rgb(var(--c-side-text-hi));
+}
+/* L entree active : fond bleu et rail or, le seul or de la barre. */
+.sidebar-menu .menu-item.active a {
+	background: rgb(var(--c-accent) / .16);
+	color: rgb(var(--c-side-text-hi));
+	font-weight: 600;
+	box-shadow: none;
+}
+.sidebar-menu .menu-item.active a::before {
+	content: '';
+	position: absolute;
+	left: -10px;
+	top: 8px;
+	bottom: 8px;
+	width: 3px;
+	border-radius: 0 3px 3px 0;
+	background: rgb(var(--c-gold));
+}
+.sidebar-menu .menu-icon-wrapper {
+	width: 30px;
+	height: 30px;
+	flex-shrink: 0;
+	display: grid;
+	place-items: center;
+	border-radius: 8px;
+	background: transparent !important;
+	transition: background-color .15s ease;
+}
+.sidebar-menu .menu-icon {
+	font-size: 17px;
+	color: rgb(var(--c-side-text)) !important;
+	transition: color .15s ease;
+}
+.sidebar-menu .menu-item:hover .menu-icon { color: rgb(var(--c-side-text-hi)) !important; }
+.sidebar-menu .menu-item.active .menu-icon { color: rgb(var(--c-accent-text)) !important; }
+.sidebar-menu .menu-title { flex: 1; font-size: 13.5px; }
+.sidebar-menu .menu-pastille {
+	margin-left: auto;
+	min-width: 22px;
+	height: 20px;
+	padding: 0 7px;
+	display: inline-grid;
+	place-items: center;
+	border-radius: 999px;
+	font-size: 11px;
+	font-weight: 700;
+	color: #0d1023;
+	background: rgb(var(--c-gold));
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb { background-color: rgb(var(--c-side-line)); }
+
+/* Barre du haut : le bleu Zurcher, souligne d un filet or comme la bande
+   bleue du sceau est cerclee d or. */
+.topbar-bleu-nuit {
+	background: rgb(var(--c-topbar)) !important;
+	border-bottom: 0 !important;
+	color: #fff !important;
+	box-shadow: inset 0 -2px 0 rgb(var(--c-gold-seal));
+}
+.topbar-bleu-nuit .topbar-titre {
+	font-size: 15px;
+	font-weight: 600;
+	letter-spacing: -.01em;
+	color: #fff;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.topbar-bleu-nuit .topbar-titre small {
+	display: block;
+	font-size: 11px;
+	font-weight: 500;
+	letter-spacing: .02em;
+	color: rgb(255 255 255 / .7);
+}
+
+.topbar-bleu-nuit .theme-toggle,
+.topbar-bleu-nuit .topbar-hamburger {
+	width: 38px;
+	height: 38px;
+	border-radius: 9px;
+	border: 1px solid rgb(255 255 255 / .18) !important;
+	background: rgb(255 255 255 / .08) !important;
+	color: #fff !important;
+}
+.topbar-bleu-nuit .theme-toggle:hover,
+.topbar-bleu-nuit .topbar-hamburger:hover {
+	background: rgb(255 255 255 / .18) !important;
+	border-color: rgb(255 255 255 / .35) !important;
+}
+.topbar-bleu-nuit .theme-toggle .icon-moon { color: #fff !important; }
+.topbar-bleu-nuit .topbar-nom { color: #fff !important; font-weight: 600; }
+.topbar-bleu-nuit .user-avatar {
+	background: rgb(255 255 255 / .25) !important;
+	box-shadow: none !important;
+}
+.topbar-bleu-nuit .user-avatar:hover { box-shadow: 0 0 0 2px rgb(var(--c-gold)) !important; }
+
+/* Menu du compte */
+.topbar-bleu-nuit .dropdown-menu {
+	background: rgb(var(--c-surface)) !important;
+	border: 1px solid rgb(var(--c-line)) !important;
+	border-radius: 12px !important;
+	box-shadow: var(--shadow-2) !important;
+	color: rgb(var(--c-text)) !important;
+}
+.topbar-bleu-nuit .dropdown-menu .compte-entete {
+	background: rgb(var(--c-surface-2)) !important;
+	border: 1px solid rgb(var(--c-line));
+	box-shadow: none !important;
+}
+.topbar-bleu-nuit .dropdown-menu a { color: rgb(var(--c-text)) !important; }
+.topbar-bleu-nuit .dropdown-menu .compte-role { color: rgb(var(--c-gold-text)) !important; }
+
+/* Barre d outils des listes : actions en pilules, plus en tuiles. */
+.toolbar-container {
+	background: rgb(var(--c-canvas)) !important;
+	border-bottom: 1px solid rgb(var(--c-line)) !important;
+	min-height: 0 !important;
+}
+.toolbar-section { border-right-color: rgb(var(--c-line)) !important; }
+.tool-btn {
+	color: rgb(var(--c-text-2)) !important;
+	border-radius: 9px !important;
+}
+.tool-btn:hover { background: rgb(var(--c-surface)) !important; color: rgb(var(--c-text)) !important; }
+.tool-btn .tool-icon {
+	background: rgb(var(--c-surface)) !important;
+	border: 1px solid rgb(var(--c-line));
+	color: rgb(var(--c-accent-text));
+	border-radius: 9px !important;
+}
+.tool-btn:hover .tool-icon {
+	background: rgb(var(--c-accent)) !important;
+	border-color: rgb(var(--c-accent));
+	color: #fff !important;
+}
+
+/* Pied : une ligne d etat discrete. */
+.footer-bleu-nuit {
+	background: rgb(var(--c-canvas)) !important;
+	border-top: 1px solid rgb(var(--c-line)) !important;
+	color: rgb(var(--c-text-3)) !important;
+	align-items: center;
+}
+.footer-bleu-nuit #footerInfo { color: rgb(var(--c-text-2)); font-weight: 500; }
+/* Au bureau, le pied reste en bas de l'ecran sur chaque page : que la
+   colonne defile elle-meme (module Evaluation) ou que la page soit longue.
+   La ou il est deja sous une zone qui defile, cela ne change rien. */
+/* Dans la colonne de contenu (flex), le pied descend tout en bas meme quand
+   la page est courte. */
+.footer-bleu-nuit { margin-top: auto; }
+@media (min-width: 1024px) {
+	.footer-bleu-nuit { position: sticky; bottom: 0; z-index: 30; flex-shrink: 0; }
+}
+
+/* Pied de la barre laterale : l aide des raccourcis, dont le bouton flottant
+   chevauchait le bas du menu. */
+.side-pied {
+	flex-shrink: 0;
+	padding: 10px 12px 12px;
+	border-top: 1px solid rgb(var(--c-side-line));
+}
+.side-pied__bouton {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	padding: 8px 10px;
+	border: 0;
+	border-radius: 8px;
+	background: none;
+	color: rgb(var(--c-side-text));
+	font-size: 12.5px;
+	text-align: left;
+	cursor: pointer;
+	transition: background-color .15s ease, color .15s ease;
+}
+.side-pied__bouton:hover { background: rgb(var(--c-side-2)); color: rgb(var(--c-side-text-hi)); }
+.side-pied__bouton span { flex: 1; }
+.side-pied__bouton kbd {
+	font-family: var(--font-mono);
+	font-size: 10.5px;
+	padding: 1px 6px;
+	border-radius: 4px;
+	border: 1px solid rgb(var(--c-side-line));
+	color: rgb(var(--c-side-text));
+}
+
+/* Pastille « Nouveau » des listes : discrete, dans l axe du nom. */
+.nouveau-badge {
+	position: static !important;   /* la page la placait en absolu, au-dessus du nom */
+	top: auto !important;
+	display: inline-block;
+	vertical-align: middle;
+	margin-left: 0;
+	padding: 0 7px !important;
+	border-radius: 999px !important;
+	font-size: 10px !important;
+	font-weight: 600;
+	line-height: 17px;
+	letter-spacing: .02em;
+	color: rgb(var(--c-accent-text)) !important;
+	background: rgb(var(--c-accent) / .14) !important;
+	border: 1px solid rgb(var(--c-accent) / .35) !important;
+}
+
+/* Le voile derriere le menu mobile : invisible tant que le menu est ferme. */
+.sidebar-overlay {
+	display: none;
+	position: fixed;
+	inset: 0;
+	z-index: 1001;
+	background: rgb(6 8 22 / .62);
+	backdrop-filter: blur(2px);
+	-webkit-backdrop-filter: blur(2px);
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity .3s ease, visibility .3s ease;
+}
+.sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+/* L aide des raccourcis clavier est dans le pied de la barre laterale ; son
+   bouton flottant n a plus d usage, ni au bureau ni sur mobile. */
+.shortcuts-help-btn { display: none !important; }
+
+/* ------------------------------------------------ barre laterale reduite */
+
+/* De 1024 a 1439 px (ou au choix de la personne, bouton ☰), la barre se
+   reduit a ses icones : ses 248 px coupaient les colonnes Annee et Niveau
+   sur les portables de bureau. La classe est posee sur <html> par
+   init/head.php avant l affichage. Les libelles deviennent des info-bulles. */
+@media (min-width: 1024px) {
+	html.side-rail { --sidebar-w: 76px; }
+
+	html.side-rail .side-brand { justify-content: center; padding: 0; }
+	html.side-rail .side-brand__nom,
+	html.side-rail .side-profil__texte,
+	html.side-rail .side-profil__chevron,
+	html.side-rail .sidebar-menu .menu-title,
+	html.side-rail .side-pied__bouton span,
+	html.side-rail .side-pied__bouton kbd { display: none !important; }
+
+	html.side-rail .side-compte { padding: 12px 8px 4px; }
+	html.side-rail .side-profil { justify-content: center; padding: 6px 0; }
+
+	/* Les titres de section deviennent de simples filets ; toutes les
+	   entrees restent visibles, repliees ou non. */
+	html.side-rail .sidebar-menu .menu-section-header {
+		height: 1px;
+		margin: 10px 20px;
+		padding: 0;
+		width: auto;
+		font-size: 0;
+		background: rgb(var(--c-side-line));
+		pointer-events: none;
+	}
+	html.side-rail .sidebar-menu .menu-section-header::after { display: none; }
+	html.side-rail .sidebar-menu .menu-item.est-replie { display: block; }
+
+	html.side-rail .sidebar-menu .menu-item { margin: 2px 14px; }
+	html.side-rail .sidebar-menu .menu-item a { justify-content: center; gap: 0; padding: 7px 0; }
+	html.side-rail .sidebar-menu .menu-item.active a::before { left: -14px; }
+	html.side-rail .sidebar-menu .menu-pastille {
+		position: absolute;
+		top: 1px;
+		right: 2px;
+		min-width: 18px;
+		height: 16px;
+		padding: 0 5px;
+		font-size: 10px;
+	}
+	html.side-rail .side-pied__bouton { justify-content: center; }
+}
+
+/* ------------------------------------------------ petits ecrans */
+
+/* Tablette : le tableau defile en largeur ; sa premiere colonne (le code :
+   matricule, sigle) reste en place pour savoir quelle ligne on lit. */
+@media (min-width: 641px) {
+	.simpleTbl.stack-cards thead th:first-child {
+		position: sticky;
+		left: 0;
+		z-index: 3;
+	}
+	.simpleTbl.stack-cards tbody td:first-child {
+		position: sticky;
+		left: 0;
+		z-index: 1;
+		background: rgb(var(--c-surface)) !important;
+		box-shadow: 1px 0 0 rgb(var(--c-line));
+	}
+	.simpleTbl.stack-cards tbody tr:hover td:first-child {
+		background: linear-gradient(rgb(var(--c-accent) / .08), rgb(var(--c-accent) / .08)), rgb(var(--c-surface)) !important;
+	}
+}
+
+/* Mobile et tablette : cibles tactiles de 44 px dans la barre du haut. */
+@media (max-width: 1023px) {
+	.topbar-bleu-nuit { gap: 8px; }
+	.topbar-bleu-nuit .theme-toggle,
+	.topbar-bleu-nuit .topbar-hamburger { width: 44px; height: 44px; flex-shrink: 0; }
+	.topbar-bleu-nuit .user-avatar { width: 44px !important; height: 44px !important; }
+	.sidebar-menu .menu-item a { min-height: 44px; }
+}
+
+/* ------------------------------------------- mise en page de la coque */
+
+/* Bureau : barre laterale fixe pleine hauteur, la barre du haut et le contenu
+   commencent a sa droite. Le balisage des 42 pages reste inchange : c est le
+   rang qui porte la barre laterale qui se decale. */
+@media (min-width: 1024px) {
+	.sidebar-menu {
+		position: fixed !important;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		width: var(--sidebar-w) !important;
+		height: 100vh !important;
+		z-index: 40;
+		display: flex !important;
+		flex-direction: column;
+		overflow: hidden !important;
+	}
+	.sidebar-menu > nav {
+		flex: 1;
+		overflow-y: auto;
+		overflow-x: hidden;
+		padding-bottom: 18px;
+	}
+	.topbar-bleu-nuit {
+		margin-left: var(--sidebar-w);
+		width: calc(100% - var(--sidebar-w)) !important;
+	}
+	/* La marque passe dans la barre laterale. */
+	.topbar-bleu-nuit .topbar-logo { display: none !important; }
+
+	div:has(> #sidebarMenu) { padding-left: var(--sidebar-w); }
+	div:has(> #sidebarMenu) > .lg\:w-10\/12 {
+		width: auto !important;
+		flex: 1 1 0%;
+		min-width: 0;
+	}
+	/* Les barres fixees en bas de contenu s alignent sur la zone utile. */
+	.fixed.lg\:w-10\/12 { width: calc(100% - var(--sidebar-w)) !important; }
+}
+
+@media (max-width: 1023px) {
+	/* Mobile : la barre laterale glisse par-dessus, marque comprise. */
+	.sidebar-menu {
+		position: fixed !important;
+		left: 0 !important;
+		transition: transform .3s cubic-bezier(.4, 0, .2, 1), visibility .3s !important;
+		top: 0 !important;
+		height: 100vh !important;
+		width: 280px !important;
+		display: flex !important;
+		flex-direction: column;
+		z-index: 1002 !important;
+	}
+	.sidebar-menu > nav { flex: 1; overflow-y: auto; }
+	.sidebar-overlay { display: block !important; }
+}
+
+/* ------------------------------------------------------------ tableaux */
+
+/* Le tableau de donnees de l outil : entete discret en petites capitales,
+   lignes aerees, survol lisible, chiffres alignes. */
+.simpleTbl {
+	border-collapse: separate !important;
+	border-spacing: 0;
+	width: 100%;
+	font-size: 12.5px;
+	color: rgb(var(--c-text));
+}
+.simpleTbl th,
+.simpleTbl td {
+	padding: 6px 10px !important;
+	border-right: 0 !important;
+	border-bottom: 1px solid rgb(var(--c-line)) !important;
+	vertical-align: middle;
+}
+.simpleTbl thead th,
+.simpleTbl thead td {
+	position: sticky;
+	top: 0;
+	z-index: 2;
+	padding-top: 9px !important;
+	padding-bottom: 9px !important;
+	background: rgb(var(--c-surface-2)) !important;
+	color: rgb(var(--c-text-3)) !important;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: .06em;
+	text-transform: uppercase;
+	white-space: nowrap;
+	border-bottom: 1px solid rgb(var(--c-line-strong)) !important;
+	text-align: left;
+}
+.simpleTbl thead th:first-child { border-top-left-radius: 8px; }
+.simpleTbl thead th:last-child  { border-top-right-radius: 8px; }
+.simpleTbl tbody tr { transition: background-color .12s ease; }
+.simpleTbl tbody tr:hover { background: rgb(var(--c-accent) / .08) !important; }
+.simpleTbl tbody tr:last-child td { border-bottom: 0 !important; }
+.simpleTbl a { color: inherit; text-decoration: none; }
+.simpleTbl tbody td:first-child a,
+.simpleTbl tbody td a:hover { color: rgb(var(--c-accent-text)); }
+
+/* Les anciennes cellules « degradees » cyan (sigle, matricule) deviennent
+   la colonne des codes du registre. */
+.simpleTbl td[class*="from-cyan"],
+.simpleTbl td.bg-gradient-to-r {
+	background: none !important;
+	font-family: var(--font-mono);
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: .01em;
+	color: rgb(var(--c-gold-text)) !important;
+	white-space: nowrap;
+}
+.simpleTbl td[class*="from-cyan"] a,
+.simpleTbl td.bg-gradient-to-r a { color: inherit !important; }
+
+/* Le conteneur d une liste devient une carte. */
+#all-std, #stdSearch-result, #stdTriage-result,
+#all-cours, #coursSearch-result, #coursTriage-result,
+#all-prof, #profSearch-result, #profTriage-result {
+	margin: 12px !important;
+	padding: 0 !important;
+	border-radius: var(--radius);
+	border: 1px solid rgb(var(--c-line));
+	background: rgb(var(--c-surface)) !important;
+	box-shadow: var(--shadow-1);
+}
+
+/* Les listes (etudiants, cours, enseignants) se lisent ligne a ligne :
+   pas de retour a la ligne, la carte defile si la place manque. */
+.simpleTbl.stack-cards { font-size: 12px; }
+.simpleTbl.stack-cards th,
+.simpleTbl.stack-cards td { padding-left: 9px !important; padding-right: 9px !important; }
+.simpleTbl.stack-cards td { white-space: nowrap; }
+
+/* Le bouton flottant du menu mobile n a plus lieu d etre : la barre du haut
+   porte le sien. */
+.mobile-menu-toggle { display: none !important; }
+
+/* ------------------------------------------------- fiches (cours, etc.) */
+
+/* Le panneau gauche des fiches cours, etudiant et enseignant : une carte,
+   plus un bloc lavande. Ses onglets reprennent l entree active du menu. */
+.fiche-panneau {
+	background: rgb(var(--c-surface)) !important;
+	color: rgb(var(--c-text));
+	border: 1px solid rgb(var(--c-line));
+	border-radius: var(--radius);
+	padding: 12px 14px !important;
+}
+.fiche-panneau hr {
+	border: 0;
+	border-top: 1px solid rgb(var(--c-line));
+	opacity: 1;
+	margin: 10px 0;
+}
+.fiche-panneau .fiche-code {
+	font-family: var(--font-mono);
+	font-weight: 600;
+	letter-spacing: .01em;
+	color: rgb(var(--c-gold-text));
+}
+.fiche-panneau em b { color: rgb(var(--c-text-2)); font-weight: 600; }
+.fiche-panneau a { text-decoration: none; color: inherit; }
+.fiche-panneau a > div {
+	position: relative;
+	color: rgb(var(--c-text-2));
+	transition: background-color .12s ease, color .12s ease;
+}
+.fiche-panneau .hover\:bg-cyan-500:hover {
+	background: rgb(var(--c-surface-2)) !important;
+	color: rgb(var(--c-text)) !important;
+}
+/* :root releve la specificite au-dessus de la regle « text-white » du theme
+   clair, qui rendrait le libelle blanc sur fond pale. */
+:root .fiche-panneau a > div.bg-cyan-700 {
+	background: rgb(var(--c-accent) / .16) !important;
+	color: rgb(var(--c-text)) !important;
+	font-weight: 600;
+}
+:root .fiche-panneau a > div.bg-cyan-700::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 7px;
+	bottom: 7px;
+	width: 3px;
+	border-radius: 0 3px 3px 0;
+	background: rgb(var(--c-gold));
+}
+.fiche-panneau a > div i { color: rgb(var(--c-accent-text)); margin-right: 4px; }
+
+/* ------------------------------------------------------------- listes */
+
+/* Etudiants, cours, enseignants : recherche, filtres et tri reunis (voir
+   data/listes.php et src/js/listes.js). */
+
+/* La colonne des codes (matricule, sigle, identifiant). */
+.simpleTbl td.col-code {
+	font-family: var(--font-mono);
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: .01em;
+	color: rgb(var(--c-gold-text)) !important;
+	white-space: nowrap;
+}
+.simpleTbl td.col-code a { color: inherit !important; }
+
+/* En-tete de page au-dessus d une liste (enseignants). */
+.liste-entete { padding: 14px 14px 12px; margin: 0 !important; border-bottom: 1px solid rgb(var(--c-line)); }
+
+/* Perimetre de la liste (chef de mention : sa mention), au-dessus de la barre d etat. */
+.liste-avis {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0;
+	padding: 10px 14px;
+	border-bottom: 1px solid rgb(var(--c-line));
+	font-size: 13px;
+	color: rgb(var(--c-text));
+}
+.liste-avis i { color: rgb(var(--c-accent-text)); }
+
+/* La barre d etat : combien, selon quels filtres, dans quel ordre. */
+.liste-barre {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px 16px;
+	padding: 10px 14px;
+	border-bottom: 1px solid rgb(var(--c-line));
+	font-size: 12.5px;
+	color: rgb(var(--c-text-2));
+}
+.liste-barre__compte b { color: rgb(var(--c-text)); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.liste-barre__puces { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.liste-barre__tri { margin-left: auto; color: rgb(var(--c-text-3)); white-space: nowrap; }
+.liste-barre__tri b { color: rgb(var(--c-text-2)); font-weight: 600; }
+.liste-puce {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	min-height: 28px;
+	padding: 2px 6px 2px 10px;
+	border-radius: 999px;
+	border: 1px solid rgb(var(--c-accent) / .35);
+	background: rgb(var(--c-accent) / .12);
+	color: rgb(var(--c-text));
+	font-size: 12px;
+	cursor: pointer;
+	transition: background-color .15s ease, border-color .15s ease;
+}
+.liste-puce span { color: rgb(var(--c-text-3)); }
+.liste-puce .bi-x { font-size: 16px; color: rgb(var(--c-text-3)); }
+.liste-puce:hover { background: rgb(var(--c-danger) / .12); border-color: rgb(var(--c-danger) / .4); }
+.liste-puce:hover .bi-x { color: rgb(var(--c-danger)); }
+.liste-lien {
+	border: 0;
+	background: none;
+	padding: 4px 6px;
+	border-radius: 6px;
+	color: rgb(var(--c-accent-text));
+	font-size: 12px;
+	font-weight: 500;
+	cursor: pointer;
+}
+.liste-lien:hover { text-decoration: underline; }
+
+/* En-tetes triables : un clic trie, un second inverse. */
+.simpleTbl thead th .liste-tri {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 0;
+	border: 0;
+	background: none;
+	font: inherit;
+	letter-spacing: inherit;
+	text-transform: inherit;
+	color: inherit;
+	cursor: pointer;
+	white-space: nowrap;
+}
+.simpleTbl thead th .liste-tri i { font-size: 11px; opacity: .4; transition: opacity .15s ease; }
+.simpleTbl thead th .liste-tri:hover { color: rgb(var(--c-text)); }
+.simpleTbl thead th .liste-tri:hover i { opacity: .8; }
+.simpleTbl thead th .liste-tri.actif { color: rgb(var(--c-accent-text)); }
+.simpleTbl thead th .liste-tri.actif i { opacity: 1; }
+
+/* Pendant le chargement, les lignes restent en place, estompees. */
+.liste-table.liste-charge tbody { opacity: .5; transition: opacity .15s ease; }
+.liste-table[aria-busy="true"] { cursor: progress; }
+
+.simpleTbl tbody tr.liste-vide td {
+	padding: 40px 16px !important;
+	text-align: center;
+	white-space: normal;
+	color: rgb(var(--c-text-3));
+	border-bottom: 0 !important;
+}
+.liste-vide i { display: block; font-size: 26px; margin-bottom: 8px; opacity: .6; }
+.liste-vide strong { display: block; color: rgb(var(--c-text)); font-size: 14px; margin-bottom: 6px; }
+.liste-erreur { padding: 24px; text-align: center; color: rgb(var(--c-danger)); }
+
+.liste-suite { display: flex; justify-content: center; padding: 14px; border-top: 1px solid rgb(var(--c-line)); }
+.liste-suite[hidden] { display: none; }
+.liste-suite__bouton {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 40px;
+	padding: 0 16px;
+	border-radius: 999px;
+	border: 1px solid rgb(var(--c-line-strong));
+	background: rgb(var(--c-surface-2));
+	color: rgb(var(--c-text));
+	font-size: 13px;
+	font-weight: 500;
+	cursor: pointer;
+}
+.liste-suite__bouton:hover:not(:disabled) { border-color: rgb(var(--c-accent)); }
+.liste-suite__bouton:disabled { opacity: .6; cursor: progress; }
+.liste-suite__bouton span { color: rgb(var(--c-text-3)); font-weight: 400; font-size: 12px; }
+
+/* Pastille du nombre de filtres actifs, sur le bouton de la barre d outils. */
+.liste-pastille {
+	min-width: 18px;
+	height: 18px;
+	padding: 0 5px;
+	display: inline-grid;
+	place-items: center;
+	border-radius: 999px;
+	background: rgb(var(--c-gold));
+	color: #0d1023;
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1;
+}
+.liste-pastille[hidden] { display: none; }
+
+/* Menu « Trier ». */
+.liste-menu { min-width: 230px; padding: 6px !important; }
+.liste-menu__titre {
+	padding: 6px 10px 4px;
+	font-size: 10.5px;
+	font-weight: 600;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+	color: rgb(var(--c-text-3));
+}
+.liste-menu__option {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	min-height: 36px;
+	padding: 6px 10px;
+	border: 0;
+	border-radius: 7px;
+	background: none;
+	color: rgb(var(--c-text-2));
+	font-size: 13px;
+	text-align: left;
+	cursor: pointer;
+}
+.liste-menu__option i { width: 16px; color: rgb(var(--c-accent-text)); }
+.liste-menu__option:hover { background: rgb(var(--c-surface-2)); color: rgb(var(--c-text)); }
+.liste-menu__option.actif { color: rgb(var(--c-text)); font-weight: 600; }
+.liste-menu__separateur { height: 1px; margin: 6px 4px; background: rgb(var(--c-line)); }
+.liste-menu__sens { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 2px 4px 4px; }
+.liste-menu__sens button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	min-height: 34px;
+	border-radius: 7px;
+	border: 1px solid rgb(var(--c-line-strong));
+	background: none;
+	color: rgb(var(--c-text-2));
+	font-size: 12.5px;
+	cursor: pointer;
+}
+.liste-menu__sens button.actif {
+	border-color: rgb(var(--c-accent));
+	background: rgb(var(--c-accent) / .16);
+	color: rgb(var(--c-text));
+	font-weight: 600;
+}
+
+/* Panneau « Filtres » : chaque option dit combien de lignes elle donnerait. */
+.liste-filtres {
+	width: min(360px, 92vw);
+	max-height: min(72vh, 600px);
+	padding: 0 !important;
+	overflow: hidden;
+	flex-direction: column;
+}
+.liste-filtres.show { display: flex; }
+.liste-filtres__tete {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px 12px;
+	border-bottom: 1px solid rgb(var(--c-line));
+	font-size: 13px;
+	font-weight: 600;
+	color: rgb(var(--c-text));
+}
+.liste-filtres__corps { flex: 1; overflow-y: auto; padding: 4px 6px; }
+.liste-filtres__pied {
+	padding: 9px 12px;
+	border-top: 1px solid rgb(var(--c-line));
+	font-size: 12.5px;
+	color: rgb(var(--c-text-2));
+}
+.liste-filtres__pied b { color: rgb(var(--c-text)); }
+.liste-filtre { border: 0; margin: 0; padding: 8px 4px 6px; min-width: 0; }
+.liste-filtre + .liste-filtre { border-top: 1px solid rgb(var(--c-line)); }
+.liste-filtre legend {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	float: none;
+	margin: 0 0 4px;
+	padding: 0 6px;
+	font-size: 10.5px;
+	font-weight: 600;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+	color: rgb(var(--c-text-3));
+}
+.liste-filtre legend .liste-lien { text-transform: none; letter-spacing: 0; font-size: 11.5px; }
+.liste-filtre__options { max-height: 196px; overflow-y: auto; }
+.liste-filtre__option {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	min-height: 34px;
+	margin: 0;
+	padding: 4px 8px;
+	border-radius: 7px;
+	font-size: 13px;
+	color: rgb(var(--c-text-2));
+	cursor: pointer;
+}
+.liste-filtre__option:hover { background: rgb(var(--c-surface-2)); color: rgb(var(--c-text)); }
+.liste-filtre__option input { width: 16px; height: 16px; flex-shrink: 0; cursor: pointer; }
+.liste-filtre__option span { flex: 1; min-width: 0; }
+.liste-filtre__option em {
+	font-style: normal;
+	font-size: 11.5px;
+	color: rgb(var(--c-text-3));
+	font-variant-numeric: tabular-nums;
+}
+.liste-filtre__option:has(input:checked) { color: rgb(var(--c-text)); font-weight: 500; }
+.liste-filtre__option.vide { opacity: .45; cursor: default; }
+.liste-filtre__aide { margin: 2px 8px 4px; font-size: 12px; color: rgb(var(--c-text-3)); }
+
+@media (max-width: 640px) {
+	.liste-barre__tri { margin-left: 0; width: 100%; }
+}
+
+
+/* --------------------------------------------------------- formulaires */
+
+/* Specificite nulle (:where) : la moindre classe d une page l emporte. */
+:where(.h-screen, .mdl-prof, .modal) :where(
+	input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="submit"]):not([type="button"]),
+	select,
+	textarea
+) {
+	border-radius: 8px;
+	border: 1px solid rgb(var(--c-line-strong));
+	background-color: rgb(var(--c-inset));
+	color: rgb(var(--c-text));
+}
+:where(.h-screen, .mdl-prof, .modal) :where(input, select, textarea)::placeholder {
+	color: rgb(var(--c-text-3));
+	opacity: 1;
+}
+:where(.h-screen, .mdl-prof, .modal) :where(input, select, textarea):focus {
+	outline: none;
+	border-color: rgb(var(--c-accent));
+	box-shadow: var(--ring);
+}
+:where(input[type="checkbox"], input[type="radio"]) { accent-color: rgb(var(--c-accent)); }
+
+.inscInput {
+	background-color: rgb(var(--c-inset)) !important;
+	color: rgb(var(--c-text)) !important;
+	border: 1px solid rgb(var(--c-line-strong)) !important;
+	border-radius: 6px !important;
+}
+
+
+/* ------------------------------------------------- listes deroulantes */
+
+/* Toutes les listes deroulantes du projet (demande du 13/10/2026) : les
+   couleurs du theme, une fleche toujours visible et, dans Chrome et Edge
+   (135 et plus), la liste ouverte elle-meme aux couleurs du theme au lieu du
+   menu du systeme (fond blanc ou gris, surlignage bleu de Windows). Chaque
+   page garde la forme de ses listes : hauteur, largeur, arrondi, pastille.
+   Ni les listes a choix multiples ni les listes deployees (size) : ce ne
+   sont pas des menus. */
+
+:root { --select-fleche: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23b3b9d6' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' d='m3.5 6 4.5 4.5L12.5 6'/%3E%3C/svg%3E"); }
+[data-theme="light"] { --select-fleche: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%233a426c' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' d='m3.5 6 4.5 4.5L12.5 6'/%3E%3C/svg%3E"); }
+
+/* Les couleurs d'une liste que sa page n'a pas habillee (le style de base
+   de Tailwind la laissait blanche en theme sombre) : specificite (0,0,2),
+   au-dessus de Tailwind, au-dessous de toute classe de page. */
+html select {
+	background-color: rgb(var(--c-inset));
+	color: rgb(var(--c-text));
+	border-color: rgb(var(--c-line-strong));
+}
+/* Bootstrap : ses filets gris clair et sa fleche sombre, faits pour un fond
+   blanc. Sa classe « border » impose sa couleur avec !important, mais la lit
+   dans --bs-border-color : redefinie sur les champs, elle suit le theme. */
+:where(select, input, textarea) { --bs-border-color: rgb(var(--c-line-strong)); }
+.form-select {
+	--bs-form-select-bg-img: var(--select-fleche);
+	background-color: rgb(var(--c-inset));
+	color: rgb(var(--c-text));
+	border-color: rgb(var(--c-line-strong));
+}
+.form-select:focus { border-color: rgb(var(--c-accent)); box-shadow: var(--ring); }
+select:disabled { opacity: .55; cursor: not-allowed; }
+
+/* Navigateurs sans liste personnalisable (Firefox, Safari) : la fleche du theme. */
+@supports not (appearance: base-select) {
+	select:not([multiple]):not([size]) {
+		background-image: var(--select-fleche);
+		background-repeat: no-repeat;
+		background-position: right 12px center;
+		background-size: 12px 12px;
+		padding-right: 32px;
+	}
+}
+
+/* Chrome, Edge : la liste personnalisable. Le texte choisi et la fleche sont
+   sur une grille ; un texte trop long est coupe, la fleche reste a droite. */
+@supports (appearance: base-select) {
+	select:not([multiple]):not([size]),
+	select:not([multiple]):not([size])::picker(select) { appearance: base-select; }
+
+	select:not([multiple]):not([size]) {
+		background-image: none !important; /* les fleches dessinees (Tailwind, Bootstrap, pages) : la sienne les remplace */
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: center;
+		padding-inline-end: 12px;
+		white-space: nowrap;
+		overflow: hidden;
+		overflow-clip-margin: content-box;
+		text-align: start;
+		cursor: pointer;
+	}
+	/* Une liste « bloc » de sa page devient une grille en ligne (la meme
+	   largeur) ; une liste cachee par classe le reste. */
+	select:not([multiple]):not([size]):not(.hidden):not(.d-none) { display: inline-grid; }
+
+	/* La fleche : le chevron de Bootstrap Icons, dans sa colonne ; elle se
+	   retourne liste ouverte. Pas de fond : sur une liste semi-transparente, il
+	   se verrait en carre. Un texte trop long passe dessous, coupe au bord. */
+	select:not([multiple]):not([size])::picker-icon {
+		content: "\F282";
+		font-family: "bootstrap-icons";
+		font-size: .75em;
+		line-height: 1;
+		padding-inline-start: 8px;
+		color: color-mix(in srgb, currentColor 72%, transparent);
+		transition: rotate .2s ease;
+	}
+	select:not([multiple]):not([size]):open::picker-icon { rotate: 180deg; }
+
+	/* La liste ouverte : une carte du theme. */
+	select:not([multiple]):not([size])::picker(select) {
+		margin-block: 4px;
+		padding: 4px;
+		max-block-size: min(60vh, 26rem);
+		border: 1px solid rgb(var(--c-line-strong));
+		border-radius: var(--radius);
+		background: rgb(var(--c-surface));
+		color: rgb(var(--c-text));
+		box-shadow: var(--shadow-2);
+	}
+	select:not([multiple]):not([size]) option {
+		padding: 8px 12px;
+		border-radius: 6px;
+		background: transparent;
+		color: rgb(var(--c-text));
+		font: 500 13.5px/1.35 var(--font-sans);
+		text-transform: none;
+		letter-spacing: normal;
+		white-space: normal;
+	}
+	select:not([multiple]):not([size]) option:hover,
+	select:not([multiple]):not([size]) option:focus-visible { background: rgb(var(--c-raised)); outline: none; }
+	select:not([multiple]):not([size]) option:checked { color: rgb(var(--c-accent-text)); font-weight: 650; }
+	select:not([multiple]):not([size]) option::checkmark { color: rgb(var(--c-accent-text)); }
+	select:not([multiple]):not([size]) option:disabled { opacity: .45; }
+	/* Les groupes (les annees, par exemple) : un intitule discret. */
+	select:not([multiple]):not([size]) optgroup {
+		padding-top: 6px;
+		color: rgb(var(--c-text-3));
+		font: 700 11px/1.3 var(--font-sans);
+		letter-spacing: .06em;
+		text-transform: uppercase;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		select:not([multiple]):not([size])::picker-icon { transition: none; }
+	}
+}
+
+/* ---------------------------------------------- composants Bootstrap */
+
+.dropdown-menu {
+	--bs-dropdown-bg: rgb(var(--c-surface));
+	--bs-dropdown-color: rgb(var(--c-text));
+	--bs-dropdown-border-color: rgb(var(--c-line));
+	--bs-dropdown-link-color: rgb(var(--c-text));
+	--bs-dropdown-link-hover-bg: rgb(var(--c-surface-2));
+	--bs-dropdown-link-hover-color: rgb(var(--c-text));
+	--bs-dropdown-divider-bg: rgb(var(--c-line));
+	border-radius: 12px;
+	box-shadow: var(--shadow-2);
+}
+.modal-content {
+	--bs-modal-bg: rgb(var(--c-surface));
+	--bs-modal-color: rgb(var(--c-text));
+	--bs-modal-border-color: rgb(var(--c-line));
+	--bs-modal-header-border-color: rgb(var(--c-line));
+	--bs-modal-footer-border-color: rgb(var(--c-line));
+	border-radius: var(--radius-lg);
+}
+
+/* ------------------------------------------------- theme clair : ajustements */
+
+/* text-white sert a deux choses : le texte courant sur fond sombre, qui doit
+   passer a l encre en theme clair, et le texte sur un bouton plein, qui doit
+   rester blanc. On distingue par le fond de l element ou de son parent. */
+[data-theme="light"] .text-white { color: rgb(var(--c-text)) !important; }
+[data-theme="light"] :is(
+	[class*="bg-cyan-5"], [class*="bg-cyan-6"], [class*="bg-cyan-7"], [class*="bg-cyan-8"], [class*="bg-cyan-9"],
+	[class*="bg-blue-5"], [class*="bg-blue-6"], [class*="bg-blue-7"], [class*="bg-blue-8"],
+	[class*="bg-sky-5"], [class*="bg-sky-6"], [class*="bg-sky-7"],
+	[class*="bg-indigo-"], [class*="bg-violet-"], [class*="bg-purple-"],
+	[class*="bg-red-5"], [class*="bg-red-6"], [class*="bg-red-7"], [class*="bg-red-8"],
+	[class*="bg-rose-5"], [class*="bg-rose-6"],
+	[class*="bg-green-5"], [class*="bg-green-6"], [class*="bg-green-7"],
+	[class*="bg-emerald-5"], [class*="bg-emerald-6"], [class*="bg-emerald-7"],
+	[class*="bg-teal-5"], [class*="bg-teal-6"], [class*="bg-teal-7"],
+	[class*="bg-orange-5"], [class*="bg-orange-6"], [class*="bg-amber-6"], [class*="bg-amber-7"],
+	[class*="bg-gradient"], .btn, .topbar-bleu-nuit, .sidebar-menu, .menu-pastille
+) .text-white,
+[data-theme="light"] :is(
+	[class*="bg-cyan-5"], [class*="bg-cyan-6"], [class*="bg-cyan-7"], [class*="bg-cyan-8"],
+	[class*="bg-blue-5"], [class*="bg-blue-6"], [class*="bg-blue-7"],
+	[class*="bg-red-5"], [class*="bg-red-6"], [class*="bg-red-7"],
+	[class*="bg-green-5"], [class*="bg-green-6"], [class*="bg-green-7"],
+	[class*="bg-emerald-5"], [class*="bg-emerald-6"], [class*="bg-indigo-"], [class*="bg-violet-"]
+).text-white {
+	color: #fff !important;
+}
+
+/* Les couleurs d etat en teinte claire (-300, -400) sont faites pour un fond
+   sombre : sur fond clair, on prend leur version foncee pour rester lisible. */
+[data-theme="light"] :is(.text-red-300, .text-red-400)         { color: #dc2626 !important; }
+[data-theme="light"] :is(.text-rose-300, .text-rose-400)       { color: #e11d48 !important; }
+[data-theme="light"] :is(.text-orange-300, .text-orange-400)   { color: #c2410c !important; }
+[data-theme="light"] :is(.text-amber-300, .text-amber-400)     { color: #b45309 !important; }
+[data-theme="light"] :is(.text-yellow-300, .text-yellow-400)   { color: #a16207 !important; }
+[data-theme="light"] :is(.text-green-300, .text-green-400)     { color: #15803d !important; }
+[data-theme="light"] :is(.text-emerald-300, .text-emerald-400) { color: #047857 !important; }
+[data-theme="light"] :is(.text-teal-300, .text-teal-400)       { color: #0f766e !important; }
+[data-theme="light"] :is(.text-sky-200, .text-sky-300, .text-sky-400) { color: #0369a1 !important; }
+[data-theme="light"] :is(.text-blue-300, .text-blue-400)       { color: rgb(var(--c-accent-text)) !important; }
+[data-theme="light"] :is(.text-indigo-300, .text-indigo-400, .text-violet-300, .text-violet-400, .text-purple-300, .text-purple-400) { color: #5b21b6 !important; }
+
+/* ---------------------------------------- classements : choix de l'annee */
+
+/* Barre des annees de la Dean's List et des Top Students
+   (src/student/annees-navigation.php, src/js/annees-ajax.js), entre l en-tete
+   et la zone qui defile : elle reste en vue pendant la lecture. L annee
+   affichee porte l or du sceau, celui des distinctions. */
+.annees-nav {
+	position: relative;
+	flex: none;
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 10px 24px;
+	border-bottom: 1px solid rgb(var(--c-line));
+	scroll-margin-top: 64px;   /* sous la barre du haut, sur mobile */
+}
+.annees-nav__titre {
+	margin: 0;
+	color: rgb(var(--c-text-3));
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+.annees-nav__commande {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	min-width: 0;
+}
+.annees-choix { display: flex; gap: 6px; margin: 0; min-width: 0; }
+.annees-choix select {
+	min-height: 36px;
+	min-width: 0;
+	padding: 0 34px 0 14px;
+	border: 1px solid rgb(var(--c-gold) / .6);
+	border-radius: 10px;
+	background-color: rgb(var(--c-gold) / .1);
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23a88d5c'%3E%3Cpath d='M1.6 5.1a.75.75 0 0 1 1.06 0L8 10.4l5.34-5.3a.75.75 0 1 1 1.06 1.06l-5.87 5.87a.75.75 0 0 1-1.06 0L1.6 6.16a.75.75 0 0 1 0-1.06z'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 12px center;
+	background-size: 12px 12px;
+	color: rgb(var(--c-gold-text));
+	font-family: inherit;
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1;
+	font-variant-numeric: tabular-nums;
+	-webkit-appearance: none;
+	appearance: none;
+	box-shadow: none;
+	cursor: pointer;
+	transition: border-color .15s ease, background-color .15s ease;
+}
+.annees-choix select:hover { border-color: rgb(var(--c-gold)); background-color: rgb(var(--c-gold) / .16); }
+.annees-choix select option { background: rgb(var(--c-surface)); color: rgb(var(--c-text)); font-weight: 500; }
+.annees-fleche {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: none;
+	width: 36px;
+	height: 36px;
+	border: 1px solid rgb(var(--c-line-strong));
+	border-radius: 10px;
+	color: rgb(var(--c-text-2));
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.annees-fleche[href]:hover { background: rgb(var(--c-surface-2)); color: rgb(var(--c-text)); border-color: rgb(var(--c-text-3)); }
+.annees-fleche[aria-disabled="true"] { opacity: .35; cursor: default; }
+.annees-voir {
+	min-height: 36px;
+	padding: 0 12px;
+	border: 1px solid rgb(var(--c-line-strong));
+	border-radius: 10px;
+	background: rgb(var(--c-surface-2));
+	color: rgb(var(--c-text));
+}
+:is(.annees-fleche, .annees-choix select, .annees-voir):focus-visible {
+	outline: 2px solid rgb(var(--c-accent));
+	outline-offset: 2px;
+}
+
+/* La barre dit deja l annee : l en-tete de la carte d annee, qui la
+   repetait juste en dessous, s efface. Il reste dans la page, ou les exports
+   le lisent. */
+.annees-nav ~ [data-annees-conteneur] :is(.dl-year-header, .year-header) { display: none; }
+
+/* Pendant le chargement : un trait or file sous la barre et, si l attente
+   dure, l annee affichee s estompe. Elle reste utilisable. */
+.annees-nav[data-chargement]::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	bottom: -1px;
+	width: 30%;
+	height: 2px;
+	background: rgb(var(--c-gold));
+	animation: annees-trait 1s ease-in-out infinite;
+}
+.annees-nav[data-chargement] { overflow: hidden; }
+@keyframes annees-trait {
+	from { transform: translateX(-100%); }
+	to   { transform: translateX(340%); }
+}
+[data-annees-conteneur][aria-busy="true"] > * {
+	opacity: .45;
+	transition: opacity .2s ease .15s;
+}
+
+/* Arrivee de l annee : plus ancienne, depuis la droite ; plus recente,
+   depuis la gauche, comme les fleches. */
+.annees-arrivee > * {
+	animation: annees-arrivee .24s cubic-bezier(.2, .7, .2, 1) both;
+}
+@keyframes annees-arrivee {
+	from { opacity: 0; transform: translateX(calc(var(--annees-sens, 1) * 16px)); }
+}
+
+.annees-annonce {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+@media (max-width: 1023px) {
+	.annees-nav { padding: 8px 12px; }
+}
+@media (max-width: 640px) {
+	.annees-nav__titre { display: none; }
+	.annees-nav__commande, .annees-choix { flex: 1; }
+	.annees-choix select { flex: 1; min-height: 44px; font-size: 16px; }
+	.annees-fleche { width: 44px; height: 44px; }
+}
+
+/* ------------------------------------------ barre laterale : mouvement */
+
+/* Les mouvements de la barre laterale (init/menubar.php). Courts, et chacun
+   dit ce qui se passe : une section qui s ouvre deroule ses entrees, la
+   barre qui se reduit rentre ses libelles, le tiroir mobile arrive du bord
+   d ou il sort. Rien ne bouge au chargement ni au redimensionnement ; le
+   reglage « reduire les animations » du systeme les coupe (plus bas). */
+:root {
+	--side-duree: .28s;
+	--side-entree: cubic-bezier(.2, .8, .2, 1);   /* decelere : ce qui arrive */
+	--side-sortie: cubic-bezier(.4, 0, 1, 1);     /* accelere : ce qui part   */
+}
+
+/* Accordeon. Chaque section enveloppe ses entrees (menubar.php) : la
+   hauteur passe de 0fr a 1fr, sans mesure en JavaScript. Repliee, la
+   section sort aussi du parcours au clavier (visibility). */
+.sidebar-menu .menu-section-corps {
+	display: grid;
+	grid-template-rows: 1fr;
+	transition: grid-template-rows var(--side-duree) var(--side-entree);
+}
+.sidebar-menu .menu-section-corps.est-replie {
+	grid-template-rows: 0fr;
+	transition-timing-function: var(--side-sortie);
+	transition-duration: .2s;
+}
+.sidebar-menu .menu-section-contenu {
+	min-height: 0;
+	overflow: hidden;
+	visibility: visible;
+	transition: visibility 0s;
+}
+.sidebar-menu .menu-section-corps.est-replie .menu-section-contenu {
+	visibility: hidden;
+	transition: visibility 0s linear .2s;
+}
+.sidebar-menu .menu-section-corps .menu-item {
+	transition: opacity .22s ease, transform .22s var(--side-entree);
+}
+.sidebar-menu .menu-section-corps.est-replie .menu-item {
+	opacity: 0;
+	transform: translateY(-6px);
+	transition-duration: .12s;
+}
+/* A l ouverture, les entrees arrivent l une apres l autre. */
+.sidebar-menu .menu-section-corps.est-en-mouvement:not(.est-replie) .menu-item {
+	transition-delay: calc(min(var(--rang-section, 0), 8) * 24ms + 40ms);
+}
+.sidebar-menu .menu-section-header::after {
+	transition: transform var(--side-duree) var(--side-entree);
+}
+.sidebar-menu .menu-section-header.est-replie::after { transition-timing-function: var(--side-sortie); }
+
+/* Barre reduite, les entrees restent toutes visibles, repliees ou non. */
+@media (min-width: 1024px) {
+	html.side-rail .sidebar-menu .menu-section-corps { grid-template-rows: 1fr; }
+	html.side-rail .sidebar-menu .menu-section-corps .menu-section-contenu { visibility: visible; }
+	html.side-rail .sidebar-menu .menu-section-corps .menu-item { opacity: 1; transform: none; }
+}
+
+/* Premier affichage : l etat memorise s applique sans mouvement. */
+.sidebar-menu.menu-sans-anim,
+.sidebar-menu.menu-sans-anim * { transition: none !important; }
+
+/* Bureau : la barre se reduit a ses icones, ou se deploie. Pendant le
+   mouvement (html.side-anime, pose par menubar.php au clic), la largeur de
+   la barre et le decalage du contenu glissent ensemble. La barre garde sa
+   mise en page pleine tant qu elle bouge : les icones ne sautent pas, les
+   libelles s effacent puis sont rognes par le bord. */
+@media (min-width: 1024px) {
+	html.side-anime .sidebar-menu {
+		transition: width var(--side-duree) var(--side-entree) !important;
+	}
+	html.side-anime .topbar-bleu-nuit {
+		transition: margin-left var(--side-duree) var(--side-entree), width var(--side-duree) var(--side-entree);
+	}
+	html.side-anime div:has(> #sidebarMenu) {
+		overflow-x: clip;   /* le contenu fige deborde un instant a droite */
+	}
+	html.side-anime .fixed.lg\:w-10\/12 {
+		transition: width var(--side-duree) var(--side-entree);
+	}
+
+	html.side-repli-en-cours,
+	html.side-deploi-en-cours { --sidebar-w: 76px; }
+
+	html.side-anime .sidebar-menu :is(.menu-title, .side-brand__nom, .side-profil__texte, .menu-section-header) {
+		white-space: nowrap;
+	}
+	html.side-anime .sidebar-menu :is(.menu-title, .side-brand__nom, .side-profil__texte, .side-profil__chevron, .side-pied__bouton span, .side-pied__bouton kbd, .menu-section-header, .menu-pastille) {
+		transition: opacity .2s ease .1s;
+	}
+	html:is(.side-repli-en-cours, .side-deploi-en-cours) .sidebar-menu :is(.menu-title, .side-brand__nom, .side-profil__texte, .side-profil__chevron, .side-pied__bouton span, .side-pied__bouton kbd, .menu-section-header, .menu-pastille) {
+		opacity: 0;
+		transition: opacity .12s ease;
+	}
+}
+
+/* Mobile : le tiroir arrive en decelerant et repart plus vite, avec une
+   ombre qui le pose au-dessus de la page. Ses entrees le suivent en cascade. */
+@media (max-width: 1023px) {
+	.sidebar-menu.active {
+		transition: transform .32s var(--side-entree), visibility 0s, box-shadow .32s ease !important;
+		box-shadow: 12px 0 40px rgb(0 0 0 / .38);
+	}
+	.sidebar-menu:not(.active) {
+		transition: transform .22s var(--side-sortie), visibility 0s linear .22s, box-shadow .22s ease !important;
+	}
+	.sidebar-overlay { transition: opacity .22s ease, visibility 0s linear .22s; }
+	.sidebar-overlay.active { transition: opacity .32s ease, visibility 0s; }
+
+	.sidebar-menu.est-en-ouverture nav > :is(.menu-section-header, .menu-section-corps),
+	.sidebar-menu.est-en-ouverture .side-compte {
+		animation: side-cascade .28s var(--side-entree) both;
+		animation-delay: calc(min(var(--rang, 0), 10) * 14ms + 60ms);
+	}
+}
+@keyframes side-cascade {
+	from { opacity: 0; transform: translateX(-14px); }
+}
+
+/* L icone du bouton de menu pivote quand elle change (☰ / ✕). */
+.icone-bascule { animation: icone-bascule .24s var(--side-entree); }
+@keyframes icone-bascule {
+	from { opacity: 0; transform: rotate(-90deg) scale(.6); }
+}
+
+/* Reduire les animations : la regle generale (plus bas) raccourcit les
+   durees ; les delais de la cascade tomberaient encore, on les annule. */
+@media (prefers-reduced-motion: reduce) {
+	.sidebar-menu, .sidebar-menu *, .sidebar-overlay, .icone-bascule {
+		transition-delay: 0s !important;
+		animation-delay: 0s !important;
+	}
+}
+
+/* ------------------------------------- navigation sans rechargement */
+
+/* Zone remplacee par src/js/zone-ajax.js : pendant le chargement, elle
+   s'estompe si l'attente dure ; elle reste utilisable. */
+[data-zone-ajax][aria-busy="true"] > * { opacity: .55; transition: opacity .2s ease .15s; }
+[data-zone-ajax] { position: relative; }
+[data-zone-ajax][aria-busy="true"]::before {
+	content: ""; position: sticky; top: 0; display: block; height: 2px; width: 30%; z-index: 5;
+	background: rgb(var(--c-accent)); animation: zoneTrait 1s ease-in-out infinite;
+}
+@keyframes zoneTrait { from { transform: translateX(-100%); } to { transform: translateX(340%); } }
+
+/* ---------------------------------------------------------- mouvement */
+
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after {
+		transition-duration: .01ms !important;
+		animation-duration: .01ms !important;
+		animation-iteration-count: 1 !important;
+	}
+}

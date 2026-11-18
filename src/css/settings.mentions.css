@@ -1,0 +1,789 @@
+/* =============================================================================
+   Réglage des mentions (table filiere)
+
+   Préfixe « mn- », sur le modèle de settings.vitrine.css.
+
+   PALETTE
+   -------
+   Celle de l'application, définie dans init/head.php : bleu nuit #0a1628 →
+   #8eb8d4, accent cyan (#38bdf8 en sombre, #0369a1 en clair). La première
+   version de cette feuille employait du violet, étranger à la charte.
+
+   DEUX THÈMES, DÉCLARÉS EXPLICITEMENT
+   -----------------------------------
+   Toutes les couleurs passent par des variables, redéfinies sous
+   [data-theme="light"]. La première version codait les teintes sombres en dur :
+   en mode clair, titres et textes devenaient illisibles — du texte #f1f5f9 sur
+   un fond clair.
+
+   Le thème est posé sur <html> par init/head.php depuis localStorage, donc
+   aucune valeur ne doit dépendre de prefers-color-scheme : c'est le choix
+   enregistré qui commande.
+
+   INPUTS : POURQUOI DES !important
+   --------------------------------
+   init/head.php porte une règle globale
+     [data-theme="light"] input:not([type="checkbox"])… { background: #fff !important }
+   dont la spécificité et le !important l'emportent sur une simple classe. Les
+   deux thèmes sont donc déclarés ici avec la même arme — c'est déjà la
+   solution retenue dans my-account.css et settings.vitrine.css.
+
+   S'y ajoute color-scheme : sans elle, le navigateur peint le chrome natif de
+   l'input (fond, curseur, remplissage automatique) selon le thème du système,
+   ce qui donnait des champs blancs sur une page sombre.
+   ========================================================================== */
+
+.mn-page {
+	/* --- Sombre (défaut) --- */
+	--mn-fond:        #0f2847;
+	--mn-carte:       rgba(13, 31, 60, .72);
+	--mn-carte-bord:  rgb(var(--c-line-strong) / .9);
+	--mn-carte-survol: rgba(61, 106, 138, .9);
+	--mn-champ:       rgba(10, 22, 40, .75);
+	--mn-champ-bord:  rgb(var(--c-line-strong) / .55);
+
+	--mn-titre:       #e8f1f8;
+	--mn-texte:       #cbd9e6;
+	--mn-doux:        #8eb8d4;
+	--mn-faible:      #6b9abb;   /* 4,92:1 sur le fond de page — #5a8aa8 n'atteignait que 3,98:1 */
+
+	--mn-accent:      rgb(var(--c-accent));
+	--mn-accent-fond: rgb(var(--c-accent) / .14);
+	--mn-accent-bord: rgb(var(--c-accent) / .34);
+
+	--mn-ok:          #34d399;
+	--mn-ok-fond:     rgba(16, 185, 129, .14);
+	--mn-ok-bord:     rgba(16, 185, 129, .32);
+
+	--mn-alerte:      #fb923c;
+	--mn-alerte-fond: rgba(249, 115, 22, .1);
+	--mn-alerte-bord: rgba(249, 115, 22, .3);
+
+	--mn-danger:      #fca5a5;
+	--mn-ombre:       0 1px 3px rgba(0, 0, 0, .25);
+
+	--mn-scheme:      dark;
+
+	max-width: 1400px;
+	margin: 0 auto;
+	padding: 1.25rem 1rem 3rem;
+	color: var(--mn-texte);
+}
+
+/* --- Clair. Teintes tirées des surcharges de init/head.php, pour que la page
+       s'accorde au reste de l'administration. --- */
+[data-theme="light"] .mn-page {
+	--mn-fond:        rgb(var(--c-surface-2));
+	--mn-carte:       rgb(var(--c-surface));
+	--mn-carte-bord:  rgb(var(--c-line));
+	--mn-carte-survol: #8eb8d4;
+	--mn-champ:       rgb(var(--c-surface));
+	--mn-champ-bord:  rgb(var(--c-line-strong));
+
+	--mn-titre:       rgb(var(--c-text));
+	--mn-texte:       rgb(var(--c-text));
+	--mn-doux:        rgb(var(--c-text-3));
+	--mn-faible:      #456f8c;   /* 5,38:1 sur blanc — #5a8aa8 n'atteignait que 3,73:1 */
+
+	--mn-accent:      rgb(var(--c-accent-strong));
+	--mn-accent-fond: rgb(var(--c-accent-strong) / .08);
+	--mn-accent-bord: rgb(var(--c-accent) / .28);
+
+	--mn-ok:          #047857;
+	--mn-ok-fond:     rgba(4, 120, 87, .08);
+	--mn-ok-bord:     rgba(4, 120, 87, .25);
+
+	--mn-alerte:      #b45309;
+	--mn-alerte-fond: #fef6e7;
+	--mn-alerte-bord: #f0c977;
+
+	--mn-danger:      #b91c1c;
+	--mn-ombre:       0 1px 3px rgba(10, 22, 40, .08);
+
+	--mn-scheme:      light;
+}
+
+/* ---------- En-tête ---------- */
+
+.mn-entete {
+	display: flex;
+	align-items: flex-start;
+	gap: .9rem;
+	padding-bottom: .9rem;
+	margin-bottom: 1.25rem;
+	border-bottom: 1px solid var(--mn-carte-bord);
+}
+
+.mn-entete__icone {
+	width: 2.6rem;
+	height: 2.6rem;
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: .55rem;
+	background: var(--mn-accent-fond);
+	border: 1px solid var(--mn-accent-bord);
+	color: var(--mn-accent);
+	font-size: 1.15rem;
+}
+
+.mn-page .mn-titre {
+	font-size: 1.35rem;
+	font-weight: 700;
+	letter-spacing: -.02em;
+	color: var(--mn-titre);
+	margin: 0;
+}
+
+.mn-page .mn-sous {
+	font-size: .8rem;
+	color: var(--mn-doux);
+	margin: .1rem 0 0;
+}
+
+/* ---------- Avertissements ---------- */
+
+.mn-note {
+	display: flex;
+	gap: .65rem;
+	padding: .8rem .95rem;
+	margin-bottom: 1.25rem;
+	font-size: .78rem;
+	line-height: 1.55;
+	color: var(--mn-texte);
+	background: var(--mn-accent-fond);
+	border: 1px solid var(--mn-accent-bord);
+	border-radius: .6rem;
+}
+
+.mn-note i { color: var(--mn-accent); flex: 0 0 auto; margin-top: .1rem; }
+.mn-note b { color: var(--mn-titre); }
+.mn-note code {
+	font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+	background: var(--mn-champ);
+	border: 1px solid var(--mn-champ-bord);
+	padding: .02rem .28rem;
+	border-radius: .2rem;
+	color: var(--mn-accent);
+	font-size: .92em;
+}
+
+.mn-note--alerte {
+	background: var(--mn-alerte-fond);
+	border-color: var(--mn-alerte-bord);
+	color: var(--mn-texte);
+}
+.mn-note--alerte i { color: var(--mn-alerte); }
+
+/* ---------- Grille de mentions ---------- */
+
+.mn-grille {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat(auto-fill, minmax(24rem, 1fr));
+	/* Chaque carte garde sa propre hauteur : sans cela, déplier les parcours
+	   ou le formulaire d'une carte étirait toutes les cartes de sa ligne. */
+	align-items: start;
+}
+
+.mn-carte {
+	background: var(--mn-carte);
+	border: 1px solid var(--mn-carte-bord);
+	border-radius: .75rem;
+	padding: .95rem 1rem 1rem;
+	box-shadow: var(--mn-ombre);
+	transition: border-color .18s ease;
+}
+
+.mn-carte:hover { border-color: var(--mn-carte-survol); }
+.mn-carte[data-ouvert="1"] { border-color: var(--mn-accent-bord); }
+
+.mn-carte__tete {
+	display: flex;
+	align-items: center;
+	gap: .6rem;
+	flex-wrap: wrap;
+}
+
+.mn-sigle {
+	font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+	font-size: .78rem;
+	font-weight: 700;
+	letter-spacing: .06em;
+	padding: .2rem .5rem;
+	border-radius: .3rem;
+	background: var(--mn-accent-fond);
+	color: var(--mn-accent);
+	border: 1px solid var(--mn-accent-bord);
+}
+
+.mn-nom {
+	font-size: .95rem;
+	font-weight: 600;
+	color: var(--mn-titre);
+}
+
+.mn-domaine {
+	font-size: .7rem;
+	color: var(--mn-faible);
+	margin-top: .15rem;
+}
+
+/* ---------- Pastilles ---------- */
+
+.mn-pastille {
+	font-size: .66rem;
+	padding: .15rem .5rem;
+	border-radius: 9999px;
+	white-space: nowrap;
+	border: 1px solid transparent;
+}
+
+.mn-pastille--publique {
+	background: var(--mn-ok-fond);
+	color: var(--mn-ok);
+	border-color: var(--mn-ok-bord);
+}
+
+.mn-pastille--privee {
+	background: var(--mn-accent-fond);
+	color: var(--mn-doux);
+	border-color: var(--mn-champ-bord);
+}
+
+.mn-pastille--fermee {
+	background: var(--mn-alerte-fond);
+	color: var(--mn-alerte);
+	border-color: var(--mn-alerte-bord);
+	font-weight: 600;
+}
+
+/* Mention fermée : reconnaissable au premier coup d'œil, mais toujours
+   lisible — on continue d'y consulter des compteurs et d'y régler des
+   parcours. Une opacité globale rendrait ces chiffres pénibles à lire, d'où
+   une bordure marquée plutôt qu'un effacement. */
+.mn-carte--fermee {
+	border-color: var(--mn-alerte-bord);
+	border-left-width: 3px;
+}
+.mn-carte--fermee:hover { border-color: var(--mn-alerte); }
+.mn-carte--fermee .mn-nom { color: var(--mn-doux); }
+
+/* ---------- Usages ---------- */
+
+.mn-usages {
+	display: flex;
+	flex-wrap: wrap;
+	gap: .3rem .45rem;
+	margin: .7rem 0 .2rem;
+}
+
+.mn-usage {
+	font-size: .67rem;
+	color: var(--mn-doux);
+	background: var(--mn-champ);
+	border: 1px solid var(--mn-champ-bord);
+	border-radius: .3rem;
+	padding: .15rem .45rem;
+	/* Chiffres alignés : on compare ces compteurs d'une carte à l'autre. */
+	font-variant-numeric: tabular-nums;
+}
+
+.mn-usage b { color: var(--mn-titre); font-weight: 600; }
+.mn-usage--zero { opacity: .55; }
+
+/* ---------- Actions ---------- */
+
+.mn-actions {
+	display: flex;
+	gap: .4rem;
+	margin-top: .75rem;
+	flex-wrap: wrap;
+}
+
+.mn-page .mn-btn {
+	font-size: .72rem;
+	padding: .35rem .75rem;
+	border-radius: .35rem;
+	cursor: pointer;
+	background: var(--mn-champ);
+	color: var(--mn-texte);
+	border: 1px solid var(--mn-champ-bord);
+	/* 2.1rem ≈ 34 px : confortable à la souris, la page est un outil de bureau. */
+	min-height: 2.1rem;
+	display: inline-flex;
+	align-items: center;
+	gap: .35rem;
+	transition: border-color .15s ease, color .15s ease;
+}
+
+.mn-page .mn-btn:hover { color: var(--mn-accent); border-color: var(--mn-accent); }
+.mn-page .mn-btn:disabled { opacity: .45; cursor: not-allowed; }
+.mn-page .mn-btn:disabled:hover { color: var(--mn-texte); border-color: var(--mn-champ-bord); }
+
+.mn-page .mn-btn--primaire {
+	background: var(--mn-accent);
+	color: #ffffff;
+	border-color: transparent;
+	font-weight: 600;
+}
+.mn-page .mn-btn--primaire:hover {
+	background: var(--mn-accent);
+	color: #ffffff;
+	filter: brightness(1.12);
+	border-color: transparent;
+}
+[data-theme="light"] .mn-page .mn-btn--primaire { color: #ffffff; }
+
+.mn-page .mn-btn--danger:hover:not(:disabled) {
+	color: var(--mn-danger);
+	border-color: var(--mn-danger);
+}
+
+/* ---------- Formulaire d'édition ---------- */
+
+.mn-form {
+	margin-top: .85rem;
+	padding-top: .85rem;
+	border-top: 1px solid var(--mn-carte-bord);
+}
+
+.mn-champs {
+	display: grid;
+	gap: .65rem;
+	grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+}
+
+.mn-champ label {
+	display: block;
+	font-size: .68rem;
+	color: var(--mn-doux);
+	margin-bottom: .2rem;
+}
+
+/* !important assumé : init/head.php porte
+     [data-theme="light"] input:not([type="checkbox"])… { background:#fff !important }
+   qui l'emportait sur cette classe quel que soit le thème réel. Les deux
+   apparences sont donc déclarées avec la même arme.
+   color-scheme commande le chrome natif du champ — sans elle, curseur et
+   remplissage automatique restaient clairs sur une page sombre. */
+/* select compris : le choix du cycle d un parcours est une liste deroulante,
+   et sans cette regle elle restait blanche au milieu de champs sombres. */
+.mn-page input.mn-input,
+.mn-page select.mn-input,
+.mn-page textarea.mn-input {
+	width: 100%;
+	background-color: var(--mn-champ) !important;
+	border: 1px solid var(--mn-champ-bord) !important;
+	border-radius: .35rem;
+	color: var(--mn-texte) !important;
+	color-scheme: var(--mn-scheme);
+	/* 16 px sur petit écran : en dessous, iOS zoome au focus. */
+	font-size: 16px;
+	font-family: inherit;
+	padding: .45rem .55rem;
+	min-height: 2.4rem;
+	transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+@media (min-width: 640px) {
+	.mn-page input.mn-input,
+	.mn-page select.mn-input,
+	.mn-page textarea.mn-input { font-size: .8rem; }
+}
+
+.mn-page input.mn-input::placeholder { color: var(--mn-faible) !important; }
+
+.mn-page select.mn-input:focus,
+.mn-page input.mn-input:focus {
+	outline: none;
+	border-color: var(--mn-accent) !important;
+	box-shadow: 0 0 0 2px var(--mn-accent-fond);
+}
+
+.mn-page input.mn-input:disabled {
+	opacity: .6;
+	cursor: not-allowed;
+}
+
+/* Remplissage automatique : Chrome impose son propre fond, seule cette
+   surcharge le neutralise. */
+.mn-page input.mn-input:-webkit-autofill {
+	-webkit-text-fill-color: var(--mn-texte);
+	-webkit-box-shadow: 0 0 0 40rem var(--mn-champ) inset;
+}
+
+.mn-aide {
+	font-size: .66rem;
+	color: var(--mn-faible);
+	margin-top: .25rem;
+	line-height: 1.45;
+}
+
+.mn-aide--verrou { color: var(--mn-alerte); }
+
+/* ---------- Nouvelle mention ---------- */
+
+.mn-ajout {
+	margin-bottom: 1.25rem;
+	background: var(--mn-accent-fond);
+	border: 1px dashed var(--mn-accent-bord);
+	border-radius: .75rem;
+	padding: .95rem 1rem 1rem;
+}
+
+.mn-ajout__titre {
+	font-size: .85rem;
+	font-weight: 600;
+	color: var(--mn-titre);
+	margin-bottom: .15rem;
+	display: flex;
+	align-items: center;
+	gap: .45rem;
+}
+.mn-ajout__titre i { color: var(--mn-accent); }
+
+/* ---------- Parcours d'une mention ---------- */
+
+.mn-parcours {
+	margin-top: .8rem;
+	padding-top: .7rem;
+	border-top: 1px solid var(--mn-carte-bord);
+}
+
+.mn-page .mn-parcours__bascule {
+	display: flex;
+	align-items: center;
+	gap: .45rem;
+	width: 100%;
+	font-size: .74rem;
+	font-weight: 600;
+	color: var(--mn-doux);
+	background: none;
+	border: 0;
+	padding: .2rem 0;
+	cursor: pointer;
+	text-align: left;
+}
+.mn-page .mn-parcours__bascule:hover { color: var(--mn-accent); }
+.mn-parcours__bascule i:first-child { color: var(--mn-accent); }
+.mn-parcours__fleche {
+	margin-left: auto;
+	font-size: .7rem;
+	transition: transform .18s ease;
+}
+.mn-parcours__bascule[aria-expanded="true"] .mn-parcours__fleche { transform: rotate(180deg); }
+
+.mn-parcours__corps { margin-top: .55rem; }
+
+/* --- Une ligne de parcours --- */
+
+.mn-pc {
+	background: var(--mn-champ);
+	border: 1px solid var(--mn-champ-bord);
+	border-radius: .45rem;
+	padding: .4rem .55rem;
+	margin-bottom: .35rem;
+}
+
+.mn-pc__tete {
+	display: flex;
+	align-items: center;
+	gap: .5rem;
+	flex-wrap: wrap;
+}
+
+.mn-pc__code {
+	font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+	font-size: .64rem;
+	font-weight: 700;
+	letter-spacing: .04em;
+	padding: .1rem .35rem;
+	border-radius: .25rem;
+	background: var(--mn-accent-fond);
+	color: var(--mn-accent);
+	border: 1px solid var(--mn-accent-bord);
+	white-space: nowrap;
+}
+
+.mn-pc__nom {
+	font-size: .76rem;
+	color: var(--mn-titre);
+	flex: 1 1 8rem;
+	min-width: 0;
+}
+
+.mn-pc__usages {
+	font-size: .64rem;
+	color: var(--mn-faible);
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+}
+
+.mn-pc__actions { display: flex; gap: .25rem; }
+
+/* Boutons d'une ligne de parcours : plus compacts que ceux de la mention,
+   mais toujours assez hauts pour être visés confortablement. */
+.mn-page .mn-btn--mini {
+	font-size: .68rem;
+	padding: .2rem .45rem;
+	min-height: 1.8rem;
+}
+
+.mn-pc__form {
+	margin-top: .5rem;
+	padding-top: .5rem;
+	border-top: 1px solid var(--mn-champ-bord);
+}
+
+/* --- Ajout d'un parcours --- */
+
+.mn-pc-ajout {
+	margin-top: .5rem;
+	padding: .5rem .55rem .55rem;
+	background: var(--mn-accent-fond);
+	border: 1px dashed var(--mn-accent-bord);
+	border-radius: .45rem;
+}
+
+/* ---------- Anomalies relevées ---------- */
+
+.mn-anomalies {
+	margin-top: 1.75rem;
+	padding-top: 1rem;
+	border-top: 1px solid var(--mn-carte-bord);
+}
+
+.mn-page .mn-anomalies h2 {
+	font-size: .95rem;
+	font-weight: 600;
+	color: var(--mn-titre);
+	margin: 0 0 .2rem;
+}
+
+.mn-anomalies__sous {
+	font-size: .74rem;
+	color: var(--mn-doux);
+	margin-bottom: .8rem;
+}
+
+.mn-anomalie {
+	display: flex;
+	align-items: flex-start;
+	gap: .55rem;
+	font-size: .76rem;
+	line-height: 1.5;
+	color: var(--mn-texte);
+	padding: .55rem .7rem;
+	margin-bottom: .4rem;
+	background: var(--mn-alerte-fond);
+	border: 1px solid var(--mn-alerte-bord);
+	border-radius: .45rem;
+}
+
+.mn-anomalie i { color: var(--mn-alerte); flex: 0 0 auto; margin-top: .1rem; }
+.mn-anomalie code {
+	font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+	background: var(--mn-champ);
+	border: 1px solid var(--mn-champ-bord);
+	padding: .05rem .3rem;
+	border-radius: .2rem;
+	color: var(--mn-alerte);
+}
+
+.mn-anomalie__liste {
+	margin: .4rem 0 .4rem 0;
+	padding-left: 1.1rem;
+	list-style: disc;
+}
+.mn-anomalie__liste li { margin: .12rem 0; }
+
+/* Rien à signaler : l'absence d'anomalie mérite d'être dite. */
+.mn-anomalie--ok {
+	background: var(--mn-ok-fond);
+	border-color: var(--mn-ok-bord);
+}
+.mn-anomalie--ok i { color: var(--mn-ok); }
+
+/* Cycle d'un parcours : licence, master, ou les deux. */
+.mn-pc__cycle {
+	flex: 0 0 auto;
+	margin-left: .4rem;
+	padding: .05rem .4rem;
+	border-radius: 999px;
+	border: 1px solid rgb(var(--c-accent) / .35);
+	background: rgb(var(--c-accent) / .12);
+	color: rgb(var(--c-accent-text));
+	font-size: .62rem;
+	white-space: nowrap;
+}
+[data-theme="light"] .mn-pc__cycle { color: rgb(var(--c-accent-text)); border-color: rgb(var(--c-line)); background: rgb(var(--c-surface-2)); }
+
+/* =============================================================================
+   MOUVEMENT
+
+   POURQUOI
+   --------
+   Trois blocs de cette page s'ouvrent et se ferment : le formulaire d'une
+   mention, la liste de ses parcours, le formulaire d'un parcours. Ils
+   basculaient par l'attribut `hidden`, donc d'un seul coup. Sur une grille,
+   une carte qui change de hauteur sans transition fait sauter ses voisines et
+   l'oeil perd l'endroit qu'il suivait — d'autant que la page se relit entière
+   après chaque écriture.
+
+   L'ATTRIBUT hidden EST CONSERVÉ
+   ------------------------------
+   Il retire le bloc replié du parcours au clavier, ce qu'une opacité ne fait
+   pas. Le mouvement est donc joué autour de lui : le script retire `hidden`,
+   mesure la hauteur du contenu, puis anime `max-height`. AUCUNE règle de cette
+   section ne doit poser `display` sur ces blocs, sans quoi `hidden` n'aurait
+   plus d'effet.
+
+   DURÉES
+   ------
+   220 ms pour déployer, 160 ms pour refermer : un repli doit paraître plus
+   prompt qu'un déploiement, sinon l'interface traîne. Rien ne dépasse 320 ms.
+
+   TOUT EST ANNULABLE
+   ------------------
+   Un second clic pendant l'animation la reprend à la hauteur atteinte au lieu
+   d'attendre la fin : voir `arreter()` dans settings.mentions.js.
+   ========================================================================== */
+
+.mn-page {
+	--mn-courbe:       cubic-bezier(.22, .61, .36, 1);
+	--mn-duree:        220ms;
+	--mn-duree-courte: 160ms;
+	--mn-ombre-survol: 0 6px 16px rgba(0, 0, 0, .28);
+}
+
+[data-theme="light"] .mn-page {
+	--mn-ombre-survol: 0 6px 16px rgba(10, 22, 40, .12);
+}
+
+/* ---------- Replis animés ---------- */
+
+/* Posée par le script le temps de l'animation seulement : hors animation, le
+   bloc n'a ni overflow ni max-height, donc rien ne peut rester coupé si un
+   champ grandit ou si une liste déroulante s'ouvre vers le bas. */
+.mn-anim {
+	overflow: hidden;
+	transition: max-height var(--mn-duree) var(--mn-courbe),
+	            opacity var(--mn-duree) var(--mn-courbe);
+}
+
+.mn-anim--ferme {
+	transition-duration: var(--mn-duree-courte), var(--mn-duree-courte);
+}
+
+/* ---------- Entrée des cartes ---------- */
+
+@keyframes mn-entree {
+	from { opacity: 0; transform: translateY(10px); }
+	to   { opacity: 1; transform: none; }
+}
+
+/* Décalage de 35 ms par carte, plafonné par le script : au-delà de huit rangs,
+   la dernière carte se ferait attendre plus d'une demi-seconde.
+   La classe est retirée dès la fin — une animation « both » qui reste
+   accrochée fige `transform: none` et empêcherait le survol de soulever la
+   carte, les animations l'emportant sur les déclarations ordinaires. */
+.mn-grille--entree > .mn-carte {
+	animation: mn-entree 320ms var(--mn-courbe) both;
+	animation-delay: calc(var(--mn-i, 0) * 35ms);
+}
+
+/* Relecture après écriture : la page revient à l'identique, donc une simple
+   reprise en fondu — sans décalage ni glissement, qui rejoueraient un
+   chargement que personne n'a demandé. */
+@keyframes mn-revient {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+.mn-revient { animation: mn-revient 180ms ease-out both; }
+
+/* ---------- Ce qui vient de changer ---------- */
+
+/* Après une relecture, la carte ou la ligne concernée se signale, puis
+   l'anneau s'efface de lui-même. Le fond n'est pas touché : l'animer vers
+   « transparent » ferait clignoter la carte. */
+@keyframes mn-surligne {
+	from { box-shadow: 0 0 0 3px var(--mn-accent), var(--mn-ombre); }
+	to   { box-shadow: 0 0 0 3px transparent, var(--mn-ombre); }
+}
+
+.mn-surligne { animation: mn-surligne 1.1s ease-out both; }
+
+/* ---------- Sortie ---------- */
+
+/* Une suppression réussie retirait la carte d'un coup, sans qu'on voie
+   laquelle partait. Elle s'efface maintenant sur place. */
+@keyframes mn-sortie {
+	to { opacity: 0; transform: scale(.97); }
+}
+
+.mn-sort {
+	animation: mn-sortie var(--mn-duree-courte) ease-in both;
+	pointer-events: none;
+}
+
+/* ---------- Réactions au survol et au clic ---------- */
+
+.mn-carte {
+	transition: border-color .18s ease,
+	            transform .18s var(--mn-courbe),
+	            box-shadow .18s ease;
+}
+
+.mn-carte:hover {
+	transform: translateY(-2px);
+	box-shadow: var(--mn-ombre-survol);
+}
+
+/* Carte dépliée : elle reste posée. Un formulaire ouvert qui flotte au survol
+   donne l'impression que le champ va bouger sous le curseur. */
+.mn-carte[data-ouvert="1"]:hover { transform: none; }
+
+.mn-page .mn-btn {
+	transition: border-color .15s ease,
+	            color .15s ease,
+	            background-color .15s ease,
+	            transform .1s ease;
+}
+
+.mn-page .mn-btn:active:not(:disabled) { transform: scale(.97); }
+
+.mn-parcours__fleche { transition: transform var(--mn-duree-courte) var(--mn-courbe); }
+
+/* ---------- Attente d'un bouton ---------- */
+
+@keyframes mn-tourne { to { transform: rotate(360deg); } }
+
+.mn-spin {
+	display: inline-block;
+	animation: mn-tourne .7s linear infinite;
+}
+
+/* Un bouton occupé est désactivé, et l'opacité de .45 rendait son indicateur
+   d'attente presque invisible — alors que c'est le moment où il porte
+   l'information. */
+.mn-page .mn-btn[data-occupe="1"]:disabled { opacity: .85; }
+
+/* ---------- Mouvement refusé ---------- */
+
+/* Choix système respecté : les états restent lisibles, seules les durées
+   tombent. Le script coupe en plus les animations de hauteur, qui n'auraient
+   aucun sens jouées en une fraction de milliseconde. */
+@media (prefers-reduced-motion: reduce) {
+	.mn-page *,
+	.mn-page *::before,
+	.mn-page *::after {
+		animation-duration: .01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: .01ms !important;
+	}
+
+	.mn-carte:hover { transform: none; }
+}

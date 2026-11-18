@@ -1,0 +1,18 @@
+{
+	"preset": "com",
+	"format": "4:5",
+	"donnees": {
+		"service": "Service de test",
+		"reference": "TEST-001",
+		"date": "2026-11-02",
+		"titre": "Report de la journée d'exemple du campus",
+		"motCleOr": "journée d'exemple",
+		"paragraphe1": "Donnée de test : la journée d'exemple prévue le 6 novembre est reportée à une date ultérieure.",
+		"paragraphe2": "Les inscriptions déjà enregistrées restent valables. Aucune démarche n'est demandée aux participants de test.",
+		"paragraphe3": "La nouvelle date sera communiquée par le service de test avant la fin du mois.",
+		"signataireNom": "Prénom Test",
+		"signataireFonction": "Responsable du service de test",
+		"renseignements": "Service de test · test@exemple.mg"
+	},
+	"images": {}
+}
