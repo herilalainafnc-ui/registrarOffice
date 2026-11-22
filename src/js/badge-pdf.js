@@ -142,8 +142,10 @@
 		try { JsBarcode(enc, code, { format: 'CODE128' }); } catch { return; }
 		const bits = (enc.encodings || []).map((e) => e.data).join('');
 		if (!bits) return;
-		const padX = w * 0.05, textH = h * 0.22, barsH = h - textH - h * 0.12;
-		const mw = (w - 2 * padX) / bits.length, by = y + textH + h * 0.04;
+		// Zone de silence de 10 modules de chaque côté (norme Code 128) : sans elle,
+		// le fond foncé du badge est pris pour une barre et la lecture échoue.
+		const QUIET = 10, mw = w / (bits.length + 2 * QUIET), padX = QUIET * mw;
+		const textH = h * 0.22, barsH = h - textH - h * 0.12, by = y + textH + h * 0.04;
 		for (let i = 0; i < bits.length;) {
 			if (bits[i] !== '1') { i++; continue; }
 			let j = i; while (bits[j] === '1') j++;
@@ -198,8 +200,9 @@
 		page.drawLine({ start: { x: cx - mw / 2, y: T(0.70) }, end: { x: cx + mw / 2, y: T(0.70) }, thickness: 0.5, color: COLORS.white });
 		centerText(page, f.bold, String(s.etude_envisage ?? '').toUpperCase(), cx, T(0.745), 0.037 * h, mw, COLORS.white);
 
-		// Code-barres (largeur mini 26 mm pour rester lisible au lecteur)
-		const bw = Math.min(Math.max(0.34 * w, 26 * MM), 0.8 * w), bh = 0.115 * h;
+		// Code-barres : largeur mini 36 mm, zones de silence comprises, soit des barres
+		// d'environ 0,25 mm (minimum recommandé pour les lecteurs courants)
+		const bw = Math.min(Math.max(0.48 * w, 36 * MM), 0.8 * w), bh = 0.115 * h;
 		drawBarcode(page, f.regular, s.lookup_code, cx - bw / 2, T(0.815) - bh, bw, bh);
 
 		if (opts.border) page.drawRectangle({ x, y, width: w, height: h, borderColor: COLORS.cut, borderWidth: 0.4, borderDashArray: [3, 2] });
@@ -207,7 +210,20 @@
 
 	/* ---------- verso ---------- */
 	function drawBack(page, assets, x, y, w, h, opts) {
-		if (assets.back) drawCover(page, assets.back, x, y, w, h);
+		const img = assets.back;
+		if (img) {
+			// Le verso contient du texte : en « cover », une carte étroite (format 9 par
+			// page) en rognerait les côtés (28 % pour le verso 75 × 85 mm). Au-delà de
+			// 10 % de rognage, on affiche l'image entière, centrée sur fond blanc.
+			const s = Math.max(w / img.width, h / img.height);
+			const lost = 1 - Math.min(w / (img.width * s), h / (img.height * s));
+			if (lost <= 0.1) drawCover(page, img, x, y, w, h);
+			else {
+				const c = Math.min(w / img.width, h / img.height), dw = img.width * c, dh = img.height * c;
+				page.drawRectangle({ x, y, width: w, height: h, color: COLORS.white });
+				page.drawImage(img, { x: x + (w - dw) / 2, y: y + (h - dh) / 2, width: dw, height: dh });
+			}
+		}
 		if (opts.border) page.drawRectangle({ x, y, width: w, height: h, borderColor: COLORS.cut, borderWidth: 0.4, borderDashArray: [3, 2] });
 	}
 
