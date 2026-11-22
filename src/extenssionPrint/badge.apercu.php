@@ -122,7 +122,10 @@ $badgeJsVersion = @filemtime(__DIR__ . '/../js/badge-pdf.js') ?: '1';
 
 	/* Corps */
 	.ba-body { flex: 1; min-height: 0; display: flex; }
-	.ba-panel { width: 380px; flex: none; overflow-y: auto; background: var(--surface); border-right: 1px solid var(--line); padding: 18px; display: flex; flex-direction: column; gap: 22px; }
+	/* position: relative sur le panneau et les libellés : les cases invisibles
+	   (position absolue) s'y rattachent au lieu de la page, sinon elles dépassent
+	   sous l'écran et ajoutent une barre de défilement principale. */
+	.ba-panel { position: relative; width: 380px; flex: none; overflow-y: auto; background: var(--surface); border-right: 1px solid var(--line); padding: 18px; display: flex; flex-direction: column; gap: 22px; }
 	.ba-section h2 { margin: 0 0 10px; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); }
 
 	/* Résumé */
@@ -136,7 +139,7 @@ $badgeJsVersion = @filemtime(__DIR__ . '/../js/badge-pdf.js') ?: '1';
 	.ba-formats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 	/* Le label occupe toute la hauteur de la ligne de grille et la carte la remplit :
 	   les deux cartes ont la même hauteur, même si l'une a une ligne de plus. */
-	.ba-format { display: flex; }
+	.ba-format { display: flex; position: relative; }
 	.ba-format input { position: absolute; opacity: 0; pointer-events: none; }
 	.ba-format-card { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 8px 10px; border-radius: 12px; border: 1.5px solid var(--line-strong); background: var(--surface-2); cursor: pointer; transition: border-color .15s, background .15s; text-align: center; }
 	.ba-format-card:hover { border-color: var(--accent); }
@@ -147,7 +150,7 @@ $badgeJsVersion = @filemtime(__DIR__ . '/../js/badge-pdf.js') ?: '1';
 	.ba-format-card small { font-size: 12px; color: var(--text-3); line-height: 1.3; }
 
 	/* Interrupteurs */
-	.ba-switch { display: flex; align-items: center; gap: 12px; padding: 10px 0; cursor: pointer; }
+	.ba-switch { position: relative; display: flex; align-items: center; gap: 12px; padding: 10px 0; cursor: pointer; }
 	.ba-switch + .ba-switch { border-top: 1px solid var(--line); }
 	.ba-switch input { position: absolute; opacity: 0; pointer-events: none; }
 	.ba-switch span { flex: none; width: 38px; height: 22px; border-radius: 999px; background: var(--line-strong); position: relative; transition: background .15s; }
@@ -247,9 +250,21 @@ $badgeJsVersion = @filemtime(__DIR__ . '/../js/badge-pdf.js') ?: '1';
 	.ba .ba-check:focus { box-shadow: 0 0 0 3px rgb(var(--c-accent) / .25); outline: none; }
 	.ba-list-empty { padding: 18px 12px; text-align: center; font-size: 13px; color: var(--text-3); }
 
+	/* responsive.css (feuille commune) ajoute sous 1024 px une marge basse de 72 px
+	   pour la barre de navigation mobile, absente de cette page, et force la hauteur
+	   en « auto » : neutralisé ici (!important nécessaire pour l'emporter). */
+	body.ba { padding-bottom: 0 !important; }
+
+	/* Écran large : la page tient exactement dans la fenêtre ; seuls le panneau et
+	   l'aperçu défilent (jamais la page elle-même). */
+	@media (min-width: 861px) {
+		html, body.ba { height: 100% !important; max-height: 100% !important; overflow: hidden !important; }
+		body.ba { height: 100vh !important; height: 100dvh !important; }
+	}
+
 	@media (max-width: 860px) {
 		.ba { height: auto; min-height: 100vh; }
-		.ba-body { flex-direction: column; }
+		.ba-body { flex-direction: column; flex: none; }
 		.ba-panel { width: 100%; border-right: 0; border-bottom: 1px solid var(--line); overflow: visible; }
 		.ba-pages { padding: 18px 12px 40px; overflow: visible; }
 		.ba-top { flex-wrap: wrap; padding: 10px 16px; }
