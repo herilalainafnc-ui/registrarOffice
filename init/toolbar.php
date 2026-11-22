@@ -276,7 +276,7 @@ while ($showSignMention = $findSignMention->fetch()) {
 <!-- BRANCHE D'OUTILS 5 -->		
 	<div class="w-2/12 border-r flex px-1">
 		
-		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
+		<a href="#" class="text-xs w-3/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
 } ?>">
@@ -287,7 +287,7 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 			
 		</a>
 		
-		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
+		<a href="#" class="text-xs w-3/12 hover:bg-slate-300 active:bg-cyan-700 p-1 <?php 
 if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 	echo "toolInactive";
 } ?>">
@@ -297,7 +297,14 @@ if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.pro
 				</center>
 			
 		</a>
-		<a href="#" class="text-xs w-4/12 hover:bg-slate-300 active:bg-cyan-700 p-1 toolInactive">
+		<a href="./badges.php" class="text-xs w-3/12 hover:bg-slate-300 active:bg-cyan-700 p-1">
+				<center>
+				<i class="bi-person-badge-fill text-2xl"></i><br>
+						Badges en masse
+				</center>
+
+		</a>
+		<a href="#" class="text-xs w-3/12 hover:bg-slate-300 active:bg-cyan-700 p-1 toolInactive">
 				<center>
 				<i class="bi-gear-fill text-2xl"></i><br>
 						Paramètres
