@@ -1208,115 +1208,6 @@ if (date('m')>7) {
 
 	</div>
 
-<!-- FOR BADGE EN GROUPE -->
-	<div class="modal-legacy absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifBadgeGr" style="backdrop-filter: blur(3px);">
-
-		<div class="w-[500px] bg-slate-100 border-2 border-slate-700 mx-auto my-[5%] opacity-100 drop-shadow-2xl">
-			<form method="post" action="<?=$app_base?>/src/data.topdf?ptype=BadgeGr" target="_blank">
-			<div class="p-2 text-black">
-				<b>Exporter les badges en groupe.</b>
-			</div>
-			<div class="p-2">
-				<div class="flex mb-3">
-						<div class="w-3/12 text-right pr-2">
-					      	<label for="types">Mention</label>
-					    </div>
-					    <div class="w-9/12">
-			    			<select id="types" name="types" class="input w-full">
-			      				<!-- <option value="TOUT">Tout</option> -->
-		<?php 
-					$voir = $dtb->query("SELECT * FROM filiere");
-					while ($affiche = $voir->fetch()) {?>
-										
-								<option value="<?=$affiche['filiere_sigle']?>"><?=$affiche['filiere_description'];?></option>
-
-		<?php	
-			}
-		 ?>	
-			      			</select>	
-					    </div>
-				</div>
-				<div class="flex mb-3">
-						<div class="w-3/12 text-right pr-2">
-					      	<label for="niveau">Niveau</label>
-					    </div>
-					    <div class="w-9/12">
-			    			<select id="niveau" name="level" class="input w-full">
-			    				<option value="TOUT">Tout</option>
-			    				<option value="1" selected>Licence 1</option>
-			    				<option value="2">Licence 2</option>
-			    				<option value="3">Licence 3</option>
-			    				<option value="4">Master 1</option>
-			    				<option value="5">Master 2</option>
-			      			</select>	
-					    </div>
-				</div>
-				<div class="flex mb-3">
-						<div class="w-3/12 text-right pr-2">
-					      	<label for="niveau">Semestre</label>
-					    </div>
-					    <div class="w-9/12">
-			    			<select name="semesterBadgeGr" class="input w-full">
-								<option <?php if (date('m')>=7) {echo "selected";} ?> value="1">Premier semestre</option>
-								<option value="3">Semestre d'été</option>
-								<option <?php if (date('m')<7) {echo "selected";} ?> value="2">Deuxième semestre</option>
-								<option value="4">Semestre d'hiver</option>
-							</select>
-					    </div>
-				</div>
-				<div class="flex mb-3">
-				    	<div class="w-3/12 text-right pr-2">
-					      	<label for="yearTicket">Année</label>
-					    </div>
-					    <div class="w-9/12">
-					    	<select name="yearBadgeGr" id="yearBadgeGr" class="input w-full">
-								<?php
-								$y = date('Y');
-								for ($i=0; $i <= 8; $i++) { 
-									
-									$as = $y." - ".($y+1);
-								?>
-								<option><?=$as?></option>
-								<?php
-								$y = $y - 1;
-								}
-								 ?>
-							</select>
-					    </div>
-				</div>
-				<hr><br>
-				<div class="flex mb-3">
-				    	<div class="w-3/12 text-right pr-2">
-					      	
-					    </div>
-					    <div class="w-9/12">
-					    	<input type="checkbox" name="back" id="back" checked>
-								<label for="back"> Imprimer avec verso.</label>
-					    </div>
-				</div>
-				<hr>
-				<b class="text-slate-500">Si vous voulez exporter pour un seul étudiant...</b><br>
-				<div class="flex mb-3">
-				    	<div class="w-6/12 text-right pr-2">
-					      	<label for="yearTicket">Matricule</label>
-					    </div>
-					    <div class="w-6/12">
-					    	<input type="text" name="student_id" class="input w-full">
-					    </div>
-				</div><hr>
-			</div>
-			<div class="p-3">
-				<center>
-				<a href="#" id="cancelnotifBadgeGr" class="bg-slate-400 p-2 rounded-md">Annuler</a>
-				<input id="btnBadgeGr" type="submit" class="bg-cyan-800 p-2 rounded-md mx-1 text-white" value="Afficher">
-				</center>
-			</div>
-			</form>
-		</div>
-
-	</div>
-
-
 <!-- FOR EXCEL EXPORT -->
 	<div class="modal-legacy absolute w-full h-screen top-0 left-0 z-40 hidden" id="notifExcel" style="backdrop-filter: blur(3px);">
 
@@ -1954,14 +1845,6 @@ if (date('m')>7) {
 		});
 		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
 
-		$('#badgeGr').click(function(){
-			$('#notifBadgeGr').css({'display':'block'});
-		});
-	
-		$('#cancelnotifBadgeGr').click(function(){
-			$('#notifBadgeGr').css({'display':'none'});
-		});
-		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/	
 	});
 
 </script>
