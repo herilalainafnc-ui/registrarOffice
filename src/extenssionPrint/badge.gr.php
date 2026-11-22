@@ -1,5 +1,4 @@
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 	<?php
 	$student_id = $_POST['student_id'];
@@ -10,6 +9,15 @@
 	$level	= $_POST['level'];
 
 	$printName = $level."_".$types;
+	$badgeStudents = [];
+
+	// Filtre Niveau (1 à 5, ou TOUT) : niveau de l'inscription à la session,
+	// à défaut celui de la fiche étudiant (même règle que deans-list).
+	$levelFilter = '';
+	if (in_array((string) $level, ['1', '2', '3', '4', '5'], true)) {
+		$levelFilter = 'AND COALESCE(NULLIF(i.niveau_std, 0), e.annee_etude) = '.(int) $level;
+	}
+	$badgeBack = !empty($_POST['back']);
 
 	
 	$sub_session = $dtb->query('SELECT * FROM t_2023_session WHERE session_semester='.$dtb->quote($semester).' AND session_year ='.$dtb->quote($yearworked).'');
@@ -40,6 +48,7 @@
 			    WHERE i.etude_mention = '.$dtb->quote($types).'
 			      AND i.session_id = '.$dtb->quote($session_id).'
 			      AND i.new_student = 1
+			      '.$levelFilter.'
 			');
 
 		}
@@ -68,7 +77,21 @@ if(!empty($_POST['back'])) {
 
 		while($stdA = $searchStd->fetch()) {
 
-		$image_student = $stdA['image_student'];	
+		$image_student = $stdA['image_student'];
+
+		// Données transmises au générateur PDF (js/badge-pdf.js) ; prénom limité
+		// aux deux premiers mots, comme sur l'aperçu.
+		$prenomMots = explode(' ', trim((string) $stdA['student_prenom']));
+		$badgeStudents[] = [
+			'student_id'     => $stdA['student_id'],
+			'student_nom'    => $stdA['student_nom'],
+			'student_prenom' => implode(' ', array_slice($prenomMots, 0, 2)),
+			'etude_envisage' => $stdA['etude_envisage'],
+			'status'         => $stdA['status'],
+			'abonment'       => $stdA['abonment'],
+			'lookup_code'    => $stdA['lookup_code'],
+			'image_student'  => $image_student,
+		];
 
 	?>
 
