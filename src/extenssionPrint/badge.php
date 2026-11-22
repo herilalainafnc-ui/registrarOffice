@@ -43,18 +43,17 @@ if(strlen($image_student)> 7){
 }
 ?>
 <center>
-	<a style="font-size: 35px; color: white;"><?=strtoupper($student_nom)?><br><?=$student_prenom?></a>
+	<a style="font-size: 35px; color: white;"><span style="text-transform: uppercase;"><?=htmlspecialchars(function_exists('mb_strtoupper') ? mb_strtoupper($student_nom, 'UTF-8') : $student_nom)?></span><br><?=$student_prenom?></a>
 	<b style="font-size: 22px; color: white; position: absolute; transform: rotate(-90deg);text-align: left; left:570px; bottom: 515px; width: 100px;">
 		<?php if ($abonment == 1) { echo $status.' & Abonné';}else{ echo $status;} ?> 
 		<br>
 	</b>
 	
 	<b style="font-size: 70px; color: white; position: absolute; transform: rotate(-90deg);top: 290px; left:15px;"><?=$student_id?></b>
-	<div style="color: white; width: 70%; font-size: 25px; border-top: 2px solid white; margin-top: 15px;"><b><?=strtoupper($etude_envisage)?></b></div>
+	<div style="color: white; width: 70%; font-size: 25px; border-top: 2px solid white; margin-top: 15px;"><b style="text-transform: uppercase;"><?=htmlspecialchars(function_exists('mb_strtoupper') ? mb_strtoupper($etude_envisage, 'UTF-8') : $etude_envisage)?></b></div>
 	
 
 		<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
 		 	<div style="width: 100%; height: 150px; position: absolute; bottom: 0px; overflow : auto; overflow: hidden;">
