@@ -2,8 +2,11 @@
 /*
  * APERÇU DES BADGES (individuel et en groupe)
  * -------------------------------------------
- * Inclus par data.topdf.php pour ptype=Badge et ptype=BadgeGr, après
- * badge.php / badge.gr.php qui fournissent les données ($badgeStudents...).
+ * Inclus par data.topdf.php pour ptype=Badge (après badge.php, qui fournit
+ * l'étudiant) et ptype=BadgeGr. En groupe, la sélection (session, mention,
+ * niveau, nouveaux / tous les inscrits, ou une liste de matricules) se fait
+ * dans la page ; les étudiants sont chargés par src/api/badges.php et peuvent
+ * être cochés / décochés un par un. Les filtres sont repris dans l'URL.
  *
  * L'aperçu affiche les vraies pages du PDF généré par js/badge-pdf.js
  * (pdf-lib), rendues avec pdf.js : ce qui est à l'écran est exactement ce
@@ -29,18 +32,37 @@ if (!$isGroup) {
 $badgeStudents = array_values($badgeStudents ?? []);
 
 $h = fn($s) => htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8');
-$semestres = ['1' => 'Premier semestre', '2' => 'Deuxième semestre', '3' => "Semestre d'été", '4' => "Semestre d'hiver"];
 $niveaux = ['1' => 'Licence 1', '2' => 'Licence 2', '3' => 'Licence 3', '4' => 'Master 1', '5' => 'Master 2'];
 
 if ($isGroup) {
     $pageTitre = 'Badges en groupe';
-    $contexte = array_filter([
-        $badgeStudents[0]['etude_envisage'] ?? ($types ?? ''),
-        $niveaux[(string) ($level ?? '')] ?? 'Tous niveaux',
-        $semestres[(string) ($semester ?? '')] ?? '',
-        $yearworked ?? '',
-    ]);
-    if (!empty($student_id)) { $contexte = ['Matricule ' . $student_id]; }
+    $contexte = [];
+
+    $sessionsBadge = $dtb->query('SELECT session_id, session_name, session_year, session_semester, selected
+                                  FROM t_2023_session
+                                  ORDER BY session_year DESC, session_semester DESC, session_id DESC')->fetchAll(PDO::FETCH_ASSOC);
+    $mentionsBadge = $dtb->query('SELECT DISTINCT filiere_sigle, filiere_description FROM filiere
+                                  ORDER BY filiere_description')->fetchAll(PDO::FETCH_ASSOC);
+
+    // Filtres de départ : paramètres d'URL, sinon ancien formulaire (POST), sinon défauts
+    $idsSessions = array_map(fn($s) => (string) $s['session_id'], $sessionsBadge);
+    $initSession = (string) ($_GET['session'] ?? '');
+    if (!in_array($initSession, $idsSessions, true)) {
+        $initSession = '';
+        $semPost = (string) ($_POST['semesterBadgeGr'] ?? ''); $anPost = (string) ($_POST['yearBadgeGr'] ?? '');
+        foreach ($sessionsBadge as $s) {
+            if ($semPost !== '' && (string) $s['session_semester'] === $semPost && (string) $s['session_year'] === $anPost) { $initSession = (string) $s['session_id']; break; }
+        }
+        if ($initSession === '') foreach ($sessionsBadge as $s) { if ((int) $s['selected'] === 1) { $initSession = (string) $s['session_id']; break; } }
+        if ($initSession === '' && $sessionsBadge) $initSession = (string) $sessionsBadge[0]['session_id'];
+    }
+    $initMention = (string) ($_GET['mention'] ?? $_POST['types'] ?? '');
+    $initNiveau = (string) ($_GET['niveau'] ?? $_POST['level'] ?? '');
+    if (!isset($niveaux[$initNiveau])) $initNiveau = '';
+    $initInscrits = (($_GET['inscrits'] ?? '') === 'tous') ? 'tous' : 'nouveaux';
+    $initMatricules = trim((string) ($_GET['matricules'] ?? $_POST['student_id'] ?? ''));
+    $badgeBack = isset($_GET['verso']) ? ($_GET['verso'] === '1') : (empty($_POST) || !empty($_POST['back']));
+    $badgeStudents = [];
 } else {
     $pageTitre = 'Badge étudiant';
     $contexte = array_filter([$student_id ?? '', trim(($student_nom ?? '') . ' ' . ($student_prenom ?? ''))]);
@@ -86,7 +108,7 @@ $badgeJsVersion = @filemtime(__DIR__ . '/../js/badge-pdf.js') ?: '1';
 
 	/* Corps */
 	.ba-body { flex: 1; min-height: 0; display: flex; }
-	.ba-panel { width: 340px; flex: none; overflow-y: auto; background: var(--surface); border-right: 1px solid var(--line); padding: 18px; display: flex; flex-direction: column; gap: 22px; }
+	.ba-panel { width: 380px; flex: none; overflow-y: auto; background: var(--surface); border-right: 1px solid var(--line); padding: 18px; display: flex; flex-direction: column; gap: 22px; }
 	.ba-section h2 { margin: 0 0 10px; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); }
 
 	/* Résumé */
@@ -165,6 +187,52 @@ $badgeJsVersion = @filemtime(__DIR__ . '/../js/badge-pdf.js') ?: '1';
 	.ba-error { color: var(--danger); }
 	[hidden] { display: none !important; }
 
+	/* Sélection (badges en groupe) */
+	.ba-fields { display: grid; gap: 12px; }
+	.ba-fields.is-off .ba-field-filter { opacity: .45; pointer-events: none; }
+	.ba-field { display: grid; gap: 5px; min-width: 0; }
+	.ba-field > span { font-size: 12px; font-weight: 500; color: var(--text-2); }
+	.ba-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+	.ba .ba-select, .ba .ba-input { width: 100%; min-height: 38px; border-radius: 9px; border: 1px solid var(--line-strong); background-color: rgb(var(--c-inset)); color: var(--text); padding: 7px 11px; font-size: 14px; box-shadow: none; }
+	.ba .ba-select { padding-right: 32px; }
+	.ba .ba-select:focus, .ba .ba-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgb(var(--c-accent) / .25); }
+	.ba .ba-select option { background: rgb(var(--c-surface)); color: var(--text); }
+	.ba textarea.ba-input { resize: vertical; min-height: 38px; font-variant-numeric: tabular-nums; }
+	.ba-input::placeholder { color: var(--text-3); }
+	.ba-seg { display: grid; grid-template-columns: 1fr 1fr; padding: 3px; border-radius: 10px; background: rgb(var(--c-inset)); border: 1px solid var(--line-strong); }
+	.ba-seg label { position: relative; }
+	.ba-seg input { position: absolute; opacity: 0; pointer-events: none; }
+	.ba-seg span { display: block; text-align: center; padding: 6px 8px; border-radius: 7px; font-size: 13px; color: var(--text-2); cursor: pointer; transition: background .15s, color .15s; }
+	.ba-seg input:checked + span { background: var(--accent); color: #fff; font-weight: 600; }
+	.ba-seg input:focus-visible + span { outline: 2px solid var(--accent-text); outline-offset: 1px; }
+	.ba-note { font-size: 12px; color: var(--text-3); }
+	.ba-note.is-warn { color: var(--warning); }
+	.ba-divider { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-3); }
+	.ba-divider::before, .ba-divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+	/* Liste des étudiants */
+	.ba-list-tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+	.ba-list-tools input[type=search] { grid-column: 1 / -1; }
+	.ba-list-tools .ba-select { min-height: 34px; padding: 5px 28px 5px 9px; font-size: 13px; }
+	.ba-list-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; color: var(--text-2); }
+	.ba-list-head .ba-link { margin-left: auto; }
+	.ba-link { background: none; border: 0; padding: 0; color: var(--accent-text); cursor: pointer; font-size: 13px; }
+	.ba-link:hover { text-decoration: underline; }
+	.ba-list { max-height: 300px; overflow-y: auto; border: 1px solid var(--line); border-radius: 10px; background: rgb(var(--c-inset)); }
+	.ba-stu { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 7px 10px; cursor: pointer; }
+	.ba-stu + .ba-stu { border-top: 1px solid var(--line); }
+	.ba-stu:hover { background: var(--surface-2); }
+	.ba-stu.is-off { opacity: .5; }
+	.ba-stu-main { min-width: 0; }
+	.ba-stu-name { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px; }
+	.ba-stu-meta { display: block; font-size: 11px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	.ba-stu-meta code { font-family: inherit; color: var(--gold-text); }
+	.ba-stu-photo { font-size: 15px; color: rgb(var(--c-success)); }
+	.ba-stu-photo.is-none { color: var(--warning); }
+	.ba .ba-check { width: 17px; height: 17px; margin: 0; border-radius: 5px; border: 1.5px solid var(--line-strong); background-color: var(--surface); color: var(--accent); accent-color: var(--accent); cursor: pointer; }
+	.ba .ba-check:focus { box-shadow: 0 0 0 3px rgb(var(--c-accent) / .25); outline: none; }
+	.ba-list-empty { padding: 18px 12px; text-align: center; font-size: 13px; color: var(--text-3); }
+
 	@media (max-width: 860px) {
 		.ba { height: auto; min-height: 100vh; }
 		.ba-body { flex-direction: column; }
@@ -188,7 +256,7 @@ $badgeJsVersion = @filemtime(__DIR__ . '/../js/badge-pdf.js') ?: '1';
 			<div class="ba-chips"><?php foreach ($contexte as $c) { ?><span class="ba-chip"><?= $h($c) ?></span><?php } ?></div>
 		</div>
 		<div class="ba-top-right">
-			<a class="ba-btn" href="<?= $h($app_base) ?>/tableau-de-bord"><i class="bi-arrow-left"></i> Tableau de bord</a>
+			<a class="ba-btn" id="btnBack" href="<?= $h($app_base) ?>/etudiants"><i class="bi-arrow-left"></i> Retour</a>
 		</div>
 	</header>
 
@@ -197,11 +265,74 @@ $badgeJsVersion = @filemtime(__DIR__ . '/../js/badge-pdf.js') ?: '1';
 			<section class="ba-section">
 				<h2>Résumé</h2>
 				<div class="ba-stats">
-					<div class="ba-stat"><b id="stBadges"><?= count($badgeStudents) ?></b><span>badge<?= count($badgeStudents) > 1 ? 's' : '' ?></span></div>
+					<div class="ba-stat"><b id="stBadges"><?= count($badgeStudents) ?></b><span id="stBadgesLabel">badge<?= count($badgeStudents) > 1 ? 's' : '' ?></span></div>
 					<div class="ba-stat"><b id="stPages">–</b><span>pages A4</span></div>
 					<div class="ba-stat" id="stMissingBox"><b id="stMissing">–</b><span>sans photo</span></div>
 				</div>
 			</section>
+
+			<?php if ($isGroup) { ?>
+			<section class="ba-section" aria-labelledby="selLabel">
+				<h2 id="selLabel">Sélection des étudiants</h2>
+				<div class="ba-fields" id="filters">
+					<label class="ba-field ba-field-filter"><span>Session</span>
+						<select class="ba-select" id="fSession">
+							<?php foreach ($sessionsBadge as $s) { ?>
+							<option value="<?= $h($s['session_id']) ?>" <?= (string) $s['session_id'] === $initSession ? 'selected' : '' ?>><?= $h(trim($s['session_year'] . ' · ' . $s['session_name'])) ?><?= (int) $s['selected'] === 1 ? ' (en cours)' : '' ?></option>
+							<?php } ?>
+						</select>
+					</label>
+					<div class="ba-row2 ba-field-filter">
+						<label class="ba-field"><span>Mention</span>
+							<select class="ba-select" id="fMention">
+								<option value="">Toutes</option>
+								<?php foreach ($mentionsBadge as $m) { ?>
+								<option value="<?= $h($m['filiere_sigle']) ?>" <?= (string) $m['filiere_sigle'] === $initMention ? 'selected' : '' ?>><?= $h($m['filiere_description']) ?></option>
+								<?php } ?>
+							</select>
+						</label>
+						<label class="ba-field"><span>Niveau</span>
+							<select class="ba-select" id="fNiveau">
+								<option value="">Tous</option>
+								<?php foreach ($niveaux as $k => $v) { ?>
+								<option value="<?= $h($k) ?>" <?= (string) $k === $initNiveau ? 'selected' : '' ?>><?= $h($v) ?></option>
+								<?php } ?>
+							</select>
+						</label>
+					</div>
+					<div class="ba-field ba-field-filter"><span id="inscLabel">Inscrits</span>
+						<div class="ba-seg" role="radiogroup" aria-labelledby="inscLabel">
+							<label><input type="radio" name="fInscrits" value="nouveaux" <?= $initInscrits === 'nouveaux' ? 'checked' : '' ?>><span>Nouveaux inscrits</span></label>
+							<label><input type="radio" name="fInscrits" value="tous" <?= $initInscrits === 'tous' ? 'checked' : '' ?>><span>Tous les inscrits</span></label>
+						</div>
+					</div>
+					<div class="ba-divider">ou</div>
+					<label class="ba-field"><span>Matricules précis</span>
+						<textarea class="ba-input" id="fMatricules" rows="1" placeholder="Ex. 30288 30291, 30292" spellcheck="false"><?= $h($initMatricules) ?></textarea>
+						<small class="ba-note" id="matNote">Un ou plusieurs matricules, séparés par des espaces ou des virgules. Remplace les filtres ci-dessus.</small>
+					</label>
+				</div>
+			</section>
+
+			<section class="ba-section" aria-labelledby="listLabel">
+				<h2 id="listLabel">Étudiants</h2>
+				<div class="ba-list-tools">
+					<input type="search" class="ba-input" id="lSearch" placeholder="Rechercher un nom ou un matricule" aria-label="Rechercher dans la liste">
+					<select class="ba-select" id="lPhoto" aria-label="Filtrer par photo" title="Photo">
+						<option value="">Photo</option><option value="avec">Avec photo</option><option value="sans">Sans photo</option>
+					</select>
+					<select class="ba-select" id="lSort" aria-label="Ordre des badges" title="Ordre des badges">
+						<option value="nom">A → Z</option><option value="matricule">Matricule</option>
+					</select>
+				</div>
+				<div class="ba-list-head">
+					<span id="listCount">Chargement…</span>
+					<button type="button" class="ba-link" id="selAll">Tout cocher</button>
+					<button type="button" class="ba-link" id="selNone">Tout décocher</button>
+				</div>
+				<div class="ba-list" id="stuList" role="group" aria-labelledby="listLabel"></div>
+			</section>
+			<?php } ?>
 
 			<section class="ba-section">
 				<h2 id="fmtLabel">Badges par page</h2>
@@ -261,8 +392,11 @@ $badgeJsVersion = @filemtime(__DIR__ . '/../js/badge-pdf.js') ?: '1';
 <script>
 (function () {
 	'use strict';
-	const STUDENTS = <?= json_encode($badgeStudents, $jsonFlags) ?>;
-	const FILE_BASE = <?= json_encode((string) ($printName ?? 'BADGES'), $jsonFlags) ?>;
+	const IS_GROUP = <?= $isGroup ? 'true' : 'false' ?>;
+	const APP_BASE = <?= json_encode((string) $app_base, $jsonFlags) ?>;
+	let all = <?= json_encode($badgeStudents, $jsonFlags) ?>; // étudiants chargés
+	const selected = new Set(all.map((s) => String(s.student_id))); // cochés
+	let FILE_BASE = <?= json_encode((string) ($printName ?? 'BADGES'), $jsonFlags) ?>;
 	const PHONE = '034 38 180 81 / 034 76 076 98';
 	const PREF_KEY = 'badges.apercu.layout';
 
@@ -288,9 +422,9 @@ $badgeJsVersion = @filemtime(__DIR__ . '/../js/badge-pdf.js') ?: '1';
 	const opts = () => ({ layout: document.querySelector('input[name=layout]:checked').value, back: $('optBack').checked, border: $('optBorder').checked });
 
 	/* ---------- sans photo ---------- */
-	function renderMissing(unreadable) {
-		const missing = STUDENTS.filter((s) => !BadgePDF.hasPhoto(s)).map((s) => ({ s, why: 'aucune photo' }));
-		const bad = STUDENTS.filter((s) => unreadable.has(String(s.student_id))).map((s) => ({ s, why: 'photo illisible' }));
+	function renderMissing(students, unreadable) {
+		const missing = students.filter((s) => !BadgePDF.hasPhoto(s)).map((s) => ({ s, why: 'aucune photo' }));
+		const bad = students.filter((s) => unreadable.has(String(s.student_id))).map((s) => ({ s, why: 'photo illisible' }));
 		const all = missing.concat(bad);
 		$('stMissing').textContent = all.length;
 		$('stMissingBox').classList.toggle('is-warn', all.length > 0);
@@ -357,22 +491,49 @@ $badgeJsVersion = @filemtime(__DIR__ . '/../js/badge-pdf.js') ?: '1';
 	const busy = (on, text) => { $('busy').hidden = !on; if (text) $('busyText').textContent = text; };
 	const setProgress = (p) => { $('progressBar').style.width = (p * 100) + '%'; };
 
+	// Badges à imprimer : les étudiants cochés, dans l'ordre choisi
+	function badgeList() {
+		const sort = IS_GROUP ? $('lSort').value : 'nom';
+		const out = all.filter((s) => selected.has(String(s.student_id)));
+		if (sort === 'matricule') out.sort((a, b) => String(a.student_id).localeCompare(String(b.student_id), 'fr', { numeric: true }));
+		else if (IS_GROUP && !matriculesMode()) out.sort((a, b) => `${a.student_nom} ${a.student_prenom}`.localeCompare(`${b.student_nom} ${b.student_prenom}`, 'fr', { sensitivity: 'base' }));
+		return out;
+	}
+
+	function showEmpty(icon, title, text) {
+		token++; pdfDoc = null; current = null;
+		busy(false); setProgress(0);
+		pagesEl.querySelectorAll('.ba-page').forEach((p) => p.remove());
+		pagesEl.insertAdjacentHTML('beforeend', `<div class="ba-empty ba-page"><i class="bi-${icon}"></i><h3>${esc(title)}</h3><p>${esc(text)}</p></div>`);
+		$('btnDownload').disabled = $('btnOpen').disabled = true;
+		$('stBadges').textContent = '0'; $('stBadgesLabel').textContent = 'badge'; $('stPages').textContent = '0'; $('stMissing').textContent = '0';
+		$('stMissingBox').classList.remove('is-warn'); $('missingSection').hidden = true;
+		$('pbarInfo').textContent = '';
+	}
+
 	async function build() {
+		const students = badgeList();
+		if (!students.length) {
+			if (!all.length) showEmpty('people', 'Aucun étudiant trouvé', IS_GROUP ? 'Aucun étudiant ne correspond à cette sélection. Changez la session, la mention, le niveau ou choisissez « Tous les inscrits ».' : 'Aucune donnée d\'étudiant.');
+			else showEmpty('check2-square', 'Aucun badge sélectionné', 'Cochez au moins un étudiant dans la liste pour afficher l\'aperçu.');
+			return;
+		}
 		const my = ++token, o = opts();
 		try { localStorage.setItem(PREF_KEY, o.layout); } catch (e) { }
 		$('btnDownload').disabled = $('btnOpen').disabled = true;
+		$('stBadges').textContent = students.length; $('stBadgesLabel').textContent = students.length > 1 ? 'badges' : 'badge';
 		busy(true, 'Génération de l\'aperçu…'); setProgress(0.05);
 		try {
-			const r = await BadgePDF.generate(STUDENTS, { ...o, phone: PHONE, onProgress: (d, t) => { if (my === token) setProgress(Math.max(0.05, d / (t || 1)) * 0.85); } });
+			const r = await BadgePDF.generate(students, { ...o, phone: PHONE, onProgress: (d, t) => { if (my === token) setProgress(Math.max(0.05, d / (t || 1)) * 0.85); } });
 			if (my !== token) return;
 			const doc = await pdfjsLib.getDocument({ data: r.bytes.slice() }).promise;
 			if (my !== token) return;
 			if (current && current.url) URL.revokeObjectURL(current.url);
 			current = { ...r, opts: o, url: URL.createObjectURL(new Blob([r.bytes], { type: 'application/pdf' })) };
 			pdfDoc = doc;
-			buildPages(r, o);
+			buildPages(r, o, students.length);
 			const unreadable = new Set(r.warnings.map((w) => (w.match(/^(.+?) : photo illisible/) || [])[1]).filter(Boolean));
-			renderMissing(unreadable);
+			renderMissing(students, unreadable);
 			$('stPages').textContent = r.pages;
 			const per = r.layout.cols * r.layout.rows;
 			$('pbarInfo').textContent = `${r.pages} page${r.pages > 1 ? 's' : ''} · ${per} badges par page${o.back ? ' · verso inclus' : ''}`;
@@ -388,9 +549,9 @@ $badgeJsVersion = @filemtime(__DIR__ . '/../js/badge-pdf.js') ?: '1';
 		}
 	}
 
-	function buildPages(r, o) {
+	function buildPages(r, o, n) {
 		pagesEl.querySelectorAll('.ba-page').forEach((p) => p.remove());
-		const per = r.layout.cols * r.layout.rows, n = STUDENTS.length;
+		const per = r.layout.cols * r.layout.rows;
 		const frag = document.createDocumentFragment();
 		for (let p = 1; p <= r.pages; p++) {
 			const isBack = o.back && p === 1, idx = p - (o.back ? 2 : 1);
@@ -418,15 +579,137 @@ $badgeJsVersion = @filemtime(__DIR__ . '/../js/badge-pdf.js') ?: '1';
 	$('optBack').addEventListener('change', rebuild);
 	$('optBorder').addEventListener('change', rebuild);
 
-	/* ---------- démarrage ---------- */
-	if (!STUDENTS.length) {
-		busy(false);
-		$('stPages').textContent = '0'; $('stMissing').textContent = '0';
-		pagesEl.insertAdjacentHTML('beforeend', `<div class="ba-empty"><i class="bi-people"></i><h3>Aucun étudiant trouvé</h3><p>Aucun nouvel inscrit ne correspond à ces critères (mention, niveau, semestre, année). Modifiez la sélection depuis le tableau de bord.</p><a class="ba-btn" href="<?= $h($app_base) ?>/tableau-de-bord"><i class="bi-arrow-left"></i> Retour au tableau de bord</a></div>`);
-		document.querySelectorAll('.ba-panel input').forEach((i) => i.disabled = true);
-	} else {
-		build();
+	/* ---------- retour : page précédente de l'application, sinon liste des étudiants ---------- */
+	$('btnBack').addEventListener('click', (e) => {
+		try {
+			if (history.length > 1 && document.referrer && new URL(document.referrer).origin === location.origin) { e.preventDefault(); history.back(); }
+		} catch (err) { }
+	});
+
+	/* ====================================================================
+	 *  BADGES EN GROUPE : filtres, chargement, liste à cocher
+	 * ==================================================================== */
+	function matriculesMode() { return IS_GROUP && $('fMatricules').value.trim() !== ''; }
+	const NIVEAUX = { 1: 'L1', 2: 'L2', 3: 'L3', 4: 'M1', 5: 'M2' };
+	let loadToken = 0, rebuildListT;
+	const rebuildSoon = (ms = 450) => { clearTimeout(rebuildListT); rebuildListT = setTimeout(build, ms); };
+
+	function filterState() {
+		return {
+			session: $('fSession').value, mention: $('fMention').value, niveau: $('fNiveau').value,
+			inscrits: document.querySelector('input[name=fInscrits]:checked').value,
+			matricules: $('fMatricules').value.trim()
+		};
 	}
+
+	// Les filtres sont repris dans l'URL : recharger ou partager la page garde la sélection
+	function syncUrl(f) {
+		const u = new URL(location.href);
+		['session', 'mention', 'niveau', 'inscrits', 'matricules'].forEach((k) => u.searchParams.delete(k));
+		u.searchParams.set('ptype', 'BadgeGr');
+		if (f.matricules) u.searchParams.set('matricules', f.matricules);
+		else {
+			u.searchParams.set('session', f.session);
+			if (f.mention) u.searchParams.set('mention', f.mention);
+			if (f.niveau) u.searchParams.set('niveau', f.niveau);
+			if (f.inscrits === 'tous') u.searchParams.set('inscrits', 'tous');
+		}
+		history.replaceState(null, '', u);
+	}
+
+	function updateContext(f) {
+		const chips = [];
+		if (f.matricules) chips.push(`${f.matricules.split(/[\s,;]+/).filter(Boolean).length} matricule(s)`);
+		else {
+			chips.push($('fSession').selectedOptions[0]?.text || '');
+			chips.push(f.mention ? $('fMention').selectedOptions[0].text : 'Toutes mentions');
+			chips.push(f.niveau ? $('fNiveau').selectedOptions[0].text : 'Tous niveaux');
+			chips.push(f.inscrits === 'tous' ? 'Tous les inscrits' : 'Nouveaux inscrits');
+		}
+		document.querySelector('.ba-chips').innerHTML = chips.filter(Boolean).map((c) => `<span class="ba-chip">${esc(c)}</span>`).join('');
+		const parts = f.matricules ? ['MATRICULES'] : [f.mention || 'TOUTES', f.niveau ? (NIVEAUX[f.niveau] || f.niveau) : 'TOUT'];
+		FILE_BASE = 'BADGES_' + parts.join('_');
+	}
+
+	async function loadStudents() {
+		const f = filterState(), my = ++loadToken;
+		$('filters').classList.toggle('is-off', !!f.matricules);
+		syncUrl(f); updateContext(f);
+		$('listCount').textContent = 'Chargement…';
+		$('stuList').innerHTML = '<div class="ba-list-empty"><span class="ba-spin" style="display:inline-block;vertical-align:middle"></span> Chargement des étudiants…</div>';
+		busy(true, 'Chargement des étudiants…');
+		const q = new URLSearchParams(f.matricules ? { matricules: f.matricules } : { session: f.session, mention: f.mention, niveau: f.niveau, inscrits: f.inscrits });
+		try {
+			const res = await fetch(`${APP_BASE}/src/api/badges.php?${q}`, { credentials: 'same-origin', headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } });
+			const data = await res.json().catch(() => ({}));
+			if (my !== loadToken) return;
+			if (!res.ok || !data.success) {
+				if (data.session_expiree && data.login_url) { location.href = data.login_url; return; }
+				throw new Error(data.message || ('Erreur ' + res.status));
+			}
+			all = data.etudiants || [];
+			selected.clear(); all.forEach((s) => selected.add(String(s.student_id)));
+			const nf = data.introuvables || [];
+			$('matNote').textContent = nf.length ? `Introuvable${nf.length > 1 ? 's' : ''} : ${nf.join(', ')}` : 'Un ou plusieurs matricules, séparés par des espaces ou des virgules. Remplace les filtres ci-dessus.';
+			$('matNote').classList.toggle('is-warn', nf.length > 0);
+			renderList();
+			build();
+		} catch (e) {
+			if (my !== loadToken) return;
+			console.error(e);
+			all = []; selected.clear(); renderList();
+			$('listCount').textContent = 'Erreur de chargement';
+			showEmpty('exclamation-triangle', 'Les étudiants n\'ont pas pu être chargés', e.message || String(e));
+		}
+	}
+
+	function visibleStudents() {
+		const q = $('lSearch').value.trim().toLowerCase(), ph = $('lPhoto').value;
+		return all.filter((s) => (!q || `${s.student_id} ${s.student_nom} ${s.student_prenom}`.toLowerCase().includes(q))
+			&& (!ph || (ph === 'avec') === BadgePDF.hasPhoto(s)));
+	}
+
+	function renderList() {
+		const vis = visibleStudents();
+		$('stuList').innerHTML = vis.length ? vis.map((s) => {
+			const id = String(s.student_id), on = selected.has(id), photo = BadgePDF.hasPhoto(s);
+			const niv = NIVEAUX[s.niveau] ? ' · ' + NIVEAUX[s.niveau] : '';
+			return `<label class="ba-stu${on ? '' : ' is-off'}">
+				<input type="checkbox" class="ba-check" data-id="${esc(id)}" ${on ? 'checked' : ''}>
+				<span class="ba-stu-main"><span class="ba-stu-name">${esc(String(s.student_nom || '').toUpperCase())} ${esc(s.student_prenom)}</span>
+				<span class="ba-stu-meta"><code>${esc(id)}</code> · ${esc(s.etude_envisage)}${niv}${s.status ? ' · ' + esc(s.status) : ''}</span></span>
+				<i class="ba-stu-photo ${photo ? 'bi-person-check' : 'bi-person-x is-none'}" title="${photo ? 'Avec photo' : 'Sans photo'}"></i>
+			</label>`;
+		}).join('') : `<div class="ba-list-empty">${all.length ? 'Aucun étudiant ne correspond à la recherche.' : 'Aucun étudiant pour cette sélection.'}</div>`;
+		updateCount();
+	}
+	function updateCount() {
+		const n = all.filter((s) => selected.has(String(s.student_id))).length;
+		$('listCount').innerHTML = `<b>${n}</b> sur ${all.length} sélectionné${n > 1 ? 's' : ''}`;
+	}
+
+	if (IS_GROUP) {
+		$('stuList').addEventListener('change', (e) => {
+			const id = e.target.dataset && e.target.dataset.id; if (!id) return;
+			e.target.checked ? selected.add(id) : selected.delete(id);
+			e.target.closest('.ba-stu').classList.toggle('is-off', !e.target.checked);
+			updateCount(); rebuildSoon();
+		});
+		// « Tout cocher / décocher » agit sur les étudiants affichés (recherche et filtre photo)
+		$('selAll').onclick = () => { visibleStudents().forEach((s) => selected.add(String(s.student_id))); renderList(); rebuildSoon(150); };
+		$('selNone').onclick = () => { visibleStudents().forEach((s) => selected.delete(String(s.student_id))); renderList(); rebuildSoon(150); };
+		$('lSearch').addEventListener('input', renderList);
+		$('lPhoto').addEventListener('change', renderList);
+		$('lSort').addEventListener('change', () => rebuildSoon(100));
+		['fSession', 'fMention', 'fNiveau'].forEach((id) => $(id).addEventListener('change', loadStudents));
+		document.querySelectorAll('input[name=fInscrits]').forEach((i) => i.addEventListener('change', loadStudents));
+		let matT; $('fMatricules').addEventListener('input', () => { clearTimeout(matT); matT = setTimeout(loadStudents, 700); });
+		$('fMatricules').addEventListener('input', (e) => { e.target.style.height = 'auto'; e.target.style.height = Math.min(120, e.target.scrollHeight + 2) + 'px'; });
+	}
+
+	/* ---------- démarrage ---------- */
+	if (IS_GROUP) loadStudents();
+	else build();
 })();
 </script>
 </body>

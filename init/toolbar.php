@@ -391,7 +391,7 @@ if (!isset($rg_user['level']) || ($rg_user['level'] > 3 && !$barreChef)) { retur
 			<span class="tool-label">Badges</span>
 		</a>
 		<ul class="dropdown-menu toolbar-dropdown toolbar-dropdown-actions" style="min-width:240px;">
-		<a href="#" id="badgeGr" title="Badges étudiants en groupe" class="tool-btn text-xs flex-1 <?php 
+		<a href="<?=$app_base?>/src/data.topdf?ptype=BadgeGr" id="badgeGr" title="Badges étudiants en groupe : sélection, aperçu et PDF" class="tool-btn text-xs flex-1 <?php 
 		if($page == "accueil.cours.php" OR $page == "cours.php" OR $page == "accueil.prof.php" OR $page == "prof.php") {
 			echo "toolInactive";
 		} ?><?php if($rg_user['level'] <=3) { echo "";}else{ echo " toolInactive";}?>">

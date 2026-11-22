@@ -15,9 +15,10 @@ $ptype = $_GET['ptype'] ?? $_POST['ptype'] ?? '';
 // masse"), soit des paramètres GET (liens individuels : Badge, liste d'un
 // cours...). On ne bloque que les accès réellement vides (aucune donnée hormis
 // ptype/export_format), qui ne peuvent rien générer — plutôt que de planter.
+// Exception : les badges en groupe, dont la sélection se fait dans la page.
 $getParams = $_GET;
 unset($getParams['ptype'], $getParams['export_format']);
-if (empty($_POST) && empty($getParams)) {
+if (empty($_POST) && empty($getParams) && $ptype !== 'BadgeGr') {
     echo '<div style="max-width:520px;margin:12vh auto;padding:28px;border-radius:14px;background:#0f172a;border:1px solid #334155;color:#e2e8f0;font-family:Inter,Arial,sans-serif;text-align:center;box-shadow:0 24px 60px -12px rgba(0,0,0,.5);">'
         . '<div style="font-size:42px;margin-bottom:10px;">&#128196;</div>'
         . '<h2 style="margin:0 0 8px;font-size:18px;font-weight:600;">Export indisponible en acc&egrave;s direct</h2>'
@@ -65,12 +66,16 @@ if ($ptype === 'listeStd' && !empty($_POST['presence_sheet'])) { $ongletTitre = 
 $ongletMatricule = trim((string) ($_GET['student_id'] ?? ''));
 if ($ongletMatricule !== '') { $ongletTitre .= ' — ' . $ongletMatricule; }
 
-// Badges : page d'aperçu dédiée, fidèle au PDF (pdf-lib + pdf.js). badge.php /
-// badge.gr.php ne servent qu'à préparer les données : leur sortie HTML est écartée.
+// Badges : page d'aperçu dédiée, fidèle au PDF (pdf-lib + pdf.js). Badge
+// individuel : badge.php prépare l'étudiant (sa sortie HTML est écartée).
+// Badges en groupe : la sélection et le chargement se font dans la page
+// (src/api/badges.php).
 if ($ptype === 'Badge' || $ptype === 'BadgeGr') {
-    ob_start();
-    require ($ptype === 'Badge') ? './extenssionPrint/badge.php' : './extenssionPrint/badge.gr.php';
-    ob_end_clean();
+    if ($ptype === 'Badge') {
+        ob_start();
+        require './extenssionPrint/badge.php';
+        ob_end_clean();
+    }
     require './extenssionPrint/badge.apercu.php';
     exit;
 }
