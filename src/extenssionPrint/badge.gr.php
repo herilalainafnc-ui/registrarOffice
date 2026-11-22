@@ -10,6 +10,13 @@
 
 	$printName = $level."_".$types;
 	$badgeStudents = [];
+
+	// Filtre Niveau (1 à 5, ou TOUT) : niveau de l'inscription à la session,
+	// à défaut celui de la fiche étudiant (même règle que deans-list).
+	$levelFilter = '';
+	if (in_array((string) $level, ['1', '2', '3', '4', '5'], true)) {
+		$levelFilter = 'AND COALESCE(NULLIF(i.niveau_std, 0), e.annee_etude) = '.(int) $level;
+	}
 	$badgeBack = !empty($_POST['back']);
 
 	
@@ -41,6 +48,7 @@
 			    WHERE i.etude_mention = '.$dtb->quote($types).'
 			      AND i.session_id = '.$dtb->quote($session_id).'
 			      AND i.new_student = 1
+			      '.$levelFilter.'
 			');
 
 		}
