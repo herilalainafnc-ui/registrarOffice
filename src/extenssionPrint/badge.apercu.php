@@ -40,7 +40,20 @@ if ($isGroup) {
 
     $sessionsBadge = $dtb->query('SELECT session_id, session_name, session_year, session_semester, selected
                                   FROM t_2023_session
-                                  ORDER BY session_year DESC, session_semester DESC, session_id DESC')->fetchAll(PDO::FETCH_ASSOC);
+                                  ORDER BY session_year DESC, session_semester ASC, session_id DESC')->fetchAll(PDO::FETCH_ASSOC);
+    // Effectifs par session (inscriptions non supprimées), affichés dans la liste
+    $effectifs = [];
+    foreach ($dtb->query('SELECT session_id, COUNT(DISTINCT student_id) AS inscrits,
+                                 COUNT(DISTINCT CASE WHEN new_student = 1 THEN student_id END) AS nouveaux
+                          FROM t_2024_inscription_session WHERE COALESCE(`remove`, 0) != 1
+                          GROUP BY session_id')->fetchAll(PDO::FETCH_ASSOC) as $e) {
+        $effectifs[(string) $e['session_id']] = $e;
+    }
+    // Session de la dernière inscription d'un nouvel étudiant : le défaut le plus utile
+    // (la session « en cours » des paramètres peut ne compter aucun nouvel inscrit)
+    $derniere = $dtb->query('SELECT session_id FROM t_2024_inscription_session
+                             WHERE new_student = 1 AND COALESCE(`remove`, 0) != 1
+                             ORDER BY id DESC LIMIT 1')->fetchColumn();
     $mentionsBadge = $dtb->query('SELECT DISTINCT filiere_sigle, filiere_description FROM filiere
                                   ORDER BY filiere_description')->fetchAll(PDO::FETCH_ASSOC);
 
@@ -53,6 +66,7 @@ if ($isGroup) {
         foreach ($sessionsBadge as $s) {
             if ($semPost !== '' && (string) $s['session_semester'] === $semPost && (string) $s['session_year'] === $anPost) { $initSession = (string) $s['session_id']; break; }
         }
+        if ($initSession === '' && $derniere !== false && in_array((string) $derniere, $idsSessions, true)) $initSession = (string) $derniere;
         if ($initSession === '') foreach ($sessionsBadge as $s) { if ((int) $s['selected'] === 1) { $initSession = (string) $s['session_id']; break; } }
         if ($initSession === '' && $sessionsBadge) $initSession = (string) $sessionsBadge[0]['session_id'];
     }
@@ -277,9 +291,13 @@ $badgeJsVersion = @filemtime(__DIR__ . '/../js/badge-pdf.js') ?: '1';
 				<div class="ba-fields" id="filters">
 					<label class="ba-field ba-field-filter"><span>Session</span>
 						<select class="ba-select" id="fSession">
-							<?php foreach ($sessionsBadge as $s) { ?>
-							<option value="<?= $h($s['session_id']) ?>" <?= (string) $s['session_id'] === $initSession ? 'selected' : '' ?>><?= $h(trim($s['session_year'] . ' · ' . $s['session_name'])) ?><?= (int) $s['selected'] === 1 ? ' (en cours)' : '' ?></option>
-							<?php } ?>
+							<?php $anneePrec = null;
+							foreach ($sessionsBadge as $s) {
+								if ($s['session_year'] !== $anneePrec) { if ($anneePrec !== null) echo '</optgroup>'; echo '<optgroup label="' . $h($s['session_year']) . '">'; $anneePrec = $s['session_year']; }
+								$ef = $effectifs[(string) $s['session_id']] ?? null;
+								$compte = $ef ? ' — ' . (int) $ef['nouveaux'] . ' nouveau' . ((int) $ef['nouveaux'] > 1 ? 'x' : '') . ' / ' . (int) $ef['inscrits'] . ' inscrit' . ((int) $ef['inscrits'] > 1 ? 's' : '') : ' — aucun inscrit'; ?>
+							<option value="<?= $h($s['session_id']) ?>" data-label="<?= $h(trim($s['session_year'] . ' · ' . $s['session_name'])) ?>" <?= (string) $s['session_id'] === $initSession ? 'selected' : '' ?>><?= $h($s['session_name']) ?><?= (int) $s['selected'] === 1 ? ' (en cours)' : '' ?><?= $h($compte) ?></option>
+							<?php } if ($anneePrec !== null) echo '</optgroup>'; ?>
 						</select>
 					</label>
 					<div class="ba-row2 ba-field-filter">
@@ -621,7 +639,7 @@ $badgeJsVersion = @filemtime(__DIR__ . '/../js/badge-pdf.js') ?: '1';
 		const chips = [];
 		if (f.matricules) chips.push(`${f.matricules.split(/[\s,;]+/).filter(Boolean).length} matricule(s)`);
 		else {
-			chips.push($('fSession').selectedOptions[0]?.text || '');
+			chips.push($('fSession').selectedOptions[0]?.dataset.label || '');
 			chips.push(f.mention ? $('fMention').selectedOptions[0].text : 'Toutes mentions');
 			chips.push(f.niveau ? $('fNiveau').selectedOptions[0].text : 'Tous niveaux');
 			chips.push(f.inscrits === 'tous' ? 'Tous les inscrits' : 'Nouveaux inscrits');
