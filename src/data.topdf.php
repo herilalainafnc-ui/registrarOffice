@@ -27,7 +27,15 @@ $date = 'heure_'.date($h.'-i-s').' date_'.date('d-m-Y');
                 
                 <button type="submit" class="px-2 py-1 rounded-md text-white bg-green-700" id="btnToExcel"><span class="bi-file-earmark-spreadsheet"></span> Excel</button>
                 
+                <?php if($ptype == "Badge"){ ?>
+                <select id="badgeLayout" class="rounded-md text-xs py-1" title="Format d'export du badge">
+                    <option value="6">A4 · 6 par page (75 × 84 mm)</option>
+                    <option value="9">A4 · 9 par page (54 × 85,6 mm)</option>
+                </select>
+                <a href="#" onclick="exportBadgePdf(this); return false;" class="px-2 py-[5.5px] rounded-md text-white bg-red-800"><span class="bi-filetype-pdf"></span> Pdf</a>
+                <?php }else{ ?>
                 <a href="#" onclick="printThisContent()" class="px-2 py-[5.5px] rounded-md text-white bg-red-800"><span class="bi-filetype-pdf"></span> Pdf</a>
+                <?php } ?>
                 
                 <a class="ml-2 text-sm"><b><i class="bi-arrow-repeat"></i></b> portrait</a>
             </form>
@@ -126,6 +134,37 @@ function printThisContent(){
      // Old monolithic-style usage:
      html2pdf(printConge, opt);
     }
+
+<?php if($ptype == "Badge"){ ?>
+</script>
+<!-- Badge individuel : même moteur pdf-lib que l'export en masse (badges.php) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="./js/badge-pdf.js"></script>
+<script type="text/javascript">
+const BADGE_STUDENT = <?= json_encode([
+    'student_id'     => $student_id,
+    'student_nom'    => $student_nom,
+    'student_prenom' => $student_prenom,
+    'etude_envisage' => $etude_envisage,
+    'status'         => $status,
+    'lookup_code'    => $lookup_code,
+    'image_student'  => $image_student,
+], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_INVALID_UTF8_SUBSTITUTE) ?>;
+
+async function exportBadgePdf(btn) {
+    const label = btn.innerHTML;
+    btn.style.pointerEvents = 'none'; btn.innerHTML = '<span class="bi-hourglass-split"></span> …';
+    try {
+        const r = await BadgePDF.generate([BADGE_STUDENT], { layout: document.getElementById('badgeLayout').value, border: true });
+        BadgePDF.download(r.bytes, `${BADGE_STUDENT.student_id}-BADGE-ETUDIANT_${r.layout.name}_${BadgePDF.stamp()}.pdf`);
+        if (r.warnings.length) alert('Avertissement :\n' + r.warnings.join('\n'));
+    } catch (e) {
+        console.error(e); alert('Erreur lors de la génération du PDF : ' + (e.message || e));
+    } finally {
+        btn.style.pointerEvents = ''; btn.innerHTML = label;
+    }
+}
+<?php } ?>
 
     // Ajouter le contenu HTML au champ caché et soumettre le formulaire
     document.getElementById('btnToExcel').addEventListener('click', function() {
