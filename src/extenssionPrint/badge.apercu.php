@@ -98,8 +98,11 @@ $badgeJsVersion = @filemtime(__DIR__ . '/../js/badge-pdf.js') ?: '1';
 
 	/* Format */
 	.ba-formats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+	/* Le label occupe toute la hauteur de la ligne de grille et la carte la remplit :
+	   les deux cartes ont la même hauteur, même si l'une a une ligne de plus. */
+	.ba-format { display: flex; }
 	.ba-format input { position: absolute; opacity: 0; pointer-events: none; }
-	.ba-format-card { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 8px 10px; border-radius: 12px; border: 1.5px solid var(--line-strong); background: var(--surface-2); cursor: pointer; transition: border-color .15s, background .15s; text-align: center; }
+	.ba-format-card { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 8px 10px; border-radius: 12px; border: 1.5px solid var(--line-strong); background: var(--surface-2); cursor: pointer; transition: border-color .15s, background .15s; text-align: center; }
 	.ba-format-card:hover { border-color: var(--accent); }
 	.ba-format input:checked + .ba-format-card { border-color: var(--accent); background: rgb(var(--c-accent) / .14); box-shadow: 0 0 0 3px rgb(var(--c-accent) / .18); }
 	.ba-sheet { width: 54px; height: 76px; background: #fff; border-radius: 2px; position: relative; box-shadow: 0 2px 6px rgb(0 0 0 / .35); }
