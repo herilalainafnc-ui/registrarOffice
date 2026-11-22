@@ -67,10 +67,23 @@
 		return 1;
 	}
 
+	// Octets des images gardés en mémoire : régénérer le PDF (changement de format,
+	// verso…) ne retélécharge pas les photos.
+	const bytesCache = new Map();
+	function fetchBytes(url) {
+		if (!bytesCache.has(url)) {
+			const p = fetch(url, { credentials: 'same-origin' }).then((res) => {
+				if (!res.ok) throw new Error('HTTP ' + res.status);
+				return res.arrayBuffer();
+			}).then((b) => new Uint8Array(b));
+			p.catch(() => bytesCache.delete(url));
+			bytesCache.set(url, p);
+		}
+		return bytesCache.get(url);
+	}
+
 	async function embedImage(pdf, url) {
-		const res = await fetch(url, { credentials: 'same-origin' });
-		if (!res.ok) throw new Error('HTTP ' + res.status);
-		const bytes = new Uint8Array(await res.arrayBuffer());
+		const bytes = await fetchBytes(url);
 		const isJpg = bytes[0] === 0xFF && bytes[1] === 0xD8;
 		const isPng = bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4E && bytes[3] === 0x47;
 		try {

@@ -64,6 +64,16 @@ $ongletTitre = $ongletDocuments[$ptype] ?? 'Exportation';
 if ($ptype === 'listeStd' && !empty($_POST['presence_sheet'])) { $ongletTitre = 'Feuille de présence'; }
 $ongletMatricule = trim((string) ($_GET['student_id'] ?? ''));
 if ($ongletMatricule !== '') { $ongletTitre .= ' — ' . $ongletMatricule; }
+
+// Badges : page d'aperçu dédiée, fidèle au PDF (pdf-lib + pdf.js). badge.php /
+// badge.gr.php ne servent qu'à préparer les données : leur sortie HTML est écartée.
+if ($ptype === 'Badge' || $ptype === 'BadgeGr') {
+    ob_start();
+    require ($ptype === 'Badge') ? './extenssionPrint/badge.php' : './extenssionPrint/badge.gr.php';
+    ob_end_clean();
+    require './extenssionPrint/badge.apercu.php';
+    exit;
+}
 ?>
 <title><?= htmlspecialchars($ongletTitre, ENT_QUOTES, 'UTF-8') ?></title>
 
@@ -93,16 +103,7 @@ if ($ongletMatricule !== '') { $ongletTitre .= ' — ' . $ongletMatricule; }
                 
                 <!-- <a href="./gen.pdf.php?ptype=<?=$ptype?>" target="_blank" class="px-2 py-[5.5px] rounded-md text-white bg-red-800"><span class="bi-filetype-pdf"></span><i class="text-[10px]">(Text)</i>.Pdf</a> -->
 
-                <?php if ($ptype === 'Badge' || $ptype === 'BadgeGr') { /* badges : PDF vectoriel pdf-lib (js/badge-pdf.js) */ ?>
-                <select id="badgeLayout" class="rounded-md text-xs py-1 pl-1 pr-6" title="Format d'impression">
-                    <option value="6">A4 · 6 par page (75 × 85 mm)</option>
-                    <option value="9">A4 · 9 par page (54 × 85,6 mm)</option>
-                </select>
-                <label class="text-white text-xs mx-1" title="Ajouter une planche de verso en tête du PDF"><input type="checkbox" id="badgeBack" <?= ($ptype === 'BadgeGr' && !empty($_POST['back'])) ? 'checked' : '' ?>> Verso</label>
-                <a href="#" onclick="exportBadgePdf(this); return false;" class="px-2 py-[5.5px] rounded-md text-white bg-blue-800"><span class="bi-filetype-pdf"></span> Pdf</a>
-                <?php } else { ?>
                 <a href="#" onclick="printThisContent()" class="px-2 py-[5.5px] rounded-md text-white bg-blue-800"><span class="bi-file-earmark-image-fill"></span><i class="text-[10px]">(Image)</i>.Pdf</a>
-                <?php } ?>
                 
                 <!-- <a class="ml-2 text-sm"><b><i class="bi-arrow-repeat"></i></b> portrait</a> -->
             </form>
@@ -237,57 +238,6 @@ if ($ongletMatricule !== '') { $ongletTitre .= ' — ' . $ongletMatricule; }
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
-
-<?php if ($ptype === 'Badge' || $ptype === 'BadgeGr') {
-    // Badges : PDF généré avec pdf-lib (photos en résolution d'origine, texte vectoriel)
-    if ($ptype === 'Badge') {
-        $badgeStudents = [[
-            'student_id'     => $student_id ?? '',
-            'student_nom'    => $student_nom ?? '',
-            'student_prenom' => $student_prenom ?? '',
-            'etude_envisage' => $etude_envisage ?? '',
-            'status'         => $status ?? '',
-            'abonment'       => $abonment ?? '',
-            'lookup_code'    => $lookup_code ?? '',
-            'image_student'  => $image_student ?? '',
-        ]];
-    }
-    $badgeJsonFlags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_INVALID_UTF8_SUBSTITUTE;
-?>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-<script src="<?=$app_base?>/src/js/badge-pdf.js"></script>
-<script>
-    var BADGE_STUDENTS = <?= json_encode(array_values($badgeStudents ?? []), $badgeJsonFlags) ?>;
-    var BADGE_FILE = <?= json_encode((string) ($printName ?? 'BADGES'), $badgeJsonFlags) ?>;
-
-    async function exportBadgePdf(btn) {
-        if (!BADGE_STUDENTS.length) { alert('Aucun étudiant à exporter.'); return; }
-        var label = btn.innerHTML;
-        btn.style.pointerEvents = 'none';
-        btn.innerHTML = '<span class="bi-hourglass-split"></span> 0 %';
-        try {
-            var r = await BadgePDF.generate(BADGE_STUDENTS, {
-                layout: document.getElementById('badgeLayout').value,
-                back: document.getElementById('badgeBack').checked,
-                border: true,
-                phone: '034 38 180 81 / 034 76 076 98',
-                onProgress: function (done, total) { btn.innerHTML = '<span class="bi-hourglass-split"></span> ' + Math.round(100 * done / (total || 1)) + ' %'; }
-            });
-            BadgePDF.download(r.bytes, BADGE_FILE + '_' + r.layout.name + '_' + BadgePDF.stamp() + '.pdf');
-            var msg = BADGE_STUDENTS.length + ' badge(s), ' + r.pages + ' page(s) — PDF généré.';
-            if (r.warnings.length) {
-                msg += '\n\n' + r.warnings.length + ' avertissement(s) :\n' + r.warnings.slice(0, 15).join('\n') + (r.warnings.length > 15 ? '\n…' : '');
-                alert(msg);
-            } else if (window.Toast) { Toast.success ? Toast.success(msg) : Toast.info(msg); }
-        } catch (e) {
-            console.error(e);
-            alert('Erreur lors de la génération du PDF : ' + (e && e.message ? e.message : e));
-        } finally {
-            btn.style.pointerEvents = ''; btn.innerHTML = label;
-        }
-    }
-</script>
-<?php } ?>
 
 <script type="text/javascript">
 
