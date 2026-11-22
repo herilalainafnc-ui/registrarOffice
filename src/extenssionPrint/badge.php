@@ -42,7 +42,7 @@ if(strlen($image_student)> 7){
 }
 ?>
 <center>
-	<b style="font-size: 35px; color: #07325a;"><?=strtoupper($student_nom)?><br><?=$student_prenom?></b><br>
+	<b style="font-size: 35px; color: #07325a;"><span style="text-transform: uppercase;"><?=htmlspecialchars(function_exists('mb_strtoupper') ? mb_strtoupper($student_nom, 'UTF-8') : $student_nom)?></span><br><?=$student_prenom?></b><br>
 	<b style="font-size: 20px"><?=$status?></b>
 	<br><br>
 	<b style="font-size: 50px; color: #07325a;"><?=$student_id?></b>
